@@ -78,10 +78,14 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
    overflow는 nav 전체가 아니라 #navGroups(스크롤이 필요할 수 있는 목록)에만 걸어야, 프로필 드롭다운(.pmenu)이
    GNB 밖으로 튀어나올 때 잘리지 않는다 */
 .nav{background:var(--surface);border-right:1px solid var(--outline-variant);padding:14px 14px 16px;display:flex;flex-direction:column;gap:2px;position:sticky;top:0;height:100vh}
-.nav-top{display:flex;align-items:center;justify-content:flex-end;padding:0 4px 8px}
-.nav-toggle{width:40px;height:40px;border-radius:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--on-surface-variant);border:none;background:transparent}
+/* 접기/펼치기 버튼 — GNB 가장자리에 절반쯤 걸쳐 떠 있는 원형 버튼. 펼침일 땐 '<'(안으로),
+   접힘일 땐 아이콘을 180도 돌려 '>'(밖으로)를 가리키게 한다 */
+.nav-toggle{position:absolute;top:22px;right:-14px;width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--on-surface-variant);
+  border:1px solid var(--outline-variant);background:var(--surface);box-shadow:var(--e2);z-index:5}
 .nav-toggle:hover{background:var(--surface-variant)}
-.nav-toggle svg{width:20px;height:20px}
+.nav-toggle svg{width:16px;height:16px;transition:transform .15s}
+.nav-collapsed .nav-toggle svg{transform:rotate(180deg)}
 /* 현재 대회 스위처 — GNB 맨 위, 프로필보다 먼저. 모든 페이지에서 항상 보여야 하는 맥락이라
    대시보드 안에만 있던 걸 여기로 옮겼다(대시보드를 벗어나면 지금 어떤 대회를 보고 있는지 알 길이 없었음) */
 .tourSwitch{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;margin-bottom:6px;
@@ -121,7 +125,7 @@ a.nitem:visited{color:inherit}
 .nitem .ni{width:18px;height:18px;flex:none;opacity:.9}
 .nitem.active .ni{opacity:1}
 .nitem .badge-n{margin-left:auto;background:var(--primary);color:var(--on-primary);font-size:11px;font-weight:700;min-width:22px;height:22px;border-radius:11px;display:flex;align-items:center;justify-content:center;padding:0 6px}
-.nitem.active .badge-n{background:var(--surface);color:var(--on-surface)}
+.nitem.active .badge-n{background:var(--primary);color:var(--on-primary)}
 .nitem.disabled{cursor:default;opacity:.55}
 .nitem.disabled:hover{background:transparent}
 .nspacer{flex:1;min-height:16px}
@@ -140,7 +144,6 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
    ① 80dp 폭 ② 아이콘 아래 라벨 ③ 아이콘 뒤에만 56×32 pill 활성 인디케이터
    구조로 구성했습니다. 라벨이 보이므로 태블릿에서 메뉴를 펼치지 않아도 됩니다. */
 .nav-collapsed .nav{padding:12px 6px 16px;align-items:center}
-.nav-collapsed .nav-top{justify-content:center;padding-right:0;width:100%}
 .nav-collapsed .profile-wrap{margin-bottom:10px}
 .nav-collapsed .profile{justify-content:center;padding:8px 0}
 .nav-collapsed .profile .pinfo,.nav-collapsed .profile .caret{display:none}
@@ -603,9 +606,13 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   #page-player{background:linear-gradient(to bottom, color-mix(in srgb, var(--team-tint,#888) 19%, transparent) 0%, transparent 480px)}
 }
 /* 카드 앞·뒤 디자인은 공유 카드(player-card.html)와 픽셀 단위로 동일해야 한다 — 수치·색상 전부 그쪽 값을 그대로 가져옴 */
+/* 카드+하단 정보 영역 등장 — 모바일 공유 카드(riseIn/sheetIn)와 동일한 타이밍·이징으로 아래에서 위로 함께 올라온다 */
+.pdCardArea{animation:pdRiseIn .9s cubic-bezier(.16,.84,.24,1) both}
+.pdInfoArea{animation:pdRiseIn .9s cubic-bezier(.16,.84,.24,1) both}
+@keyframes pdRiseIn{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
 .pdStage{display:flex;justify-content:center;padding:8px 0 4px;perspective:1400px}
 .pdCard{width:300px;height:420px;position:relative;transform-style:preserve-3d;cursor:pointer;
-  transition:transform .2s cubic-bezier(.2,.9,.25,1.1);transform:rotateX(var(--phx,0)) rotateY(var(--phy,0))}
+  transform:rotateX(var(--ry,0)) rotateY(var(--rx,0))}
 .pdCardInner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.2,.9,.25,1.1)}
 .pdCardInner.flipped{transform:rotateY(180deg)}
 .pdFace{position:absolute;inset:0;border-radius:20px;overflow:hidden;backface-visibility:hidden;padding:3px;
@@ -656,9 +663,8 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 
 .pdTopRow{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;align-items:flex-start}
 .pdBrand{display:flex;flex-direction:column;align-items:center;gap:6px}
-.pdLogo{border-radius:100px;border:1.5px solid color-mix(in srgb,var(--g-b,#fff) 60%,transparent);
-  background:rgba(0,0,0,.4);color:var(--g-text,#fff);display:flex;align-items:center;justify-content:center;
-  padding:6px 10px;font-size:11px;font-weight:900;letter-spacing:.06em}
+.pdLogo{color:var(--g-text,#fff);font-size:11px;font-weight:900;letter-spacing:.06em;
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
 .pdGradeBadge{border-radius:100px;background:rgba(0,0,0,.4);color:var(--g-text,#fff);
   border:1px solid color-mix(in srgb,var(--g-b,#fff) 55%,transparent);
   padding:3px 10px;font-size:10px;font-weight:800;letter-spacing:.05em}
@@ -676,6 +682,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   background:radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--g-a,#888) 35%,transparent),transparent 62%)}
 .pdAvatar{width:150px;height:190px;margin-bottom:-6px;color:rgba(255,255,255,.86);filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
 .pdAvatar svg{width:100%;height:100%}
+/* 실제 업로드 사진 미리보기용 — 실루엣과 달리 카드 전체를 채우는 배경으로 깔고, 그 위에 오라·홀로그램·정보 패널이 그대로 겹친다 */
+.pdPhotoBg{position:absolute;inset:0}
+.pdAvatarPhotoFull{display:block;width:100%;height:100%;object-fit:cover;object-position:top center}
 
 /* 하단 딤드 구간에 점점 진해지는 블러 — player-card.html과 동일 규칙 */
 .infoBlur{position:absolute;inset:0;z-index:1;pointer-events:none}
@@ -688,6 +697,17 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .infoBlur3{backdrop-filter:blur(11px);-webkit-backdrop-filter:blur(11px);
   mask-image:linear-gradient(to bottom, transparent 74%, #000 96%);
   -webkit-mask-image:linear-gradient(to bottom, transparent 74%, #000 96%)}
+/* 실제 사진이 배경일 땐 실루엣용으로 잡아둔 블러·홀로그램 세기가 너무 강해서 얼굴까지 흐려 보였다.
+   블러 시작점을 하단 텍스트 바로 뒤로 늦추고, 홀로그램은 색이 크게 번지지 않게 약하게 낮춘다 */
+.card-photo .infoBlur1{mask-image:linear-gradient(to bottom, transparent 66%, #000 78%);
+  -webkit-mask-image:linear-gradient(to bottom, transparent 66%, #000 78%)}
+.card-photo .infoBlur2{mask-image:linear-gradient(to bottom, transparent 74%, #000 88%);
+  -webkit-mask-image:linear-gradient(to bottom, transparent 74%, #000 88%)}
+.card-photo .infoBlur3{mask-image:linear-gradient(to bottom, transparent 84%, #000 100%);
+  -webkit-mask-image:linear-gradient(to bottom, transparent 84%, #000 100%)}
+.card-photo .holoFoil{opacity:.16;mix-blend-mode:soft-light}
+.card-photo .holoGrain{opacity:.08}
+.card-photo .pdAura{opacity:.18}
 
 /* 하단 딤드 — 팀 컬러 대신 카드 등급 톤(--g-c, 등급별 다크 언더톤)을 투명하게 */
 .pdInfo{position:absolute;left:0;right:0;bottom:0;padding:16px 18px 18px;z-index:2;
@@ -719,10 +739,13 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   box-shadow:0 0 0 1.5px rgba(255,255,255,.55),0 2px 6px rgba(0,0,0,.4)}
 
 /* 레벨·경험치는 카드 바깥 아래에 노출 — PC·태블릿·모바일 공통 */
-.pdLevelRow{max-width:300px;margin:16px auto 0;display:flex;align-items:center;gap:10px}
-.pdLevelRow .lv{font-size:13px;font-weight:800;color:var(--on-surface);white-space:nowrap}
+.pdLevelRow{width:100%;max-width:300px;margin:16px auto 0;display:flex;align-items:center;gap:10px}
+/* 카드 밖 페이지는 밝은 배경이라 카드용 밝은 텍스트 톤(--g-text) 대신, 같은 등급의 어두운 언더톤(--g-c)을 써서
+   대비는 지키면서도 등급 컬러라는 컨셉은 공유 카드(player-card.html)와 동일하게 맞춘다 */
+.pdLevelRow .lv{font-size:13px;font-weight:800;color:var(--g-c,#333);white-space:nowrap}
 .pdExpBar{flex:1;height:6px;border-radius:100px;background:var(--outline-variant);overflow:hidden}
-.pdExpBar i{display:block;height:100%;border-radius:100px;background:linear-gradient(90deg,var(--g-a,#888),var(--g-b,#ccc))}
+.pdExpBar i{display:block;width:0;height:100%;border-radius:100px;background:linear-gradient(90deg,var(--g-a,#888),var(--g-b,#ccc));
+  transition:width 1s cubic-bezier(.2,.8,.2,1)}
 
 /* 뒷면 — 모바일 공유 카드(player-card.html)와 완전히 동일한 구성으로 통일 */
 .pdFace.pdBack .in{padding:26px 24px;display:flex;flex-direction:column;gap:14px}
@@ -754,6 +777,14 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 }
 .sec-title{display:flex;align-items:baseline;gap:10px;padding:6px 4px 10px;font-size:16px;font-weight:700;letter-spacing:-.02em}
 .sec-title .n{font-size:12.5px;font-weight:600;color:var(--on-surface-variant)}
+
+/* 획득 배지 — 모바일 공유 카드(player-card.html)와 동일한 원형+하단 라벨 구조, 색만 운영 콘솔 토큰으로 맞춤 */
+.badgeRow{display:flex;gap:16px;flex-wrap:wrap;padding:4px 4px 0}
+.badge{display:flex;flex-direction:column;align-items:center;gap:7px;width:76px}
+.badge .badgeCircle{width:52px;height:52px;border-radius:50%;background:var(--surface-variant);border:1px solid var(--outline-variant);
+  display:flex;align-items:center;justify-content:center;flex:none}
+.badge .badgeCircle i{width:16px;height:16px;border-radius:50%;background:var(--g-b,#f4d16a)}
+.badge .badgeLabel{font-size:12px;font-weight:600;color:var(--on-surface);text-align:center;line-height:1.3}
 
 /* 조별리그 상위 3팀 — 중앙(1위) 카드를 올려 배치하는 포디움. 참가팀이 3팀 미만이면 없는 순위 카드는 아예 렌더하지 않는다 */
 .podium-head{display:flex;align-items:baseline;justify-content:space-between;padding:6px 4px 10px}
@@ -840,9 +871,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .glog .pf4{color:var(--red);font-weight:700}
 
 /* 삭제는 카드 없이 평평하게 — 파괴적 액션이지만 자주 쓰지 않으므로 시선을 뺏지 않음 */
-.danger-zone{padding:10px 4px 4px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.danger-zone .t{font-weight:700;font-size:14px}
-.danger-zone .s{font-size:12.5px;color:var(--on-surface-variant);margin-top:3px}
+.danger-zone{padding:10px 4px 4px;display:flex;align-items:center;justify-content:flex-end;gap:16px;flex-wrap:wrap}
 .btn-danger{background:transparent;border:1px solid #f1b7b7;color:#c0392b}
 .btn-danger:hover{background:#fee2e2}
 
@@ -944,11 +973,9 @@ body.modal-open{overflow:hidden}
 
   <!-- ============ NAV (left, single shared instance) — 향후 <Sidebar/> 컴포넌트 ============ -->
   <aside class="nav" aria-label="주요 메뉴">
-    <div class="nav-top">
-      <button class="nav-toggle" id="navToggle" aria-label="메뉴 접기/펼치기" aria-expanded="true" title="메뉴 접기/펼치기">
-        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="2"/><line x1="9" y1="4" x2="9" y2="20" stroke="currentColor" stroke-width="2"/></svg>
-      </button>
-    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="메뉴 접기/펼치기" aria-expanded="true" title="메뉴 접기/펼치기">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
 
     <button class="tourSwitch" type="button" id="tourSwitchBtn" title="2026 여름 3×3 리그 · 로고·포스터 설정">
       <span class="ts-logo" aria-hidden="true"><svg class="ic ic-lg" viewBox="0 0 24 24" style="color:var(--mono-on);stroke-width:1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3v18M5.5 5.5c3 2.5 3 10.5 0 13M18.5 5.5c-3 2.5-3 10.5 0 13"/></svg></span>
@@ -1663,9 +1690,13 @@ var KO_BRACKET = [
   ]}
 ];
 
+// photo: 선수가 사진을 업로드한 경우의 미리보기용 — 없으면 기존 실루엣으로 자동 대체됩니다.
+// 지금은 무료 라이선스 스톡 사진(Pexels)으로 디자인만 확인하는 용도입니다.
 var PLAYERS = [
-  { id:'p1',  name:'김민수', en:'KIM MIN SU',    no:7,  teamId:'t1', pos1:'SF', pos2:'PF', h:188, w:82, owner:true },
-  { id:'p2',  name:'박정우', en:'PARK JUNG WOO', no:11, teamId:'t1', pos1:'PG', pos2:'SG', h:178, w:72 },
+  { id:'p1',  name:'김민수', en:'KIM MIN SU',    no:7,  teamId:'t1', pos1:'SF', pos2:'PF', h:188, w:82, owner:true,
+    photo:'https://images.pexels.com/photos/20615486/pexels-photo-20615486.jpeg?cs=srgb&dl=pexels-hanuman-photo-studio-564865561-20615486.jpg&fm=jpg' },
+  { id:'p2',  name:'박정우', en:'PARK JUNG WOO', no:11, teamId:'t1', pos1:'PG', pos2:'SG', h:178, w:72,
+    photo:'https://images.pexels.com/photos/31747054/pexels-photo-31747054.jpeg?cs=srgb&dl=pexels-chris-wade-ntezicimpa-564856410-31747054.jpg&fm=jpg' },
   { id:'p3',  name:'이현수', en:'LEE HYUN SOO',  no:23, teamId:'t1', pos1:'C',  pos2:'PF', h:198, w:96 },
   { id:'p4',  name:'최영호', en:'CHOI YOUNG HO', no:15, teamId:'t1', pos1:'SG', h:181, w:75 },
   { id:'p5',  name:'한지훈', en:'HAN JI HOON',   no:32, teamId:'t1', pos1:'PF', h:190, w:88 },
@@ -2586,6 +2617,7 @@ function renderGamesPage(){ renderGameTabs(); renderGameList(); }
  * 플랜비의 '계정 연결 / 휴면 처리'는 회비·출결 관리 기능이라
  * 스코어북 MVP(기록 중심) 범위 밖으로 두고 후순위로 뺐습니다.
  * ================================================================ */
+var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 var currentPlayerId = null;
 function openPlayer(id){ currentPlayerId = id; location.hash = '#player'; renderPlayerDetail(); }
 
@@ -2595,8 +2627,9 @@ var PLAYER_SIL_POSES = {
            '<rect x="31" y="36" width="10" height="38" rx="5" transform="rotate(14 36 36)"/><rect x="59" y="36" width="10" height="38" rx="5" transform="rotate(-14 64 36)"/>',
   dribble: '<rect x="37" y="80" width="11" height="46" rx="5.5" transform="rotate(6 42 80)"/><rect x="52" y="80" width="11" height="46" rx="5.5" transform="rotate(-4 57 80)"/>'+
            '<rect x="31" y="36" width="10" height="38" rx="5" transform="rotate(-52 36 36)"/><rect x="59" y="36" width="10" height="38" rx="5" transform="rotate(-14 64 36)"/><circle cx="63" cy="63" r="6"/>',
-  shoot:   '<rect x="37" y="80" width="11" height="46" rx="5.5" transform="rotate(-8 42 80)"/><rect x="52" y="80" width="11" height="46" rx="5.5" transform="rotate(4 57 80)"/>'+
-           '<rect x="31" y="36" width="10" height="38" rx="5" transform="rotate(150 36 36)"/><rect x="59" y="36" width="10" height="38" rx="5" transform="rotate(-150 64 36)"/>',
+  // 점프슛 자세 — 슛 팔은 머리 위로 곧게 뻗고, 반대팔(가이드 핸드)은 내려오며, 공은 슛 손끝 위에 릴리스된 위치로
+  shoot:   '<rect x="37" y="80" width="11" height="46" rx="5.5" transform="rotate(-10 42 80)"/><rect x="52" y="80" width="11" height="46" rx="5.5" transform="rotate(6 57 80)"/>'+
+           '<rect x="31" y="36" width="10" height="34" rx="5" transform="rotate(70 36 36)"/><rect x="59" y="36" width="10" height="34" rx="5" transform="rotate(-176 64 36)"/><circle cx="68" cy="2" r="6"/>',
   rebound: '<rect x="36" y="80" width="12" height="42" rx="6" transform="rotate(-18 42 80)"/><rect x="52" y="80" width="12" height="42" rx="6" transform="rotate(18 58 80)"/>'+
            '<rect x="31" y="36" width="10" height="34" rx="5" transform="rotate(165 36 36)"/><rect x="59" y="36" width="10" height="34" rx="5" transform="rotate(-165 64 36)"/>'
 };
@@ -2614,6 +2647,64 @@ function ovrFor(grade, s){
   var bonus = s ? Math.min(10, Math.round((s.pts+s.reb+s.ast)/6)) : 0;
   return Math.min(99, base+bonus);
 }
+/* ---- 카드 기울기·뒤집기 인터랙션 — player-card.html의 createCardController와 완전히 동일한 로직.
+   운영 콘솔과 모바일 공유 카드는 디자인뿐 아니라 인터랙션(기울기 각도·감쇠·홀로그램 이동량)도 항상 같아야 한다 ---- */
+function createCardController(wrapEl, opts){
+  opts = opts || {};
+  var inner = wrapEl.querySelector('.pdCardInner, .cardInner');
+  var MAX_TILT = 10, DRAG_THRESHOLD = 8;
+  var flipped = false;
+  var target = { rx:0, ry:0 };
+  var current = { rx:0, ry:0 };
+  var dragMoved = false, downX = 0, downY = 0;
+  var raf = null;
+
+  function setVars(){
+    wrapEl.style.setProperty('--rx', current.rx.toFixed(2)+'deg');
+    wrapEl.style.setProperty('--ry', current.ry.toFixed(2)+'deg');
+    wrapEl.style.setProperty('--holo-tx', (current.rx * 4).toFixed(1)+'px');
+    wrapEl.style.setProperty('--holo-ty', (-current.ry * 4).toFixed(1)+'px');
+  }
+  function loop(){
+    current.rx += (target.rx - current.rx) * 0.14;
+    current.ry += (target.ry - current.ry) * 0.14;
+    setVars();
+    raf = requestAnimationFrame(loop);
+  }
+  if(!reduceMotion) raf = requestAnimationFrame(loop);
+
+  function tiltFromPointer(clientX, clientY){
+    var r = wrapEl.getBoundingClientRect();
+    var nx = (clientX - r.left) / r.width - 0.5;
+    var ny = (clientY - r.top) / r.height - 0.5;
+    target.rx = nx * MAX_TILT * 2;
+    target.ry = -ny * MAX_TILT * 2;
+  }
+  function resetTilt(){ target.rx = 0; target.ry = 0; }
+
+  wrapEl.addEventListener('pointerdown', function(e){
+    dragMoved = false; downX = e.clientX; downY = e.clientY;
+  });
+  if(!reduceMotion){
+    wrapEl.addEventListener('pointermove', function(e){
+      if(Math.hypot(e.clientX - downX, e.clientY - downY) > DRAG_THRESHOLD) dragMoved = true;
+      tiltFromPointer(e.clientX, e.clientY);
+    });
+    wrapEl.addEventListener('pointerleave', resetTilt);
+  }
+  wrapEl.addEventListener('click', function(e){
+    if(e.target.closest('button')) return;
+    if(dragMoved) return;
+    flipped = !flipped;
+    inner.classList.toggle('flipped', flipped);
+  });
+
+  return {
+    toggleFlip: function(){ flipped = !flipped; inner.classList.toggle('flipped', flipped); },
+    destroy: function(){ if(raf) cancelAnimationFrame(raf); }
+  };
+}
+var pdCardController = null;
 function renderPlayerDetail(){
   var root = document.getElementById('playerDetail');
   var p = PLAYERS.find(function(x){ return x.id === currentPlayerId; });
@@ -2675,9 +2766,11 @@ function renderPlayerDetail(){
     '<div class="pdBackNote">'+(log[0] ? '기록 업데이트 '+log[0].date.replace(/-/g,'.') : '')+'</div>';
 
   var card =
+    '<div class="pdCardArea" data-grade="'+grade+'">'+
     '<div class="pdStage"><div class="pdCard" id="pdCard" data-grade="'+grade+'" role="button" tabindex="0" aria-label="'+p.name+' 선수 카드 — 눌러서 뒷면 기록 보기">'+
       '<div class="pdCardInner" id="pdCardInner">'+
-        '<div class="pdFace front"><div class="in">'+
+        '<div class="pdFace front"><div class="in'+(p.photo ? ' card-photo' : '')+'">'+
+          '<div class="pdPhotoBg">'+(p.photo ? '<img class="pdAvatarPhotoFull" src="'+p.photo+'" alt="">' : '')+'</div>'+
           '<div class="pdAura" aria-hidden="true"></div>'+
           '<div class="holoFoil" aria-hidden="true"></div>'+
           '<div class="holoGrain" aria-hidden="true"></div>'+
@@ -2685,7 +2778,7 @@ function renderPlayerDetail(){
             '<div class="pdBrand"><span class="pdLogo">BISKET</span><span class="pdGradeBadge">'+gradeLabel+'</span></div>'+
             '<div class="pdOvr"><button type="button" class="lb pdOvrInfoBtn" id="pdOvrInfoBtn" aria-label="OVR 계산 방식 안내">OVR<span class="pdOvrInfoIcon" aria-hidden="true">?</span></button><div class="vl">'+ovr+'</div></div>'+
           '</div>'+
-          '<div class="pdPhoto"><div class="pdAvatar">'+playerSilhouetteSvg(p.id)+'</div></div>'+
+          '<div class="pdPhoto"'+(p.photo ? ' style="display:none"' : '')+'><div class="pdAvatar">'+(p.photo ? '' : playerSilhouetteSvg(p.id))+'</div></div>'+
           '<div class="infoBlur infoBlur1" aria-hidden="true"></div>'+
           '<div class="infoBlur infoBlur2" aria-hidden="true"></div>'+
           '<div class="infoBlur infoBlur3" aria-hidden="true"></div>'+
@@ -2723,7 +2816,8 @@ function renderPlayerDetail(){
         '<div class="pdEdge b" aria-hidden="true"></div>'+
       '</div>'+
     '</div></div>'+
-    '<div class="pdLevelRow"><span class="lv">Lv.'+level+'</span><div class="pdExpBar"><i style="width:'+expPct+'%"></i></div></div>';
+    '<div class="pdLevelRow"><span class="lv">Lv.'+level+'</span><div class="pdExpBar"><i id="pdExpBar" data-target="'+expPct+'"></i></div></div>'+
+    '</div>';
 
   // ①-보조 시즌 평균 — 카드 뒷면과 별개로 화면 크기와 무관하게 항상 노출(일관된 구성)
   function tile(lb, vl, unit){
@@ -2760,13 +2854,18 @@ function renderPlayerDetail(){
     games = '';
   }
 
-  // ③ 위험 액션은 최하단에 분리
+  // ①-보조 획득 배지 — 모바일 공유 카드와 동일한 원형 배지 구성(프로토타입 단계라 값은 공통 목업)
+  var PLAYER_BADGES = ['첫 대회 참가', '10회 출전', '팀 로열티'];
+  var badgeSection = '<div class="sec-title" style="margin-top:28px">획득 배지</div>'+
+    '<div class="badgeRow">'+PLAYER_BADGES.map(function(b){
+      return '<div class="badge"><span class="badgeCircle"><i></i></span><span class="badgeLabel">'+b+'</span></div>';
+    }).join('')+'</div>';
+
+  // ③ 위험 액션은 최하단에 분리 — 설명 없이 버튼만 우측 정렬로 노출
   var danger = '<div class="danger-zone">'+
-    '<div style="flex:1;min-width:180px"><div class="t">선수 삭제</div>'+
-      '<div class="s">명단에서 제거됩니다. 이미 입력된 경기 기록은 유지됩니다.</div></div>'+
     '<button type="button" class="btn btn-danger btn-sm" id="pdDelete">'+icon('trash','ic ic-sm')+'선수 삭제</button></div>';
 
-  root.innerHTML = card + avgPanel + games + danger;
+  root.innerHTML = card + '<div class="pdInfoArea" data-grade="'+grade+'">' + avgPanel + games + badgeSection + danger + '</div>';
 
   // 경기별 기록 한 줄을 누르면 해당 경기 상세(진행 중이면 기록 콘솔, 종료·확정이면 전체 기록)로 이동
   root.querySelectorAll('.glog tr[data-goto]').forEach(function(row){
@@ -2791,30 +2890,32 @@ function renderPlayerDetail(){
     m.classList.add('open'); m.setAttribute('aria-hidden','false');
   });
 
-  // 카드 뒤집기 — 클릭 또는 키보드(Enter/Space)
-  var cardEl = document.getElementById('pdCard'), innerEl = document.getElementById('pdCardInner');
-  var flipped = false;
-  function toggleFlip(){ flipped = !flipped; innerEl.classList.toggle('flipped', flipped); }
-  cardEl.addEventListener('click', toggleFlip);
+  // 카드 기울기·뒤집기 — 모바일 공유 카드와 완전히 동일한 createCardController 사용
+  var cardEl = document.getElementById('pdCard');
+  if(pdCardController) pdCardController.destroy();
+  pdCardController = createCardController(cardEl);
   cardEl.addEventListener('keydown', function(e){
-    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); toggleFlip(); }
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); pdCardController.toggleFlip(); }
   });
 
-  // 아주 약한 마우스 틸트(PC·태블릿, ±5도)로 카드임을 드러냄 — 포인터를 따라다니는 빛 효과는 부자연스러워 넣지 않음
-  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    cardEl.addEventListener('pointermove', function(e){
-      var r = cardEl.getBoundingClientRect();
-      var nx = (e.clientX - r.left) / r.width - 0.5, ny = (e.clientY - r.top) / r.height - 0.5;
-      cardEl.style.setProperty('--phy', (nx*5).toFixed(2)+'deg');
-      cardEl.style.setProperty('--phx', (-ny*5).toFixed(2)+'deg');
-      cardEl.style.setProperty('--holo-tx', (nx*80).toFixed(1)+'px');
-      cardEl.style.setProperty('--holo-ty', (ny*80).toFixed(1)+'px');
+  // 레벨 프로그레스바 — 카드+정보 영역이 다 올라온 뒤(pdRiseIn 종료) 0%에서 목표치까지 채워진다
+  (function(){
+    var bar = document.getElementById('pdExpBar');
+    var cardArea = document.querySelector('.pdCardArea');
+    var target = bar.getAttribute('data-target') + '%';
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+    void bar.offsetWidth;
+    bar.style.transition = '';
+    function fill(){
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ bar.style.width = target; }); });
+    }
+    cardArea.addEventListener('animationend', function onEnd(e){
+      if(e.target !== cardArea || e.animationName !== 'pdRiseIn') return;
+      cardArea.removeEventListener('animationend', onEnd);
+      fill();
     });
-    cardEl.addEventListener('pointerleave', function(){
-      cardEl.style.setProperty('--phy','0deg'); cardEl.style.setProperty('--phx','0deg');
-      cardEl.style.setProperty('--holo-tx','0px'); cardEl.style.setProperty('--holo-ty','0px');
-    });
-  }
+  })();
 }
 
 /* ================================================================
