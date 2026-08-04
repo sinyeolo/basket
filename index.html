@@ -311,12 +311,12 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .page-head h1{font-size:26px;font-weight:700;letter-spacing:-.02em}
 .page-head .sub{color:var(--on-surface-variant);font-size:13px;margin-top:6px}
 .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:8px}
-.kpi{background:var(--surface);border-radius:var(--r-card);padding:18px 20px}
-.kpi .k-top{display:flex;align-items:center;justify-content:space-between;min-height:22px}
-.kpi .label{font-size:13px;color:var(--on-surface-variant);font-weight:500}
-.kpi .num{font-size:32px;font-weight:700;margin:8px 0 3px;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
+.kpi{background:var(--surface);border-radius:var(--r-card);padding:13px 18px}
+.kpi .k-top{display:flex;align-items:center;justify-content:space-between;min-height:18px}
+.kpi .label{font-size:12px;color:var(--on-surface-variant);font-weight:500}
+.kpi .num{font-size:25px;font-weight:700;margin:5px 0 2px;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
 .kpi .num small{font-size:14px;font-weight:600;color:var(--on-surface-variant)}
-.kpi .delta{font-size:12px;font-weight:500;color:var(--on-surface-variant)}
+.kpi .delta{font-size:11.5px;font-weight:500;color:var(--on-surface-variant)}
 /* 진행 중 KPI 라벨 앞 펄스 점 — 다른 곳의 '진행중' 표시(.chip.live 등)와 같은 브랜드컬러 점 */
 .label .livedot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--primary);margin-right:6px;vertical-align:1px;animation:pulse 1.4s infinite}
 .assist.warn{background:#eceaef;color:var(--on-surface-variant)}
@@ -1852,12 +1852,15 @@ var NAV_GROUPS = [
 
 // ---- 대시보드: KPI (Tournament dashboard summary) ----
 var KPIS = [
-  { label:'오늘 경기', value:'12', delta:'예선 8 · 8강 4' },
-  // live:true → 라벨 텍스트 자체가 이미 '진행 중'이라 옆에 같은 문구 뱃지를 또 붙이는 게 중복이었음.
-  // 대신 다른 곳의 '진행 중' 표시(.chip.live 등)와 같은 방식으로 라벨 앞에 펄스 점만 붙인다.
-  { label:'진행 중',   value:'3',  delta:'실시간 기록 중', live:true },
-  // '확인' 뱃지는 델타 텍스트('결과 확정 필요')·라벨('검수 대기')과 뜻이 겹치기만 하고 새 정보가 없어 제거
-  { id:'review', label:'검수 대기', value:'2',  delta:'결과 확정 필요' },
+  // value는 렌더 시점에 오늘 날짜 경기(ALL_GAMES[0])를 기준으로 '남은/전체'로 다시 계산된다(아래 renderKpis 참고)
+  { id:'today', label:'오늘 경기', value:'', delta:'남은 경기' },
+  // pulseIfPositive → 라벨 텍스트 자체가 이미 '진행 중'이라 옆에 같은 문구 뱃지를 또 붙이는 게 중복이었음.
+  // 대신 다른 곳의 '진행 중' 표시(.chip.live 등)와 같은 방식으로 라벨 앞에 펄스 점만 붙이고, 값이 0이면 점도 안 뜬다.
+  // 델타 '실시간 기록 중'은 실제로 실시간 동기화가 아니라 수동 기록이라 부정확한 문구여서 제거.
+  { label:'진행 중',   value:'3',  delta:'', pulseIfPositive:true },
+  // '확인' 뱃지는 델타 텍스트('결과 확정 필요')·라벨('검수 대기')과 뜻이 겹치기만 하고 새 정보가 없어 제거.
+  // 검수 대기도 진행 중과 같은 방식으로, 대기 건이 있을 때만 펄스 점이 뜬다.
+  { id:'review', label:'검수 대기', value:'2',  delta:'결과 확정 필요', pulseIfPositive:true },
   // 숫자 줄의 '· 선수 168'과 델타의 '전원 승인 완료'(실제 승인 플로우 없이 걸려있던 문구)가 중복이라,
   // 숫자는 팀 수만 남기고 선수 인원 정보를 델타 자리로 옮겼다
   { label:'참가 팀',   value:'24', delta:'선수 168명' }
@@ -1911,14 +1914,7 @@ var ALL_GAMES = [
   ]}
 ];
 
-// ---- 대시보드: 오늘 일정 (Game[] ordered by startTime) ----
-var SCHEDULE = [
-  { time:'09:00', label:'예선 · 서울 vs 인천', status:'완료', done:true },
-  { time:'10:30', label:'예선 · 강남 vs 마포', status:'완료', done:true },
-  { time:'12:00', label:'예선 · 송파 vs 용산', status:'진행', live:true },
-  { time:'14:00', label:'8강 · 종로 vs 은평', status:'예정' },
-  { time:'15:30', label:'8강 · 동대문 vs 강서', status:'예정' }
-];
+// 대시보드 '오늘 일정'은 ALL_GAMES[0](오늘 날짜 그룹)을 그대로 사용합니다 — 아래 renderSchedule() 참고
 
 // ---- 경기 기록 콘솔: 팀 + 쿼터 상태 (Game 상세) ----
 var MATCH = {
@@ -2181,13 +2177,22 @@ function renderNav(){
 function renderKpis(){
   var reviewKpi = KPIS.find(function(k){ return k.id==='review'; });
   if(reviewKpi) reviewKpi.value = String(pendingReviewCount());
+  // 오늘 경기 — ALL_GAMES의 첫 날짜(=오늘)를 기준으로 '남은/전체'를 실제 경기 상태에서 계산한다
+  // (예전엔 '12'·'예선 8 · 8강 4'가 다른 목데이터와 안 맞는 별도 하드코딩 값이었음)
+  var todayKpi = KPIS.find(function(k){ return k.id==='today'; });
+  if(todayKpi){
+    var todayGroup = ALL_GAMES[0];
+    var items = todayGroup ? todayGroup.items : [];
+    var remaining = items.filter(function(g){ return g.status==='live' || g.status==='soon'; }).length;
+    todayKpi.value = remaining+'/'+items.length;
+  }
   var root = document.getElementById('kpiList');
   root.innerHTML = KPIS.map(function(k){
-    var dot = k.live ? '<i class="livedot" aria-hidden="true"></i>' : '';
-    return '<div class="kpi'+(k.live?' live':'')+'">'+
+    var dot = (k.pulseIfPositive && Number(k.value) > 0) ? '<i class="livedot" aria-hidden="true"></i>' : '';
+    var delta = k.delta ? '<div class="delta">'+k.delta+'</div>' : '';
+    return '<div class="kpi">'+
       '<div class="k-top"><span class="label">'+dot+k.label+'</span></div>'+
-      '<div class="num">'+k.value+'</div>'+
-      '<div class="delta">'+k.delta+'</div></div>';
+      '<div class="num">'+k.value+'</div>'+delta+'</div>';
   }).join('');
 }
 
@@ -2243,17 +2248,28 @@ function renderReviewQueue(){
 }
 
 // <ScheduleRow/>
+// 오늘 일정 — 예전엔 ALL_GAMES와 안 맞는 별도 목데이터(SCHEDULE)를 썼고 클릭도 안 됐다.
+// ALL_GAMES의 오늘 날짜 그룹을 그대로 써서 실제 경기 목록과 항상 일치시키고,
+// 경기 목록·진행 중 경기와 같은 방식(openGameFromList)으로 눌러서 상세로 이동할 수 있게 한다.
 function renderSchedule(){
-  if(!SCHEDULE.length){
-    document.getElementById('scheduleList').innerHTML = emptyRow('오늘 예정된 경기가 없습니다.');
+  var items = ALL_GAMES[0] ? ALL_GAMES[0].items : [];
+  var root = document.getElementById('scheduleList');
+  if(!items.length){
+    root.innerHTML = emptyRow('오늘 예정된 경기가 없습니다.');
     return;
   }
-  document.getElementById('scheduleList').innerHTML = SCHEDULE.map(function(s){
-    var chipClass = s.done ? 'neutral' : (s.live ? 'live' : 'info');
-    return '<div class="row'+(s.done?' done':'')+'"><div class="court court-time">'+s.time+'</div>'+
-      '<div class="match"><span class="team">'+s.label+'</span></div>'+
-      '<span class="chip '+chipClass+'">'+s.status+'</span></div>';
+  root.innerHTML = items.map(function(g){
+    var m = STATUS_META[g.status];
+    var label = g.time+' '+g.label+', '+g.home.name+' vs '+g.away.name+', '+(g.status==='live'?g.clock:m.label);
+    return '<button type="button" class="row row-click'+(g.status==='fix'?' done':'')+'" data-goto="'+g.id+'" aria-label="'+label+'">'+
+      '<div class="court court-time">'+g.time+'</div>'+
+      '<div class="match"><span class="team">'+g.label+' · '+g.home.name+' vs '+g.away.name+'</span></div>'+
+      '<span class="st '+m.cls+'">'+(g.status==='live' ? g.clock : m.label)+'</span>'+
+    '</button>';
   }).join('');
+  root.querySelectorAll('[data-goto]').forEach(function(b){
+    b.addEventListener('click', function(){ openGameFromList(b.dataset.goto); });
+  });
 }
 
 // <Scoreboard/>
