@@ -523,7 +523,7 @@ button{font-family:var(--font)}
   <div class="ovrInfoCard">
     <button type="button" class="ovrInfoClose" id="ovrInfoClose" aria-label="닫기">×</button>
     <h4>OVR은 어떻게 정해지나요?</h4>
-    <p>선수 등급(브론즈·실버·골드)의 기준 점수에 최근 시즌 평균 득점·리바운드·어시스트를 반영한 보너스를 더해 계산돼요. 스탯이 좋을수록 보너스가 커지고, 최대 99까지 올라가요.</p>
+    <p>경기당 득점·리바운드·어시스트·스틸·블록 생산력과 슈팅 성공률(2점·3점·자유투)을 함께 반영해 계산돼요. 생산력과 효율이 높을수록 점수가 올라가고, 최대 99까지 올라가요. 선수 등급(브론즈·실버·골드)은 이렇게 산출된 OVR 구간에 따라 자동으로 매겨져요.</p>
     <p class="ovrInfoNote">* 정식 랭킹 로직이 확정되기 전까지 사용하는 임시 산출 방식이에요.</p>
   </div>
 </div>
@@ -578,6 +578,7 @@ var LINKED_PLAYER = false;
   if(q.get('ast')) PLAYER.stats.ast = Number(q.get('ast'));
   PLAYER.hasRecord = !!(q.get('pts') || q.get('reb') || q.get('ast'));
   PLAYER._grade = q.get('grade');
+  PLAYER._ovr = q.get('ovr') ? Number(q.get('ovr')) : null;
 })();
 
 // 사진 미등록 선수의 기본 실루엣 4종 — 매 접속마다 바뀌면 안 되므로 선수 id를 해시해 고정 배정.
@@ -629,8 +630,10 @@ function sealLabel(){
   return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' · BISKET · ';
 }
 
-// OVR — 실제 랭킹 로직 확정 전까지 등급 기준치 + 스탯으로 임시 산출 (운영단 index.html의 ovrFor와 동일 규칙)
+// OVR — 운영 콘솔(index.html)이 실측 스탯 기반으로 산출해 URL로 넘긴 값을 그대로 쓴다(단일 소스).
+// 값이 없는 경우(데모/구버전 링크 등)에만 등급 기준치+일부 스탯으로 임시 추정한다.
 function ovrFor(key){
+  if(PLAYER._ovr != null) return PLAYER._ovr;
   var base = { bronze:58, silver:74, gold:88 }[key] || 58;
   var s = PLAYER.stats;
   var bonus = s ? Math.min(10, Math.round((s.pts+s.reb+s.ast)/6)) : 0;
@@ -639,11 +642,31 @@ function ovrFor(key){
 function applyGrade(key){
   var g = GRADES[key];
   document.getElementById('fGradeChip').textContent = g.label;
-  document.getElementById('fOvr').textContent = PLAYER.hasRecord ? ovrFor(key) : '?';
+  var ovrEl = document.getElementById('fOvr');
+  var ovrVal = PLAYER.hasRecord ? ovrFor(key) : null;
+  ovrEl.dataset.target = ovrVal != null ? ovrVal : '';
+  ovrEl.textContent = ovrVal != null ? ovrVal : '?';
   document.getElementById('fLevel').textContent = 'Lv.'+g.level;
   document.getElementById('fExpBar').style.width = g.exp+'%';
   document.getElementById('sLevel').textContent = g.level;
   document.querySelectorAll('.previewBar button[data-g]').forEach(function(b){ b.classList.toggle('on', b.dataset.g===key); });
+}
+// OVR 카운트업 — 카드가 화면에 등장한 직후 00에서 목표 수치까지 올라가며 표시(easeOutCubic)
+function pad2(n){ return n < 10 ? '0'+n : ''+n; }
+function animateOvrCountUp(){
+  var el = document.getElementById('fOvr');
+  var target = parseInt(el.dataset.target, 10);
+  if(isNaN(target)) return; // 기록이 없어 '?'로 표시되는 경우는 애니메이션하지 않는다
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ el.textContent = target; return; }
+  var duration = 900, start = null;
+  function tick(ts){
+    if(start === null) start = ts;
+    var p = Math.min(1, (ts - start) / duration);
+    var eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = pad2(Math.round(target * eased));
+    if(p < 1) requestAnimationFrame(tick); else el.textContent = target;
+  }
+  requestAnimationFrame(tick);
 }
 // [data-grade]는 <html>에 설정 — CSS 커스텀 프로퍼티가 자손 전체(카드 포함)에 상속됨
 function setGrade(key){
@@ -706,6 +729,8 @@ document.querySelectorAll('#album [data-album-idx]').forEach(function(b){
 });
 
 setGrade(PLAYER._grade && GRADES[PLAYER._grade] ? PLAYER._grade : 'gold');
+// OVR은 카드 등장 애니메이션이 끝난 뒤 00에서 카운트업하므로, 그 전까지는 00으로 눌러둔다
+if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) document.getElementById('fOvr').textContent = '00';
 
 // ---- 진입 시퀀스: 카드(+힌트)가 하단에서 슬라이드 업 → 그 다음 정보 시트가 화면 밖에서 슬라이드 업해
 // 헤드(핸들+이름)만 보이는 접힌 상태로 자리잡고 → 살짝 두 번 튕기는 안내(넛지) 모션을 주기적으로 반복한다.
@@ -738,11 +763,13 @@ setGrade(PLAYER._grade && GRADES[PLAYER._grade] ? PLAYER._grade : 'gold');
 
   if(reduced){
     enterSheet();
+    animateOvrCountUp();
   } else {
     heroContent.addEventListener('animationend', function onEnd(e){
       if(e.target !== heroContent || e.animationName !== 'heroRiseIn') return;
       heroContent.removeEventListener('animationend', onEnd);
       enterSheet();
+      animateOvrCountUp();
     });
   }
 
