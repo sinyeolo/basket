@@ -288,7 +288,9 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* ---------- Dashboard page ---------- */
 /* min-width:0 없으면 그리드 트랙이 내부 콘텐츠(min-content)에 맞춰 커져서, 폰 폭에서 .main이 뷰포트보다
    넓어지고 가로 스크롤이 생긴다 — 그리드 아이템의 흔한 함정 */
-.main{padding:26px 30px 48px;min-width:0}
+/* 좌우 20px는 기록 콘솔(.console)과 같은 값 — 모든 페이지의 좌우 여백을 통일하고,
+   대시보드 같은 정보 밀도 높은 화면에서 콘텐츠 폭을 그만큼 더 확보한다 */
+.main{padding:26px 20px 48px;min-width:0}
 /* 대회 선택 · 검색 바 ↔ 타이틀 사이도 타이틀 영역과 동일하게 16px 예외 */
 .topbar{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .input{position:relative;flex:1;display:flex;align-items:center;gap:10px;height:48px;padding:0 18px;background:var(--surface-variant);border-radius:var(--r-btn);color:var(--on-surface-variant);font-size:14px;border:none;font-family:var(--font)}
@@ -1137,6 +1139,14 @@ body.modal-open{overflow:hidden}
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stiles{grid-template-columns:repeat(2,minmax(0,1fr))}
   .fieldrow{grid-template-columns:1fr!important} /* 대회 로고·포스터 행은 인라인 style="1fr 1fr"이라 !important 아니면 안 먹는다 */
+  /* 탭·필터칩은 폰 폭에서 줄바꿈시키지 않고 한 줄로 두고 좌우 스와이프로 넘긴다 —
+     여러 줄로 접히면 세로 공간을 많이 먹고 "지금 몇 번째 탭인지"가 잘 안 보인다.
+     스크롤바는 숨기고(iOS는 원래 안 보임), 여백은 .main 좌우 패딩만큼 음수 마진으로 빼서
+     화면 끝까지 스크롤되는 느낌을 준다. */
+  .tabs,.fchips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px}
+  .tabs::-webkit-scrollbar,.fchips::-webkit-scrollbar{display:none}
+  .tabs > *,.fchips > *{flex:none}
   .card-header{flex-wrap:wrap;gap:8px}
   /* 대시보드 "진행 중 경기" 행 — 코트 박스·칩·버튼이 다 nowrap이라 좁은 폭에서 팀명을 밀어냈다. 셋 다 줄여서 공간을 돌려준다 */
   .row .court{width:38px;height:38px;font-size:13px}
@@ -3141,10 +3151,11 @@ function findGameIdFor(dateStr, opp, teamName){
 function openGameFromList(id){
   var g = allGameItems().find(function(x){ return x.id === id; });
   if(!g) return;
-  if(g.liveId){ loadGame(g.liveId); location.hash = '#record'; return; }
+  // 어느 상태의 경기든 먼저 그 경기를 콘솔에 로드한다 — 예전엔 진행 중(liveId 있는) 경기만 로드해서
+  // 예정·종료 경기를 누르면 직전 경기 화면이 그대로 떠 있었다
+  loadGame(g.liveId || g.id);
   // 종료·확정 경기는 기록 원본을 보는 것이 목적이므로 전체 기록으로
-  if(g.status === 'end' || g.status === 'fix'){ location.hash = '#log'; return; }
-  location.hash = '#record';
+  location.hash = (g.status === 'end' || g.status === 'fix') ? '#log' : '#record';
 }
 function renderGamesPage(){ renderGameTabs(); renderGameList(); }
 
@@ -4097,7 +4108,8 @@ function renderReviewPage(){
       b.addEventListener('click', function(){ confirmReviewGame(b.dataset.confirm); });
     });
     root.querySelectorAll('[data-detail]').forEach(function(b){
-      b.addEventListener('click', function(){ location.hash = '#log'; });
+      // 그 경기를 로드해야 전체 기록이 해당 경기 기준으로 뜬다 (예전엔 항상 직전 경기 PBP가 떴음)
+      b.addEventListener('click', function(){ loadGame(b.dataset.detail); location.hash = '#log'; });
     });
   }
 
@@ -4174,9 +4186,37 @@ function buildRoster(teamId, totalPts){
   if(roster.length) roster[0].selected = true;
   return roster;
 }
+/* ---- 경기 컨텍스트 ----
+   기록 콘솔·전체 기록은 원래 LIVE_GAMES(진행 중 3경기)만 열 수 있어서, 예정·종료 경기를 눌러도
+   직전에 열려 있던 경기가 그대로 떠 있었다(= 엉뚱한 경기에 기록을 남길 수 있는 상태).
+   ALL_GAMES 항목에는 콘솔이 필요로 하는 teamId/foul/timeouts가 없으므로 여기서 채워 정규화한다.
+   teamId는 팀명으로 역조회하며, TEAMS에 없는 팀(종로 샤크스 등)은 null → 로스터가 빈 상태로 표시된다. */
+var currentGameId = null;
+function teamIdByName(name){
+  var t = TEAMS.find(function(x){ return x.name === name; });
+  return t ? t.id : null;
+}
+function normalizeGameForConsole(g){
+  if(!g) return null;
+  var ended = (g.status === 'end' || g.status === 'fix');
+  function side(s){
+    return { teamId: teamIdByName(s.name), name:s.name, color:s.color,
+             score: s.score == null ? 0 : s.score, foul:0, timeouts:3 };
+  }
+  return {
+    id:g.id, court:g.court, label:g.label,
+    q: ended ? 4 : 1,
+    clockMin: ended ? '00' : '10', clockSec:'00',
+    home: side(g.home), away: side(g.away)
+  };
+}
 function loadGame(gameId){
   var g = LIVE_GAMES.find(function(x){ return x.id === gameId; });
+  if(!g){
+    g = normalizeGameForConsole(allGameItems().find(function(x){ return x.id === gameId; }));
+  }
   if(!g) return;
+  currentGameId = g.id;
   matchEnded = false; matchConfirmed = false; // 다른 경기로 전환하면 검수 상태도 해당 경기 기준으로 초기화
   MATCH.court = g.court + '코트 · ' + g.label;
   MATCH.vs = g.home.name + ' vs ' + g.away.name;
