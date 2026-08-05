@@ -99,8 +99,9 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 .nav-collapsed .nav-toggle svg{transform:rotate(180deg)}
 /* 현재 대회 스위처 — GNB 맨 위, 프로필보다 먼저. 모든 페이지에서 항상 보여야 하는 맥락이라
    대시보드 안에만 있던 걸 여기로 옮겼다(대시보드를 벗어나면 지금 어떤 대회를 보고 있는지 알 길이 없었음) */
+/* 라운드 값은 GNB의 다른 버튼(.nitem 23px, .profile 28px)과 같은 알약 형태로 맞춘다 — 여기만 박스형이면 튄다 */
 .tourSwitch{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;margin-bottom:6px;
-  border-radius:16px;border:none;background:transparent;cursor:pointer;font-family:var(--font);text-align:left}
+  border-radius:26px;border:none;background:transparent;cursor:pointer;font-family:var(--font);text-align:left}
 .tourSwitch:hover{background:var(--surface-variant)}
 .tourSwitch .ts-logo{width:36px;height:36px;border-radius:50%;background:var(--mono-fill);display:flex;align-items:center;justify-content:center;flex:none}
 .tourSwitch .ts-info{min-width:0;flex:1}
@@ -111,14 +112,18 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 .nav-collapsed .tourSwitch .ts-info,.nav-collapsed .tourSwitch .chev{display:none}
 .tourSwitchWrap{position:relative;width:100%;margin-bottom:6px}
 .tourSwitchWrap .tourSwitch{margin-bottom:0}
-.tourSwitchWrap:hover .tourSwitch,.tourSwitchWrap.open .tourSwitch{background:var(--surface-variant)}
+/* 호버 하이라이트는 버튼 자신(.tourSwitch:hover)에만 건다 — wrap에 걸면 드롭다운 위에 마우스가 있을 때도
+   버튼이 계속 하이라이트돼서 다른 GNB 버튼들과 반응 범위가 달라진다 */
+.tourSwitchWrap.open .tourSwitch{background:var(--surface-variant)}
 .tourSwitchWrap.open .chev{transform:rotate(180deg)}
 /* 목록 폭이 사이드바보다 넓어야 대회명+기간+액션 버튼이 여유 있게 들어가서, 프로필 드롭다운(.pmenu)처럼
    사이드바 경계를 넘어 본문 위로 겹쳐 뜨게 한다(.nav는 이 버튼 영역엔 overflow:hidden을 걸지 않음) */
 .tourMenu{position:absolute;top:calc(100% + 4px);left:8px;width:300px;background:var(--surface);border-radius:16px;
   box-shadow:var(--e3);border:1px solid var(--outline-variant);padding:8px;z-index:50;visibility:hidden;opacity:0;
   transform:translateY(4px);transition:.14s;max-height:70vh;overflow-y:auto}
-.tourSwitchWrap:hover .tourMenu,.tourSwitchWrap.open .tourMenu{visibility:visible;opacity:1;transform:translateY(0)}
+/* 클릭으로만 연다 — 호버로도 열리게 하면 항목을 선택해 closeTourMenu()가 실행돼도
+   마우스가 아직 위에 있는 동안 호버 규칙이 계속 열어둬서 메뉴가 안 닫힌다 */
+.tourSwitchWrap.open .tourMenu{visibility:visible;opacity:1;transform:translateY(0)}
 .tm-row{display:flex;align-items:center;gap:6px;border-radius:12px;padding:4px}
 .tm-row:hover{background:var(--surface-variant)}
 .tm-row.active{background:var(--primary-container)}
@@ -3852,12 +3857,21 @@ function syncTourSwitchDisplay(){
   if(subEl) subEl.textContent = t.status+' · '+t.period;
 }
 // 드롭다운에서 '선택'만 운영 중인 대회를 실제로 바꾼다 — 대회 관리 화면과는 무관(그건 VIEWING_TOURNAMENT_ID 소관)
+// 대회를 바꿔도 보고 있던 페이지는 그대로 둔다(이동 없음) — 대신 그 페이지를 새 대회 기준으로 다시 그린다.
+// record/log/player처럼 특정 경기·선수를 열어둔 상세 화면은 다시 그리면 열어둔 대상이 초기화되므로 건드리지 않는다.
+var TOUR_SCOPED_PAGES = ['dashboard','team','tournament','games','review','stats','tsettings','tourlist'];
 function switchTournament(id){
   if(id === CURRENT_TOURNAMENT_ID) return;
   CURRENT_TOURNAMENT_ID = id;
   syncTourSwitchDisplay();
   renderTourMenu();
-  if(document.getElementById('page-tourlist').classList.contains('show')) renderTourListPage();
+  // 일정·대진 페이지 제목은 저장 시에만 갱신돼서, 대회를 바꿔도 이전 대회명이 남아 있었다
+  var tn = document.getElementById('tourName');
+  if(tn) tn.textContent = settingsForTournament(id).name;
+  var current = TOUR_SCOPED_PAGES.find(function(p){
+    return document.getElementById('page-'+p).classList.contains('show');
+  });
+  if(current) showPage(current);
 }
 // 설정 화면 진입 — 운영 중인 대회를 바꾸지 않고 그 대회의 정보만 보여준다(과거 대회 조회 포함)
 function viewTournamentSettings(id){
