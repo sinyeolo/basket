@@ -265,8 +265,11 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
   .app{grid-template-columns:1fr}
   .mobile-topbar{display:flex}
   .nav-toggle{display:none} /* 데스크톱 전용 접기 버튼 — 모바일은 햄버거로 대체 */
-  .nav{position:fixed;top:0;left:0;height:100vh;width:272px;z-index:100;
-    transform:translateX(-100%);transition:transform .2s ease;box-shadow:var(--e3)}
+  /* 햄버거가 상단바 오른쪽 끝에 있으므로 드로어도 오른쪽에서 나온다 — 버튼과 패널이 같은 쪽이라
+     여는 동작과 나타나는 위치가 일치한다. 경계선도 오른쪽 테두리 대신 왼쪽으로 옮긴다. */
+  .nav{position:fixed;top:0;right:0;left:auto;height:100vh;width:272px;z-index:100;
+    border-right:none;border-left:1px solid var(--outline-variant);
+    transform:translateX(100%);transition:transform .2s ease;box-shadow:var(--e3)}
   .app.mobile-nav-open .nav{transform:translateX(0)}
   .nav-backdrop{display:block;position:fixed;inset:0;background:rgba(20,18,24,.45);z-index:90;
     opacity:0;pointer-events:none;transition:opacity .2s}
