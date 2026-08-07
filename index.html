@@ -59,6 +59,10 @@
   --e3:0 4px 10px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);
   --font:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
   --font-digital:'DSEG7 Classic',ui-monospace,monospace;
+  /* 점수 표기 전용 — 레퍼런스(Flashscore)의 FS_Numbers는 자체 라이선스 폰트라 배포본에 임베드할 수 없다.
+     로컬에 설치돼 있으면 그대로 쓰고, 없으면 본문 폰트로 떨어지되 tabular-nums로 자릿수를 고정해
+     스코어가 바뀔 때 숫자가 흔들리지 않게 한다. 폰트 파일을 정식 확보하면 이 변수만 교체하면 된다. */
+  --font-score:'FS_Numbers','FSNumbers',var(--font);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{background:var(--surface-container);color:var(--on-surface);font-family:var(--font);-webkit-font-smoothing:antialiased;letter-spacing:-.01em;font-size:14px}
@@ -339,7 +343,9 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* card-note = 클릭되지 않는 설명 텍스트. card-action과 똑같이 생기면 사용자가 눌러보게 되므로 커서/hover 없이 구분 */
 .card-note{color:var(--on-surface-variant);font-size:13px;font-weight:500}
 .recent h3 .card-action{margin-left:auto}
-.card-body{padding:4px 12px 14px}
+/* 위 4 / 아래 14로 어긋나 있던 걸 대칭으로 맞춤 — 카드 헤더를 카드 밖(.sec-title)으로 뺀 뒤로는
+   card-body가 카드의 유일한 자식이라 위가 눌려 보였다 */
+.card-body{padding:6px 12px}
 .row{display:flex;align-items:center;gap:14px;padding:13px 10px;border-radius:12px;transition:.12s;text-decoration:none;color:inherit;width:100%;border:none;background:transparent;font-family:var(--font);text-align:left}
 /* row-click = 실제로 클릭 가능한 행에만 부여(포인터 커서·hover). 일정처럼 클릭되지 않는 행에는 붙이지 않음 */
 .row-click{cursor:pointer}
@@ -414,7 +420,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* 100점 이상 3자리 스코어에서도 좌우 폭이 흔들리지 않도록 최소 폭 확보 */
 .tscore{min-width:3ch}
 .tname .dot{width:14px;height:14px;border-radius:50%;flex:none}
-.tscore{font-size:60px;font-weight:800;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.tscore{font-family:var(--font-score);font-size:60px;font-weight:800;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 .tfoul{font-size:12px;color:var(--on-surface-variant);font-weight:500}
 .center{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 40px}
 /* 쿼터 상태·시계는 '상태 표시'이지 액션이 아니므로 포인트 컬러를 쓰지 않음 */
@@ -702,18 +708,36 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .dayhead .d1{font-size:14.5px;font-weight:800;letter-spacing:-.02em}
 .dayhead .d2{font-size:12.5px;color:var(--on-surface-variant);font-weight:500}
 .dayhead .n{margin-left:auto;font-size:12.5px;color:var(--on-surface-variant);font-weight:600}
-.grow{display:grid;grid-template-columns:56px 1fr auto auto;align-items:center;gap:14px;padding:14px 18px;
+/* 경기 행 — Flashscore 배치 참고: [상태] [팀 2줄] [점수 2줄] [쿼터별] [액션].
+   상태를 맨 앞에 두면 목록을 훑을 때 "지금 뭘 봐야 하는지"가 먼저 읽힌다.
+   양 팀을 세로로 쌓으면 팀명 길이와 무관하게 점수 열이 정렬된다. */
+.grow{display:grid;grid-template-columns:62px minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:12px 18px;
   width:100%;border:none;background:transparent;font-family:var(--font);text-align:left;cursor:pointer;transition:.12s}
 .grow+.grow{border-top:1px solid var(--outline-variant)}
 .grow:hover{background:var(--surface-variant)}
-.grow .ct{width:44px;height:44px;border-radius:13px;background:var(--surface-variant);display:flex;flex-direction:column;
-  align-items:center;justify-content:center;font-weight:800;font-size:14px}
-.grow .ct small{font-size:10px;font-weight:500;color:var(--on-surface-variant)}
-.grow:hover .ct{background:var(--mono-fill)}
-.gmatch{display:flex;align-items:center;gap:12px;min-width:0;flex-wrap:wrap}
-.gteam{display:flex;align-items:center;gap:7px;font-weight:700;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
-.gteam .dot{width:9px;height:9px;border-radius:50%;flex:none}
-.gscore{font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+/* 진행 중 경기는 왼쪽 브랜드컬러 띠로 목록에서 즉시 구분된다 */
+.grow.is-live{box-shadow:inset 3px 0 0 var(--primary)}
+.gstat{display:flex;flex-direction:column;gap:2px;min-width:0}
+.gstat .gs-t{font-family:var(--font-score);font-size:13px;font-weight:700;color:var(--on-surface-variant);
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.gstat .gs-l{font-size:10.5px;font-weight:600;color:var(--on-surface-variant);white-space:nowrap}
+.grow.is-live .gstat .gs-t,.grow.is-live .gstat .gs-l{color:var(--primary)}
+.gsides{display:flex;flex-direction:column;gap:5px;min-width:0}
+.gside{display:grid;grid-template-columns:9px minmax(0,1fr) auto;align-items:center;gap:8px}
+.gside .dot{width:9px;height:9px;border-radius:50%}
+.gside .gt-nm{font-weight:700;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gside .gt-sc{font-family:var(--font-score);font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;
+  letter-spacing:-.02em;min-width:2.2ch;text-align:right}
+/* 진 팀은 이름·점수를 함께 흐리게 — 어느 쪽이 이겼는지 한눈에 */
+.gside.lose .gt-nm,.gside.lose .gt-sc{color:var(--on-surface-variant);font-weight:600}
+/* 쿼터별 점수 — 좁은 화면에선 접힌다(아래 미디어쿼리) */
+.gq{display:flex;gap:10px}
+.gq-col{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:22px}
+.gq-col em{font-style:normal;font-size:9.5px;font-weight:700;color:var(--on-surface-variant);letter-spacing:.02em}
+.gq-col b{font-family:var(--font-score);font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.35}
+.gq-col b.lose{color:var(--on-surface-variant);font-weight:500}
+.gq-col.now em{color:var(--primary)}
+.gscore{font-family:var(--font-score);font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 .gscore .sep{color:var(--on-surface-variant);font-weight:600;margin:0 5px}
 .glose{color:var(--on-surface-variant)}
 .gtime{font-size:13px;color:var(--on-surface-variant);font-weight:600;font-variant-numeric:tabular-nums}
@@ -742,10 +766,16 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   .review-bar{flex-direction:column;align-items:stretch}
   .review-bar .btn{width:100%}
 }
-@media (max-width:760px){
-  .grow{grid-template-columns:44px 1fr auto;gap:10px;padding:12px 14px}
+/* 좁은 폭에선 쿼터별 점수와 액션 버튼을 접고 [상태][팀·점수]만 남긴다 — 행 자체가 클릭 가능하므로
+   액션 버튼이 없어도 기능은 그대로다 */
+@media (max-width:900px){
+  .grow{grid-template-columns:58px minmax(0,1fr) auto;gap:10px;padding:12px 14px}
+  .gq{display:none}
+}
+@media (max-width:640px){
+  .grow{grid-template-columns:54px minmax(0,1fr)}
   .grow .gact{display:none}
-  .gteam{max-width:120px;font-size:13.5px}
+  .gside .gt-nm{font-size:13.5px}
 }
 
 /* ---------- 선수 상세 ----------
@@ -3102,6 +3132,50 @@ function renderGameTabs(){
   document.getElementById('gamesSub').textContent =
     ALL_GAMES.length + '일 · 총 ' + items.length + '경기 · 진행 중 ' + n('live') + ' · 검수 대기 ' + n('end');
 }
+/* 쿼터별 점수 — 실제 쿼터 기록이 아직 없어서 총점을 쿼터 수만큼 그럴듯하게 나눈 값이다(splitScore).
+   GameEvent 파이프라인이 붙으면 쿼터별 실측으로 교체된다. */
+function gameQuarters(g){
+  if(g.home.score == null) return null;              // 예정 경기는 쿼터 점수 없음
+  var live = g.liveId ? LIVE_GAMES.find(function(x){ return x.id === g.liveId; }) : null;
+  var q = live ? live.q : 4;
+  return { q:q, home:splitScore(g.home.score, q), away:splitScore(g.away.score, q), live:!!live };
+}
+/* 경기 행 1개 — 경기 목록·예선 일정이 공유한다(예전엔 같은 마크업이 두 벌 있었다).
+   배치는 Flashscore 참고: 상태를 맨 앞에 둬서 목록을 훑을 때 먼저 읽히게 하고,
+   양 팀을 세로로 쌓아 팀명 길이와 무관하게 점수 열이 정렬되게 한다. */
+function gameRowHtml(g){
+  var m = STATUS_META[g.status];
+  var isLive = g.status === 'live';
+  var scored = g.home.score != null;
+  var hw = scored && g.home.score > g.away.score;
+  var aw = scored && g.away.score > g.home.score;
+  function side(s, otherWon){
+    return '<span class="gside'+(otherWon ? ' lose' : '')+'">'+
+      '<i class="dot" style="background:'+s.color+'"></i>'+
+      '<span class="gt-nm" title="'+s.name+'">'+s.name+'</span>'+
+      '<span class="gt-sc">'+(scored ? s.score : '–')+'</span></span>';
+  }
+  var qs = gameQuarters(g), quarters = '';
+  if(qs){
+    var cols = '';
+    for(var i=0; i<qs.q; i++){
+      var isNow = qs.live && i === qs.q - 1;
+      cols += '<span class="gq-col'+(isNow?' now':'')+'"><em>'+(i+1)+'Q</em>'+
+        '<b'+(aw?' class="lose"':'')+'>'+qs.home[i]+'</b>'+
+        '<b'+(hw?' class="lose"':'')+'>'+qs.away[i]+'</b></span>';
+    }
+    quarters = '<span class="gq" aria-hidden="true">'+cols+'</span>';
+  }
+  var label = isLive ? '진행 중' : m.label;
+  return '<button type="button" class="grow'+(isLive?' is-live':'')+'" data-goto="'+g.id+'"'+
+      ' aria-label="'+g.court+'코트 '+g.home.name+' '+(scored?g.home.score:'')+' 대 '+g.away.name+' '+(scored?g.away.score:'')+', '+label+'">'+
+    '<span class="gstat"><span class="gs-t">'+(isLive ? g.clock : g.time)+'</span>'+
+      '<span class="gs-l">'+g.court+'코트 · '+label+'</span></span>'+
+    '<span class="gsides">'+side(g.home, aw)+side(g.away, hw)+'</span>'+
+    quarters+
+    '<span class="gact '+m.btnCls+'">'+m.act+icon('arrowRight','ic ic-sm')+'</span>'+
+  '</button>';
+}
 function renderGameList(){
   var root = document.getElementById('gameList');
   var html = '';
@@ -3113,23 +3187,7 @@ function renderGameList(){
       '<span class="d1">'+md+' ('+d.day+')</span><span class="d2">'+d.venue+'</span>'+
       '<span class="n">'+items.length+'경기</span></div>';
     html += items.map(function(g){
-      var m = STATUS_META[g.status];
-      var scored = g.home.score != null;
-      var hw = scored && g.home.score > g.away.score, aw = scored && g.away.score > g.home.score;
-      var mid = scored
-        ? '<span class="gscore"><span class="'+(hw?'':'glose')+'">'+g.home.score+'</span>'+
-          '<span class="sep">:</span><span class="'+(aw?'':'glose')+'">'+g.away.score+'</span></span>'
-        : '<span class="gtime">'+g.time+'</span>';
-      return '<button type="button" class="grow" data-goto="'+g.id+'">'+
-        '<span class="ct">'+g.court+'<small>코트</small></span>'+
-        '<span class="gmatch">'+
-          '<span class="gteam" title="'+g.home.name+'"><i class="dot" style="background:'+g.home.color+'"></i>'+g.home.name+'</span>'+
-          mid+
-          '<span class="gteam" title="'+g.away.name+'">'+g.away.name+'<i class="dot" style="background:'+g.away.color+'"></i></span>'+
-        '</span>'+
-        '<span class="st '+m.cls+'">'+(g.status==='live' ? g.clock : m.label)+'</span>'+
-        '<span class="gact '+m.btnCls+'">'+m.act+icon('arrowRight','ic ic-sm')+'</span>'+
-      '</button>';
+      return gameRowHtml(g);
     }).join('');
     html += '</div>';
   });
@@ -3679,23 +3737,7 @@ function renderTourSchedule(){
       '<span class="d1">'+md+' ('+d.day+')</span><span class="d2">'+d.venue+'</span>'+
       '<span class="n">'+items.length+'경기</span></div>';
     html += items.map(function(g){
-      var m = STATUS_META[g.status];
-      var scored = g.home.score != null;
-      var hw = scored && g.home.score > g.away.score, aw = scored && g.away.score > g.home.score;
-      var mid = scored
-        ? '<span class="gscore"><span class="'+(hw?'':'glose')+'">'+g.home.score+'</span>'+
-          '<span class="sep">:</span><span class="'+(aw?'':'glose')+'">'+g.away.score+'</span></span>'
-        : '<span class="gtime">'+g.time+'</span>';
-      return '<button type="button" class="grow" data-goto="'+g.id+'">'+
-        '<span class="ct">'+g.court+'<small>코트</small></span>'+
-        '<span class="gmatch">'+
-          '<span class="gteam" title="'+g.home.name+'"><i class="dot" style="background:'+g.home.color+'"></i>'+g.home.name+'</span>'+
-          mid+
-          '<span class="gteam" title="'+g.away.name+'">'+g.away.name+'<i class="dot" style="background:'+g.away.color+'"></i></span>'+
-        '</span>'+
-        '<span class="st '+m.cls+'">'+(g.status==='live' ? g.clock : m.label)+'</span>'+
-        '<span class="gact '+m.btnCls+'">'+m.act+icon('arrowRight','ic ic-sm')+'</span>'+
-      '</button>';
+      return gameRowHtml(g);
     }).join('');
     html += '</div>';
   });
