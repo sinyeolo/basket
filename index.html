@@ -80,12 +80,33 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 .app.nav-collapsed{grid-template-columns:80px minmax(0,1fr)}
 /* ---- 폰 폭(≤640px): GNB를 고정 폭 오프캔버스 드로어로 전환 — 태블릿 구간(641~1024px)의 아이콘 레일과는 다른 패턴.
    드로어 안에서는 nav-collapsed의 축소 스타일을 다시 풀어 전체 라벨을 보여준다(공간이 충분하므로). ---- */
-.mobile-topbar{display:none;position:fixed;top:0;left:0;right:0;height:56px;background:var(--surface);
-  border-bottom:1px solid var(--outline-variant);align-items:center;gap:10px;padding:0 12px;z-index:70}
-.mobile-topbar .hamburger{width:36px;height:36px;border-radius:10px;flex:none;border:none;background:transparent;
-  display:flex;align-items:center;justify-content:center;color:var(--on-surface);cursor:pointer}
-.mobile-topbar .hamburger:hover{background:var(--surface-variant)}
-.mobile-topbar .mt-title{font-weight:800;font-size:16px;color:var(--on-surface);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* 폰 상단바 — 바(bar) 한 덩어리가 아니라, 배경 위에 떠 있는 알약(대회 전환)과 원형 버튼(메뉴)으로 나눈다.
+   막대 대신 요소가 떠 있는 형태라 콘텐츠 영역이 더 넓어 보이고, 대회명이 가장 먼저 읽힌다.
+   테두리 대신 아래로 옅은 그라데이션을 깔아 스크롤된 콘텐츠가 뒤로 지나가도 글자가 묻히지 않게 한다. */
+.mobile-topbar{display:none;position:fixed;top:0;left:0;right:0;height:64px;align-items:center;gap:10px;
+  padding:0 12px;z-index:70;pointer-events:none;
+  background:linear-gradient(var(--surface-container) 62%, transparent)}
+.mobile-topbar > *{pointer-events:auto}
+.mobile-topbar .flexspace{pointer-events:none}
+.mt-tourwrap{position:relative;min-width:0;display:flex}
+/* 알약 안에서 로고·대회명·화살표가 한 줄 — 데스크톱 .tourSwitch와 같은 구성, 폭만 줄인 형태 */
+.mt-tour{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%;height:44px;padding:0 12px 0 6px;
+  border:none;border-radius:100px;background:var(--surface);box-shadow:var(--e2);cursor:pointer;
+  font-family:var(--font);text-align:left}
+.mt-tour:active{background:var(--surface-variant)}
+.mt-logo{width:32px;height:32px;border-radius:50%;background:var(--mono-fill);color:var(--mono-on);
+  display:flex;align-items:center;justify-content:center;flex:none}
+.mt-logo svg{width:19px;height:19px}
+.mt-name{font-weight:700;font-size:14.5px;color:var(--on-surface);min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mt-chev{color:var(--on-surface-variant);flex:none;transition:transform .15s}
+.mt-tourwrap.open .mt-chev{transform:rotate(180deg)}
+.mobile-topbar .hamburger{width:44px;height:44px;border-radius:50%;flex:none;border:none;background:var(--surface);
+  box-shadow:var(--e2);display:flex;align-items:center;justify-content:center;color:var(--on-surface);cursor:pointer}
+.mobile-topbar .hamburger:active{background:var(--surface-variant)}
+/* 상단바용 대회 목록 — 알약 아래에 붙는다(사이드바 쪽 .tourMenu는 left:8px 기준이라 여기선 재정의) */
+.mt-tourwrap .tourMenu{top:calc(100% + 6px);left:0;width:min(320px, calc(100vw - 24px))}
+.mt-tourwrap.open .tourMenu{visibility:visible;opacity:1;transform:translateY(0)}
 .nav-backdrop{display:none}
 
 /* ============ Left nav (shared M3 drawer, single instance) ============ */
@@ -1161,7 +1182,7 @@ body.modal-open{overflow:hidden}
    여기서 한 번에 고치면 이 컴포넌트를 쓰는 모든 페이지에 그대로 적용된다. 각 컴포넌트의 기본 규칙보다 소스 순서상
    뒤에 있어야 우선순위를 이긴다(동일 특이도라 나중 규칙이 이김) ---- */
 @media (max-width:640px){
-  .main{padding-top:70px} /* 고정 모바일 상단바(56px) 높이만큼 — 이 규칙은 .main의 기본 padding 단축 속성보다 소스 순서상 뒤에 있어야 한다 */
+  .main{padding-top:74px} /* 고정 모바일 상단바(64px) 높이만큼 — 이 규칙은 .main의 기본 padding 단축 속성보다 소스 순서상 뒤에 있어야 한다 */
   .page-head{flex-direction:column;align-items:flex-start;gap:12px}
   .page-head h1{font-size:21px}
   .page-head > div:last-child{flex-wrap:wrap;width:100%}
@@ -1202,10 +1223,23 @@ body.modal-open{overflow:hidden}
 
   <!-- 폰 폭 전용 상단 바 — 햄버거로 GNB 드로어를 연다(≤640px에서만 보임) -->
   <div class="mobile-topbar">
+    <!-- 대회 전환 — 태블릿·데스크톱 GNB 상단의 .tourSwitch와 같은 역할·같은 목록을 쓴다.
+         드로어(.nav)는 오프캔버스 transform 상태라 그 안의 드롭다운은 상단바에 붙일 수 없어서,
+         메뉴 컨테이너만 여기 따로 두고 렌더는 renderTourMenu()가 양쪽을 동시에 채운다. -->
+    <div class="mt-tourwrap" id="mtTourWrap">
+      <button type="button" class="mt-tour" id="mobileTourBtn" aria-haspopup="true" aria-expanded="false">
+        <span class="mt-logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3v18M5.5 5.5c3 2.5 3 10.5 0 13M18.5 5.5c-3 2.5-3 10.5 0 13"/></svg></span>
+        <span class="mt-name" id="mtTourName">2026 여름 3&times;3 리그</span>
+        <svg class="ic ic-sm mt-chev" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="tourMenu" role="menu" aria-label="대회 전환">
+        <div class="tourMenu-list" id="mtTourMenuList"></div>
+      </div>
+    </div>
+    <span class="flexspace"></span>
     <button type="button" class="hamburger" id="mobileNavToggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mainNav">
       <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
-    <span class="mt-title">BISKET</span>
   </div>
   <div class="nav-backdrop" id="navBackdrop"></div>
 
@@ -3908,6 +3942,8 @@ function syncTourSwitchDisplay(){
   var nameEl = document.getElementById('tsSwitchName'), subEl = document.getElementById('tsSwitchSub');
   if(nameEl) nameEl.textContent = t.name;
   if(subEl) subEl.textContent = t.status+' · '+t.period;
+  var mtName = document.getElementById('mtTourName'); // 폰 상단바에도 같은 대회명을 반영
+  if(mtName) mtName.textContent = t.name;
 }
 // 드롭다운에서 '선택'만 운영 중인 대회를 실제로 바꾼다 — 대회 관리 화면과는 무관(그건 VIEWING_TOURNAMENT_ID 소관)
 // 대회를 바꿔도 보고 있던 페이지는 그대로 둔다(이동 없음) — 대신 그 페이지를 새 대회 기준으로 다시 그린다.
@@ -4008,22 +4044,37 @@ function renderTourMenu(){
   if(TOURNAMENTS.length > TOUR_LIST_CAP){
     html += '<a class="tm-more" href="#tourlist" data-page="tourlist">전체 대회 보기 ('+TOURNAMENTS.length+')'+icon('arrowRight','ic ic-sm')+'</a>';
   }
-  var list = document.getElementById('tourMenuList');
-  list.innerHTML = html;
-  wireTourRowEvents(list, 'dropdown');
+  // 사이드바(데스크톱·태블릿)와 폰 상단바가 같은 목록을 쓴다 — 한쪽만 갱신되면 두 화면이 어긋난다
+  ['tourMenuList','mtTourMenuList'].forEach(function(id){
+    var list = document.getElementById(id);
+    if(!list) return;
+    list.innerHTML = html;
+    wireTourRowEvents(list, 'dropdown');
+  });
 }
+// 사이드바·폰 상단바 두 진입점을 함께 닫는다
+var TOUR_SWITCHERS = [
+  { wrap:'tourSwitchWrap', btn:'tourSwitchBtn' },
+  { wrap:'mtTourWrap',     btn:'mobileTourBtn' }
+];
 function closeTourMenu(){
-  var wrap = document.getElementById('tourSwitchWrap');
-  wrap.classList.remove('open');
-  document.getElementById('tourSwitchBtn').setAttribute('aria-expanded','false');
+  TOUR_SWITCHERS.forEach(function(s){
+    var w = document.getElementById(s.wrap), b = document.getElementById(s.btn);
+    if(w) w.classList.remove('open');
+    if(b) b.setAttribute('aria-expanded','false');
+  });
 }
 function initTourSwitcher(){
-  var wrap = document.getElementById('tourSwitchWrap');
-  var btn = document.getElementById('tourSwitchBtn');
-  btn.addEventListener('click', function(e){
-    e.stopPropagation();
-    var open = wrap.classList.toggle('open');
-    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  TOUR_SWITCHERS.forEach(function(s){
+    var wrap = document.getElementById(s.wrap), btn = document.getElementById(s.btn);
+    if(!wrap || !btn) return;
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var willOpen = !wrap.classList.contains('open');
+      closeTourMenu();                 // 다른 쪽이 열려 있으면 같이 닫는다
+      wrap.classList.toggle('open', willOpen);
+      btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    });
   });
   document.addEventListener('click', closeTourMenu);
   document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeTourMenu(); });
