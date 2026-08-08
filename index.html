@@ -172,11 +172,20 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 .tm-sub{display:block;font-size:11px;color:var(--on-surface-variant);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tm-status-badge{padding:1px 5px;font-size:8px;font-weight:700;margin-right:4px;vertical-align:1px}
 .tm-status-badge.live::before{width:4px;height:4px;margin-right:3px}
-.tm-reorder{display:flex;flex-direction:column;width:20px;flex:none;border-radius:7px;overflow:hidden;
+/* overflow:hidden으로 자식 모서리를 잘라내면 아래 ::after 히트 영역까지 같이 잘린다.
+   대신 위/아래 버튼에 각각 라운드를 줘서 같은 모양을 만든다 */
+.tm-reorder{display:flex;flex-direction:column;width:20px;flex:none;border-radius:7px;
   box-shadow:inset 0 0 0 1px var(--outline-variant)}
-.tm-ro-btn{width:100%;height:15px;display:flex;align-items:center;justify-content:center;border:none;
+.tm-ro-btn{position:relative;width:100%;height:15px;display:flex;align-items:center;justify-content:center;border:none;
   background:var(--surface);color:var(--on-surface-variant);cursor:pointer;padding:0}
-.tm-ro-btn.up{border-bottom:1px solid var(--outline-variant)}
+/* 20×15px라 터치로 거의 못 눌렀다. 위/아래 버튼이 붙어 있어 각각 44px로 키우면 행이 두 배로 높아지므로,
+   시각 크기는 두고 히트 영역만 바깥쪽으로 늘린다(서로 겹치지 않게 up은 위로, down은 아래로만). */
+.tm-ro-btn::after{content:"";position:absolute;left:-12px;right:-12px}
+.tm-ro-btn.up::after{top:-12px;bottom:0}
+.tm-ro-btn.down::after{top:0;bottom:-12px}
+.tm-ro-btn:disabled::after{display:none}
+.tm-ro-btn.up{border-bottom:1px solid var(--outline-variant);border-radius:7px 7px 0 0}
+.tm-ro-btn.down{border-radius:0 0 7px 7px}
 .tm-ro-btn:hover:not(:disabled){background:var(--mono-fill);color:var(--on-surface)}
 .tm-ro-btn:disabled{opacity:.3;cursor:not-allowed}
 .tm-ro-btn svg{width:11px;height:11px}
@@ -362,7 +371,9 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* 섹션 제목은 페이지를 막론하고 동일 규격 (card-title / sec-title / cc > h3) */
 .card-title{font-size:16px;font-weight:700;letter-spacing:-.02em}
 .card-title .cnt{color:var(--on-surface-variant);font-weight:600;font-size:14px;margin-left:6px}
-.card-action{color:var(--on-surface-variant);font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;font-family:var(--font);text-decoration:none}
+.card-action{position:relative;color:var(--on-surface-variant);font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;font-family:var(--font);text-decoration:none}
+/* 글자 높이(16px)가 곧 탭 영역이라 터치로 누르기 어려웠다. 레이아웃은 그대로 두고 히트 영역만 넓힌다 */
+.card-action::after{content:"";position:absolute;inset:-14px -8px}
 .card-action:hover{color:var(--on-surface)}
 /* card-note = 클릭되지 않는 설명 텍스트. card-action과 똑같이 생기면 사용자가 눌러보게 되므로 커서/hover 없이 구분 */
 .card-note{color:var(--on-surface-variant);font-size:13px;font-weight:500}
@@ -382,6 +393,10 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .match{flex:1;display:flex;align-items:center;gap:12px;min-width:0}
 /* 긴 팀명 대비 — nowrap만 두면 레이아웃을 밀어내므로 말줄임 처리 (title 속성으로 전체 이름 확인 가능) */
 .team{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+/* '오늘 일정' 행은 팀 이름 하나가 아니라 "남자 일반부 8강 · A팀 vs B팀" 한 줄 요약이 들어간다.
+   .team의 max-width(데스크톱 220px / 폰 110px)는 팀명 하나 기준이라, 옆에 700px 넘게 빈 공간이 있는데도
+   문장이 잘렸다. 여기서는 폭 제한을 풀고 좁은 화면에서는 두 줄로 접히게 한다 */
+#scheduleList .team{display:block;max-width:none;white-space:normal;overflow:visible;word-break:keep-all}
 .dot{width:10px;height:10px;border-radius:50%;flex:none}
 .score{display:flex;align-items:center;gap:7px;font-variant-numeric:tabular-nums}
 .score b{font-size:19px;font-weight:700}
@@ -439,7 +454,9 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .qcell.now .ql{color:var(--on-surface)}
 .qcell.upcoming .qv{color:var(--outline)}
 @media (max-width:900px){.qcell{min-width:0;padding:6px;gap:1px}.qcell .qv{font-size:13px}.qstrip{padding:6px 8px}}
-.tside{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
+/* min-width:0 없으면 1fr 트랙이 팀명(.tname)의 min-content까지 부풀어 scoreboard 그리드가
+   카드 밖으로 밀려 나간다(폰 폭에서 원정팀 이름이 카드 오른쪽으로 잘려 나갔다) — 그리드 아이템의 흔한 함정 */
+.tside{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;min-width:0}
 .tname{display:flex;align-items:center;justify-content:center;gap:9px;font-weight:700;font-size:18px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 8px}
 /* 100점 이상 3자리 스코어에서도 좌우 폭이 흔들리지 않도록 최소 폭 확보 */
 .tscore{min-width:3ch}
@@ -448,15 +465,18 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .tfoul{font-size:12px;color:var(--on-surface-variant);font-weight:500}
 .center{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 40px}
 /* 쿼터 상태·시계는 '상태 표시'이지 액션이 아니므로 포인트 컬러를 쓰지 않음 */
-.qchip{background:var(--surface-variant);color:var(--on-surface-variant);font-weight:700;font-size:12px;padding:5px 13px;border-radius:var(--r-btn)}
+.qchip{background:var(--surface-variant);color:var(--on-surface-variant);font-weight:700;font-size:12px;padding:5px 13px;border-radius:var(--r-btn);white-space:nowrap}
 /* DSEG7은 자폭이 넓어 일반 폰트보다 작은 사이즈로 맞춥니다 */
-.clock{font-family:var(--font-digital);font-size:32px;font-weight:700;color:var(--on-surface-variant);letter-spacing:.01em;line-height:1.1}
+/* nowrap 필수 — .colon이 inline-block이라 줄바꿈 지점이 생기고, 그러면 scoreboard의 auto 트랙이
+   min-content("04" 폭)까지 줄어들어 폰 폭에서 시계가 "04 / 32" 두 줄로 쪼개졌다 */
+.clock{font-family:var(--font-digital);font-size:32px;font-weight:700;color:var(--on-surface-variant);letter-spacing:.01em;line-height:1.1;white-space:nowrap}
 .clock .colon{display:inline-block;animation:colon-blink 1s steps(1) infinite}
 @keyframes colon-blink{0%,49%{opacity:1}50%,100%{opacity:0}}
 .main3{display:grid;grid-template-columns:minmax(0,1fr) 470px minmax(0,1fr);gap:8px;align-items:start}
 @media (max-width:1180px){.main3{grid-template-columns:1fr 1fr}.console-center{grid-column:1 / -1;order:-1}}
 @media (max-width:900px){
-  .scoreboard{padding:14px 16px} .tscore{font-size:40px} .tname{font-size:15px} .center{padding:0 14px}
+  /* 시계 열 좌우 여백을 줄여 팀명 열에 폭을 돌려준다 — 14px일 땐 폰 폭에서 팀명이 말줄임됐다 */
+  .scoreboard{padding:14px 16px} .tscore{font-size:40px} .tname{font-size:15px;padding:0 2px} .center{padding:0 8px}
   .clock{font-size:22px} .qchip{font-size:11px;padding:4px 10px} .main3{grid-template-columns:1fr} .prow{padding:12px 10px}
 }
 .cc{background:var(--surface);border-radius:16px;padding:16px}
@@ -555,7 +575,9 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .rchip.deleted{opacity:.45;background:transparent;border:1px dashed var(--outline)}
 .rchip.deleted .tx{text-decoration:line-through}
 .rchip.deleted:hover{background:var(--surface-variant);opacity:.7}
-.rchip .del-tag{font-size:10px;font-weight:700;color:var(--on-surface-variant);border:1px solid var(--outline);border-radius:5px;padding:1px 5px}
+/* .rchip 하위로만 잡아둬서 전체 기록(.pbp-evt)에서는 태그 모양 없이 맨 텍스트로 나왔고,
+   폰 폭에서는 "삭 / 제 / 됨"처럼 한 자씩 줄바꿈됐다 — 스코프를 풀고 nowrap을 건다 */
+.del-tag{flex:none;font-size:10px;font-weight:700;color:var(--on-surface-variant);border:1px solid var(--outline);border-radius:5px;padding:1px 5px;white-space:nowrap}
 .toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
 @media (max-width:900px){.toolbar .flexspace{display:none}.toolbar .btn-primary{flex:1 1 100%;order:99}}
 /* 실행 취소는 '무엇이 취소되는지'를 함께 보여줘야 안심하고 누를 수 있음 */
@@ -600,12 +622,16 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
   background:var(--primary);color:#000;font-size:10.5px;font-weight:800;flex:none}
 /* 네이티브 <input type="checkbox">는 브라우저/OS마다 렌더링이 달라 체크 전후 모양이 미묘하게 어긋나고
    정렬도 어긋나서, 이 파일의 다른 커스텀 컨트롤(.chipsel, .sw)과 같은 방식으로 버튼 기반 M3 체크박스를 직접 그린다 */
-.check-row{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:var(--on-surface);font-weight:500;
+/* min-height:44px — 체크박스(18px)+라벨만으로는 탭 영역이 18px밖에 안 돼 접근성 최소 기준(44px)에 못 미쳤다.
+   박스와 글자는 그대로 세로 중앙에 놓이므로 보이는 모양은 바뀌지 않고 눌리는 범위만 넓어진다 */
+.check-row{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;font-size:14px;color:var(--on-surface);font-weight:500;
   border:none;background:transparent;padding:0;font-family:var(--font);text-align:left}
 .m3check{position:relative;width:18px;height:18px;flex:none;border-radius:6px;border:2px solid var(--outline);
   background:var(--surface);transition:background .12s,border-color .12s}
+/* 체크 표시는 --on-primary(#1a1200) — 채워진 배경이 --primary(#ff9100)라 흰 체크는 대비 2.26:1로
+   비텍스트 대비 기준(3:1)에 미달했다. 토큰 조합(primary + on-primary)을 그대로 쓰면 8.2:1 */
 .m3check::after{content:"";position:absolute;inset:0;margin:auto;width:12px;height:12px;opacity:0;transition:opacity .1s;
-  background:no-repeat center/12px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5 5L20 6.5'/%3E%3C/svg%3E")}
+  background:no-repeat center/12px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1200' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5 5L20 6.5'/%3E%3C/svg%3E")}
 .check-row[aria-checked="true"] .m3check{background:var(--primary);border-color:var(--primary)}
 .check-row[aria-checked="true"] .m3check::after{opacity:1}
 /* 체크박스 밑에 붙는 설명(.sub)은 체크박스가 아니라 라벨 텍스트와 왼쪽이 맞아야 함 — 체크박스 폭(18px)+gap(10px)만큼 들여쓴다 */
@@ -669,21 +695,26 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .field > label,.fieldrow > div > label{display:block;font-size:12px;font-weight:600;color:var(--on-surface-variant);margin-bottom:6px;padding-left:4px}
 /* 하단만 각진 M3 기본형은 전체가 라운드인 우리 UI와 어긋나서, 네 모서리를 모두 라운드로 통일.
    대신 하단 인디케이터(직선)를 없애고 포커스 링으로 상태를 표현합니다. */
-.field input,.field select{width:100%;height:52px;padding:0 16px;border:none;
+/* 선택자에 .fieldrow를 함께 두는 이유 — 대회 관리처럼 .field 없이 .fieldrow만 단독으로 쓰는 화면이 있는데,
+   라벨은 위 규칙(.fieldrow > div > label)에서 이미 처리해 두고 인풋만 빠져 있어서 시즌·대회 기간·경기 규칙
+   입력칸이 M3 필드가 아니라 브라우저 기본 인풋으로 렌더링됐다. :is()는 특이도가 인자 중 가장 높은 값(0-1-0)이라
+   기존 규칙과 우선순위가 동일하다 */
+:is(.field,.fieldrow) input,:is(.field,.fieldrow) select{width:100%;height:52px;padding:0 16px;border:none;
   border-radius:14px;background:var(--surface-variant);font-family:var(--font);font-size:15px;color:var(--on-surface);
   box-shadow:inset 0 0 0 1px var(--outline-variant);transition:box-shadow .12s,background .12s}
-.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6a72' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px;padding-right:42px}
-.field input:hover,.field select:hover{background-color:#ebe4ec}
-.field input:focus,.field select:focus{outline:none;background-color:#ebe4ec;box-shadow:inset 0 0 0 2px var(--on-surface)}
-.field input::placeholder{color:var(--on-surface-variant)}
+:is(.field,.fieldrow) select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6a72' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px;padding-right:42px}
+:is(.field,.fieldrow) input:hover,:is(.field,.fieldrow) select:hover{background-color:#ebe4ec}
+:is(.field,.fieldrow) input:focus,:is(.field,.fieldrow) select:focus{outline:none;background-color:#ebe4ec;box-shadow:inset 0 0 0 2px var(--on-surface)}
+:is(.field,.fieldrow) input::placeholder{color:var(--on-surface-variant)}
+:is(.field,.fieldrow) input:disabled,:is(.field,.fieldrow) select:disabled{color:var(--on-surface-variant);cursor:not-allowed}
 /* 입력 폼 공통 규칙 — 비어있을 땐 회색, 값이 채워지면(placeholder가 더 이상 안 보이거나, select면 빈 값이 아닌 옵션이 선택되면) 흰색으로
    (select의 화살표 아이콘은 background-image라 background 단축 속성으로 덮으면 사라졌다 슬라이드로 되돌아오는 버그가 생김 — 반드시 background-color만 사용) */
-.field input:not(:placeholder-shown),
-.field select:has(option:checked:not([value=""])){background-color:var(--surface)}
-.field input:not(:placeholder-shown):hover,
-.field select:has(option:checked:not([value=""])):hover{background-color:var(--surface-variant)}
-.field input:not(:placeholder-shown):focus,
-.field select:has(option:checked:not([value=""])):focus{background-color:var(--surface-variant);box-shadow:inset 0 0 0 2px var(--on-surface)}
+:is(.field,.fieldrow) input:not(:placeholder-shown),
+:is(.field,.fieldrow) select:has(option:checked:not([value=""])){background-color:var(--surface)}
+:is(.field,.fieldrow) input:not(:placeholder-shown):hover,
+:is(.field,.fieldrow) select:has(option:checked:not([value=""])):hover{background-color:var(--surface-variant)}
+:is(.field,.fieldrow) input:not(:placeholder-shown):focus,
+:is(.field,.fieldrow) select:has(option:checked:not([value=""])):focus{background-color:var(--surface-variant);box-shadow:inset 0 0 0 2px var(--on-surface)}
 .fieldrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .fieldrow > div{margin:0}
 /* 네이티브 number 스피너는 너무 작고 브라우저마다 달라서 숨기고, 같은 버튼 스타일(.numstep)로 직접 그린다 */
@@ -735,17 +766,25 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 경기 행 — Flashscore 배치 참고: [상태] [팀 2줄] [점수 2줄] [쿼터별] [액션].
    상태를 맨 앞에 두면 목록을 훑을 때 "지금 뭘 봐야 하는지"가 먼저 읽힌다.
    양 팀을 세로로 쌓으면 팀명 길이와 무관하게 점수 열이 정렬된다. */
-.grow{display:grid;grid-template-columns:62px minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:12px 18px;
+/* 쿼터 열(3번째)을 auto로 두면 쿼터 수(2Q/3Q/4Q)·예정 경기 여부에 따라 폭이 0~118px로 제각각이라
+   "점수 열이 정렬된다"는 의도와 달리 행마다 점수 위치가 최대 115px까지 어긋났다.
+   4쿼터 기준 폭(22px×4 + gap 10px×3 = 118px)으로 트랙을 고정하고, 연장 등으로 열이 늘면 그만큼만 넓어지게 한다 */
+.grow{display:grid;grid-template-columns:74px minmax(0,1fr) minmax(118px,auto) auto;align-items:center;gap:14px;padding:12px 18px;
   width:100%;border:none;background:transparent;font-family:var(--font);text-align:left;cursor:pointer;transition:.12s}
 .grow+.grow{border-top:1px solid var(--outline-variant)}
 .grow:hover{background:var(--surface-variant)}
 /* 진행 중 경기는 왼쪽 브랜드컬러 띠로 목록에서 즉시 구분된다 */
 .grow.is-live{box-shadow:inset 3px 0 0 var(--primary)}
 .gstat{display:flex;flex-direction:column;gap:2px;min-width:0}
+/* nowrap만 두고 overflow를 안 잡아서, "A코트 · 검수 대기"(72px)처럼 긴 라벨이 열 밖으로 흘러나와
+   옆 팀의 컬러 점과 겹쳤다(태블릿·폰 폭). 열 폭은 아래에서 74px로 맞추고 여기선 넘칠 때 말줄임 처리 */
 .gstat .gs-t{font-family:var(--font-score);font-size:13px;font-weight:700;color:var(--on-surface-variant);
-  font-variant-numeric:tabular-nums;white-space:nowrap}
-.gstat .gs-l{font-size:10.5px;font-weight:600;color:var(--on-surface-variant);white-space:nowrap}
-.grow.is-live .gstat .gs-t,.grow.is-live .gstat .gs-l{color:var(--primary)}
+  font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gstat .gs-l{font-size:10.5px;font-weight:600;color:var(--on-surface-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* 흰 배경 위 텍스트에 순수 --primary(#ff9100)를 쓰면 대비가 2.26:1로 WCAG AA(4.5:1)에 크게 못 미친다.
+   '진행중'을 브랜드컬러로 표시한다는 규칙은 유지하되, 다른 진행중 표시(.chip.live/.st-live)의 글자색과
+   같은 --on-primary-container(8.9:1)로 맞춘다 */
+.grow.is-live .gstat .gs-t,.grow.is-live .gstat .gs-l{color:var(--on-primary-container)}
 .gsides{display:flex;flex-direction:column;gap:5px;min-width:0}
 .gside{display:grid;grid-template-columns:9px minmax(0,1fr) auto;align-items:center;gap:8px}
 .gside .dot{width:9px;height:9px;border-radius:50%}
@@ -760,7 +799,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .gq-col em{font-style:normal;font-size:9.5px;font-weight:700;color:var(--on-surface-variant);letter-spacing:.02em}
 .gq-col b{font-family:var(--font-score);font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.35}
 .gq-col b.lose{color:var(--on-surface-variant);font-weight:500}
-.gq-col.now em{color:var(--primary)}
+.gq-col.now em{color:var(--on-primary-container)} /* 9.5px 텍스트 — --primary는 흰 배경 대비 2.26:1이라 사용 불가 */
 .gscore{font-family:var(--font-score);font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 .gscore .sep{color:var(--on-surface-variant);font-weight:600;margin:0 5px}
 .glose{color:var(--on-surface-variant)}
@@ -792,12 +831,14 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 }
 /* 좁은 폭에선 쿼터별 점수와 액션 버튼을 접고 [상태][팀·점수]만 남긴다 — 행 자체가 클릭 가능하므로
    액션 버튼이 없어도 기능은 그대로다 */
+/* 상태 열은 가장 긴 라벨("A코트 · 검수 대기" 72px)이 들어갈 74px로 고정 — 이전 값(58/54px)에서는
+   라벨이 열 밖으로 흘러 팀 컬러 점과 겹쳤다 */
 @media (max-width:900px){
-  .grow{grid-template-columns:58px minmax(0,1fr) auto;gap:10px;padding:12px 14px}
+  .grow{grid-template-columns:74px minmax(0,1fr) auto;gap:10px;padding:12px 14px}
   .gq{display:none}
 }
 @media (max-width:640px){
-  .grow{grid-template-columns:54px minmax(0,1fr)}
+  .grow{grid-template-columns:74px minmax(0,1fr)}
   .grow .gact{display:none}
   .gside .gt-nm{font-size:13.5px}
 }
@@ -1080,10 +1121,22 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .glog .bar{width:3px;height:26px;border-radius:2px;flex:none}
 .glog .bar.w{background:var(--blue)}
 .glog .bar.l{background:var(--outline)}
-.glog .dt2{font-weight:700;font-size:13.5px}
-.glog .opp{color:var(--on-surface-variant);font-size:13px;margin-top:2px}
+/* 두 줄(날짜 / 승패·상대팀)로 쌓을 의도인데 마크업이 <span>(인라인)이라 margin-top이 먹지 않고
+   "2026.07.23승 · vs 인천 파이터스"처럼 한 줄로 붙어 나왔다 */
+.glog .dt2{display:block;font-weight:700;font-size:13.5px}
+.glog .opp{display:block;color:var(--on-surface-variant);font-size:13px;margin-top:2px}
 .glog .pts{font-weight:800}
 .glog .pf4{color:var(--red);font-weight:700}
+
+/* 대회 관리 · 운영진 권한 목록 — .recRow/.op에 대응하는 규칙이 아예 없어서 이름과 역할이
+   "김신열대회 관리자"처럼 붙어 나왔다. 역할은 팀 리스트의 소유자 태그(.tag-owner)와 같은 회색 태그로 분리 */
+.recRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 2px}
+.recRow .op{font-weight:600;font-size:14px;color:var(--on-surface);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.recRow b{flex:none;font-size:11px;font-weight:700;background:var(--surface-variant);color:var(--on-surface-variant);border-radius:6px;padding:3px 8px}
+
+/* 참가 설정 타일은 3개뿐인데 .stiles 기본값이 5열이라 오른쪽 40%가 빈 채로 남았다.
+   폰 폭(≤640)의 2열 규칙은 그대로 살려야 해서 min-width로 범위를 한정한다(id 선택자가 더 강하므로) */
+@media (min-width:641px){ #tsParticipationTiles{grid-template-columns:repeat(3,minmax(0,1fr))} }
 
 /* 삭제는 카드 없이 평평하게 — 파괴적 액션이지만 자주 쓰지 않으므로 시선을 뺏지 않음 */
 .danger-zone{padding:10px 4px 4px;display:flex;align-items:center;justify-content:flex-end;gap:16px;flex-wrap:wrap}
@@ -1105,9 +1158,13 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* ---------- 하위 선택 다이얼로그 (리바운드 공격/수비 등) ---------- */
 /* 다이얼로그가 열려 있는 동안 뒤 페이지 스크롤 잠금 — 배경이 같이 움직이면 어느 층을 보고 있는지 혼란 */
 body.modal-open{overflow:hidden}
-.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.32);opacity:0;visibility:hidden;transition:opacity .15s}
+/* align-items:center + overflow:auto 조합은 시트가 뷰포트보다 길 때 위쪽이 잘려 스크롤로도 못 올라가는
+   널리 알려진 flex 함정이다(폰 폭 '선수 등록'에서 제목과 취소 버튼에 아예 접근할 수 없었다).
+   컨테이너는 flex-start로 두고 시트에 margin:auto를 줘서 — 공간이 남으면 상하 중앙, 모자라면 위에서부터
+   쌓이고 모달 레이어가 스크롤되게 한다 */
+.modal{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;overscroll-behavior:contain;background:rgba(0,0,0,.32);opacity:0;visibility:hidden;transition:opacity .15s}
 .modal.open{opacity:1;visibility:visible}
-.sheet{width:100%;max-width:380px;background:var(--surface);border-radius:20px;box-shadow:var(--e3);padding:20px;transform:translateY(8px) scale(.98);transition:transform .16s ease}
+.sheet{width:100%;max-width:380px;margin:auto;background:var(--surface);border-radius:20px;box-shadow:var(--e3);padding:20px;transform:translateY(8px) scale(.98);transition:transform .16s ease}
 .modal.open .sheet{transform:none}
 .sheet h4{font-size:17px;font-weight:700;letter-spacing:-.02em}
 .sheet .sub{font-size:13px;color:var(--on-surface-variant);margin-top:5px}
@@ -1185,7 +1242,10 @@ body.modal-open{overflow:hidden}
    여기서 한 번에 고치면 이 컴포넌트를 쓰는 모든 페이지에 그대로 적용된다. 각 컴포넌트의 기본 규칙보다 소스 순서상
    뒤에 있어야 우선순위를 이긴다(동일 특이도라 나중 규칙이 이김) ---- */
 @media (max-width:640px){
-  .main{padding-top:74px} /* 고정 모바일 상단바(64px) 높이만큼 — 이 규칙은 .main의 기본 padding 단축 속성보다 소스 순서상 뒤에 있어야 한다 */
+  /* 고정 모바일 상단바(64px) 높이만큼 — 이 규칙은 기본 padding 단축 속성보다 소스 순서상 뒤에 있어야 한다.
+     기록 콘솔·전체 기록 페이지는 .main이 아니라 .console이라 이 보정에서 빠져 있었고,
+     그 결과 '← 경기 목록'·경기 제목·'기록지 내보내기' 버튼이 상단바 알약·햄버거 뒤에 가려졌다 */
+  .main,.console{padding-top:74px}
   .page-head{flex-direction:column;align-items:flex-start;gap:12px}
   .page-head h1{font-size:21px}
   .page-head > div:last-child{flex-wrap:wrap;width:100%}
@@ -3192,17 +3252,18 @@ function gameRowHtml(g){
       '<span class="gt-nm" title="'+s.name+'">'+s.name+'</span>'+
       '<span class="gt-sc">'+(scored ? s.score : '–')+'</span></span>';
   }
-  var qs = gameQuarters(g), quarters = '';
+  var qs = gameQuarters(g), cols = '';
   if(qs){
-    var cols = '';
     for(var i=0; i<qs.q; i++){
       var isNow = qs.live && i === qs.q - 1;
       cols += '<span class="gq-col'+(isNow?' now':'')+'"><em>'+(i+1)+'Q</em>'+
         '<b'+(aw?' class="lose"':'')+'>'+qs.home[i]+'</b>'+
         '<b'+(hw?' class="lose"':'')+'>'+qs.away[i]+'</b></span>';
     }
-    quarters = '<span class="gq" aria-hidden="true">'+cols+'</span>';
   }
+  // 쿼터 점수가 없는 예정 경기도 빈 칸을 그대로 렌더한다 — 요소를 아예 빼면 그리드 아이템 수가 달라져
+  // 액션 버튼이 쿼터 열로 밀려 올라가고, 점수 열이 다른 행과 어긋난다
+  var quarters = '<span class="gq" aria-hidden="true">'+cols+'</span>';
   var label = isLive ? '진행 중' : m.label;
   return '<button type="button" class="grow'+(isLive?' is-live':'')+'" data-goto="'+g.id+'"'+
       ' aria-label="'+g.court+'코트 '+g.home.name+' '+(scored?g.home.score:'')+' 대 '+g.away.name+' '+(scored?g.away.score:'')+', '+label+'">'+
