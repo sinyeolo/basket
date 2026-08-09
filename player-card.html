@@ -127,6 +127,19 @@ button{font-family:var(--font)}
 
 /* 프레임: 그라디언트 배경 위에 안쪽 카드면을 살짝 인셋해서 두른 테두리처럼 보이게 함 */
 .cardFace{padding:3px;background:linear-gradient(155deg,var(--g-b),var(--g-a) 55%,var(--g-c))}
+/* 테두리를 도는 빛 — 카드보다 큰 원뿔 그라디언트를 회전시키고, 가운데는 .inner가 덮어
+   3px 프레임에서만 빛줄기가 흐르는 것처럼 보이게 한다. 밝기는 등급별 --shine-op를 따라간다.
+   .cardFace의 overflow:hidden이 회전하는 사각형을 카드 모양으로 잘라주고,
+   .inner는 DOM상 뒤에 있어 z-index 없이도 위에 그려진다. */
+.cardFace::before{
+  content:"";position:absolute;inset:-60%;pointer-events:none;
+  background:conic-gradient(from 0deg,
+    transparent 0deg, transparent 296deg,
+    rgba(255,255,255,calc(var(--shine-op,.4) * 1.6)) 334deg,
+    transparent 360deg);
+  animation:frameSweep 3.4s linear infinite}
+@keyframes frameSweep{to{transform:rotate(1turn)}}
+@media (prefers-reduced-motion:reduce){ .cardFace::before{animation:none} }
 .cardFace .inner{position:relative;width:100%;height:100%;border-radius:calc(var(--r-card) - 3px);overflow:hidden;
   background:linear-gradient(175deg,#191b22,#0d0e12 70%)}
 
