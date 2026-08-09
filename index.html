@@ -743,6 +743,15 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .acts-row.m3{justify-content:flex-end}
 .acts-row.m3 .btn{flex:0 0 auto;min-width:96px}
 @media (max-width:520px){.acts-row.m3{flex-direction:column-reverse}.acts-row.m3 .btn{width:100%}}
+/* 폰에서 선수 등록 폼은 화면보다 길어서(약 946px) 저장하려면 매번 끝까지 스크롤해야 했다.
+   액션 줄을 시트 하단에 고정해 항상 닿게 한다. 위 520px 규칙의 세로 쌓기는 되돌려
+   가로 한 줄로 두는데, 세로로 쌓으면 고정 바가 화면의 1/8을 잡아먹기 때문이다. */
+@media (max-width:640px){
+  .modal .acts-row{position:sticky;bottom:0;z-index:1;margin:18px -20px -20px;padding:12px 20px 20px;
+    background:var(--surface);border-radius:0 0 20px 20px;box-shadow:0 -10px 18px -10px rgba(0,0,0,.14)}
+  .modal .acts-row.m3{flex-direction:row}
+  .modal .acts-row.m3 .btn{flex:1;width:auto;min-width:0}
+}
 
 /* 엑셀 일괄 등록 — 6개 입력 열이 한 줄에 들어가야 하므로 넓은 시트 사용 */
 .sheet.xwide{max-width:960px;max-height:86vh;display:flex;flex-direction:column}
