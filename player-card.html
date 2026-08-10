@@ -265,7 +265,7 @@ button{font-family:var(--font)}
 .cfNumDot{flex:none;color:rgba(255,255,255,.4)}
 .cfNumInline{flex:none;color:#fff;font-weight:800;font-size:16px}
 
-/* 팀 로고 씰 배지 — 타원 안에 팀 로고, 그 바깥을 원형 텍스트 링이 무한 회전하며 감쌈(오늘 날짜 · BISKET) */
+/* 팀 로고 씰 배지 — 타원 안에 팀 로고, 그 바깥을 원형 텍스트 링이 무한 회전하며 감쌈(오늘 날짜 · BASKET) */
 .teamSeal{position:absolute;right:12px;bottom:12px;width:65px;height:65px;z-index:3;pointer-events:none}
 .sealRing{width:100%;height:100%;display:block;animation:sealSpin 9s linear infinite}
 @keyframes sealSpin{to{transform:rotate(360deg)}}
@@ -388,7 +388,7 @@ button{font-family:var(--font)}
 <div class="stage">
   <div class="heroFixed" id="heroFixed">
     <header class="pcHeader">
-      <span class="wm">BISKET</span>
+      <span class="wm">BASKET</span>
       <span class="sp"></span>
       <button id="btnShareTop" aria-label="공유"></button>
       <button id="btnMore" aria-label="더보기"></button>
@@ -409,7 +409,7 @@ button{font-family:var(--font)}
               <div class="holoFoil" aria-hidden="true"></div>
               <div class="holoGrain" aria-hidden="true"></div>
               <div class="topRow">
-                <div class="brandCol"><span class="brandLogo">BISKET</span><span class="gradeBadge" id="fGradeChip">GOLD</span></div>
+                <div class="brandCol"><span class="brandLogo">BASKET</span><span class="gradeBadge" id="fGradeChip">GOLD</span></div>
                 <div class="ovrBox"><button type="button" class="lb ovrInfoBtn" id="ovrInfoBtn" aria-label="OVR 계산 방식 안내">OVR<span class="ovrInfoIcon" aria-hidden="true">?</span></button><div class="vl" id="fOvr">88</div></div>
               </div>
               <div class="photoLayer"><div class="avatarSil" id="fAvatar"></div></div>
@@ -522,9 +522,9 @@ button{font-family:var(--font)}
 
       <div class="brandFoot">
         <span class="brandFootLogo">B</span>
-        <span class="brandFootName">BISKET</span>
+        <span class="brandFootName">BASKET</span>
       </div>
-      <p class="copyright">© 2026 BISKET. All rights reserved.</p>
+      <p class="copyright">© 2026 BASKET. All rights reserved.</p>
     </div>
   </div>
 </div>
@@ -636,11 +636,11 @@ function setAvatarPose(poseId){
     POSE_SHAPES[poseId]+'</g></svg>';
 }
 
-// 팀 로고 씰 배지에 도는 원형 텍스트 — 오늘 날짜 · BISKET
+// 팀 로고 씰 배지에 도는 원형 텍스트 — 오늘 날짜 · BASKET
 function sealLabel(){
   var d = new Date();
   var p = function(n){ return n < 10 ? '0'+n : ''+n; };
-  return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' · BISKET · ';
+  return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' · BASKET · ';
 }
 
 // OVR — 운영 콘솔(index.html)이 실측 스탯 기반으로 산출해 URL로 넘긴 값을 그대로 쓴다(단일 소스).
@@ -896,12 +896,12 @@ if(LINKED_PLAYER){
 /* ---- 조작 안내: 최초 1회만 ---- */
 (function(){
   var hint = document.getElementById('hint');
-  if(localStorage.getItem('bisket_hint_seen')){ hint.remove(); return; }
+  if(localStorage.getItem('basket_hint_seen')){ hint.remove(); return; }
   var dismissed = false;
   function dismiss(){
     if(dismissed) return; dismissed = true;
     hint.classList.add('hide');
-    localStorage.setItem('bisket_hint_seen','1');
+    localStorage.setItem('basket_hint_seen','1');
     setTimeout(function(){ hint.remove(); }, 320);
   }
   setTimeout(dismiss, 4200);
@@ -1004,7 +1004,7 @@ function lbCardFrontHTML(grade){
     '<div class="holoFoil" aria-hidden="true"></div>'+
     '<div class="holoGrain" aria-hidden="true"></div>'+
     '<div class="topRow">'+
-      '<div class="brandCol"><span class="brandLogo">BISKET</span><span class="gradeBadge">'+g.label+'</span></div>'+
+      '<div class="brandCol"><span class="brandLogo">BASKET</span><span class="gradeBadge">'+g.label+'</span></div>'+
       '<div class="ovrBox"><div class="lb">OVR</div><div class="vl">'+(PLAYER.hasRecord ? ovrFor(grade) : '?')+'</div></div>'+
     '</div>'+
     '<div class="photoLayer"'+(PLAYER.photo ? ' style="display:none"' : '')+'><div class="avatarSil">'+(PLAYER.photo ? '' : avatarSvgHTML())+'</div></div>'+

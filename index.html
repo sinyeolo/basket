@@ -855,7 +855,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* ---------- 선수 상세 ----------
    프로필 카드에 팀 컬러를 아주 옅게 깔아(8%) 소속을 색으로 먼저 인지시키고,
    텍스트 정보는 한 줄로 눕혀 밀도를 낮췄습니다. */
-/* 선수 카드 — BISKET 플레이어 카드를 화면 중앙에 크게, 클릭하면 뒷면(시즌 평균)으로 플립.
+/* 선수 카드 — BASKET 플레이어 카드를 화면 중앙에 크게, 클릭하면 뒷면(시즌 평균)으로 플립.
    레퍼런스: 신한카드 상품 페이지(큰 카드 중앙 배치 + 미니멀한 주변 UI + 카드 상세/뒷면 인터랙션).
    등급 토큰은 카드 공유 화면(player-card.html)과 동일 값 — OVR을 index.html에서 산출해 URL로 전달하고, 등급은 그 OVR 구간으로 역산(ovrFor/gradeForOvr) */
 [data-grade="bronze"]{ --g-a:#7a4a2a; --g-b:#c9905a; --g-c:#3d2412; --g-text:#f0d9c2; }
@@ -1059,7 +1059,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .podium-card.p1{order:2;max-width:204px;padding-top:38px;z-index:1;box-shadow:var(--e2)}
 .podium-card.p2{order:1}
 .podium-card.p3{order:3}
-/* 왕관 배지 — 색은 BISKET 카드 등급 시스템([data-grade]의 --g-b/--g-a/--g-text) 그대로 재사용 */
+/* 왕관 배지 — 색은 BASKET 카드 등급 시스템([data-grade]의 --g-b/--g-a/--g-text) 그대로 재사용 */
 .podium-crown-wrap{position:absolute;top:-40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
 .podium-card.p1 .podium-crown-wrap{top:-46px}
 .podium-crown-wrap svg{width:28px;height:23px;display:block}
@@ -1356,7 +1356,7 @@ body.modal-open{overflow:hidden}
       </div>
     </div>
     <div class="brand">
-      <div class="bt">BISKET<small>대회 운영센터 · v0.1 MVP</small></div>
+      <div class="bt">BASKET<small>대회 운영센터 · v0.1 MVP</small></div>
     </div>
   </aside>
 
@@ -3461,10 +3461,10 @@ function renderPlayerDetail(){
   cardLinkTop.href = 'player-card.html?' + cardParams.toString();
   var posLabel = p.pos1||'';
   var ovr = ovrScore != null ? ovrScore : '?';
-  // 팀 로고 씰 배지에 도는 원형 텍스트 — 오늘 날짜 · BISKET
+  // 팀 로고 씰 배지에 도는 원형 텍스트 — 오늘 날짜 · BASKET
   var sealDate = (function(){
     var d = new Date(), z = function(n){ return n<10?'0'+n:''+n; };
-    return d.getFullYear()+'.'+z(d.getMonth()+1)+'.'+z(d.getDate())+' · BISKET · ';
+    return d.getFullYear()+'.'+z(d.getMonth()+1)+'.'+z(d.getDate())+' · BASKET · ';
   })().repeat(3);
   var level = s ? Math.min(60, 3+s.g*2) : 1;
   var expPct = s ? Math.min(100,(s.g/12)*100) : 8;
@@ -3495,7 +3495,7 @@ function renderPlayerDetail(){
           '<div class="holoFoil" aria-hidden="true"></div>'+
           '<div class="holoGrain" aria-hidden="true"></div>'+
           '<div class="pdTopRow">'+
-            '<div class="pdBrand"><span class="pdLogo">BISKET</span><span class="pdGradeBadge">'+gradeLabel+'</span></div>'+
+            '<div class="pdBrand"><span class="pdLogo">BASKET</span><span class="pdGradeBadge">'+gradeLabel+'</span></div>'+
             '<div class="pdOvr"><button type="button" class="lb pdOvrInfoBtn" id="pdOvrInfoBtn" aria-label="OVR 계산 방식 안내">OVR<span class="pdOvrInfoIcon" aria-hidden="true">?</span></button><div class="vl">'+ovr+'</div></div>'+
           '</div>'+
           '<div class="pdPhoto"'+(p.photo ? ' style="display:none"' : '')+'><div class="pdAvatar">'+(p.photo ? '' : playerSilhouetteSvg(p.id))+'</div></div>'+
@@ -3659,7 +3659,7 @@ function renderStatsTabs(){
   });
 }
 
-// 등수별 왕관 배지 — BISKET 카드에서 쓰는 등급 컬러 시스템([data-grade] 의 --g-a/--g-b)을 그대로 재사용
+// 등수별 왕관 배지 — BASKET 카드에서 쓰는 등급 컬러 시스템([data-grade] 의 --g-a/--g-b)을 그대로 재사용
 var PODIUM_GRADE = { 1:'gold', 2:'silver', 3:'bronze' };
 function crownBadge(rank){
   return '<span class="podium-crown-wrap">'+
