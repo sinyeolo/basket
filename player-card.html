@@ -34,9 +34,8 @@ button{font-family:var(--font)}
    heroFixed(헤더+카드)는 화면에 고정. sheet도 이제 화면 하단에 고정된 별도 레이어로,
    평소엔 헤드(핸들+이름)만 보이는 접힌 상태였다가, 헤드를 누르면 모바일 화면 전체를 채우며 펼쳐진다 */
 .heroFixed{position:fixed;top:0;left:0;right:0;bottom:92px;z-index:1;display:flex;flex-direction:column;align-items:center;
-  background:
-    linear-gradient(to bottom, color-mix(in srgb, var(--team-tint,#888) 19%, transparent) 0%, transparent 580px),
-    radial-gradient(circle at 50% -10%,var(--stage-bg2),var(--stage-bg) 60%)}
+  /* 배경 팀 컬러 틴트는 제거 — 카드 주변 등급 오라(.cardGlow)와 색이 겹쳐 서로 탁해졌다 */
+  background:radial-gradient(circle at 50% -10%,var(--stage-bg2),var(--stage-bg) 60%)}
 /* 헤더는 상단 고정, 카드+레벨행+힌트+뒤집기 버튼 묶음은 헤더 아래 남는 공간 안에서 세로 중앙 정렬 */
 .heroMid{flex:1;min-height:0;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
 /* 시트: 평소 접힌 상태(헤드 높이만) ↔ 펼친 상태(전체 화면) 두 가지 높이를 오가는 고정 레이어.
@@ -114,11 +113,26 @@ button{font-family:var(--font)}
 /* ---------------- 카드 무대 ---------------- */
 /* 시트가 올라오는 만큼(--recede: 0~1) 카드가 뒤로 빠지듯 살짝 작아지고 옅어짐 — .cardWrap 자체가 아니라 이 무대를
    스케일링해서, 틸트를 매 프레임 직접 갱신하는 .cardWrap의 transform과 서로 트랜지션이 겹치지 않게 분리했다 */
-.cardStage{display:flex;justify-content:center;padding:18px 20px 8px;perspective:1200px;
+.cardStage{position:relative;display:flex;justify-content:center;padding:18px 20px 8px;perspective:1200px;
   transform:scale(calc(1 - var(--recede,0) * .14));opacity:calc(1 - var(--recede,0) * .45);
   transition:transform .2s ease-out, opacity .2s ease-out}
 .cardWrap{width:var(--card-w);height:var(--card-h);position:relative;transform-style:preserve-3d;
   transform:rotateX(var(--ry,0)) rotateY(var(--rx,0))}
+/* 카드 뒤 등급 컬러 오라 — 카드보다 크게 깔고 흐리게 번지게 해서 주변으로 은은하게 새어나온다.
+   숨쉬듯 밝기와 크기가 함께 오르내려 정지 화면에서도 살아있게 보인다.
+   .cardWrap(preserve-3d) 안에 두면 filter/z-index가 3D 렌더링과 충돌해 아예 안 보였다 —
+   3D 컨텍스트 밖(.cardStage 직계)에 평면 레이어로 깐다. */
+.cardGlow{position:absolute;top:50%;left:50%;width:var(--card-w);height:var(--card-h);
+  margin:calc(var(--card-h) / -2) 0 0 calc(var(--card-w) / -2);
+  z-index:0;pointer-events:none;border-radius:50%;filter:blur(52px);
+  background:radial-gradient(ellipse at 50% 50%,var(--g-b) 0%,var(--g-a) 45%,transparent 74%);
+  animation:cardBreathe 6s ease-in-out infinite}
+.cardStage .cardWrap{z-index:1}
+@keyframes cardBreathe{
+  0%,100%{opacity:.30;transform:scale(.92)}
+  50%    {opacity:.60;transform:scale(1.12)}
+}
+@media (prefers-reduced-motion:reduce){ .cardGlow{animation:none;opacity:.42} }
 /* 카드+레벨행+힌트+뒤집기 버튼을 한 덩어리로 묶어, 카드 하단 1/4만 화면에 걸쳐 보이는 상태에서 시작해
    위로 슬라이드하며 전체가 드러나게 한다. 187px ≈ 헤더+카드무대 상단 여백(82px) + 카드 높이의 1/4(105px) */
 .heroContent{display:flex;flex-direction:column;align-items:center;width:100%;
@@ -133,7 +147,10 @@ button{font-family:var(--font)}
 .cardFace.back{transform:rotateY(180deg) translateZ(calc(var(--card-thick) / 2))}
 
 /* 프레임: 그라디언트 배경 위에 안쪽 카드면을 살짝 인셋해서 두른 테두리처럼 보이게 함 */
-.cardFace{padding:3px;background:linear-gradient(155deg,var(--g-b),var(--g-a) 55%,var(--g-c))}
+/* 프레임 그라디언트 — 예전엔 155deg 축의 끝을 --g-c(거의 검정)로 뒀는데, 그 지점이 하필 좌하단
+   모서리에 떨어져서 밝은 좌측·하단 사이에 검은 얼룩처럼 보였다. 어두운 끝을 빼고 밝은 두 톤만
+   왕복시켜 네 모서리 모두 같은 금속 톤을 유지한다. */
+.cardFace{padding:3px;background:linear-gradient(155deg,var(--g-b),var(--g-a) 42%,var(--g-b) 70%,var(--g-a))}
 /* 테두리를 도는 빛 — 카드보다 큰 원뿔 그라디언트를 회전시키고, 가운데는 .inner가 덮어
    3px 프레임에서만 빛줄기가 흐르는 것처럼 보이게 한다. 밝기는 등급별 --shine-op를 따라간다.
    .cardFace의 overflow:hidden이 회전하는 사각형을 카드 모양으로 잘라주고,
@@ -262,8 +279,6 @@ button{font-family:var(--font)}
 .cfDivider{height:1px;background:rgba(255,255,255,.28)}
 .cfBottomRow{display:flex;align-items:center;gap:8px;padding-right:68px}
 .cfTeamMini{display:flex;align-items:center;gap:7px;min-width:0}
-.cfTeamLogo{width:19px;height:19px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
-  font-size:9.5px;font-weight:800;color:#fff}
 .cfTeamMini span{font-size:13px;color:rgba(255,255,255,.7);font-weight:600}
 .cfTeamName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .cfNumDot{flex:none;color:rgba(255,255,255,.4)}
@@ -404,6 +419,7 @@ button{font-family:var(--font)}
     <div class="heroContent" id="heroContent">
     <!-- ============ 카드 ============ -->
     <div class="cardStage">
+      <div class="cardGlow" aria-hidden="true"></div>
       <div class="cardWrap" id="cardWrap">
         <div class="cardInner" id="cardInner">
           <div class="cardFace front">
@@ -429,7 +445,6 @@ button{font-family:var(--font)}
                 <div class="cfDivider"></div>
                 <div class="cfBottomRow">
                   <div class="cfTeamMini">
-                    <span class="cfTeamLogo" id="fTeamLogo">서</span>
                     <span class="cfTeamName" id="fTeam">서울 타이탄스</span>
                     <span class="cfNumDot">·</span>
                     <span class="cfNumInline" id="fNo">7</span>
@@ -713,10 +728,7 @@ if(PLAYER.photo){
 } else {
   setAvatarPose(poseForId(PLAYER.id));
 }
-document.querySelector('.stage').style.setProperty('--team-tint', PLAYER.teamColor);
 document.getElementById('fTeam').textContent = PLAYER.team;
-document.getElementById('fTeamLogo').textContent = PLAYER.team.charAt(0);
-document.getElementById('fTeamLogo').style.background = PLAYER.teamColor;
 document.getElementById('fSealLogo').textContent = PLAYER.team.charAt(0);
 document.getElementById('fSealLogo').style.background = PLAYER.teamColor;
 document.getElementById('sealTextMain').textContent = sealLabel().repeat(3);
@@ -1029,7 +1041,6 @@ function lbCardFrontHTML(grade){
       '<div class="cfDivider"></div>'+
       '<div class="cfBottomRow">'+
         '<div class="cfTeamMini">'+
-          '<span class="cfTeamLogo" style="background:'+PLAYER.teamColor+'">'+PLAYER.team.charAt(0)+'</span>'+
           '<span class="cfTeamName">'+PLAYER.team+'</span>'+
           '<span class="cfNumDot">·</span>'+
           '<span class="cfNumInline">'+PLAYER.no+'</span>'+
@@ -1066,6 +1077,7 @@ function openLightbox(entry){
     '<div class="lbInner" data-grade="'+entry.grade+'">'+
       '<div class="lbLabel">'+entry.season+' · '+GRADES[entry.grade].label+'</div>'+
       '<button type="button" class="lbClose" id="lbCloseBtn" aria-label="닫기">'+icon('close')+'</button>'+
+      '<div class="cardGlow" aria-hidden="true"></div>'+
       '<div class="cardWrap" id="lbCardWrap">'+
         '<div class="cardInner" id="lbCardInner">'+
           '<div class="cardFace front">'+lbCardFrontHTML(entry.grade)+'</div>'+
