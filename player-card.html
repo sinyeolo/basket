@@ -40,38 +40,82 @@ button{font-family:var(--font)}
 
 /* 무대 조명 — 화면 위쪽 한 점에서 빛줄기가 부챗살로 쏟아진다(레퍼런스의 스포트라이트 연출).
    평행한 띠(repeating-linear-gradient)로는 부챗살이 안 나와서 원뿔(repeating-conic-gradient)을
-   화면 위 바깥(50% -18%)에 두고 각도로 잘랐다. 아래로 갈수록 사라지게 mask로 페이드시킨다.
+   화면 위 바깥에 두고 각도로 잘랐다. 아래로 갈수록 사라지게 mask로 페이드시킨다.
    색은 등급 토큰(--g-b/--g-a)을 그대로 써서 브론즈·실버·골드가 각자의 톤으로 빛난다.
-   두 겹을 서로 다른 속도·방향으로 아주 조금씩 돌리고 밝기를 엇갈리게 해서 '일렁이는' 느낌을 만든다
-   (한 겹만 쓰면 규칙적으로 도는 게 보여서 조명이 아니라 회전하는 무늬처럼 읽힌다). */
+
+   불규칙하게 보이게 만드는 법: 세 겹의 각도 주기를 서로 배수가 아닌 값(7.3 / 11.9 / 17.4deg)으로 뒀다.
+   등간격 한 겹만 쓰면 폭이 일정해서 조명이 아니라 회전하는 무늬로 읽히는데, 배수 관계가 없는 주기를
+   겹치면 마루와 골이 매번 다른 자리에서 만나 굵고 가는 빛줄기가 제멋대로 섞인 것처럼 보인다.
+
+   회전과 밝기는 일부러 다른 애니메이션·다른 주기로 분리했다. 한 키프레임에 같이 넣으면 '밝아질 때
+   항상 같은 각도'가 되어 주기가 눈에 띈다. 주기가 어긋나 있어야 매번 다른 조합으로 보인다. */
 .stageRays{position:absolute;top:0;left:50%;width:260%;height:100%;transform:translateX(-50%);
-  pointer-events:none;z-index:0;overflow:hidden}
+  pointer-events:none;z-index:0;overflow:hidden;
+  animation:raysIn 2.2s cubic-bezier(.19,.72,.24,1) both}
+/* 등장 — 광원에서 빛이 새어 나오듯 위에서부터 열린다. 카드(riseIn)와 같은 타이밍에 시작해 조금 더 길게 끈다 */
+@keyframes raysIn{
+  0%  {opacity:0; transform:translateX(-50%) scaleY(.42)}
+  55% {opacity:1}
+  100%{opacity:1; transform:translateX(-50%) scaleY(1)}
+}
 .stageRays i{position:absolute;inset:-30% -10% 0;display:block;transform-origin:50% 0;
   -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 30%,rgba(0,0,0,.62) 58%,transparent 92%);
           mask-image:linear-gradient(to bottom,#000 0%,#000 30%,rgba(0,0,0,.62) 58%,transparent 92%)}
 .stageRays i:nth-child(1){
   background:repeating-conic-gradient(from 206deg at 50% -6%,
-    transparent 0deg 1.4deg, var(--g-b) 2deg 3.4deg, transparent 4.2deg 7.8deg);
-  filter:blur(14px);animation:rayA 13s ease-in-out infinite alternate}
+    transparent 0deg 1.4deg, var(--g-b) 2.1deg 3.5deg, transparent 4.4deg 7.3deg);
+  filter:blur(9px);
+  animation:rayTurnA 47s ease-in-out infinite alternate, rayGlowA 8.5s ease-in-out infinite alternate}
 .stageRays i:nth-child(2){
-  background:repeating-conic-gradient(from 201deg at 50% -6%,
-    transparent 0deg 2.2deg, var(--g-a) 3deg 5deg, transparent 5.8deg 11.5deg);
-  filter:blur(28px);animation:rayB 19s ease-in-out infinite alternate}
-@keyframes rayA{
-  0%  {transform:rotate(-1.6deg) scaleY(1);   opacity:.44}
-  50% {transform:rotate(.4deg)   scaleY(1.05);opacity:.78}
-  100%{transform:rotate(1.7deg)  scaleY(.98); opacity:.52}
+  background:repeating-conic-gradient(from 199deg at 50% -6%,
+    transparent 0deg 2.6deg, var(--g-a) 3.6deg 6.2deg, transparent 7.4deg 11.9deg);
+  filter:blur(20px);
+  animation:rayTurnB 63s ease-in-out infinite alternate, rayGlowB 12.5s ease-in-out infinite alternate}
+.stageRays i:nth-child(3){
+  background:repeating-conic-gradient(from 212deg at 50% -6%,
+    transparent 0deg 4.2deg, var(--g-b) 5.4deg 8.1deg, transparent 9.6deg 17.4deg);
+  filter:blur(30px);
+  animation:rayTurnC 79s ease-in-out infinite alternate, rayGlowC 17s ease-in-out infinite alternate}
+/* 회전 — 겹마다 방향·폭이 달라서 서로 스치듯 지나간다(전부 같은 방향이면 통째로 도는 것처럼 보인다) */
+@keyframes rayTurnA{ from{transform:rotate(-4.5deg)} to{transform:rotate(3.8deg)} }
+@keyframes rayTurnB{ from{transform:rotate(3.2deg)}  to{transform:rotate(-5.4deg)} }
+@keyframes rayTurnC{ from{transform:rotate(-2.4deg)} to{transform:rotate(6.1deg)} }
+/* 밝기 — 회전과 주기가 어긋나 있어 같은 각도에서 늘 같은 밝기가 되지 않는다 */
+@keyframes rayGlowA{ from{opacity:.50} to{opacity:.95} }
+@keyframes rayGlowB{ from{opacity:.92} to{opacity:.52} }
+@keyframes rayGlowC{ from{opacity:.40} to{opacity:.74} }
+/* 공기 중 먼지 — 빛줄기 사이를 아주 느리게 떠다닌다. 레퍼런스에도 있는, 빛에 실체를 주는 요소 */
+.stageRays::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background-image:
+    radial-gradient(1.6px 1.6px at 18% 22%, rgba(255,255,255,.9), transparent),
+    radial-gradient(1.2px 1.2px at 63% 14%, rgba(255,255,255,.7), transparent),
+    radial-gradient(1.8px 1.8px at 81% 38%, rgba(255,255,255,.85), transparent),
+    radial-gradient(1.1px 1.1px at 34% 47%, rgba(255,255,255,.65), transparent),
+    radial-gradient(1.5px 1.5px at 72% 61%, rgba(255,255,255,.7), transparent),
+    radial-gradient(1.3px 1.3px at 46% 72%, rgba(255,255,255,.6), transparent),
+    radial-gradient(1.7px 1.7px at 12% 66%, rgba(255,255,255,.55), transparent),
+    radial-gradient(1.2px 1.2px at 90% 78%, rgba(255,255,255,.5), transparent);
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.5) 62%,transparent 92%);
+          mask-image:linear-gradient(to bottom,#000 0%,rgba(0,0,0,.5) 62%,transparent 92%);
+  animation:dustDrift 34s ease-in-out infinite alternate}
+@keyframes dustDrift{
+  from{transform:translate3d(0,0,0)}
+  to  {transform:translate3d(-14px,22px,0)}
 }
-@keyframes rayB{
-  0%  {transform:rotate(1.2deg)  scaleY(1.04);opacity:.82}
-  50% {transform:rotate(-.6deg)  scaleY(.97); opacity:.46}
-  100%{transform:rotate(-1.4deg) scaleY(1.02);opacity:.76}
-}
-/* 조명 시작점의 발광 — 빛줄기가 화면 위에서 갑자기 시작되지 않고 광원에서 번져 나오게 받쳐준다 */
-.stageRays::after{content:"";position:absolute;left:50%;top:0;width:130%;height:70%;
+/* 조명 시작점의 발광 — 빛줄기가 화면 위에서 갑자기 시작되지 않고 광원에서 번져 나오게 받쳐준다.
+   좁고 센 코어 + 넓고 옅은 헤일로 두 겹. 코어만 있으면 경계가 보이고, 헤일로만 있으면 광원이 안 느껴진다.
+   숨쉬듯 밝기가 오르내리되 빛줄기와는 또 다른 주기라 전체가 한 박자로 뛰지 않는다. */
+.stageRays::after{content:"";position:absolute;left:50%;top:0;width:150%;height:78%;
   transform:translateX(-50%);pointer-events:none;
-  background:radial-gradient(58% 62% at 50% -4%,color-mix(in srgb,var(--g-b) 42%,transparent),transparent 70%)}
-@media (prefers-reduced-motion:reduce){ .stageRays i{animation:none;opacity:.3} }
+  background:
+    radial-gradient(30% 26% at 50% -6%, color-mix(in srgb,var(--g-b) 64%,transparent), transparent 68%),
+    radial-gradient(64% 66% at 50% -4%, color-mix(in srgb,var(--g-b) 30%,transparent), transparent 72%);
+  animation:sourceGlow 10.5s ease-in-out infinite alternate}
+@keyframes sourceGlow{ from{opacity:.72} to{opacity:1} }
+@media (prefers-reduced-motion:reduce){
+  .stageRays,.stageRays i,.stageRays::before,.stageRays::after{animation:none}
+  .stageRays i{opacity:.42}
+}
 /* 헤더는 상단 고정, 카드+레벨행+힌트+뒤집기 버튼 묶음은 헤더 아래 남는 공간 안에서 세로 중앙 정렬 */
 .heroMid{flex:1;min-height:0;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
 /* 시트: 평소 접힌 상태(헤드 높이만) ↔ 펼친 상태(전체 화면) 두 가지 높이를 오가는 고정 레이어.
@@ -479,7 +523,7 @@ button{font-family:var(--font)}
 <div class="stage">
   <div class="heroFixed" id="heroFixed">
     <!-- 무대 조명 — 등급 컬러 빛줄기가 위에서 쏟아지며 일렁인다. 두 겹이 서로 다른 속도로 움직인다 -->
-    <div class="stageRays" aria-hidden="true"><i></i><i></i></div>
+    <div class="stageRays" aria-hidden="true"><i></i><i></i><i></i></div>
     <header class="pcHeader">
       <span class="wm">BASKET</span>
       <span class="sp"></span>
