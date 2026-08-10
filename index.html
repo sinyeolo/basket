@@ -814,7 +814,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .gside .gt-sc{font-family:var(--font-score);font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;
   letter-spacing:-.02em;min-width:2.2ch;text-align:right}
 /* 진 팀은 이름·점수를 함께 흐리게 — 어느 쪽이 이겼는지 한눈에 */
-.gside.lose .gt-nm,.gside.lose .gt-sc{color:var(--on-surface-variant);font-weight:600}
+.gside.lose .gt-nm,.gside.lose .gt-sc{color:var(--on-surface-variant);font-weight:500}
 
 /* ---- 경기 상태별 시각 구분 ----
    목록을 훑을 때 '아직 안 한 경기 / 지금 하는 경기 / 끝난 경기'가 한눈에 갈려야 한다.
@@ -823,7 +823,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    스트라이프가 셋이 되면 신호가 흔해져서 아무것도 눈에 안 띈다. */
 /* 예정 — 아직 치르지 않았으니 팀명을 굵게 쓰지 않는다(볼드는 '결과가 나온 팀'의 표시다).
    전체를 한 톤 낮춰서 끝난 경기와 확실히 갈리게 한다. */
-.grow.is-soon .gside .gt-nm{font-weight:600;color:var(--on-surface-variant)}
+.grow.is-soon .gside .gt-nm{font-weight:500;color:var(--on-surface-variant)}
 .grow.is-soon .gside .gt-sc{color:var(--outline);font-weight:700}
 .grow.is-soon .gstat .gs-t{color:var(--on-surface-variant);font-weight:600}
 .grow.is-soon .dot{opacity:.55}
@@ -847,7 +847,15 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .gact.act-main{background:var(--main);color:var(--on-main)}
 .gact.act-gray{background:var(--surface-variant);color:var(--on-surface)}
 /* 액션이 여러 개인 행(검수 페이지) — 기본 .gact의 알약 배경을 벗기고 버튼들만 나란히 세운다 */
-.gact-multi{background:none;padding:0;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+/* 버튼은 세로로 쌓는다 — 가로로 늘어놓으면 행 오른쪽이 길어져 쿼터 점수 열이 밀린다.
+   height:auto가 꼭 필요하다: 이 컨테이너도 .gact라서 기본값 height:32px을 물려받는데, 그러면
+   세로로 쌓은 버튼 둘이 32px 안으로 눌려 15~17px짜리 납작한 버튼이 된다. */
+.gact-multi{background:none;padding:0;height:auto;gap:6px;
+  flex-direction:column;align-items:stretch;justify-content:center}
+/* 행 안 버튼 치수는 경기 페이지의 행 액션(.gact 32px / 12.5px)과 동일하게.
+   .btn-sm(40px / 13px)을 그대로 쓰면 같은 행 컴포넌트인데 검수 페이지만 버튼이 한 단계 커 보인다 */
+.gact-multi .btn{height:32px;flex:none;padding:0 14px;font-size:12.5px}
+.gact-multi > .chip{justify-content:center}
 /* 행 전체가 <div>라 커서가 안 잡힌다. 버튼 위에서는 버튼 커서로 되돌린다 */
 .grow-multi{cursor:pointer}
 .grow-multi .gact-multi{cursor:default}
