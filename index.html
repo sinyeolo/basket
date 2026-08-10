@@ -412,11 +412,11 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .chip.neutral,.chip.info{background:var(--surface-variant);color:var(--on-surface-variant)}
 .chip.confirmed{background:var(--green-c);color:var(--on-green-c)}
 .chip.review{background:var(--red-c);color:var(--on-red-c)}
-/* 승리 뱃지 — 상태(진행중/종료/확정)와는 다른 축이라 상태 뱃지 색을 쓰지 않는다.
-   파랑은 선수 상세 '경기별 기록'의 승리 바(.glog .bar.w)에서 이미 승리를 뜻하고 있어 그대로 이어받았다.
+/* 승리 뱃지 — 브랜드 컬러(꽉 찬 주황). 진행 중 상태 칩(.chip.live)도 브랜드 계열이지만
+   그쪽은 옅은 컨테이너 톤 + 펄스 점이고, 무엇보다 Win은 종료된 경기에만 붙어서 같은 행에 함께 나올 일이 없다.
    상태 칩(.chip)보다 한 단계 작게 — 결과를 보조로 짚어줄 뿐 행의 주인공이 아니다. */
 .wbadge{display:inline-flex;align-items:center;flex:none;font-size:10.5px;font-weight:800;letter-spacing:.03em;
-  padding:2px 6px;border-radius:6px;background:var(--blue-c);color:var(--on-blue-c);white-space:nowrap}
+  padding:2px 6px;border-radius:6px;background:var(--primary);color:var(--on-primary);white-space:nowrap}
 /* 패배 표기는 선수 상세 '경기별 기록'처럼 승/패를 나란히 세워야 하는 곳에서만 쓴다.
    경기 목록·대진표는 진 쪽을 흐리게(.lose) 처리하므로 뱃지를 또 붙이면 시선만 분산된다. */
 .wbadge.lose{background:var(--mono-fill);color:var(--mono-on)}
@@ -424,10 +424,6 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .mline{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px}
 .mteam{display:inline-flex;align-items:center;gap:6px;font-weight:600}
 .msc{font-family:var(--font-score);font-variant-numeric:tabular-nums;color:var(--on-surface-variant);font-weight:700}
-/* 오늘 일정 행 — 조 라벨은 팀명보다 한 톤 약하게, 'vs'는 점수 자리와 같은 회색 톤 */
-.mline.sched{font-size:14.5px}
-.mline.sched .mgrp{color:var(--on-surface-variant);font-weight:600}
-.mline.sched .msc{font-family:var(--font);font-weight:600}
 .rev{display:flex;align-items:center;gap:14px;padding:14px 10px}
 .rev+.rev{border-top:1px solid var(--outline-variant)}
 .rev .info{flex:1;min-width:0}
@@ -953,16 +949,18 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   animation:pdAuraDrift 10s ease-in-out infinite alternate}
 /* 홀로그램 포일(iridescent) — player-card.html과 동일 규칙. 사선 줄무늬 대신 자연스러운 파스텔 얼룩을 겹쳐
    마우스로 카드를 기울이면 그 얼룩이 흐르듯 이동한다 (--holo-tx/--holo-ty는 pointermove에서 갱신) */
-.holoFoil{position:absolute;inset:-25%;z-index:4;pointer-events:none;mix-blend-mode:color-dodge;opacity:.4;
-  background-image:
-    radial-gradient(circle at 28% 24%, rgba(255,170,205,.85), transparent 40%),
-    radial-gradient(circle at 68% 18%, rgba(255,230,160,.8), transparent 42%),
-    radial-gradient(circle at 82% 55%, rgba(150,225,255,.85), transparent 42%),
-    radial-gradient(circle at 22% 62%, rgba(190,165,255,.8), transparent 44%),
-    radial-gradient(circle at 55% 78%, rgba(165,255,205,.8), transparent 44%),
-    radial-gradient(circle at 50% 45%, rgba(255,255,255,.35), transparent 60%);
+/* 홀로그램 포일 — 예전엔 CSS 그라디언트를 color-dodge로 얹었는데, 어두운 카드면 위에서 색이 폭주해
+   뒷면 텍스트를 먹었다. 지금은 실제 홀로그램 사진 4장(assets/holo/h1~h4.jpg)을 screen으로 얹는다.
+   screen은 '빛을 더하되 날리지 않는' 블렌드라 밑그림(사진·텍스트)이 그대로 살아 있다.
+   무늬는 카드마다 하나가 걸린다 — holoSkin() 참고. 사진을 바꾸려면 파일만 교체하면 된다. */
+.holoFoil{position:absolute;inset:-25%;z-index:4;pointer-events:none;mix-blend-mode:screen;opacity:.34;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
   transform:translate(var(--holo-tx,0px), var(--holo-ty,0px));
   transition:transform .05s linear}
+.holoFoil.h1{background-image:url("assets/holo/h1.jpg")}
+.holoFoil.h2{background-image:url("assets/holo/h2.jpg")}
+.holoFoil.h3{background-image:url("assets/holo/h3.jpg")}
+.holoFoil.h4{background-image:url("assets/holo/h4.jpg")}
 .holoGrain{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:.15;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size:140px 140px}
@@ -1069,12 +1067,13 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdBackGameRow+.pdBackGameRow{margin-top:8px}
 .pdBackGameRow b{color:#fff;font-weight:800}
 .pdBackGameRow .gr-l{display:flex;align-items:center;gap:7px;min-width:0}
-/* 카드 위 승패 뱃지 — 운영 화면의 .wbadge는 밝은 배경 기준(--blue-c)이라 다크 카드에서 너무 튄다.
-   카드 안에서는 반투명 톤으로 낮춰 깔고, 좁은 뒷면에 맞춰 '승/패' 한 글자로만 표기한다. */
-.wl{display:inline-flex;align-items:center;flex:none;font-size:9.5px;font-weight:800;
-  padding:2px 6px;border-radius:5px;line-height:1.3}
-.wl.w{background:rgba(96,165,250,.22);color:#93c5fd}
-.wl.l{background:rgba(255,255,255,.10);color:rgba(255,255,255,.5)}
+/* 카드 위 승패 뱃지 — 좁은 뒷면에 맞춰 W/L 한 글자로. 운영 화면이 Win/Lose를 쓰므로 같은 말의 축약이다.
+   승은 운영 화면과 같은 브랜드 컬러, 패는 회색. */
+.wl{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:18px;
+  font-size:10px;font-weight:800;letter-spacing:.02em;
+  padding:2px 5px;border-radius:5px;line-height:1.4}
+.wl.w{background:var(--primary);color:var(--on-primary)}
+.wl.l{background:rgba(255,255,255,.13);color:rgba(255,255,255,.55)}
 .pdBackNote{margin-top:auto;text-align:center;font-size:10.5px;color:rgba(255,255,255,.4)}
 .pdBackEmptyNote{font-size:11px;color:rgba(255,255,255,.6);text-align:center;line-height:1.5;
   background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:9px 10px}
@@ -2409,28 +2408,22 @@ function emptyRow(text){
   return '<div style="padding:26px 10px;text-align:center;color:var(--on-surface-variant);font-size:13.5px">'+text+'</div>';
 }
 
+/* 대시보드의 진행 중 경기·검수 대기·오늘 일정은 예전에 각자 다른 가로형 마크업을 썼다
+   (코트칩+팀 42:39 팀 / 문자열 스코어 라인 / 조·팀 vs 팀). 같은 '경기 한 건'인데 화면마다 모양이
+   달라서 대시보드 → 경기 페이지로 넘어가면 다른 데이터를 보는 것처럼 읽혔다.
+   이제 셋 다 경기 페이지와 같은 gameRowHtml(상태 → 팀 세로 2줄 → 쿼터 → 액션)을 쓴다.
+   클릭 목적지만 섹션별로 다르게 연결한다. */
 function renderLiveGames(){
-  document.getElementById('liveGamesCount').textContent = LIVE_GAMES.length;
-  if(!LIVE_GAMES.length){
+  // 예전엔 LIVE_GAMES(기록 콘솔용 별도 배열)를 썼는데, 경기 페이지와 같은 행을 쓰려면 같은 원본이어야 한다
+  var live = allGameItems().filter(function(g){ return g.status === 'live'; });
+  document.getElementById('liveGamesCount').textContent = live.length;
+  if(!live.length){
     document.getElementById('liveGamesList').innerHTML = emptyRow('지금 진행 중인 경기가 없습니다.');
     return;
   }
-  document.getElementById('liveGamesList').innerHTML = LIVE_GAMES.map(function(g){
-    // 스크린리더용 접근 가능한 이름 — 개별 span을 각각 읽지 않고 한 문장으로 요약
-    var label = g.court+'코트, '+g.home.name+' '+g.home.score+'대 '+g.away.name+' '+g.away.score+', '+g.clock+', 기록하기';
-    return '<a class="row row-click" href="#record" data-page="record" data-game="'+g.id+'" aria-label="'+label+'">'+
-      '<div class="court" aria-hidden="true">'+g.court+'<small>코트</small></div>'+
-      '<div class="match" aria-hidden="true">'+
-        '<span class="team" title="'+g.home.name+'"><i class="dot" style="background:'+g.home.color+'"></i>'+g.home.name+'</span>'+
-        '<span class="score"><b>'+g.home.score+'</b><span class="sep">:</span><b>'+g.away.score+'</b></span>'+
-        '<span class="team" title="'+g.away.name+'">'+g.away.name+'<i class="dot" style="background:'+g.away.color+'"></i></span>'+
-      '</div>'+
-      '<span class="chip live" aria-hidden="true">'+g.clock+'</span>'+
-      '<span class="rec-btn" aria-hidden="true">기록하기'+icon('arrowRight','ic ic-sm')+'</span>'+
-    '</a>';
-  }).join('');
-  document.querySelectorAll('#liveGamesList [data-game]').forEach(function(a){
-    a.addEventListener('click', function(){ loadGame(a.dataset.game); });
+  document.getElementById('liveGamesList').innerHTML = live.map(gameRowHtml).join('');
+  document.querySelectorAll('#liveGamesList [data-goto]').forEach(function(b){
+    b.addEventListener('click', function(){ openGameFromList(b.dataset.goto); });
   });
 }
 
@@ -2442,15 +2435,10 @@ function renderReviewQueue(){
     document.getElementById('reviewList').innerHTML = emptyRow('검수를 기다리는 경기가 없습니다.');
     return;
   }
-  document.getElementById('reviewList').innerHTML = pending.map(function(g){
-    var tied = g.home.score === g.away.score;
-    return '<div class="rev"><div class="info"><div class="t">'+matchScoreLine(g)+'</div>'+
-      '<div class="s">경기 종료 · '+(tied?'동점 · 연장 여부 확인 필요':'미검수')+' · '+g.court+'코트 · '+g.time+'</div></div>'+
-      '<span class="chip '+(tied?'review':'neutral')+'">'+(tied?'확인 필요':'경기 종료')+'</span>'+
-      '<button type="button" class="btn btn-main btn-sm" data-review="'+g.id+'">검수하기</button></div>';
-  }).join('');
-  document.querySelectorAll('#reviewList [data-review]').forEach(function(b){
-    b.addEventListener('click', function(){ location.hash = '#review'; });
+  document.getElementById('reviewList').innerHTML = pending.map(gameRowHtml).join('');
+  // 여기서만 목적지가 다르다 — 대시보드의 '검수 대기'는 검수 페이지로 보낸다(경기 페이지는 전체 기록으로 간다)
+  document.querySelectorAll('#reviewList [data-goto]').forEach(function(b){
+    b.addEventListener('click', function(){ loadGame(b.dataset.goto); location.hash = '#review'; });
   });
 }
 
@@ -2465,21 +2453,7 @@ function renderSchedule(){
     root.innerHTML = emptyRow('오늘 예정된 경기가 없습니다.');
     return;
   }
-  root.innerHTML = items.map(function(g){
-    var m = STATUS_META[g.status];
-    var win = gameWinner(g);
-    var label = g.time+' '+g.label+', '+g.home.name+' vs '+g.away.name+
-      (win ? ', '+(win==='home'?g.home.name:g.away.name)+' 승' : '')+', '+(g.status==='live'?g.clock:m.label);
-    return '<button type="button" class="row row-click'+(g.status==='fix'?' done':'')+'" data-goto="'+g.id+'" aria-label="'+label+'">'+
-      '<div class="court court-time">'+g.time+'</div>'+
-      '<div class="match"><span class="mline sched">'+
-        '<span class="mgrp">'+g.label+'</span>'+
-        '<span class="mteam">'+g.home.name+winBadge(win==='home')+'</span>'+
-        '<span class="msc">vs</span>'+
-        '<span class="mteam">'+g.away.name+winBadge(win==='away')+'</span></span></div>'+
-      '<span class="st '+m.cls+'">'+(g.status==='live' ? g.clock : m.label)+'</span>'+
-    '</button>';
-  }).join('');
+  root.innerHTML = items.map(gameRowHtml).join('');
   root.querySelectorAll('[data-goto]').forEach(function(b){
     b.addEventListener('click', function(){ openGameFromList(b.dataset.goto); });
   });
@@ -3314,6 +3288,18 @@ function gameWinner(g){
   return g.home.score > g.away.score ? 'home' : 'away';
 }
 function winBadge(won){ return won ? '<span class="wbadge">Win</span>' : ''; }
+
+/* 홀로그램 무늬 4종(.holoFoil.h1~h4) 중 하나를 카드에 건다.
+   무작위로 매번 새로 뽑지 않고 키(선수 id)로 정하는 이유: 렌더가 다시 돌 때마다(수정 저장, 목록
+   복귀 등) 무늬가 바뀌면 같은 선수 카드가 매번 다른 카드처럼 보인다. 키로 정하면 한 선수는 늘 같은
+   무늬를 갖고, 선수끼리는 4종이 골고루 흩어진다.
+   실제 홀로그램 이미지를 쓰려면 .holoFoil.hN의 background-image를 url(...)로 바꾸기만 하면 된다. */
+var HOLO_SKINS = ['h1','h2','h3','h4'];
+function holoSkin(key){
+  var s = String(key == null ? '' : key), n = 0;
+  for(var i=0; i<s.length; i++) n = (n*31 + s.charCodeAt(i)) >>> 0;
+  return HOLO_SKINS[n % HOLO_SKINS.length];
+}
 /* 검수 대기·확정 목록의 "홈팀 64 : 61 원정팀" 한 줄 — 세 곳(대시보드 검수 대기, 검수 페이지 대기/확정)이
    같은 문자열을 각자 만들고 있어서 한 곳으로 모았다. 이긴 팀 이름 뒤에 Win 뱃지가 붙는다. */
 function matchScoreLine(g){
@@ -3540,6 +3526,7 @@ function renderPlayerDetail(){
   var grade = gradeForOvr(ovrScore);
   var gradeLabel = { bronze:'BRONZE', silver:'SILVER', gold:'GOLD' }[grade];
   var teamColor = t ? t.color : '#6b6a72';   // 카드 링크 파라미터·팀 씰 배지에만 쓰인다(페이지 배경 틴트는 제거됨)
+  var holo = holoSkin(p.id);                 // 이 선수 카드에 걸릴 홀로그램 무늬(h1~h4)
 
   // 카드 링크 — 선수별 데이터를 URL 파라미터로 실어서 넘긴다 (실 서버 연동 전까지의 임시 다리)
   var cardParams = new URLSearchParams({
@@ -3571,7 +3558,7 @@ function renderPlayerDetail(){
     (log.length
       ? log.slice(0,2).map(function(g){
           return '<div class="pdBackGameRow"><span class="gr-l">'+
-            '<span class="wl '+(g.win?'w':'l')+'">'+(g.win?'승':'패')+'</span>'+
+            '<span class="wl '+(g.win?'w':'l')+'">'+(g.win?'W':'L')+'</span>'+
             '<span>'+g.date.slice(5)+' · vs '+g.opp+'</span></span><b>'+g.pts+'점</b></div>';
         }).join('')
       : '<div class="pdBackEmptyNote">아직 기록된 경기가 없어요</div>')+
@@ -3585,7 +3572,7 @@ function renderPlayerDetail(){
         '<div class="pdFace front"><div class="in'+(p.photo ? ' card-photo' : '')+'">'+
           '<div class="pdPhotoBg">'+(p.photo ? '<img class="pdAvatarPhotoFull" src="'+p.photo+'" alt="">' : '')+'</div>'+
           '<div class="pdAura" aria-hidden="true"></div>'+
-          '<div class="holoFoil" aria-hidden="true"></div>'+
+          '<div class="holoFoil '+holo+'" aria-hidden="true"></div>'+
           '<div class="holoGrain" aria-hidden="true"></div>'+
           '<div class="pdTopRow">'+
             '<div class="pdBrand"><span class="pdLogo">BASKET</span><span class="pdGradeBadge">'+gradeLabel+'</span></div>'+
@@ -3619,7 +3606,7 @@ function renderPlayerDetail(){
           '</div>'+
         '</div></div>'+
         '<div class="pdFace pdBack"><div class="in">'+
-          '<div class="holoFoil" aria-hidden="true"></div>'+
+          '<div class="holoFoil '+holo+'" aria-hidden="true"></div>'+
           '<div class="holoGrain" aria-hidden="true"></div>'+
           backBody+
         '</div></div>'+
