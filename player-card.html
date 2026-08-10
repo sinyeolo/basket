@@ -280,7 +280,11 @@ button{font-family:var(--font)}
   -webkit-mask-image:linear-gradient(to bottom, transparent 74%, #000 88%)}
 .card-photo .infoBlur3{mask-image:linear-gradient(to bottom, transparent 84%, #000 100%);
   -webkit-mask-image:linear-gradient(to bottom, transparent 84%, #000 100%)}
-.card-photo .holoFoil{opacity:.16;mix-blend-mode:soft-light}
+/* 사진이 있는 앞면 — 예전엔 soft-light .16이라 사실상 안 보였다(사진을 지키려다 홀로그램을 지웠다).
+   screen .20이면 어두운 배경 위로 무지갯빛 결이 뜨면서 사진의 밝은 부분은 거의 건드리지 않는다.
+   overlay는 어두운 카드에서 대비만 키워 오히려 더 어두워지고, soft-light는 아무리 올려도 결이 안 산다.
+   기울이면 --holo-tx/--holo-ty로 이 레이어가 함께 밀려서 빛을 따라 결이 흐른다. */
+.card-photo .holoFoil{opacity:.20;mix-blend-mode:screen}
 .card-photo .holoGrain{opacity:.08}
 .card-photo .pdAura{opacity:.18}
 
