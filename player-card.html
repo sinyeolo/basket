@@ -33,9 +33,45 @@ button{font-family:var(--font)}
 /* ---------------- 카드 위로 정보 시트가 떠서 올라오는 구조 ----------------
    heroFixed(헤더+카드)는 화면에 고정. sheet도 이제 화면 하단에 고정된 별도 레이어로,
    평소엔 헤드(핸들+이름)만 보이는 접힌 상태였다가, 헤드를 누르면 모바일 화면 전체를 채우며 펼쳐진다 */
-.heroFixed{position:fixed;top:0;left:0;right:0;bottom:92px;z-index:1;display:flex;flex-direction:column;align-items:center;
+/* overflow:hidden — 빛줄기 레이어(.stageRays)가 화면보다 넓어서(220%) 그대로 두면 가로 스크롤이 생긴다 */
+.heroFixed{position:fixed;top:0;left:0;right:0;bottom:92px;z-index:1;overflow:hidden;display:flex;flex-direction:column;align-items:center;
   /* 배경 팀 컬러 틴트는 제거 — 카드 주변 등급 오라(.cardGlow)와 색이 겹쳐 서로 탁해졌다 */
   background:radial-gradient(circle at 50% -10%,var(--stage-bg2),var(--stage-bg) 60%)}
+
+/* 무대 조명 — 화면 위쪽 한 점에서 빛줄기가 부챗살로 쏟아진다(레퍼런스의 스포트라이트 연출).
+   평행한 띠(repeating-linear-gradient)로는 부챗살이 안 나와서 원뿔(repeating-conic-gradient)을
+   화면 위 바깥(50% -18%)에 두고 각도로 잘랐다. 아래로 갈수록 사라지게 mask로 페이드시킨다.
+   색은 등급 토큰(--g-b/--g-a)을 그대로 써서 브론즈·실버·골드가 각자의 톤으로 빛난다.
+   두 겹을 서로 다른 속도·방향으로 아주 조금씩 돌리고 밝기를 엇갈리게 해서 '일렁이는' 느낌을 만든다
+   (한 겹만 쓰면 규칙적으로 도는 게 보여서 조명이 아니라 회전하는 무늬처럼 읽힌다). */
+.stageRays{position:absolute;top:0;left:50%;width:260%;height:100%;transform:translateX(-50%);
+  pointer-events:none;z-index:0;overflow:hidden}
+.stageRays i{position:absolute;inset:-30% -10% 0;display:block;transform-origin:50% 0;
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 30%,rgba(0,0,0,.62) 58%,transparent 92%);
+          mask-image:linear-gradient(to bottom,#000 0%,#000 30%,rgba(0,0,0,.62) 58%,transparent 92%)}
+.stageRays i:nth-child(1){
+  background:repeating-conic-gradient(from 206deg at 50% -6%,
+    transparent 0deg 1.4deg, var(--g-b) 2deg 3.4deg, transparent 4.2deg 7.8deg);
+  filter:blur(14px);animation:rayA 13s ease-in-out infinite alternate}
+.stageRays i:nth-child(2){
+  background:repeating-conic-gradient(from 201deg at 50% -6%,
+    transparent 0deg 2.2deg, var(--g-a) 3deg 5deg, transparent 5.8deg 11.5deg);
+  filter:blur(28px);animation:rayB 19s ease-in-out infinite alternate}
+@keyframes rayA{
+  0%  {transform:rotate(-1.6deg) scaleY(1);   opacity:.44}
+  50% {transform:rotate(.4deg)   scaleY(1.05);opacity:.78}
+  100%{transform:rotate(1.7deg)  scaleY(.98); opacity:.52}
+}
+@keyframes rayB{
+  0%  {transform:rotate(1.2deg)  scaleY(1.04);opacity:.82}
+  50% {transform:rotate(-.6deg)  scaleY(.97); opacity:.46}
+  100%{transform:rotate(-1.4deg) scaleY(1.02);opacity:.76}
+}
+/* 조명 시작점의 발광 — 빛줄기가 화면 위에서 갑자기 시작되지 않고 광원에서 번져 나오게 받쳐준다 */
+.stageRays::after{content:"";position:absolute;left:50%;top:0;width:130%;height:70%;
+  transform:translateX(-50%);pointer-events:none;
+  background:radial-gradient(58% 62% at 50% -4%,color-mix(in srgb,var(--g-b) 42%,transparent),transparent 70%)}
+@media (prefers-reduced-motion:reduce){ .stageRays i{animation:none;opacity:.3} }
 /* 헤더는 상단 고정, 카드+레벨행+힌트+뒤집기 버튼 묶음은 헤더 아래 남는 공간 안에서 세로 중앙 정렬 */
 .heroMid{flex:1;min-height:0;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
 /* 시트: 평소 접힌 상태(헤드 높이만) ↔ 펼친 상태(전체 화면) 두 가지 높이를 오가는 고정 레이어.
@@ -68,9 +104,23 @@ button{font-family:var(--font)}
 .sheetHead{position:sticky;top:0;z-index:1;background:var(--sh-bg);padding:0 20px 4px;cursor:pointer;touch-action:none;
   display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 /* 펼치면 핸들이 사라져 헤드 위가 비게 되므로(이름이 화면 최상단에 딱 붙음) 여백을 직접 준다.
-   노치 영역까지 덮으므로 safe-area만큼 더하고, 아래로 내용이 지나가는 스티키라 경계선을 둔다 */
-.sheet.sheet-expanded .sheetHead{padding-top:calc(16px + env(safe-area-inset-top));padding-bottom:12px;
-  border-bottom:1px solid var(--sh-border)}
+   노치 영역까지 덮으므로 safe-area만큼 더하고, 위아래 여백은 같은 16px로 맞춘다.
+   경계선 대신 아래로 갈수록 옅어지는 블러로 지나가는 내용과의 경계를 만든다 — 선 하나로 자르는 것보다
+   내용이 헤더 밑으로 흘러 들어가는 느낌이 자연스럽다. */
+.sheet.sheet-expanded .sheetHead{padding-top:calc(16px + env(safe-area-inset-top));padding-bottom:16px;
+  background:transparent}
+/* 점진 블러 — 배경 레이어를 헤더보다 아래로 더 길게(-24px) 빼고 mask로 아래쪽을 지운다.
+   위쪽은 불투명 + 블러가 꽉 차 있고, 아래로 내려갈수록 블러와 불투명도가 함께 사라진다.
+   (backdrop-filter는 세기를 그라디언트로 못 주므로, 레이어 자체를 mask로 페이드시켜 같은 효과를 낸다) */
+.sheet.sheet-expanded .sheetHead::before{
+  content:"";position:absolute;left:0;right:0;top:0;bottom:-24px;z-index:-1;pointer-events:none;
+  backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);
+  background:linear-gradient(to bottom,
+    var(--sh-bg) 0%,
+    color-mix(in srgb,var(--sh-bg) 82%, transparent) 58%,
+    transparent 100%);
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 46%,rgba(0,0,0,.55) 74%,transparent 100%);
+          mask-image:linear-gradient(to bottom,#000 0%,#000 46%,rgba(0,0,0,.55) 74%,transparent 100%)}
 .sheetBody{padding:0 20px 48px}
 .sheetTitle{display:flex;align-items:center;gap:6px;margin-bottom:16px;min-width:0}
 /* 펼친 상태(=스티키가 의미 있어지는 상태)에서만 노출되는 닫기 버튼 — 누르면 접힌 상태(첫 화면과 같은 모습)로 되돌아감 */
@@ -299,7 +349,16 @@ button{font-family:var(--font)}
   transition:width 1s cubic-bezier(.2,.8,.2,1)}
 
 /* 뒷면: 핵심 기록만 — 작은 글씨/스크롤 없음 */
-.cardFace.back .inner{padding:20px 16px;display:flex;flex-direction:column;gap:14px}
+/* 뒷면 바탕 — 중립 검정 대신 등급의 어두운 언더톤(--g-c)을 섞어 깐다. 그 위에 홀로그램(.holoFoil)이
+   screen으로 얹히므로, 바탕이 등급색을 머금고 있어야 브론즈·실버·골드가 각자 다른 결로 보인다.
+   앞면은 사진·오라가 덮고 있어 그대로 두고 뒷면에만 적용한다. */
+.cardFace.back .inner{padding:20px 16px;display:flex;flex-direction:column;gap:14px;
+  background:
+    radial-gradient(130% 85% at 50% -5%, color-mix(in srgb,var(--g-a) 38%, transparent), transparent 68%),
+    linear-gradient(175deg, color-mix(in srgb,var(--g-c) 92%, #0b0c10), #0a0b0e 82%)}
+/* 뒷면 홀로그램은 앞면보다 옅게 — 뒷면은 바탕의 등급색이 읽혀야 하는데, 앞면과 같은 농도로 얹으면
+   파스텔 사진이 등급색을 덮어 브론즈·실버·골드가 전부 비슷한 보랏빛으로 보인다 */
+.cardFace.back .holoFoil{opacity:.22}
 .backTitle{font-size:13px;font-weight:800;color:var(--g-text)}
 .backGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 /* 아래 최근 경기 행(.recRow)과 같은 배경·라인·라운드 — 뒷면의 두 블록이 한 벌로 읽히게 */
@@ -415,6 +474,8 @@ button{font-family:var(--font)}
 
 <div class="stage">
   <div class="heroFixed" id="heroFixed">
+    <!-- 무대 조명 — 등급 컬러 빛줄기가 위에서 쏟아지며 일렁인다. 두 겹이 서로 다른 속도로 움직인다 -->
+    <div class="stageRays" aria-hidden="true"><i></i><i></i></div>
     <header class="pcHeader">
       <span class="wm">BASKET</span>
       <span class="sp"></span>

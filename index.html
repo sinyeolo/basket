@@ -1055,7 +1055,16 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   transition:width 1s cubic-bezier(.2,.8,.2,1)}
 
 /* 뒷면 — 모바일 공유 카드(player-card.html)와 완전히 동일한 구성으로 통일 */
-.pdFace.pdBack .in{padding:26px 24px;display:flex;flex-direction:column;gap:14px}
+/* 뒷면 바탕 — 중립 검정 대신 등급의 어두운 언더톤(--g-c)을 섞어 깐다. 그 위에 홀로그램(.holoFoil)이
+   screen으로 얹히므로, 바탕이 등급색을 머금고 있어야 브론즈·실버·골드가 각자 다른 결로 보인다.
+   앞면은 사진·오라가 덮고 있어 그대로 두고 뒷면에만 적용한다. (player-card.html과 동일) */
+.pdFace.pdBack .in{padding:26px 24px;display:flex;flex-direction:column;gap:14px;
+  background:
+    radial-gradient(130% 85% at 50% -5%, color-mix(in srgb,var(--g-a,#888) 38%, transparent), transparent 68%),
+    linear-gradient(175deg, color-mix(in srgb,var(--g-c,#20232b) 92%, #0b0c10), #0a0b0e 82%)}
+/* 뒷면 홀로그램은 앞면보다 옅게 — 뒷면은 바탕의 등급색이 읽혀야 하는데, 앞면과 같은 농도로 얹으면
+   파스텔 사진이 등급색을 덮어 브론즈·실버·골드가 전부 비슷한 보랏빛으로 보인다 */
+.pdFace.pdBack .holoFoil{opacity:.22}
 .pdBackTitle{font-size:13px;font-weight:800;color:var(--g-text,#fff)}
 .pdBackGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 /* 아래 최근 경기 행(.pdBackGameRow)과 같은 배경·라인·라운드 — 뒷면의 두 블록이 한 벌로 읽히게 */
