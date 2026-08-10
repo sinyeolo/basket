@@ -47,9 +47,12 @@ button{font-family:var(--font)}
   position:fixed;left:0;right:0;bottom:0;z-index:3;background:var(--sh-bg);color:var(--sh-on);border-radius:26px 26px 0 0;
   box-shadow:0 -14px 32px rgba(0,0,0,.28);height:92px;overflow:hidden;
   transform:translateY(110%);
-  transition:transform .8s cubic-bezier(.16,.8,.24,1), height .45s cubic-bezier(.2,.9,.25,1.05)}
+  transition:transform .8s cubic-bezier(.16,.8,.24,1), height .45s cubic-bezier(.2,.9,.25,1.05), border-radius .3s ease}
 .sheet.sheet-visible{transform:translateY(0)}
-.sheet.sheet-expanded{height:100vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+/* 100dvh — CSS가 100vh(툴바 숨김 기준 고정값)를 쓰면 JS의 window.innerHeight와 어긋나서,
+   모바일에서 펼쳤을 때 시트가 화면보다 길어져 하단 내용에 닿지 못한다. dvh가 innerHeight와 일치한다.
+   화면 전체를 덮는 상태라 위쪽 라운드도 없앤다 — 남겨두면 상단 스티키 헤더가 그 곡선에 잘려 보인다. */
+.sheet.sheet-expanded{height:100vh;height:100dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;border-radius:0}
 /* 넛지는 transform이 아니라 height로 살짝 부풀렸다 줄인다 — bottom:0로 고정된 시트를 translateY로 들어올리면
    바닥이 뜨면서 그 틈으로 뒤 배경이 잘려 보이는 것처럼 드러나는 문제가 있어, height를 쓰면 아래쪽은 그대로 붙어있고
    위쪽만 살짝 솟아오르는 것처럼 자연스럽게 보인다 */
@@ -65,6 +68,10 @@ button{font-family:var(--font)}
 .sheet.sheet-expanded .sheetHandle{display:none}
 .sheetHead{position:sticky;top:0;z-index:1;background:var(--sh-bg);padding:0 20px 4px;cursor:pointer;touch-action:none;
   display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+/* 펼치면 핸들이 사라져 헤드 위가 비게 되므로(이름이 화면 최상단에 딱 붙음) 여백을 직접 준다.
+   노치 영역까지 덮으므로 safe-area만큼 더하고, 아래로 내용이 지나가는 스티키라 경계선을 둔다 */
+.sheet.sheet-expanded .sheetHead{padding-top:calc(16px + env(safe-area-inset-top));padding-bottom:12px;
+  border-bottom:1px solid var(--sh-border)}
 .sheetBody{padding:0 20px 48px}
 .sheetTitle{display:flex;align-items:center;gap:6px;margin-bottom:16px;min-width:0}
 /* 펼친 상태(=스티키가 의미 있어지는 상태)에서만 노출되는 닫기 버튼 — 누르면 접힌 상태(첫 화면과 같은 모습)로 되돌아감 */
