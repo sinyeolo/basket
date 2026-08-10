@@ -887,13 +887,12 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   background:linear-gradient(175deg,#191b22,#0d0e12 70%)}
 
 /* 카드 옆면(두께) — player-card.html의 .cardEdge와 동일 규칙. 평면일 땐 안 보이다가 좌우로 기울일 때만 살짝 드러남 */
-/* 모서리(라운드 처리된 부분)까지 옆면 띠를 채우면 각진 조각이 라운드 밖으로 튀어나와 보여 어색하다.
-   그래서 직선 구간(모서리 반경만큼 안쪽, .pdFace의 border-radius:20px와 동일)까지만 채운다 */
-.pdEdge{position:absolute;background:linear-gradient(180deg,var(--g-b,#ccc),var(--g-c,#20232b));backface-visibility:hidden}
-.pdEdge.r{top:20px;left:calc(100% - var(--card-thick) / 2);width:var(--card-thick);height:calc(100% - 40px);transform:rotateY(90deg)}
-.pdEdge.l{top:20px;left:calc(var(--card-thick) / -2);width:var(--card-thick);height:calc(100% - 40px);transform:rotateY(-90deg)}
-.pdEdge.t{left:20px;top:calc(var(--card-thick) / -2);height:var(--card-thick);width:calc(100% - 40px);transform:rotateX(90deg)}
-.pdEdge.b{left:20px;top:calc(100% - var(--card-thick) / 2);height:var(--card-thick);width:calc(100% - 40px);transform:rotateX(-90deg)}
+/* 카드 두께 — 앞/뒷면과 같은 크기·같은 라운드(.pdFace의 20px)의 면을 Z축으로 촘촘히 쌓아 만든다.
+   예전엔 네 변에 직사각형 띠를 세웠는데, 띠가 라운드 구간(네 모서리)을 비워 놓는 구조라
+   기울이면 직선부에만 두께가 보이고 모서리에서 실루엣이 끊겨 라운드가 어긋나 보였다.
+   (선수 카드 player-card.html의 .cardEdge와 같은 방식) */
+.pdEdge{position:absolute;inset:0;border-radius:20px;backface-visibility:hidden;pointer-events:none;
+  background:linear-gradient(160deg,var(--g-b,#ccc),var(--g-a,#999) 55%,var(--g-c,#20232b))}
 /* 시즌 평균 패널 — 화면 크기와 무관하게 항상 노출(카드를 안 뒤집어도 바로 보이게), 카드 뒷면과 일부 중복이지만 의도된 구성 */
 .pdSeasonAvg{margin-top:28px}
 
@@ -3530,10 +3529,10 @@ function renderPlayerDetail(){
           '<div class="holoGrain" aria-hidden="true"></div>'+
           backBody+
         '</div></div>'+
-        '<div class="pdEdge l" aria-hidden="true"></div>'+
-        '<div class="pdEdge r" aria-hidden="true"></div>'+
-        '<div class="pdEdge t" aria-hidden="true"></div>'+
-        '<div class="pdEdge b" aria-hidden="true"></div>'+
+        // 두께 — 앞면(+8px)과 뒷면(-8px) 사이를 2px 간격으로 채운 같은 라운드의 면들
+        [-7,-5,-3,-1,1,3,5,7].map(function(z){
+          return '<div class="pdEdge" aria-hidden="true" style="transform:translateZ('+z+'px)"></div>';
+        }).join('')+
       '</div>'+
     '</div></div>'+
     '<div class="pdLevelRow"><span class="lv">Lv.'+level+'</span><div class="pdExpBar"><i id="pdExpBar" data-target="'+expPct+'"></i></div></div>'+
