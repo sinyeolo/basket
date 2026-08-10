@@ -51,13 +51,11 @@ button{font-family:var(--font)}
    항상 같은 각도'가 되어 주기가 눈에 띈다. 주기가 어긋나 있어야 매번 다른 조합으로 보인다. */
 .stageRays{position:absolute;top:0;left:50%;width:260%;height:100%;transform:translateX(-50%);
   pointer-events:none;z-index:0;overflow:hidden;
-  animation:raysIn 2.2s cubic-bezier(.19,.72,.24,1) both}
-/* 등장 — 광원에서 빛이 새어 나오듯 위에서부터 열린다. 카드(riseIn)와 같은 타이밍에 시작해 조금 더 길게 끈다 */
-@keyframes raysIn{
-  0%  {opacity:0; transform:translateX(-50%) scaleY(.42)}
-  55% {opacity:1}
-  100%{opacity:1; transform:translateX(-50%) scaleY(1)}
-}
+  animation:raysIn 3s ease both}
+/* 등장 — 배경 자체는 움직이지 않는다(scaleY로 아래에서 위로 늘리던 걸 뺐다. 배경이 따라 움직이면
+   카드가 올라오는 모션과 겹쳐 화면 전체가 흔들리는 것처럼 보인다). 밝기만 서서히 올라온다.
+   방향별로 다르게 드러나는 느낌은 겹마다 밝기 애니메이션 시작 위상을 어긋나게 해서 만든다(animation-delay) */
+@keyframes raysIn{ from{opacity:0} to{opacity:1} }
 .stageRays i{position:absolute;inset:-30% -10% 0;display:block;transform-origin:50% 0;
   -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 18%,rgba(0,0,0,.62) 35%,transparent 55%);
           mask-image:linear-gradient(to bottom,#000 0%,#000 18%,rgba(0,0,0,.62) 35%,transparent 55%)}
@@ -65,27 +63,30 @@ button{font-family:var(--font)}
   background:repeating-conic-gradient(from 206deg at 50% -6%,
     transparent 0deg 1.4deg, var(--g-b) 2.1deg 3.5deg, transparent 4.4deg 7.3deg);
   filter:blur(9px);
-  animation:rayTurnA 47s ease-in-out infinite alternate, rayGlowA 8.5s ease-in-out infinite alternate}
+  animation:rayTurnA 47s ease-in-out infinite alternate, rayGlowA 8.5s ease-in-out infinite alternate;
+  animation-delay:0s, -1s}
 .stageRays i:nth-child(2){
   background:repeating-conic-gradient(from 199deg at 50% -6%,
     transparent 0deg 2.6deg, var(--g-a) 3.6deg 6.2deg, transparent 7.4deg 11.9deg);
   filter:blur(20px);
-  animation:rayTurnB 63s ease-in-out infinite alternate, rayGlowB 12.5s ease-in-out infinite alternate}
+  animation:rayTurnB 63s ease-in-out infinite alternate, rayGlowB 12.5s ease-in-out infinite alternate;
+  animation-delay:0s, -7s}
 .stageRays i:nth-child(3){
   background:repeating-conic-gradient(from 212deg at 50% -6%,
     transparent 0deg 4.2deg, var(--g-b) 5.4deg 8.1deg, transparent 9.6deg 17.4deg);
   filter:blur(30px);
-  animation:rayTurnC 79s ease-in-out infinite alternate, rayGlowC 17s ease-in-out infinite alternate}
+  animation:rayTurnC 79s ease-in-out infinite alternate, rayGlowC 17s ease-in-out infinite alternate;
+  animation-delay:0s, -13s}
 /* 회전 — 겹마다 방향·폭이 달라서 서로 스치듯 지나간다(전부 같은 방향이면 통째로 도는 것처럼 보인다) */
 @keyframes rayTurnA{ from{transform:rotate(-4.5deg)} to{transform:rotate(3.8deg)} }
 @keyframes rayTurnB{ from{transform:rotate(3.2deg)}  to{transform:rotate(-5.4deg)} }
 @keyframes rayTurnC{ from{transform:rotate(-2.4deg)} to{transform:rotate(6.1deg)} }
 /* 밝기 — 회전과 주기가 어긋나 있어 같은 각도에서 늘 같은 밝기가 되지 않는다 */
-@keyframes rayGlowA{ from{opacity:.50} to{opacity:.95} }
-@keyframes rayGlowB{ from{opacity:.92} to{opacity:.52} }
-@keyframes rayGlowC{ from{opacity:.40} to{opacity:.74} }
+@keyframes rayGlowA{ from{opacity:.34} to{opacity:.68} }
+@keyframes rayGlowB{ from{opacity:.66} to{opacity:.36} }
+@keyframes rayGlowC{ from{opacity:.28} to{opacity:.52} }
 /* 공기 중 먼지 — 빛줄기 사이를 아주 느리게 떠다닌다. 레퍼런스에도 있는, 빛에 실체를 주는 요소 */
-.stageRays::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.5;
+.stageRays::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.38;
   background-image:
     radial-gradient(1.6px 1.6px at 18% 22%, rgba(255,255,255,.9), transparent),
     radial-gradient(1.2px 1.2px at 63% 14%, rgba(255,255,255,.7), transparent),
@@ -111,10 +112,10 @@ button{font-family:var(--font)}
     radial-gradient(30% 26% at 50% -6%, color-mix(in srgb,var(--g-b) 64%,transparent), transparent 68%),
     radial-gradient(64% 66% at 50% -4%, color-mix(in srgb,var(--g-b) 30%,transparent), transparent 72%);
   animation:sourceGlow 10.5s ease-in-out infinite alternate}
-@keyframes sourceGlow{ from{opacity:.72} to{opacity:1} }
+@keyframes sourceGlow{ from{opacity:.52} to{opacity:.78} }
 @media (prefers-reduced-motion:reduce){
   .stageRays,.stageRays i,.stageRays::before,.stageRays::after{animation:none}
-  .stageRays i{opacity:.42}
+  .stageRays i{opacity:.32}
 }
 /* 헤더는 상단 고정, 카드+레벨행+힌트+뒤집기 버튼 묶음은 헤더 아래 남는 공간 안에서 세로 중앙 정렬 */
 .heroMid{flex:1;min-height:0;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center}
