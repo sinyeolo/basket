@@ -421,14 +421,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
    경기 목록·대진표는 진 쪽을 흐리게(.lose) 처리하므로 뱃지를 또 붙이면 시선만 분산된다. */
 .wbadge.lose{background:var(--mono-fill);color:var(--mono-on)}
 /* 검수 목록의 스코어 한 줄 — 팀명이 길어도 뱃지가 떨어져 나가지 않게 팀 단위로 묶어서 줄바꿈한다 */
-.mline{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px}
-.mteam{display:inline-flex;align-items:center;gap:6px;font-weight:600}
-.msc{font-family:var(--font-score);font-variant-numeric:tabular-nums;color:var(--on-surface-variant);font-weight:700}
-.rev{display:flex;align-items:center;gap:14px;padding:14px 10px}
-.rev+.rev{border-top:1px solid var(--outline-variant)}
-.rev .info{flex:1;min-width:0}
-.rev .info .t{font-weight:600;font-size:14.5px}
-.rev .info .s{color:var(--on-surface-variant);font-size:12.5px;margin-top:3px}
+
 
 /* ---------- Record console page ---------- */
 .console{padding:14px 20px 20px;display:flex;flex-direction:column;gap:8px;min-width:0}
@@ -835,6 +828,25 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   height:32px;padding:0 14px;border-radius:var(--r-btn)}
 .gact.act-main{background:var(--main);color:var(--on-main)}
 .gact.act-gray{background:var(--surface-variant);color:var(--on-surface)}
+/* 액션이 여러 개인 행(검수 페이지) — 기본 .gact의 알약 배경을 벗기고 버튼들만 나란히 세운다 */
+.gact-multi{background:none;padding:0;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+/* 행 전체가 <div>라 커서가 안 잡힌다. 버튼 위에서는 버튼 커서로 되돌린다 */
+.grow-multi{cursor:pointer}
+.grow-multi .gact-multi{cursor:default}
+/* 확정자·조 이름 같은 부가 정보 — 행 맨 아래 전체 폭 한 줄 */
+.grow-note{grid-column:1 / -1;font-size:11.5px;color:var(--on-surface-variant);opacity:.8;
+  text-align:left;margin-top:-2px}
+@media (max-width:900px){
+  /* 좁아지면 버튼이 쿼터 열을 밀어내므로 행을 접고 액션을 아래로 내린다.
+     .grow .gact{display:none}(모바일에서 기본 액션을 숨기는 규칙)이 검수 행 버튼까지 지워버려서
+     .gact-multi는 display를 되살려 준다 — 검수는 버튼이 곧 그 화면의 목적이라 숨기면 안 된다 */
+  .grow-multi{grid-template-columns:74px minmax(0,1fr);row-gap:10px}
+  .grow-multi .gq{display:none}
+  /* 특이도를 한 단계 올려 둔다(.grow.grow-multi .gact.gact-multi) — 숨기는 규칙이 이 블록보다
+     뒤에 있어서, 같은 특이도로는 순서에 밀려 계속 숨겨진다 */
+  .grow.grow-multi .gact.gact-multi{display:flex}
+  .grow.grow-multi .gact.gact-multi{grid-column:1 / -1;justify-self:start}
+}
 .grow:hover .gact{color:var(--on-surface)}
 .st{display:inline-flex;align-items:center;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:var(--r-chip);white-space:nowrap}
 .st-live{background:var(--primary-container);color:var(--on-primary-container)}
@@ -1349,9 +1361,6 @@ body.modal-open{overflow:hidden}
      match가 최소 폭을 확보 못 하면 아예 다음 줄로 내려가게 해서 팀명이 항상 보이도록 한다 */
   .row{flex-wrap:wrap;row-gap:6px}
   .match{flex:1 1 180px}
-  /* 기록 검수 행(.rev)도 같은 문제 — 칩+버튼 2개가 nowrap이라 .info가 0폭까지 밀려 글자가 한 줄에 한 자씩 줄바꿈됐다 */
-  .rev{flex-wrap:wrap;row-gap:8px}
-  .rev .info{flex:1 1 200px}
   /* 상세 페이지 상단 바(← 목록 + 버튼들)도 같은 문제 — 뒤로가기 링크가 버튼들에 밀려 글자가 한 자씩 줄바꿈됐다 */
   .topbar{flex-wrap:wrap;row-gap:8px}
   .back{flex:none;white-space:nowrap}
@@ -3313,15 +3322,6 @@ function holoSkin(key){
   for(var i=0; i<s.length; i++) n = (n*31 + s.charCodeAt(i)) >>> 0;
   return HOLO_SKINS[n % HOLO_SKINS.length];
 }
-/* 검수 대기·확정 목록의 "홈팀 64 : 61 원정팀" 한 줄 — 세 곳(대시보드 검수 대기, 검수 페이지 대기/확정)이
-   같은 문자열을 각자 만들고 있어서 한 곳으로 모았다. 이긴 팀 이름 뒤에 Win 뱃지가 붙는다. */
-function matchScoreLine(g){
-  var win = gameWinner(g);
-  return '<span class="mline">'+
-    '<span class="mteam">'+g.home.name+winBadge(win==='home')+'</span>'+
-    '<span class="msc">'+g.home.score+' : '+g.away.score+'</span>'+
-    '<span class="mteam">'+g.away.name+winBadge(win==='away')+'</span></span>';
-}
 
 /* 쿼터별 점수 — 실제 쿼터 기록이 아직 없어서 총점을 쿼터 수만큼 그럴듯하게 나눈 값이다(splitScore).
    GameEvent 파이프라인이 붙으면 쿼터별 실측으로 교체된다. */
@@ -3331,10 +3331,17 @@ function gameQuarters(g){
   var q = live ? live.q : 4;
   return { q:q, home:splitScore(g.home.score, q), away:splitScore(g.away.score, q), live:!!live };
 }
-/* 경기 행 1개 — 경기 목록·예선 일정이 공유한다(예전엔 같은 마크업이 두 벌 있었다).
+/* 경기 행 1개 — 경기 목록·예선 일정·대시보드·기록 검수가 전부 이걸 공유한다.
    배치는 Flashscore 참고: 상태를 맨 앞에 둬서 목록을 훑을 때 먼저 읽히게 하고,
-   양 팀을 세로로 쌓아 팀명 길이와 무관하게 점수 열이 정렬되게 한다. */
-function gameRowHtml(g){
+   양 팀을 세로로 쌓아 팀명 길이와 무관하게 점수 열이 정렬되게 한다.
+
+   opts.actions — 검수 페이지처럼 버튼이 여러 개 필요한 곳에서 기본 액션(.gact) 자리를 대체한다.
+   이때는 행을 <button>이 아니라 <div>로 낸다: 버튼 안에 버튼을 넣는 건 유효하지 않은 마크업이고,
+   실제로도 안쪽 버튼 클릭이 바깥 행 클릭으로 번져 '상세 기록'을 눌렀는데 다른 화면으로 가버린다.
+   opts.note — 상태 줄 아래 덧붙는 한 줄(확정자·동점 경고 등).
+   opts.chip — 상태 대신 붙일 칩 HTML. */
+function gameRowHtml(g, opts){
+  opts = opts || {};
   var m = STATUS_META[g.status];
   var isLive = g.status === 'live';
   var scored = g.home.score != null;
@@ -3363,15 +3370,32 @@ function gameRowHtml(g){
   // 액션 버튼이 쿼터 열로 밀려 올라가고, 점수 열이 다른 행과 어긋난다
   var quarters = '<span class="gq" aria-hidden="true">'+cols+'</span>';
   var label = isLive ? '진행 중' : m.label;
-  return '<button type="button" class="grow'+(isLive?' is-live':'')+'" data-goto="'+g.id+'"'+
+  var tag = opts.actions ? 'div' : 'button';
+  var attrs = opts.actions ? ' role="group"' : ' type="button"';
+  var act = opts.actions
+    ? '<span class="gact gact-multi">'+(opts.chip || '')+opts.actions+'</span>'
+    : '<span class="gact '+m.btnCls+'">'+m.act+icon('arrowRight','ic ic-sm')+'</span>';
+  return '<'+tag+' class="grow'+(isLive?' is-live':'')+(opts.actions?' grow-multi':'')+'" data-goto="'+g.id+'"'+attrs+
       ' aria-label="'+g.court+'코트 '+g.home.name+' '+(scored?g.home.score:'')+' 대 '+g.away.name+' '+(scored?g.away.score:'')+
         (win ? ', '+(win==='home'?g.home.name:g.away.name)+' 승' : '')+', '+label+'">'+
     '<span class="gstat"><span class="gs-t">'+(isLive ? g.clock : g.time)+'</span>'+
       '<span class="gs-l">'+g.court+'코트 · '+label+'</span></span>'+
     '<span class="gsides">'+side(g.home, win==='home', aw)+side(g.away, win==='away', hw)+'</span>'+
     quarters+
-    '<span class="gact '+m.btnCls+'">'+m.act+icon('arrowRight','ic ic-sm')+'</span>'+
-  '</button>';
+    act+
+    // 날짜·조·확정자 같은 부가 정보는 상태 열(74px)에 넣으면 잘린다. 행 아래 전체 폭 한 줄로 뺀다
+    (opts.note ? '<span class="grow-note">'+opts.note+'</span>' : '')+
+  '</'+tag+'>';
+}
+/* 액션이 여러 개인 행(검수 페이지)의 클릭 처리 — 버튼 영역(.gact)에서 시작된 클릭은 무시한다.
+   그러지 않으면 '상세 기록'을 눌렀을 때 버튼 동작과 행 이동이 둘 다 실행된다. */
+function bindGameRows(root, onRow){
+  root.querySelectorAll('[data-goto]').forEach(function(el){
+    el.addEventListener('click', function(e){
+      if(e.target.closest('.gact-multi')) return;
+      onRow(el.dataset.goto);
+    });
+  });
 }
 function renderGameList(){
   var root = document.getElementById('gameList');
@@ -4356,15 +4380,14 @@ function renderReviewPage(){
     root.innerHTML = pending.map(function(g){
       var tied = g.home.score === g.away.score;
       var md = g.date.slice(5).replace('-','/');
-      return '<div class="rev"><div class="info">'+
-          '<div class="t">'+matchScoreLine(g)+'</div>'+
-          '<div class="s">'+md+'('+g.day+') · '+g.court+'코트 · '+g.time+' · '+g.label+
-            (tied?' · 동점 — 연장 여부 확인 필요':'')+'</div>'+
-        '</div>'+
-        '<span class="chip '+(tied?'review':'neutral')+'">'+(tied?'확인 필요':'경기 종료')+'</span>'+
-        '<button type="button" class="btn btn-outline btn-sm" data-detail="'+g.id+'">상세 기록</button>'+
-        '<button type="button" class="btn btn-main btn-sm" data-confirm="'+g.id+'">결과 확정</button>'+
-      '</div>';
+      return gameRowHtml(g, {
+        note: md+'('+g.day+') · '+g.label,
+        // 동점은 그냥 넘기면 안 되는 상황이라 행 안에서 경고 칩으로 세운다
+        chip: tied ? '<span class="chip review">확인 필요 · 연장?</span>' : '',
+        actions:
+          '<button type="button" class="btn btn-outline btn-sm" data-detail="'+g.id+'">상세 기록</button>'+
+          '<button type="button" class="btn btn-main btn-sm" data-confirm="'+g.id+'">결과 확정</button>'
+      });
     }).join('');
     root.querySelectorAll('[data-confirm]').forEach(function(b){
       b.addEventListener('click', function(){ confirmReviewGame(b.dataset.confirm); });
@@ -4373,6 +4396,8 @@ function renderReviewPage(){
       // 그 경기를 로드해야 전체 기록이 해당 경기 기준으로 뜬다 (예전엔 항상 직전 경기 PBP가 떴음)
       b.addEventListener('click', function(){ loadGame(b.dataset.detail); location.hash = '#log'; });
     });
+    // 행 자체(버튼 밖)를 눌러도 상세 기록으로 — 경기 페이지와 같은 동작
+    bindGameRows(root, function(id){ loadGame(id); location.hash = '#log'; });
   }
 
   var fixedWrap = document.getElementById('reviewFixedWrap');
@@ -4381,14 +4406,12 @@ function renderReviewPage(){
     fixedWrap.hidden = fixed.length === 0;
     fixedRoot.innerHTML = fixed.map(function(g){
       var md = g.date.slice(5).replace('-','/');
-      return '<div class="rev"><div class="info">'+
-          '<div class="t">'+matchScoreLine(g)+'</div>'+
-          '<div class="s">'+md+'('+g.day+') · '+g.court+'코트 · '+g.time+' · '+g.label+' · '+g.fixedBy+'님이 '+g.fixedAt+' 확정</div>'+
-        '</div>'+
-        '<span class="chip confirmed">확정</span>'+
-        '<button type="button" class="btn btn-outline btn-sm" data-revert="'+g.id+'">검수로 되돌리기</button>'+
-      '</div>';
+      return gameRowHtml(g, {
+        note: md+'('+g.day+') · '+g.fixedBy+'님이 '+g.fixedAt+' 확정',
+        actions: '<button type="button" class="btn btn-outline btn-sm" data-revert="'+g.id+'">검수로 되돌리기</button>'
+      });
     }).join('');
+    bindGameRows(fixedRoot, function(id){ loadGame(id); location.hash = '#log'; });
     fixedRoot.querySelectorAll('[data-revert]').forEach(function(b){
       b.addEventListener('click', function(){ revertReviewGame(b.dataset.revert); });
     });
