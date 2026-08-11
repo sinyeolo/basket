@@ -442,14 +442,31 @@ button{font-family:var(--font)}
 .summary .it b{display:block;font-size:16px;font-weight:800;color:var(--sh-on)}
 .summary .it span{font-size:10px;color:var(--sh-on-dim);margin-top:3px;display:block}
 
-.section{max-width:340px;margin:36px auto 0;padding:0 4px}
+/* 섹션 간격 — 36px에서 키웠다. 카드 앨범·배지·기록이 붙어 있으면 하나의 긴 목록처럼 읽혀서
+   어디서 주제가 바뀌는지가 안 잡힌다. */
+.section{max-width:340px;margin:52px auto 0;padding:0 4px}
+/* OVR 히어로 — 시트 맨 위, 카드 앞면의 핵심 수치를 같은 무게로 다시 세운다 */
+.ovrHero{max-width:340px;margin:20px auto 0;padding:16px 18px;display:flex;align-items:center;
+  justify-content:space-between;gap:12px;background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:18px}
+.ovrHeroMain{display:flex;align-items:baseline;gap:10px;min-width:0}
+.ohLabel{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--sh-on-dim)}
+.ohValue{font-family:var(--font-score,inherit);font-size:38px;font-weight:800;line-height:1;color:var(--sh-on);
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.ohGrade{flex:none;font-size:11px;font-weight:800;letter-spacing:.06em;padding:5px 12px;border-radius:100px;
+  background:var(--sh-on);color:#fff}
+/* 시즌 평균 3스탯 */
+.avgRow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.avgIt{text-align:center;padding:14px 4px;background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:14px}
+.avgIt b{display:block;font-size:22px;font-weight:800;color:var(--sh-on);font-variant-numeric:tabular-nums;line-height:1.1}
+.avgIt span{display:block;margin-top:4px;font-size:10.5px;color:var(--sh-on-dim)}
 .section h3{font-size:13px;font-weight:800;color:var(--sh-on-dim);margin:0 0 14px;letter-spacing:.02em}
 /* .recRow는 카드 뒷면(다크)에도 쓰이는 공용 클래스라 기본값은 그대로 두고, 시트 안에서만 화이트로 덮어씀 */
 .recRow{display:flex;align-items:center;justify-content:space-between;background:#14161c;border:1px solid #22242c;
   border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:12.5px}
 .recRow:last-child{margin-bottom:0}
 .recRow .op{color:var(--on-dark-dim)}
-.recRow b{font-weight:800}
+/* 점수·리바·어시 — 800은 너무 굵어 행 전체가 무거웠다. 대회명과 위계만 구분되면 충분하다 */
+.recRow b{font-weight:600}
 /* 카드 뒷면에서는 부모(.cardFace.back .inner)의 flex gap이 간격을 잡으므로 행 자체 마진을 없앤다.
    두 값이 겹치면 14+10=24px로 벌어진다. 시트 안 .recRow는 flex가 아니라 마진이 필요해 그대로 둔다. */
 .cardFace.back .recRow{margin-bottom:0}
@@ -457,10 +474,11 @@ button{font-family:var(--font)}
 .sheet .recRow .op{color:var(--sh-on-dim)}
 /* 승패 뱃지 — 좁은 카드 뒷면에 맞춰 W/L 한 글자로. 운영 화면이 Win/Lose를 쓰므로 같은 말의 축약이다.
    승은 운영 화면과 같은 브랜드 컬러, 패는 회색. 시트(화이트)에서는 패의 회색만 밝은 톤으로 바꾼다. */
-.recRow .op{display:inline-flex;align-items:center;gap:7px;min-width:0}
-.wl{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:18px;
-  font-size:10px;font-weight:800;letter-spacing:.02em;
-  padding:2px 5px;border-radius:5px;line-height:1.4}
+.recRow .op{display:inline-flex;align-items:center;gap:8px;min-width:0}
+.recRow .op > span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.wl{display:inline-flex;align-items:center;justify-content:center;flex:none;
+  width:22px;height:18px;padding:0;box-sizing:border-box;
+  font-size:10px;font-weight:800;letter-spacing:.02em;border-radius:5px;line-height:1}
 .wl.w{background:rgba(34,197,94,.30);color:#ffffff}
 .wl.l{background:rgba(255,255,255,.13);color:rgba(255,255,255,.55)}
 .sheet .wl.w{background:#22c55e;color:#ffffff}
@@ -484,8 +502,8 @@ button{font-family:var(--font)}
 .albumCard .in{width:100%;height:100%;border-radius:14px;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:4px;padding:6px;text-align:center;
   background:
-    radial-gradient(130% 85% at 50% -5%, color-mix(in srgb,var(--ac-b) 30%, transparent), transparent 68%),
-    linear-gradient(175deg, color-mix(in srgb,var(--ac-a) 92%, #0b0c10), #0a0b0e 82%)}
+    radial-gradient(130% 85% at 50% -5%, color-mix(in srgb,var(--ac-b) 42%, transparent), transparent 70%),
+    linear-gradient(175deg, color-mix(in srgb,var(--ac-a) 96%, #14161c), #17191f 84%)}
 .albumCard .in b{font-size:10.5px;font-weight:800;color:#fff}
 .albumCard .in span{font-size:9px;color:var(--on-dark-dim)}
 
@@ -655,6 +673,16 @@ button{font-family:var(--font)}
     </div>
 
     <div class="sheetBody">
+      <!-- OVR — 카드 앞면의 핵심 수치를 시트 맨 위에도 크게 세운다. 시트만 보고도 이 선수가
+           어느 수준인지 바로 잡히게 하려는 것(예전엔 레벨·경기 수 같은 부가 지표만 있었다) -->
+      <div class="ovrHero">
+        <div class="ovrHeroMain">
+          <span class="ohLabel">OVR</span>
+          <span class="ohValue" id="sOvr">88</span>
+        </div>
+        <span class="ohGrade" id="sGrade">GOLD</span>
+      </div>
+
       <div class="summary">
         <div class="it"><b id="sLevel">15</b><span>레벨</span></div>
         <div class="it"><b id="sTour">6</b><span>참가 대회</span></div>
@@ -662,11 +690,21 @@ button{font-family:var(--font)}
         <div class="it"><b id="sBadge">3</b><span>대표 배지</span></div>
       </div>
 
+      <!-- ============ 시즌 평균 ============ -->
+      <div class="section">
+        <h3>시즌 평균</h3>
+        <div class="avgRow">
+          <div class="avgIt"><b id="sAvgPts">21.4</b><span>득점</span></div>
+          <div class="avgIt"><b id="sAvgReb">7.1</b><span>리바운드</span></div>
+          <div class="avgIt"><b id="sAvgAst">3.2</b><span>어시스트</span></div>
+        </div>
+      </div>
+
       <!-- ============ 기록 ============ -->
-      <div class="section" style="margin-top:20px">
+      <div class="section">
         <h3>최근 대회 기록</h3>
-        <div class="recRow"><span class="op"><span class="wl w">W</span><span>2026 여름 3×3 리그 · 8강</span></span><b>24점 8리바 4어시</b></div>
-        <div class="recRow"><span class="op"><span class="wl l">L</span><span>2026 여름 3×3 리그 · 예선</span></span><b>18점 6리바 3어시</b></div>
+        <div class="recRow"><span class="op"><span>2026 여름 3×3 리그 · 8강</span><span class="wl w">W</span></span><b>24점 8리바 4어시</b></div>
+        <div class="recRow"><span class="op"><span>2026 여름 3×3 리그 · 예선</span><span class="wl l">L</span></span><b>18점 6리바 3어시</b></div>
       </div>
       <div class="section">
         <h3>획득 배지</h3>
@@ -727,9 +765,9 @@ function icon(key, cls){ return '<svg class="'+(cls||'ic')+'" viewBox="0 0 24 24
 var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 var GRADES = {
-  bronze:  { label:'BRONZE',   level:3,  exp:20, albumTint:['#c9905a','#3d2412'] },
-  silver:  { label:'SILVER',   level:8,  exp:40, albumTint:['#e7ebef','#3d4249'] },
-  gold:    { label:'GOLD',     level:15, exp:62, albumTint:['#f4d16a','#4a3608'] }
+  bronze:  { label:'BRONZE',   level:3,  exp:20, albumTint:['#e0a874','#6b4120'] },
+  silver:  { label:'SILVER',   level:8,  exp:40, albumTint:['#f2f5f8','#6a727c'] },
+  gold:    { label:'GOLD',     level:15, exp:62, albumTint:['#ffdf85','#836013'] }
 };
 
 // photo: 선수가 사진을 업로드한 경우의 미리보기용 — 실제 서비스에선 업로드된 인물 사진(배경 제거본)이 들어갑니다.
@@ -832,6 +870,9 @@ function applyGrade(key){
   document.getElementById('fLevel').textContent = 'Lv.'+g.level;
   document.getElementById('fExpBar').style.width = g.exp+'%';
   document.getElementById('sLevel').textContent = g.level;
+  // 시트 상단 OVR·등급 — 카드 앞면과 같은 값을 쓴다(등급을 바꾸면 둘 다 함께 바뀐다)
+  document.getElementById('sOvr').textContent = ovrVal != null ? ovrVal : '?';
+  document.getElementById('sGrade').textContent = g.label;
   document.querySelectorAll('.previewBar button[data-g]').forEach(function(b){ b.classList.toggle('on', b.dataset.g===key); });
 }
 // OVR 카운트업 — 카드가 화면에 등장한 직후 00에서 목표 수치까지 올라가며 표시(easeOutCubic)
@@ -897,6 +938,10 @@ document.getElementById('fNo').textContent = PLAYER.no;
 document.getElementById('sTour').textContent = 6;
 document.getElementById('sGames').textContent = 42;
 document.getElementById('sBadge').textContent = PLAYER.badges.length;
+// 시즌 평균 — 카드 뒷면과 같은 PLAYER.stats를 쓴다(운영 콘솔이 URL로 넘긴 실측값)
+document.getElementById('sAvgPts').textContent = PLAYER.stats.pts;
+document.getElementById('sAvgReb').textContent = PLAYER.stats.reb;
+document.getElementById('sAvgAst').textContent = PLAYER.stats.ast;
 document.getElementById('backGrid').innerHTML =
   '<div class="backStat"><b>'+PLAYER.stats.pts+'</b><span>득점</span></div>'+
   '<div class="backStat"><b>'+PLAYER.stats.reb+'</b><span>리바운드</span></div>'+
@@ -1027,12 +1072,13 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
   // 핸들(접힌 상태에서만 보임)과 헤드(항상 보임, 펼치면 스티키) 둘 다에서 동작한다
   var dragTargets = [sheetHandle, sheetHead];
   var suppressClick = false;
-  // 탭은 한 단씩 올라가고 최상단에서 다시 접힌다(접힘 → 중간 → 최상단 → 접힘).
-  // 드래그로만 갈 수 있는 단이 있으면 중간 단이 있는 줄 모르고 지나치게 된다.
-  var NEXT = { collapsed:'half', half:'full', full:'collapsed' };
+  // 탭은 한 단씩 올라가기만 한다(접힘 → 중간 → 최상단). 최상단에서는 아무 일도 하지 않는다 —
+  // 내용을 다 펼쳐 읽는 중에 헤더를 잘못 건드리면 통째로 닫혀 버리기 때문이고, 닫기는 X 버튼이 맡는다.
+  var NEXT = { collapsed:'half', half:'full' };
   function cycle(){
     if(suppressClick){ suppressClick = false; return; }
-    setSheet(NEXT[sheetState()]);
+    var nx = NEXT[sheetState()];
+    if(nx) setSheet(nx);
   }
   sheetHead.addEventListener('click', cycle);
   sheetHandle.addEventListener('click', cycle);
