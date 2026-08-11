@@ -49,9 +49,10 @@
   --blue:#3b82f6; --red:#ef4444; --green:#22c55e; --amber:#f59e0b; --violet:#8b5cf6; --teal:#14b8a6;
   --green-c:#d9f4e6; --on-green-c:#0c5c37;
   --red-c:#fde2e2; --on-red-c:#a41e1e;
-  /* 승리 뱃지 — 밝은 초록(--green과 같은 톤) 위에 짙은 초록 글씨. 흰 글씨를 얹으면 대비가 2.3:1로
-     미달이라, 글씨를 어둡게 뒤집어 6.5:1을 확보하면서 배경은 밝게 유지했다. */
-  --win:#22c55e; --on-win:#052e16;
+  /* 승리 뱃지 — 밝은 초록 + 흰 글씨. 대비는 2.28:1로 WCAG AA(작은 텍스트 4.5:1) 미달이지만,
+     밝은 초록 배경을 유지하는 쪽을 PO가 선택했다. 접근성이 필요해지면 글씨를 #052e16으로
+     뒤집으면 배경 톤 그대로 6.5:1이 나온다. */
+  --win:#22c55e; --on-win:#ffffff;
   --home:#3b82f6; --away:#ef4444;
   --r-btn:100px; --r-card:16px; --r-chip:8px; --card-thick:16px;
   /* 컨트롤 높이 3단계 — 이전엔 36/38/40/42/44px가 뒤섞여 있어 정렬이 미세하게 어긋났습니다 */
@@ -1121,7 +1122,10 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdBackStat span{font-size:9.5px;color:rgba(255,255,255,.5)}
 .pdBackGameRow{display:flex;align-items:center;justify-content:space-between;background:#14161c;border:1px solid #22242c;
   border-radius:12px;padding:11px 14px;font-size:12.5px;color:rgba(255,255,255,.65)}
-.pdBackGameRow+.pdBackGameRow{margin-top:8px}
+/* 최근 경기 행 묶음 — 예전엔 행에 margin-top:8px을 줬는데, 부모(.in)가 flex gap:14px이라
+   14+8=22px로 벌어졌다. 행들을 자체 컨테이너로 묶어 그 안에서만 6px로 붙인다
+   (섹션 사이 간격 14px은 그대로 두고 같은 묶음 안만 좁히는 게 목적). */
+.pdBackGames{display:flex;flex-direction:column;gap:6px}
 .pdBackGameRow b{color:#fff;font-weight:800}
 .pdBackGameRow .gr-l{display:flex;align-items:center;gap:7px;min-width:0}
 /* 카드 위 승패 뱃지 — 좁은 뒷면에 맞춰 W/L 한 글자로. 운영 화면이 Win/Lose를 쓰므로 같은 말의 축약이다.
@@ -1129,7 +1133,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .wl{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:18px;
   font-size:10px;font-weight:800;letter-spacing:.02em;
   padding:2px 5px;border-radius:5px;line-height:1.4}
-.wl.w{background:rgba(34,197,94,.30);color:#86efac}
+.wl.w{background:rgba(34,197,94,.30);color:#ffffff}
 .wl.l{background:rgba(255,255,255,.13);color:rgba(255,255,255,.55)}
 .pdBackNote{margin-top:auto;text-align:center;font-size:10.5px;color:rgba(255,255,255,.4)}
 .pdBackEmptyNote{font-size:11px;color:rgba(255,255,255,.6);text-align:center;line-height:1.5;
@@ -3607,13 +3611,13 @@ function renderPlayerDetail(){
     '</div>'+
     '<div class="pdBackTitle">최근 경기</div>'+
     (log.length
-      ? log.slice(0,2).map(function(g){
+      ? '<div class="pdBackGames">'+log.slice(0,2).map(function(g){
           // 뱃지는 날짜 뒤 — 날짜가 먼저 읽히고 승패가 그 결과로 따라붙는 순서가 자연스럽다
           return '<div class="pdBackGameRow"><span class="gr-l">'+
             '<span>'+g.date.slice(5)+'</span>'+
             '<span class="wl '+(g.win?'w':'l')+'">'+(g.win?'W':'L')+'</span>'+
             '<span>vs '+g.opp+'</span></span><b>'+g.pts+'점</b></div>';
-        }).join('')
+        }).join('')+'</div>'
       : '<div class="pdBackEmptyNote">아직 기록된 경기가 없어요</div>')+
     '<div class="pdBackNote">'+(log[0] ? '기록 업데이트 '+log[0].date.replace(/-/g,'.') : '')+'</div>';
 

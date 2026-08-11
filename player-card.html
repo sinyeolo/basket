@@ -440,6 +440,9 @@ button{font-family:var(--font)}
 .recRow:last-child{margin-bottom:0}
 .recRow .op{color:var(--on-dark-dim)}
 .recRow b{font-weight:800}
+/* 카드 뒷면에서는 부모(.cardFace.back .inner)의 flex gap이 간격을 잡으므로 행 자체 마진을 없앤다.
+   두 값이 겹치면 14+10=24px로 벌어진다. 시트 안 .recRow는 flex가 아니라 마진이 필요해 그대로 둔다. */
+.cardFace.back .recRow{margin-bottom:0}
 .sheet .recRow{background:var(--sh-bg2);border-color:var(--sh-border);color:var(--sh-on)}
 .sheet .recRow .op{color:var(--sh-on-dim)}
 /* 승패 뱃지 — 좁은 카드 뒷면에 맞춰 W/L 한 글자로. 운영 화면이 Win/Lose를 쓰므로 같은 말의 축약이다.
@@ -448,9 +451,9 @@ button{font-family:var(--font)}
 .wl{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:18px;
   font-size:10px;font-weight:800;letter-spacing:.02em;
   padding:2px 5px;border-radius:5px;line-height:1.4}
-.wl.w{background:rgba(34,197,94,.30);color:#86efac}
+.wl.w{background:rgba(34,197,94,.30);color:#ffffff}
 .wl.l{background:rgba(255,255,255,.13);color:rgba(255,255,255,.55)}
-.sheet .wl.w{background:#22c55e;color:#052e16}
+.sheet .wl.w{background:#22c55e;color:#ffffff}
 .sheet .wl.l{background:var(--sh-bg2);color:var(--sh-on-dim);box-shadow:inset 0 0 0 1px var(--sh-border)}
 
 .badgeRow{display:flex;gap:14px;flex-wrap:wrap}
