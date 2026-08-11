@@ -49,7 +49,9 @@
   --blue:#3b82f6; --red:#ef4444; --green:#22c55e; --amber:#f59e0b; --violet:#8b5cf6; --teal:#14b8a6;
   --green-c:#d9f4e6; --on-green-c:#0c5c37;
   --red-c:#fde2e2; --on-red-c:#a41e1e;
-  --blue-c:#dbeafe; --on-blue-c:#1d4ed8; /* 승리 뱃지 전용 — 흰 배경 위 대비 7:1 */
+  /* 승리 뱃지 전용 진한 초록 — 상태 칩의 --green(#22c55e)은 흰 글씨 대비가 2.3:1로 미달이라
+     작은 볼드 텍스트(10.5px)에 쓸 수 없다. 한 단계 어둡게 잡아 5.4:1을 확보했다. */
+  --win:#0f7a43; --on-win:#ffffff;
   --home:#3b82f6; --away:#ef4444;
   --r-btn:100px; --r-card:16px; --r-chip:8px; --card-thick:16px;
   /* 컨트롤 높이 3단계 — 이전엔 36/38/40/42/44px가 뒤섞여 있어 정렬이 미세하게 어긋났습니다 */
@@ -361,6 +363,9 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .kpi .label{font-size:12px;color:var(--on-surface-variant);font-weight:500}
 .kpi .num{font-size:25px;font-weight:700;margin:5px 0 2px;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
 .kpi .num small{font-size:14px;font-weight:600;color:var(--on-surface-variant)}
+/* '5/7'의 분모 — 남은 경기가 읽어야 할 값이고 전체 경기 수는 맥락일 뿐이라 한 단계 작고 얇게.
+   숫자 크기가 같으면 둘 중 뭘 봐야 하는지가 안 잡힌다 */
+.kpi .num .num-sub{font-size:16px;font-weight:500;color:var(--on-surface-variant);letter-spacing:0}
 .kpi .delta{font-size:11.5px;font-weight:500;color:var(--on-surface-variant)}
 /* 진행 중 KPI 라벨 앞 펄스 점 — 다른 곳의 '진행중' 표시(.chip.live 등)와 같은 브랜드컬러 점 */
 .label .livedot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--primary);margin-right:6px;vertical-align:1px;animation:pulse 1.4s infinite}
@@ -416,11 +421,12 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .chip.neutral,.chip.info{background:var(--surface-variant);color:var(--on-surface-variant)}
 .chip.confirmed{background:var(--green-c);color:var(--on-green-c)}
 .chip.review{background:var(--red-c);color:var(--on-red-c)}
-/* 승리 뱃지 — 브랜드 컬러(꽉 찬 주황). 진행 중 상태 칩(.chip.live)도 브랜드 계열이지만
-   그쪽은 옅은 컨테이너 톤 + 펄스 점이고, 무엇보다 Win은 종료된 경기에만 붙어서 같은 행에 함께 나올 일이 없다.
+/* 승리 뱃지 — 초록. 빨강은 이 시스템에서 '확인 필요'(문제 있음)라 승리에 쓰면 의미가 섞이고,
+   실제로 검수 페이지에서 두 색이 한 화면에 같이 나온다.
+   확정 행의 좌측 초록 스트라이프와 색이 겹치지만, 둘 다 '결과가 나왔다'는 같은 뜻이라 서로를 받쳐 준다.
    상태 칩(.chip)보다 한 단계 작게 — 결과를 보조로 짚어줄 뿐 행의 주인공이 아니다. */
 .wbadge{display:inline-flex;align-items:center;flex:none;font-size:10.5px;font-weight:800;letter-spacing:.03em;
-  padding:2px 6px;border-radius:6px;background:var(--primary);color:var(--on-primary);white-space:nowrap}
+  padding:2px 6px;border-radius:6px;background:var(--win);color:var(--on-win);white-space:nowrap}
 /* 패배 표기는 선수 상세 '경기별 기록'처럼 승/패를 나란히 세워야 하는 곳에서만 쓴다.
    경기 목록·대진표는 진 쪽을 흐리게(.lose) 처리하므로 뱃지를 또 붙이면 시선만 분산된다. */
 .wbadge.lose{background:var(--mono-fill);color:var(--mono-on)}
@@ -1123,7 +1129,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .wl{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:18px;
   font-size:10px;font-weight:800;letter-spacing:.02em;
   padding:2px 5px;border-radius:5px;line-height:1.4}
-.wl.w{background:var(--primary);color:var(--on-primary)}
+.wl.w{background:rgba(34,197,94,.24);color:#6ee7a8}
 .wl.l{background:rgba(255,255,255,.13);color:rgba(255,255,255,.55)}
 .pdBackNote{margin-top:auto;text-align:center;font-size:10.5px;color:rgba(255,255,255,.4)}
 .pdBackEmptyNote{font-size:11px;color:rgba(255,255,255,.6);text-align:center;line-height:1.5;
@@ -1222,7 +1228,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .koTbdRow .ic{width:15px;height:15px;color:var(--outline)}
 @media (max-width:1000px){.koWrap{padding-bottom:12px}}
 
-/* 경기별 기록 — 테이블 라인을 줄이고 승/패는 좌측 컬러 바로 (스캔 속도 우선) */
+/* 경기별 기록 — 테이블 라인을 줄이고 승패는 Win/Lose 뱃지로 표기.
+   예전엔 좌측에 승패 컬러 바(파랑/회색)도 같이 있었는데, 뱃지가 들어오면서 같은 뜻을 두 번
+   표시하게 돼 바를 뺐다. */
 .glog{background:var(--surface);border-radius:20px;padding:0 0 10px;overflow-x:auto}
 .glog table{width:100%;border-collapse:collapse;min-width:600px;font-variant-numeric:tabular-nums}
 .glog th{font-size:11.5px;font-weight:600;color:var(--on-surface-variant);text-align:right;padding:12px 10px 10px;background:var(--head-bg)}
@@ -1231,10 +1239,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .glog td.l{text-align:left}
 .glog tbody tr:hover{background:var(--surface-variant)}
 .glog tbody tr[data-goto]{cursor:pointer}
-.glog .gdate{display:flex;align-items:center;gap:12px}
-.glog .bar{width:3px;height:26px;border-radius:2px;flex:none}
-.glog .bar.w{background:var(--blue)}
-.glog .bar.l{background:var(--outline)}
+.glog .gdate{display:flex;align-items:center}
 /* 두 줄(날짜 / 승패·상대팀)로 쌓을 의도인데 마크업이 <span>(인라인)이라 margin-top이 먹지 않고
    "2026.07.23승 · vs 인천 파이터스"처럼 한 줄로 붙어 나왔다 */
 .glog .dt2{display:block;font-weight:700;font-size:13.5px}
@@ -2433,7 +2438,8 @@ function renderKpis(){
     var todayGroup = ALL_GAMES[0];
     var items = todayGroup ? todayGroup.items : [];
     var remaining = items.filter(function(g){ return g.status==='live' || g.status==='soon'; }).length;
-    todayKpi.value = remaining+'/'+items.length;
+    // 남은 경기가 주 정보이고 전체는 맥락일 뿐이라, 분모를 작고 얇게 따로 감싼다
+    todayKpi.value = remaining+'<span class="num-sub">/'+items.length+'</span>';
   }
   var root = document.getElementById('kpiList');
   root.innerHTML = KPIS.map(function(k){
@@ -3688,7 +3694,7 @@ function renderPlayerDetail(){
       log.map(function(g){
         var gid = findGameIdFor(g.date, g.opp, t ? t.name : '');
         return '<tr'+(gid ? ' data-goto="'+gid+'" tabindex="0" role="button" aria-label="'+g.date+' vs '+g.opp+' 경기 상세 보기"' : '')+'>'+
-          '<td class="l"><span class="gdate"><i class="bar '+(g.win?'w':'l')+'"></i>'+
+          '<td class="l"><span class="gdate">'+
             '<span><span class="dt2">'+g.date+'</span>'+
             '<span class="opp">'+(g.win?'<span class="wbadge">Win</span>':'<span class="wbadge lose">Lose</span>')+
               '<span>vs '+g.opp+'</span></span></span></span></td>'+
