@@ -62,31 +62,33 @@ button{font-family:var(--font)}
 .stageRays i:nth-child(1){
   background:repeating-conic-gradient(from 206deg at 50% -6%,
     transparent 0deg 1.4deg, var(--g-b) 2.1deg 3.5deg, transparent 4.4deg 7.3deg);
-  filter:blur(9px);
-  animation:rayTurnA 47s ease-in-out infinite alternate, rayGlowA 8.5s ease-in-out infinite alternate;
+  filter:blur(18px);
+  animation:rayTurnA 34s ease-in-out infinite alternate, rayGlowA 6.5s ease-in-out infinite alternate;
   animation-delay:0s, -1s}
 .stageRays i:nth-child(2){
   background:repeating-conic-gradient(from 199deg at 50% -6%,
     transparent 0deg 2.6deg, var(--g-a) 3.6deg 6.2deg, transparent 7.4deg 11.9deg);
-  filter:blur(20px);
-  animation:rayTurnB 63s ease-in-out infinite alternate, rayGlowB 12.5s ease-in-out infinite alternate;
+  filter:blur(34px);
+  animation:rayTurnB 45s ease-in-out infinite alternate, rayGlowB 9.5s ease-in-out infinite alternate;
   animation-delay:0s, -7s}
 .stageRays i:nth-child(3){
   background:repeating-conic-gradient(from 212deg at 50% -6%,
     transparent 0deg 4.2deg, var(--g-b) 5.4deg 8.1deg, transparent 9.6deg 17.4deg);
-  filter:blur(30px);
-  animation:rayTurnC 79s ease-in-out infinite alternate, rayGlowC 17s ease-in-out infinite alternate;
+  filter:blur(48px);
+  animation:rayTurnC 57s ease-in-out infinite alternate, rayGlowC 13s ease-in-out infinite alternate;
   animation-delay:0s, -13s}
 /* 회전 — 겹마다 방향·폭이 달라서 서로 스치듯 지나간다(전부 같은 방향이면 통째로 도는 것처럼 보인다) */
-@keyframes rayTurnA{ from{transform:rotate(-4.5deg)} to{transform:rotate(3.8deg)} }
-@keyframes rayTurnB{ from{transform:rotate(3.2deg)}  to{transform:rotate(-5.4deg)} }
-@keyframes rayTurnC{ from{transform:rotate(-2.4deg)} to{transform:rotate(6.1deg)} }
-/* 밝기 — 회전과 주기가 어긋나 있어 같은 각도에서 늘 같은 밝기가 되지 않는다 */
-@keyframes rayGlowA{ from{opacity:.34} to{opacity:.68} }
-@keyframes rayGlowB{ from{opacity:.66} to{opacity:.36} }
-@keyframes rayGlowC{ from{opacity:.28} to{opacity:.52} }
+@keyframes rayTurnA{ from{transform:rotate(-7.5deg)} to{transform:rotate(6.4deg)} }
+@keyframes rayTurnB{ from{transform:rotate(5.6deg)}  to{transform:rotate(-8.8deg)} }
+@keyframes rayTurnC{ from{transform:rotate(-4.2deg)} to{transform:rotate(9.6deg)} }
+/* 밝기 — 회전과 주기가 어긋나 있어 같은 각도에서 늘 같은 밝기가 되지 않는다.
+   최고점은 낮추고(은은하게) 진폭은 키웠다(.12↔.54 등). 최고점만 낮추면 일렁임까지 같이 죽어서
+   그냥 흐린 배경이 되고, 진폭만 키우면 번쩍여서 과해진다 — 두 값을 반대로 움직여야 한다. */
+@keyframes rayGlowA{ from{opacity:.12} to{opacity:.54} }
+@keyframes rayGlowB{ from{opacity:.50} to{opacity:.10} }
+@keyframes rayGlowC{ from{opacity:.08} to{opacity:.42} }
 /* 공기 중 먼지 — 빛줄기 사이를 아주 느리게 떠다닌다. 레퍼런스에도 있는, 빛에 실체를 주는 요소 */
-.stageRays::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.38;
+.stageRays::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.28;
   background-image:
     radial-gradient(1.6px 1.6px at 18% 22%, rgba(255,255,255,.9), transparent),
     radial-gradient(1.2px 1.2px at 63% 14%, rgba(255,255,255,.7), transparent),
@@ -112,7 +114,7 @@ button{font-family:var(--font)}
     radial-gradient(30% 26% at 50% -6%, color-mix(in srgb,var(--g-b) 64%,transparent), transparent 68%),
     radial-gradient(64% 66% at 50% -4%, color-mix(in srgb,var(--g-b) 30%,transparent), transparent 72%);
   animation:sourceGlow 10.5s ease-in-out infinite alternate}
-@keyframes sourceGlow{ from{opacity:.52} to{opacity:.78} }
+@keyframes sourceGlow{ from{opacity:.30} to{opacity:.60} }
 @media (prefers-reduced-motion:reduce){
   .stageRays,.stageRays i,.stageRays::before,.stageRays::after{animation:none}
   .stageRays i{opacity:.32}
