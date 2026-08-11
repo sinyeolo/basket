@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>스코어북 · 운영 콘솔 (Material Design 3)</title>
+<title>BASKET · 운영 콘솔 (Material Design 3)</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 <style>
 /* 스코어보드 시계 — DSEG7 Classic (7세그먼트 LCD 폰트, SIL Open Font License).
@@ -23,7 +23,7 @@
 </style>
 <style>
 /* ============================================================
-   스코어북 운영 콘솔 — 대시보드 + 경기 기록 콘솔 단일 파일 통합.
+   BASKET 운영 콘솔 — 대시보드 + 경기 기록 콘솔 단일 파일 통합.
    GNB 클릭은 실제 파일 이동이 아니라 같은 문서 안에서 페이지를
    전환하는 방식(해시 라우팅)이라, 어떤 미리보기 환경에서 열어도
    '페이지 이동이 안 되는' 문제 없이 동작합니다.
@@ -604,7 +604,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* ================================================================
    팀 · 선수 관리 / 기록 · 순위 페이지
    플랜비의 리스트-행 구조 + 네이버 KBL 기록표 구조를 참고하되,
-   스코어북의 라이트 M3 토큰 체계로 옮겨 적용했습니다.
+   BASKET의 라이트 M3 토큰 체계로 옮겨 적용했습니다.
    ================================================================ */
 .tabs{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
 .tab{height:var(--h-sm);padding:0 18px;border:1px solid var(--outline-variant);border-radius:var(--r-btn);background:var(--surface);color:var(--on-surface-variant);font-family:var(--font);font-weight:600;font-size:13.5px;cursor:pointer;transition:.12s;display:inline-flex;align-items:center;gap:6px}
@@ -2047,7 +2047,7 @@ body.modal-open{overflow:hidden}
  * 여기 정의된 객체들이 화면의 "props 계약"입니다. 실제 개발 시에는
  * 이 구조를 그대로 API 응답 스키마(예: GET /api/tournaments/:id/dashboard,
  * GET /api/games/:id/console)로 옮기면 되고, render 함수는 각각
- * React 컴포넌트로 치환됩니다. (스코어북 기획서의 GameEvent /
+ * React 컴포넌트로 치환됩니다. (BASKET 기획서의 GameEvent /
  * PlayerStat / TeamStat 엔티티와 대응)
  * ================================================================ */
 
@@ -3460,7 +3460,7 @@ function renderGamesPage(){ renderGameTabs(); renderGameList(); }
  * 선수 상세 페이지 — <PlayerDetailPage/>
  * MVP 범위: ① 프로필 ② 시즌 평균 ③ 경기별 기록 ④ 삭제.
  * 플랜비의 '계정 연결 / 휴면 처리'는 회비·출결 관리 기능이라
- * 스코어북 MVP(기록 중심) 범위 밖으로 두고 후순위로 뺐습니다.
+ * BASKET MVP(기록 중심) 범위 밖으로 두고 후순위로 뺐습니다.
  * ================================================================ */
 var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 var currentPlayerId = null;

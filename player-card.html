@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>스코어북 · 선수 카드 (프로토타입)</title>
+<title>BASKET · 선수 카드 (프로토타입)</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 <style>
 :root{
@@ -13,7 +13,7 @@
   --card-w:300px; --card-h:420px; --card-thick:16px;
   /* 공통 컴포넌트 토큰 — prototype/index.html과 동일 값 사용(라운드·높이 스케일 통일) */
   --r-btn:100px; --r-card:20px; --r-chip:8px; --h-sm:40px; --h-md:44px;
-  /* 스코어북 메인(브랜드 포인트) 컬러 — index.html의 --primary/--on-primary와 동일 값 */
+  /* BASKET 메인(브랜드 포인트) 컬러 — index.html의 --primary/--on-primary와 동일 값 */
   --brand:#ff7a00; --on-brand:#1a1200;
 }
 *{box-sizing:border-box}
@@ -1252,7 +1252,7 @@ function showToast(msg){
   setTimeout(function(){ toast.classList.remove('show'); }, 2200);
 }
 function doShare(){
-  var shareData = { title:'스코어북 · '+PLAYER.name+' 선수 카드', text:PLAYER.team+' · '+PLAYER.pos, url: location.href };
+  var shareData = { title:'BASKET · '+PLAYER.name+' 선수 카드', text:PLAYER.team+' · '+PLAYER.pos, url: location.href };
   if(navigator.share){ navigator.share(shareData).catch(function(){}); }
   else if(navigator.clipboard){ navigator.clipboard.writeText(location.href); showToast('링크가 복사됐습니다 (프로토타입 · 실제 공개 링크 아님)'); }
   else { showToast('이 브라우저에서는 공유가 지원되지 않습니다'); }
