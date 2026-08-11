@@ -154,7 +154,12 @@ button{font-family:var(--font)}
 /* 핸들은 접힘·중간 단에서 보이고 최상단에서만 숨긴다.
    중간 단은 아직 더 올릴 수 있는 상태라 손잡이가 그 여지를 알려줘야 한다.
    최상단은 화면을 꽉 채워 더 올릴 곳이 없고, 스티키 헤더와 닫기 버튼이 그 역할을 대신한다. */
-.sheetHandle{width:36px;height:4px;border-radius:2px;background:rgba(0,0,0,.14);margin:18px auto 12px;touch-action:none;cursor:pointer}
+/* 드래그 영역은 시트 전체 폭 — 예전엔 36x4px 막대 자체가 유일한 대상이라 조금만 빗나가도 안 잡혔다.
+   보이는 막대는 ::before로 그리고, 위 18px·아래 12px 여백까지 포함한 띠 전체가 손잡이 역할을 한다
+   (여백을 margin이 아니라 padding으로 준 이유 — margin은 요소 바깥이라 이벤트가 닿지 않는다). */
+.sheetHandle{width:100%;padding:18px 0 12px;margin:0;display:flex;align-items:center;justify-content:center;
+  touch-action:none;cursor:pointer}
+.sheetHandle::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:rgba(0,0,0,.14)}
 .sheet.sheet-expanded .sheetHandle{display:none}
 .sheetHead{position:sticky;top:0;z-index:1;background:var(--sh-bg);padding:0 20px 4px;cursor:pointer;touch-action:none;
   display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
@@ -439,25 +444,30 @@ button{font-family:var(--font)}
 .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:340px;margin:22px auto 0;
   background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:16px;padding:16px 6px}
 .summary .it{text-align:center;padding:0 4px}
-.summary .it b{display:block;font-size:16px;font-weight:800;color:var(--sh-on)}
+.summary .it b{display:block;font-size:20px;font-weight:800;color:var(--sh-on)}
 .summary .it span{font-size:10px;color:var(--sh-on-dim);margin-top:3px;display:block}
 
 /* 섹션 간격 — 36px에서 키웠다. 카드 앨범·배지·기록이 붙어 있으면 하나의 긴 목록처럼 읽혀서
    어디서 주제가 바뀌는지가 안 잡힌다. */
 .section{max-width:340px;margin:52px auto 0;padding:0 4px}
-/* OVR 히어로 — 시트 맨 위, 카드 앞면의 핵심 수치를 같은 무게로 다시 세운다 */
-.ovrHero{max-width:340px;margin:20px auto 0;padding:16px 18px;display:flex;align-items:center;
-  justify-content:space-between;gap:12px;background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:18px}
-.ovrHeroMain{display:flex;align-items:baseline;gap:10px;min-width:0}
-.ohLabel{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--sh-on-dim)}
-.ohValue{font-family:var(--font-score,inherit);font-size:38px;font-weight:800;line-height:1;color:var(--sh-on);
-  font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+/* OVR 히어로 — 박스 없이. 회색 박스로 감싸면 아래 4지표 카드와 무게가 비슷해져 '가장 중요한 수치'로
+   안 읽힌다. 등급 뱃지를 위에 올리고 그 아래 큰 숫자를 놓아 위에서 아래로 읽히게 했다. */
+.ovrHero{max-width:340px;margin:22px auto 0;padding:0 4px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.ovrHeroMain{display:flex;align-items:baseline;gap:8px;min-width:0}
+.ohValue{font-size:44px;font-weight:800;line-height:.95;color:var(--sh-on);letter-spacing:-.03em}
+.ohLabel{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--sh-on-dim)}
+/* 등급 뱃지 — 검정 대신 등급별 컬러. 어느 등급인지가 색으로 먼저 읽혀야 한다 */
 .ohGrade{flex:none;font-size:11px;font-weight:800;letter-spacing:.06em;padding:5px 12px;border-radius:100px;
-  background:var(--sh-on);color:#fff}
+  background:var(--sh-bg2);color:var(--sh-on)}
+.ohGrade[data-g="gold"]{background:#f4d16a;color:#4a3608}
+.ohGrade[data-g="silver"]{background:#dde2e8;color:#3d4249}
+.ohGrade[data-g="bronze"]{background:#e0a874;color:#4a2a12}
 /* 시즌 평균 3스탯 */
 .avgRow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .avgIt{text-align:center;padding:14px 4px;background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:14px}
-.avgIt b{display:block;font-size:22px;font-weight:800;color:var(--sh-on);font-variant-numeric:tabular-nums;line-height:1.1}
+/* font-variant-numeric:tabular-nums를 뺐다 — 자간을 건드린 게 아니라 이 속성이 '1'처럼 좁은 숫자에도
+   같은 칸을 줘서 '21.4'가 벌어져 보였다. 표처럼 자릿수를 맞출 필요가 없는 자리라 비례 숫자가 맞다. */
+.avgIt b{display:block;font-size:19px;font-weight:800;color:var(--sh-on);line-height:1.1;letter-spacing:-.01em}
 .avgIt span{display:block;margin-top:4px;font-size:10.5px;color:var(--sh-on-dim)}
 .section h3{font-size:13px;font-weight:800;color:var(--sh-on-dim);margin:0 0 14px;letter-spacing:.02em}
 /* .recRow는 카드 뒷면(다크)에도 쓰이는 공용 클래스라 기본값은 그대로 두고, 시트 안에서만 화이트로 덮어씀 */
@@ -532,7 +542,10 @@ button{font-family:var(--font)}
 .toast.show{opacity:1}
 
 /* ---------------- 하단 브랜드 푸터 ---------------- */
-.brandFoot{display:flex;flex-direction:column;align-items:center;gap:8px;margin:44px auto 0}
+/* 브랜드 푸터 앞 굵은 구분선 — 위쪽 안내문까지가 '내용'이고 여기부터는 서비스 표기라 성격이 다르다.
+   얇은 선으론 섹션 사이 구분선과 헷갈려서 8px 블록으로 확실히 끊는다. */
+.footDivider{height:8px;background:var(--sh-bg2);margin:40px -20px 0}
+.brandFoot{display:flex;flex-direction:column;align-items:center;gap:8px;margin:32px auto 0}
 .brandFootLogo{width:40px;height:40px;border-radius:50%;background:var(--sh-bg2, rgba(255,255,255,.06));border:1px solid var(--sh-border, rgba(255,255,255,.14));
   display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:var(--sh-on, var(--on-dark))}
 .brandFootName{font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--sh-on-dim, var(--on-dark-dim))}
@@ -676,11 +689,11 @@ button{font-family:var(--font)}
       <!-- OVR — 카드 앞면의 핵심 수치를 시트 맨 위에도 크게 세운다. 시트만 보고도 이 선수가
            어느 수준인지 바로 잡히게 하려는 것(예전엔 레벨·경기 수 같은 부가 지표만 있었다) -->
       <div class="ovrHero">
+        <span class="ohGrade" id="sGrade" data-g="gold">GOLD</span>
         <div class="ovrHeroMain">
-          <span class="ohLabel">OVR</span>
           <span class="ohValue" id="sOvr">88</span>
+          <span class="ohLabel">OVR</span>
         </div>
-        <span class="ohGrade" id="sGrade">GOLD</span>
       </div>
 
       <div class="summary">
@@ -728,6 +741,7 @@ button{font-family:var(--font)}
 
       <p class="footNote">이 화면은 시각·인터랙션 검토용 정적 프로토타입입니다. 운영 콘솔 "카드 링크"로 들어온 선수 이름·팀·기록은 실제 값이 반영되지만, 사진 업로드·실제 서버 공유 링크는 아직 연결되지 않았습니다.</p>
 
+      <div class="footDivider" aria-hidden="true"></div>
       <div class="brandFoot">
         <span class="brandFootLogo">B</span>
         <span class="brandFootName">BASKET</span>
@@ -872,7 +886,8 @@ function applyGrade(key){
   document.getElementById('sLevel').textContent = g.level;
   // 시트 상단 OVR·등급 — 카드 앞면과 같은 값을 쓴다(등급을 바꾸면 둘 다 함께 바뀐다)
   document.getElementById('sOvr').textContent = ovrVal != null ? ovrVal : '?';
-  document.getElementById('sGrade').textContent = g.label;
+  var sg = document.getElementById('sGrade');
+  sg.textContent = g.label; sg.dataset.g = key;
   document.querySelectorAll('.previewBar button[data-g]').forEach(function(b){ b.classList.toggle('on', b.dataset.g===key); });
 }
 // OVR 카운트업 — 카드가 화면에 등장한 직후 00에서 목표 수치까지 올라가며 표시(easeOutCubic)
