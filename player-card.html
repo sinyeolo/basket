@@ -5,9 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>BASKET · 선수 카드 (프로토타입)</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<!-- Tektur — 영문·숫자 전용. Google이 서브셋마다 unicode-range를 붙여 배포하므로 폰트 스택 맨 앞에 둬도
+     한글에는 매칭되지 않고 자동으로 Pretendard로 넘어간다(Tektur에는 한글 글리프가 없다). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap">
 <style>
 :root{
   --font:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  /* Tektur — 영문·숫자 전용 디스플레이 폰트. 본문 전체에 쓰지 않는다: 각진 서체라 10~13px 표·시각
+     같은 작은 숫자에서는 읽기가 떨어진다. 큰 수치와 대표 문구에만 건다.
+     Google이 서브셋마다 unicode-range를 붙여 배포하므로 한글은 매칭되지 않고 Pretendard로 넘어간다. */
+  --font-display:'Tektur',var(--font);
   --stage-bg:#0a0b0f; --stage-bg2:#14161c;
   --on-dark:#f4f4f6; --on-dark-dim:#9a9ba3;
   --card-w:300px; --card-h:420px; --card-thick:16px;
@@ -350,7 +359,7 @@ button{font-family:var(--font)}
 
 .topRow{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;align-items:flex-start}
 .brandCol{display:flex;flex-direction:column;align-items:center;gap:6px}
-.brandLogo{color:var(--g-text);font-size:11px;font-weight:900;letter-spacing:.06em;
+.brandLogo{font-family:var(--font-display);color:var(--g-text);font-size:11px;font-weight:900;letter-spacing:.06em;
   filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
 .gradeBadge{border-radius:100px;background:rgba(0,0,0,.4);color:var(--g-text);
   border:1px solid color-mix(in srgb,var(--g-b) 55%,transparent);
@@ -358,7 +367,7 @@ button{font-family:var(--font)}
 .ovrBox{text-align:right;color:#fff}
 .ovrBox .lb{font-size:14px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);
   display:flex;align-items:center;justify-content:flex-end;gap:4px}
-.ovrBox .vl{font-size:43px;font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--g-text)}
+.ovrBox .vl{font-family:var(--font-display);font-size:43px;font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--g-text)}
 /* OVR 라벨 전체(텍스트+아이콘)를 하나의 버튼으로 묶어 탭 영역을 넓힘. 아이콘 자체는 배경 없이 테두리만 */
 .ovrInfoBtn{background:none;border:none;padding:0;font:inherit;cursor:pointer}
 .ovrInfoBtn:hover{color:rgba(255,255,255,.8)}
@@ -444,7 +453,7 @@ button{font-family:var(--font)}
 .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:340px;margin:22px auto 0;
   background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:16px;padding:16px 6px}
 .summary .it{text-align:center;padding:0 4px}
-.summary .it b{display:block;font-size:20px;font-weight:800;color:var(--sh-on)}
+.summary .it b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:var(--sh-on)}
 .summary .it span{font-size:10px;color:var(--sh-on-dim);margin-top:3px;display:block}
 
 /* 섹션 간격 — 36px에서 키웠다. 카드 앨범·배지·기록이 붙어 있으면 하나의 긴 목록처럼 읽혀서
@@ -452,9 +461,12 @@ button{font-family:var(--font)}
 .section{max-width:340px;margin:52px auto 0;padding:0 4px}
 /* OVR 히어로 — 박스 없이. 회색 박스로 감싸면 아래 4지표 카드와 무게가 비슷해져 '가장 중요한 수치'로
    안 읽힌다. 등급 뱃지를 위에 올리고 그 아래 큰 숫자를 놓아 위에서 아래로 읽히게 했다. */
-.ovrHero{max-width:340px;margin:22px auto 0;padding:0 4px;display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.ovrHero{max-width:340px;margin:22px auto 0;padding:0 4px;display:flex;flex-direction:row;
+  align-items:center;justify-content:space-between;gap:12px}
+/* 라벨을 숫자 앞에 둬서 큰 숫자가 오른쪽 끝을 붙잡게 한다 — 숫자를 앞에 두면 오른쪽 끝이 작은 라벨로
+   끝나 시선이 흐려진다 */
 .ovrHeroMain{display:flex;align-items:baseline;gap:8px;min-width:0}
-.ohValue{font-size:44px;font-weight:800;line-height:.95;color:var(--sh-on);letter-spacing:-.03em}
+.ohValue{font-family:var(--font-display);font-size:44px;font-weight:800;line-height:.95;color:var(--sh-on);letter-spacing:-.03em}
 .ohLabel{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--sh-on-dim)}
 /* 등급 뱃지 — 검정 대신 등급별 컬러. 어느 등급인지가 색으로 먼저 읽혀야 한다 */
 .ohGrade{flex:none;font-size:11px;font-weight:800;letter-spacing:.06em;padding:5px 12px;border-radius:100px;
@@ -467,7 +479,7 @@ button{font-family:var(--font)}
 .avgIt{text-align:center;padding:14px 4px;background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:14px}
 /* font-variant-numeric:tabular-nums를 뺐다 — 자간을 건드린 게 아니라 이 속성이 '1'처럼 좁은 숫자에도
    같은 칸을 줘서 '21.4'가 벌어져 보였다. 표처럼 자릿수를 맞출 필요가 없는 자리라 비례 숫자가 맞다. */
-.avgIt b{display:block;font-size:19px;font-weight:800;color:var(--sh-on);line-height:1.1;letter-spacing:-.01em}
+.avgIt b{font-family:var(--font-display);display:block;font-size:19px;font-weight:800;color:var(--sh-on);line-height:1.1;letter-spacing:-.01em}
 .avgIt span{display:block;margin-top:4px;font-size:10.5px;color:var(--sh-on-dim)}
 .section h3{font-size:13px;font-weight:800;color:var(--sh-on-dim);margin:0 0 14px;letter-spacing:.02em}
 /* .recRow는 카드 뒷면(다크)에도 쓰이는 공용 클래스라 기본값은 그대로 두고, 시트 안에서만 화이트로 덮어씀 */
@@ -691,8 +703,8 @@ button{font-family:var(--font)}
       <div class="ovrHero">
         <span class="ohGrade" id="sGrade" data-g="gold">GOLD</span>
         <div class="ovrHeroMain">
-          <span class="ohValue" id="sOvr">88</span>
           <span class="ohLabel">OVR</span>
+          <span class="ohValue" id="sOvr">88</span>
         </div>
       </div>
 

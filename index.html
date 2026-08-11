@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BASKET · 운영 콘솔 (Material Design 3)</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<!-- Tektur — 영문·숫자 전용. Google이 서브셋마다 unicode-range를 붙여 배포하므로 폰트 스택 맨 앞에 둬도
+     한글에는 매칭되지 않고 자동으로 Pretendard로 넘어간다(Tektur에는 한글 글리프가 없다). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap">
 <style>
 /* 스코어보드 시계 — DSEG7 Classic (7세그먼트 LCD 폰트, SIL Open Font License).
    실제 경기장 전광판과 같은 표기가 되어 운영자가 즉시 '경기 시계'로 인지합니다. */
@@ -62,6 +67,10 @@
   --e2:0 1px 2px rgba(0,0,0,.05),0 2px 6px 2px rgba(0,0,0,.06);
   --e3:0 4px 10px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);
   --font:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  /* Tektur — 영문·숫자 전용 디스플레이 폰트. 본문 전체에 쓰지 않는다: 각진 서체라 10~13px 표·시각
+     같은 작은 숫자에서는 읽기가 떨어진다. 큰 수치와 대표 문구에만 건다.
+     Google이 서브셋마다 unicode-range를 붙여 배포하므로 한글은 매칭되지 않고 Pretendard로 넘어간다. */
+  --font-display:'Tektur',var(--font);
   --font-digital:'DSEG7 Classic',ui-monospace,monospace;
   /* 점수 표기 전용 — 레퍼런스(Flashscore)의 FS_Numbers는 자체 라이선스 폰트라 배포본에 임베드할 수 없다.
      로컬에 설치돼 있으면 그대로 쓰고, 없으면 본문 폰트로 떨어지되 tabular-nums로 자릿수를 고정해
@@ -356,13 +365,13 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* flex-wrap 없으면 태블릿 폭 등에서 옆의 검색창·버튼에 밀려 h1이 0폭까지 눌려 글자가 세로로 줄바꿈됐다.
    넓은 화면에선 한 줄에 다 들어가서 지금과 똑같이 보이고, 좁을 때만 검색·버튼 쪽이 다음 줄로 내려간다 */
 .page-head{display:flex;flex-wrap:wrap;row-gap:12px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
-.page-head h1{font-size:26px;font-weight:700;letter-spacing:-.02em}
+.page-head h1{font-family:var(--font-display);font-size:26px;font-weight:700;letter-spacing:-.02em}
 .page-head .sub{color:var(--on-surface-variant);font-size:13px;margin-top:6px}
 .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:8px}
 .kpi{background:var(--surface);border-radius:var(--r-card);padding:13px 18px}
 .kpi .k-top{display:flex;align-items:center;justify-content:space-between;min-height:18px}
 .kpi .label{font-size:12px;color:var(--on-surface-variant);font-weight:500}
-.kpi .num{font-size:25px;font-weight:700;margin:5px 0 2px;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
+.kpi .num{font-family:var(--font-display);font-size:25px;font-weight:700;margin:5px 0 2px;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
 .kpi .num small{font-size:14px;font-weight:600;color:var(--on-surface-variant)}
 /* '5/7'의 분모 — 남은 경기가 읽어야 할 값이고 전체 경기 수는 맥락일 뿐이라 한 단계 작고 얇게.
    숫자 크기가 같으면 둘 중 뭘 봐야 하는지가 안 잡힌다 */
@@ -481,7 +490,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* 100점 이상 3자리 스코어에서도 좌우 폭이 흔들리지 않도록 최소 폭 확보 */
 .tscore{min-width:3ch}
 .tname .dot{width:14px;height:14px;border-radius:50%;flex:none}
-.tscore{font-family:var(--font-score);font-size:60px;font-weight:800;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.tscore{font-family:var(--font-display);font-size:60px;font-weight:800;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 .tfoul{font-size:12px;color:var(--on-surface-variant);font-weight:500}
 .center{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 40px}
 /* 쿼터 상태·시계는 '상태 표시'이지 액션이 아니므로 포인트 컬러를 쓰지 않음 */
@@ -821,7 +830,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    점수가 밀려서, 위아래 두 팀의 점수가 어긋난다(이 행 레이아웃의 핵심이 점수 열 정렬이다) */
 .gside .gt-who{display:flex;align-items:center;gap:6px;min-width:0}
 .gside .gt-nm{font-weight:700;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gside .gt-sc{font-family:var(--font-score);font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;
+.gside .gt-sc{font-family:var(--font-display);font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;
   letter-spacing:-.02em;min-width:2.2ch;text-align:right}
 /* 진 팀은 이름·점수를 함께 흐리게 — 어느 쪽이 이겼는지 한눈에 */
 .gside.lose .gt-nm,.gside.lose .gt-sc{color:var(--on-surface-variant);font-weight:500}
@@ -1028,7 +1037,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdOvr{text-align:right;color:#fff}
 .pdOvr .lb{font-size:14px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);
   display:flex;align-items:center;justify-content:flex-end;gap:4px}
-.pdOvr .vl{font-size:43px;font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--g-text,#fff)}
+.pdOvr .vl{font-family:var(--font-display);font-size:43px;font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--g-text,#fff)}
 /* OVR 라벨 전체(텍스트+아이콘)를 하나의 버튼으로 묶어 탭 영역을 넓힘. 아이콘 자체는 배경 없이 테두리만 */
 .pdOvrInfoBtn{background:none;border:none;padding:0;font:inherit;cursor:pointer}
 .pdOvrInfoBtn:hover{color:rgba(255,255,255,.8)}
@@ -1147,7 +1156,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .stile{padding:22px 12px;text-align:center;position:relative}
 .stile+.stile::before{content:"";position:absolute;left:0;top:22px;bottom:22px;width:1px;background:var(--outline-variant)}
 .stile .lb{font-size:12px;color:var(--on-surface-variant);font-weight:600;letter-spacing:.01em}
-.stile .vl{font-size:20px;font-weight:800;margin-top:8px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.stile .vl{font-family:var(--font-display);font-size:20px;font-weight:800;margin-top:8px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
 .stile .vl small{font-size:13px;font-weight:700;color:var(--on-surface-variant);margin-left:1px}
 @media (max-width:720px){
   .stiles{grid-template-columns:repeat(3,minmax(0,1fr))}
