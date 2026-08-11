@@ -578,7 +578,9 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .split .act-score{border-radius:14px}
 .split .act-score:first-child{border-radius:var(--r-btn) 14px 14px var(--r-btn)}
 .split .act-score:last-child{border-radius:14px var(--r-btn) var(--r-btn) 14px}
-.act-score{background:var(--main);color:#fff;padding:18px 0}
+/* 슛 버튼 — +2/+3/+1 숫자와 라벨 모두 Tektur. 기록 콘솔에서 가장 자주·빠르게 누르는 버튼이라
+   숫자가 또렷해야 한다(한글 '점'은 글리프가 없어 Pretendard로 넘어간다) */
+.act-score{font-family:var(--font-display);background:var(--main);color:#fff;padding:18px 0}
 .act-score:hover{filter:brightness(1.2)}
 /* 눌렀을 때 인터렉션은 기타 기록 버튼(.act-stat)과 동일: 모서리가 순간적으로 좁아지는 shape morph */
 .split .act-score:active,.split .act-score.morph{border-radius:14px}
@@ -1388,6 +1390,11 @@ body.modal-open{overflow:hidden}
   .searchTop{width:auto;flex:1 1 180px;min-width:0}
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  /* 선수 상세 시즌 평균은 5칸이라 2열이면 2/2/1로 세 줄이 되고 마지막 줄이 반만 차서 어색하다.
+     6열 그리드에 앞 3개는 2칸씩(=한 줄에 3개), 뒤 2개는 3칸씩(=한 줄에 2개) 태워 3+2로 맞춘다. */
+  .stiles-5{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .stiles-5 .stile{grid-column:span 2}
+  .stiles-5 .stile:nth-child(n+4){grid-column:span 3}
   .fieldrow{grid-template-columns:1fr!important} /* 대회 로고·포스터 행은 인라인 style="1fr 1fr"이라 !important 아니면 안 먹는다 */
   /* 탭·필터칩은 폰 폭에서 줄바꿈시키지 않고 한 줄로 두고 좌우 스와이프로 넘긴다 —
      여러 줄로 접히면 세로 공간을 많이 먹고 "지금 몇 번째 탭인지"가 잘 안 보인다.
@@ -3695,7 +3702,7 @@ function renderPlayerDetail(){
   }
   var avgPanel = '<div class="pdSeasonAvg">'+(s
     ? '<div class="sec-title">시즌 평균 <span class="n">'+s.g+'경기 · 경기당</span></div>'+
-      '<div class="stiles">'+
+      '<div class="stiles stiles-5">'+
         tile('득점', s.pts.toFixed(1)) + tile('리바운드', s.reb.toFixed(1)) + tile('어시스트', s.ast.toFixed(1)) +
         tile('스틸', s.stl.toFixed(1)) + tile('블록', s.blk.toFixed(1)) +
       '</div>'
