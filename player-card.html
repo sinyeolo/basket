@@ -476,11 +476,16 @@ button{font-family:var(--font)}
 /* 카드 앨범 — 가로 스와이프 목록. 눌러서 실제 카드 크기로 확대(라이트박스) */
 .albumScroll{display:flex;gap:12px;overflow-x:auto;padding:2px 2px 6px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
 .albumScroll::-webkit-scrollbar{display:none}
-.albumCard{flex:0 0 92px;aspect-ratio:5/7;border-radius:10px;padding:2px;background:linear-gradient(155deg,var(--ac-b),var(--ac-a));
+.albumCard{flex:0 0 92px;aspect-ratio:5/7;border-radius:16px;padding:2px;background:linear-gradient(155deg,var(--ac-b),var(--ac-a));
   transition:transform .12s;scroll-snap-align:start;border:none;cursor:pointer}
 .albumCard:active{transform:scale(.96)}
-.albumCard .in{width:100%;height:100%;border-radius:8px;background:#0d0e12;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:4px;padding:6px;text-align:center}
+/* 썸네일 안쪽도 실제 카드 뒷면과 같은 레시피 — 중립 검정(#0d0e12) 대신 등급의 어두운 언더톤(--ac-a)을
+   깔고 위쪽에 밝은 톤(--ac-b)을 옅게 얹는다. 검정이면 프레임만 등급색이라 세 장이 거의 같아 보였다. */
+.albumCard .in{width:100%;height:100%;border-radius:14px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;padding:6px;text-align:center;
+  background:
+    radial-gradient(130% 85% at 50% -5%, color-mix(in srgb,var(--ac-b) 30%, transparent), transparent 68%),
+    linear-gradient(175deg, color-mix(in srgb,var(--ac-a) 92%, #0b0c10), #0a0b0e 82%)}
 .albumCard .in b{font-size:10.5px;font-weight:800;color:#fff}
 .albumCard .in span{font-size:9px;color:var(--on-dark-dim)}
 
