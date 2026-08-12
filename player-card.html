@@ -224,7 +224,7 @@ button{font-family:var(--font)}
 
 /* ---------------- 헤더 — 카드보다 시각적으로 약해야 함 ---------------- */
 .pcHeader{display:flex;align-items:center;gap:10px;padding:14px 16px;width:100%}
-.pcHeader .wm{font-size:13px;font-weight:800;letter-spacing:.02em;color:var(--on-dark-dim);white-space:nowrap;flex-shrink:0}
+.pcHeader .wm{width:74px;height:26px;color:var(--on-dark-dim);opacity:.9}
 .pcHeader .sp{flex:1}
 .pcHeader button{width:36px;height:36px;border-radius:50%;border:1px solid #2a2d36;background:#15171d;color:var(--on-dark);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
 .pcHeader button:hover{background:#1c1f27}
@@ -269,7 +269,7 @@ button{font-family:var(--font)}
 /* 프레임 그라디언트 — 예전엔 155deg 축의 끝을 --g-c(거의 검정)로 뒀는데, 그 지점이 하필 좌하단
    모서리에 떨어져서 밝은 좌측·하단 사이에 검은 얼룩처럼 보였다. 어두운 끝을 빼고 밝은 두 톤만
    왕복시켜 네 모서리 모두 같은 금속 톤을 유지한다. */
-.cardFace{padding:3px;background:linear-gradient(155deg,var(--g-b),var(--g-a) 42%,var(--g-b) 70%,var(--g-a))}
+.cardFace{padding:2px;background:linear-gradient(155deg,var(--g-b),var(--g-a) 42%,var(--g-b) 70%,var(--g-a))}
 /* 테두리를 도는 빛 — 카드보다 큰 원뿔 그라디언트를 회전시키고, 가운데는 .inner가 덮어
    3px 프레임에서만 빛줄기가 흐르는 것처럼 보이게 한다. 밝기는 등급별 --shine-op를 따라간다.
    .cardFace의 overflow:hidden이 회전하는 사각형을 카드 모양으로 잘라주고,
@@ -359,7 +359,12 @@ button{font-family:var(--font)}
 
 .topRow{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;align-items:flex-start}
 .brandCol{display:flex;flex-direction:column;align-items:center;gap:6px}
-.brandLogo{font-family:var(--font-display);color:var(--g-text);font-size:11px;font-weight:900;letter-spacing:.06em;
+/* 로고 — SVG를 마스크로 깔고 background-color로 색을 준다. 자리마다 등급 톤·회색·흰색이
+   달라야 하는데 SVG 자체는 주황 고정이라, 마스크로 써야 한 파일로 전부 커버된다. */
+.logoMark{display:block;background-color:currentColor;
+  -webkit-mask:url(assets/logo.svg) no-repeat center/contain;
+          mask:url(assets/logo.svg) no-repeat center/contain}
+.brandLogo{color:var(--g-text);width:64px;height:22px;
   filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
 .gradeBadge{border-radius:100px;background:rgba(0,0,0,.4);color:var(--g-text);
   border:1px solid color-mix(in srgb,var(--g-b) 55%,transparent);
@@ -425,7 +430,20 @@ button{font-family:var(--font)}
 /* 뒷면 바탕 — 중립 검정 대신 등급의 어두운 언더톤(--g-c)을 섞어 깐다. 그 위에 홀로그램(.holoFoil)이
    screen으로 얹히므로, 바탕이 등급색을 머금고 있어야 브론즈·실버·골드가 각자 다른 결로 보인다.
    앞면은 사진·오라가 덮고 있어 그대로 두고 뒷면에만 적용한다. */
-.cardFace.back .inner{padding:20px 16px;display:flex;flex-direction:column;gap:14px;
+/* 뒷면 대각 로고 패턴 — 등급 톤으로 10%. 정보가 없는 넓은 면을 비워 두는 대신 브랜드로 채운다.
+   패턴은 positioned라 그냥 두면 static인 본문 위를 덮는다 — 본문에 z-index를 올려 뒤로 보낸다. */
+.backLogoPat{position:absolute;inset:-40%;z-index:1;pointer-events:none;opacity:.07;
+  background-color:var(--g-b);
+  -webkit-mask-image:url(assets/logo-pat.svg);mask-image:url(assets/logo-pat.svg);
+  -webkit-mask-size:92px auto;mask-size:92px auto;
+  -webkit-mask-repeat:repeat;mask-repeat:repeat;
+  transform:rotate(-35deg)}
+.cardFace.back .inner > .backTitle,
+.cardFace.back .inner > .backGrid,
+.cardFace.back .inner > .recRow,
+.cardFace.back .inner > .backEmptyNote,
+.cardFace.back .inner > .backNote{position:relative;z-index:2}
+.cardFace.back .inner{padding:20px 16px;display:flex;flex-direction:column;gap:14px;filter:opacity(1);
   background:
     radial-gradient(130% 85% at 50% -5%, color-mix(in srgb,var(--g-a) 38%, transparent), transparent 68%),
     linear-gradient(175deg, color-mix(in srgb,var(--g-c) 92%, #0b0c10), #0a0b0e 82%)}
@@ -435,7 +453,7 @@ button{font-family:var(--font)}
 .backTitle{font-size:13px;font-weight:800;color:var(--g-text)}
 .backGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 /* 아래 최근 경기 행(.recRow)과 같은 배경·라인·라운드 — 뒷면의 두 블록이 한 벌로 읽히게 */
-.backStat{text-align:center;background:#14161c;border:1px solid #22242c;border-radius:12px;padding:10px 4px}
+.backStat{backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);text-align:center;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:10px 4px}
 .backStat b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800}
 .backStat span{font-size:10.5px;color:var(--on-dark-dim)}
 .backNote{margin-top:auto;font-size:10.5px;color:var(--on-dark-dim);text-align:center}
@@ -483,7 +501,7 @@ button{font-family:var(--font)}
 .avgIt span{display:block;margin-top:4px;font-size:10.5px;color:var(--sh-on-dim)}
 .section h3{font-size:13px;font-weight:800;color:var(--sh-on-dim);margin:0 0 14px;letter-spacing:.02em}
 /* .recRow는 카드 뒷면(다크)에도 쓰이는 공용 클래스라 기본값은 그대로 두고, 시트 안에서만 화이트로 덮어씀 */
-.recRow{display:flex;align-items:center;justify-content:space-between;background:#14161c;border:1px solid #22242c;
+.recRow{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);
   border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:12.5px}
 .recRow:last-child{margin-bottom:0}
 .recRow .op{color:var(--on-dark-dim)}
@@ -491,7 +509,7 @@ button{font-family:var(--font)}
 .recRow b{font-weight:600}
 /* 카드 뒷면에서는 부모(.cardFace.back .inner)의 flex gap이 간격을 잡으므로 행 자체 마진을 없앤다.
    두 값이 겹치면 14+10=24px로 벌어진다. 시트 안 .recRow는 flex가 아니라 마진이 필요해 그대로 둔다. */
-.cardFace.back .recRow{margin-bottom:0}
+.cardFace.back .recRow{margin-bottom:0;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
 .sheet .recRow{background:var(--sh-bg2);border-color:var(--sh-border);color:var(--sh-on)}
 .sheet .recRow .op{color:var(--sh-on-dim)}
 /* 승패 뱃지 — 좁은 카드 뒷면에 맞춰 W/L 한 글자로. 운영 화면이 Win/Lose를 쓰므로 같은 말의 축약이다.
@@ -560,7 +578,7 @@ button{font-family:var(--font)}
 .brandFoot{display:flex;flex-direction:column;align-items:center;gap:8px;margin:32px auto 0}
 .brandFootLogo{width:40px;height:40px;border-radius:50%;background:var(--sh-bg2, rgba(255,255,255,.06));border:1px solid var(--sh-border, rgba(255,255,255,.14));
   display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:var(--sh-on, var(--on-dark))}
-.brandFootName{font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--sh-on-dim, var(--on-dark-dim))}
+.brandFootName{width:88px;height:30px;color:var(--sh-on-dim, var(--on-dark-dim))}
 .copyright{text-align:center;font-size:10.5px;color:var(--sh-on-dim, #4a4c53);margin:8px auto 0}
 
 /* 검토 전용 미리보기 바 — 실제 서비스 화면 아님. 헤더 바로 아래 고정, 하단 탭바와 겹치지 않게 분리 */
@@ -596,7 +614,7 @@ button{font-family:var(--font)}
     <!-- 무대 조명 — 등급 컬러 빛줄기가 위에서 쏟아지며 일렁인다. 두 겹이 서로 다른 속도로 움직인다 -->
     <div class="stageRays" aria-hidden="true"><i></i><i></i><i></i></div>
     <header class="pcHeader">
-      <span class="wm">BASKET</span>
+      <span class="wm logoMark" role="img" aria-label="BASKET"></span>
       <span class="sp"></span>
       <button id="btnShareTop" aria-label="공유"></button>
       <button id="btnMore" aria-label="더보기"></button>
@@ -618,7 +636,7 @@ button{font-family:var(--font)}
               <div class="holoFoil" aria-hidden="true"></div>
               <div class="holoGrain" aria-hidden="true"></div>
               <div class="topRow">
-                <div class="brandCol"><span class="brandLogo">BASKET</span><span class="gradeBadge" id="fGradeChip">GOLD</span></div>
+                <div class="brandCol"><span class="brandLogo logoMark" role="img" aria-label="BASKET"></span><span class="gradeBadge" id="fGradeChip">GOLD</span></div>
                 <div class="ovrBox"><button type="button" class="lb ovrInfoBtn" id="ovrInfoBtn" aria-label="OVR 계산 방식 안내">OVR<span class="ovrInfoIcon" aria-hidden="true">?</span></button><div class="vl" id="fOvr">88</div></div>
               </div>
               <div class="photoLayer"><div class="avatarSil" id="fAvatar"></div></div>
@@ -651,6 +669,7 @@ button{font-family:var(--font)}
           </div>
           <div class="cardFace back">
             <div class="inner">
+              <div class="backLogoPat" aria-hidden="true"></div>
               <div class="holoFoil" aria-hidden="true"></div>
               <div class="holoGrain" aria-hidden="true"></div>
               <div class="backTitle">시즌 평균 기록</div>
@@ -658,7 +677,7 @@ button{font-family:var(--font)}
               <div class="backTitle">최근 경기</div>
               <div class="recRow"><span class="op"><span>07.23</span><span class="wl w">W</span><span>vs 인천 파이터스</span></span><b>24점</b></div>
               <div class="backEmptyNote" id="backEmptyNote">아직 기록된 경기가 없어요 · 위 수치는 예시 데이터입니다</div>
-              <div class="backNote" id="backUpdated">기록 업데이트 2026.07.23 13:20</div>
+              <div class="backNote" id="backUpdated">update 2026.07.23 13:20</div>
             </div>
           </div>
           <!-- 두께 — 앞면(+8px)과 뒷면(-8px) 사이를 2px 간격으로 채운 같은 라운드의 면들 -->
@@ -756,7 +775,7 @@ button{font-family:var(--font)}
       <div class="footDivider" aria-hidden="true"></div>
       <div class="brandFoot">
         <span class="brandFootLogo">B</span>
-        <span class="brandFootName">BASKET</span>
+        <span class="brandFootName logoMark" role="img" aria-label="BASKET"></span>
       </div>
       <p class="copyright">© 2026 BASKET. All rights reserved.</p>
     </div>
@@ -1274,7 +1293,7 @@ function lbCardFrontHTML(grade){
     '<div class="holoFoil '+holo+'" aria-hidden="true"></div>'+
     '<div class="holoGrain" aria-hidden="true"></div>'+
     '<div class="topRow">'+
-      '<div class="brandCol"><span class="brandLogo">BASKET</span><span class="gradeBadge">'+g.label+'</span></div>'+
+      '<div class="brandCol"><span class="brandLogo logoMark" role="img" aria-label="BASKET"></span><span class="gradeBadge">'+g.label+'</span></div>'+
       '<div class="ovrBox"><div class="lb">OVR</div><div class="vl">'+(PLAYER.hasRecord ? ovrFor(grade) : '?')+'</div></div>'+
     '</div>'+
     '<div class="photoLayer"'+(PLAYER.photo ? ' style="display:none"' : '')+'><div class="avatarSil">'+(PLAYER.photo ? '' : avatarSvgHTML())+'</div></div>'+
@@ -1308,6 +1327,7 @@ function lbCardFrontHTML(grade){
 function lbCardBackHTML(entry){
   var holo = holoSkin('back-'+entry.season);
   return '<div class="inner">'+
+    '<div class="backLogoPat" aria-hidden="true"></div>'+
     '<div class="holoFoil '+holo+'" aria-hidden="true"></div>'+
     '<div class="holoGrain" aria-hidden="true"></div>'+
     '<div class="backTitle">시즌 평균 기록</div>'+
