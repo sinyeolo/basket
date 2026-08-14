@@ -367,13 +367,14 @@ button{font-family:var(--font)}
    screen .20이면 어두운 배경 위로 무지갯빛 결이 뜨면서 사진의 밝은 부분은 거의 건드리지 않는다.
    overlay는 어두운 카드에서 대비만 키워 오히려 더 어두워지고, soft-light는 아무리 올려도 결이 안 산다.
    기울이면 --holo-tx/--holo-ty로 이 레이어가 함께 밀려서 빛을 따라 결이 흐른다. */
-.card-photo .holoFoil{opacity:.20;mix-blend-mode:screen}
-/* 앞면이 뿌옇던 이유 — screen은 밑그림에 빛을 '더하는' 블렌드라, 포일 사진의 중간 회색이
-   카드의 검은 부분까지 통째로 들어 올려 우유를 부은 것처럼 보였다. 포일을 먼저 눌러
-   (contrast로 그림자를 검정까지 내리고 brightness로 전체를 낮춘다) 하이라이트만 남기면,
-   더할 빛이 있는 곳에만 무지갯빛이 뜨고 검정은 검정으로 남는다. 강도는 opacity로 되돌려 준다.
-   뒷면은 밑그림이 없어 이 문제가 없으므로 앞면에만 건다. */
-.cardFace.front .holoFoil{filter:contrast(1.85) brightness(.62);opacity:.34}
+/* 앞면 포일 블렌드 — screen / overlay / multiply / soft-light을 같은 카드로 찍어 비교했다.
+   · screen: 빛을 '더하는' 블렌드라 포일의 중간 회색이 카드의 검은 부분까지 들어 올린다.
+     하이라이트만 남기려고 contrast/brightness로 눌러 봤지만, 눌러도 밑그림 대비는 회복되지 않는다.
+   · multiply: 가장 선명하지만 어두운 카드에서 포일이 거의 사라져 그냥 사진 카드가 된다.
+   · soft-light: 깨끗하되 무지갯빛이 죽고 따뜻한 안개만 남는다.
+   · overlay: 검정은 검정으로 눌러 사진 대비를 살리면서, 밝은 부분에서만 색이 올라와 포일이 남는다.
+   그래서 overlay .5 — 누르는 필터도 필요 없다(그 필터는 screen의 뿌연 느낌을 덮으려던 임시방편이었다). */
+.cardFace.front .holoFoil{mix-blend-mode:overlay;opacity:.5;filter:none}
 /* 그레인·오라도 같은 이유로 옅게 — 셋이 겹치면 각각은 미미해도 합이 안개가 된다 */
 .card-photo .holoGrain{opacity:.05}
 .card-photo .pdAura{opacity:.10}
@@ -448,8 +449,11 @@ button{font-family:var(--font)}
 .levelRow{width:100%;max-width:var(--card-w);margin:14px auto 0;display:flex;align-items:center;gap:10px}
 .levelRow .lv{font-size:12px;font-weight:800;color:var(--g-text);white-space:nowrap}
 .expBar{flex:1;height:5px;border-radius:100px;background:rgba(255,255,255,.14);overflow:hidden}
-.expBar i{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--g-a),var(--g-b));border-radius:100px;
-  transition:width 1s cubic-bezier(.2,.8,.2,1)}
+/* 채움은 width가 아니라 translateX로 민다 — width를 늘리면 매 프레임 레이아웃이 다시 잡히고,
+   그라디언트도 함께 늘어나 색 끝점이 진행률에 따라 달라진다. 폭을 100%로 고정해 두고 왼쪽으로
+   밀어 두었다가 제자리로 오게 하면, 그라디언트는 그대로인 채 합성만으로 움직인다. */
+.expBar i{display:block;width:100%;height:100%;background:linear-gradient(90deg,var(--g-a),var(--g-b));border-radius:100px;
+  transform:translateX(-100%);transition:transform 1s cubic-bezier(.2,.8,.2,1)}
 
 /* 뒷면: 핵심 기록만 — 작은 글씨/스크롤 없음 */
 /* 뒷면 바탕 — 중립 검정 대신 등급의 어두운 언더톤(--g-c)을 섞어 깐다. 그 위에 홀로그램(.holoFoil)이
@@ -969,7 +973,7 @@ function applyGrade(key){
   ovrEl.dataset.target = ovrVal != null ? ovrVal : '';
   ovrEl.textContent = ovrVal != null ? pad2(ovrVal) : '?';
   document.getElementById('fLevel').textContent = 'Lv.'+g.level;
-  document.getElementById('fExpBar').style.width = g.exp+'%';
+  document.getElementById('fExpBar').style.transform = 'translateX(-'+(100 - g.exp)+'%)';
   document.getElementById('sLevel').textContent = g.level;
   var blank = (key === 'starter');
   document.getElementById('sTour').textContent  = blank ? 0 : 6;

@@ -58,7 +58,9 @@
   /* 승리 뱃지 — 밝은 초록 + 흰 글씨. 대비는 2.28:1로 WCAG AA(작은 텍스트 4.5:1) 미달이지만,
      밝은 초록 배경을 유지하는 쪽을 PO가 선택했다. 접근성이 필요해지면 글씨를 #052e16으로
      뒤집으면 배경 톤 그대로 6.5:1이 나온다. */
-  --win:#22c55e; --on-win:#ffffff;
+  /* 승 뱃지 — 흰 글자를 얹으므로 #22c55e(2.3:1)로는 11px 볼드가 읽히지 않는다. 같은 계열에서
+     명도만 내려 4.9:1을 맞춘다. 점·토글처럼 글자를 얹지 않는 곳은 --green을 그대로 쓴다. */
+  --win:#15803d; --on-win:#ffffff;
   --home:#3b82f6; --away:#ef4444;
   --r-btn:100px; --r-card:16px; --r-chip:8px; --card-thick:16px;
   /* 컨트롤 높이 3단계 — 이전엔 36/38/40/42/44px가 뒤섞여 있어 정렬이 미세하게 어긋났습니다 */
@@ -243,7 +245,7 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 .profile-wrap:hover .pmenu,.profile-wrap.open .pmenu{visibility:visible;opacity:1;transform:translateY(0)}
 .pmenu .mi{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:14px;font-weight:500;color:var(--on-surface);cursor:pointer;border:none;background:transparent;width:100%;font-family:var(--font);text-align:left}
 .pmenu .mi:hover{background:var(--surface-variant)}
-.pmenu .mi.danger{color:#c0392b}
+.pmenu .mi.danger{color:#a4321f}
 .pmenu .mi svg{width:17px;height:17px;stroke:currentColor;opacity:.85;flex:none}
 .pmenu .div{height:1px;background:var(--outline-variant);margin:5px 6px}
 /* nav 자체가 아니라 메뉴 목록만 스크롤되게: min-height:0으로 flex 아이템이 줄어들 수 있게 함 */
@@ -552,7 +554,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .pauseCard .pcIcon{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;
   background:var(--red-c);color:var(--on-red-c)}
 .pauseCard .pcIcon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round}
-.pauseCard h3{font-size:17px;font-weight:800;letter-spacing:-.02em}
+.pauseCard h2{font-size:17px;font-weight:800;letter-spacing:-.02em}
 .pauseCard p{font-size:13px;line-height:1.55;color:var(--on-surface-variant)}
 .pauseCard .btn{margin-top:6px;padding:0 22px}
 .pauseCard .btn svg{fill:currentColor;stroke:none}
@@ -603,8 +605,8 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
   .clock{font-size:22px} .qchip{font-size:11px;padding:4px 10px} .main3{grid-template-columns:1fr} .prow{padding:12px 10px}
 }
 .cc{background:var(--surface);border-radius:16px;padding:16px}
-.cc > h3{font-size:16px;font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.cc > h3 .dot{width:12px;height:12px;border-radius:50%}
+.cc > h3,.cc > h2{font-size:16px;font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.cc > h3 .dot,.cc > h2 .dot{width:12px;height:12px;border-radius:50%}
 /* 팀 단위 액션(교체·타임아웃)은 해당 팀 카드 최하단에 배치 — '어느 팀인지' 고르는 단계를 없앰 */
 .team-foot{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--outline-variant)}
 .tbtn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;height:var(--h-md);padding:0 12px;border:1px solid var(--outline-variant);border-radius:var(--r-btn);background:var(--surface);color:var(--on-surface);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:.12s;white-space:nowrap}
@@ -732,7 +734,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 #page-record .main3 > .console-center{grid-area:center}
 #page-record .main3 > .cc:nth-of-type(3){grid-area:away}
 #page-record .main3 > .cc{min-height:0;display:flex;flex-direction:column;padding:10px}
-#page-record .main3 > .cc > h3{font-size:12px;font-weight:700;color:var(--on-surface-variant);padding:2px 4px 6px;margin:0}
+#page-record .main3 > .cc > h2{font-size:12px;font-weight:700;color:var(--on-surface-variant);padding:2px 4px 6px;margin:0}
 #page-record .main3 > .cc > [role=listbox]{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:3px}
 #page-record .team-foot{margin-top:auto;padding-top:8px;border-top:1px solid var(--outline-variant)}
 /* 선택 선수는 팀 컬러로 꽉 채운다 — 옅은 배경 + 좌측 라인으로는 명단을 훑을 때 눈에 덜 걸린다.
@@ -1517,7 +1519,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 
 /* 삭제는 카드 없이 평평하게 — 파괴적 액션이지만 자주 쓰지 않으므로 시선을 뺏지 않음 */
 .danger-zone{padding:10px 4px 4px;display:flex;align-items:center;justify-content:flex-end;gap:16px;flex-wrap:wrap}
-.btn-danger{background:transparent;border:1px solid #f1b7b7;color:#c0392b}
+.btn-danger{background:transparent;border:1px solid #f1b7b7;color:#a4321f}
 .btn-danger:hover{background:#fee2e2}
 
 /* 목록 검색 · 필터 바 */
@@ -1543,7 +1545,7 @@ body.modal-open{overflow:hidden}
 .modal.open{opacity:1;visibility:visible}
 .sheet{width:100%;max-width:380px;margin:auto;background:var(--surface);border-radius:20px;box-shadow:var(--e3);padding:20px;transform:translateY(8px) scale(.98);transition:transform .16s ease}
 .modal.open .sheet{transform:none}
-.sheet h4{font-size:17px;font-weight:700;letter-spacing:-.02em}
+.sheet h4,.sheet h2{font-size:17px;font-weight:700;letter-spacing:-.02em}
 /* ---- 확인 다이얼로그 ---- */
 /* 아이콘을 위, 제목·설명을 그 아래로 — 옆에 두면 아이콘이 제목 한 줄에 묶여 상황의 무게가 덜 전달된다 */
 /* 구수는 보조 선택이다 — 대부분 2구이고 1·3구는 예외라, 결과 버튼과 같은 무게로 세우지 않는다.
@@ -1562,8 +1564,8 @@ body.modal-open{overflow:hidden}
 .ft-row button[data-r="made"]{background:var(--green-c);color:var(--on-green-c)}
 .ft-row button[data-r="miss"]{background:var(--red-c);color:var(--on-red-c)}
 /* 고른 쪽만 채우고 나머지는 옅게 물러난다 — 무엇을 찍었는지 한눈에 */
-.ft-row button.on[data-r="made"]{background:var(--green);color:#fff}
-.ft-row button.on[data-r="miss"]{background:var(--red);color:#fff}
+.ft-row button.on[data-r="made"]{background:var(--win);color:#fff}
+.ft-row button.on[data-r="miss"]{background:#b91c1c;color:#fff}
 .ft-row.done button:not(.on){opacity:.4}
 /* 아직 차례가 아닌 구 — 눌리지 않는다는 걸 색까지 빼서 보여준다 */
 .ft-row.locked .n{opacity:.4}
@@ -1600,9 +1602,10 @@ body.modal-open{overflow:hidden}
 .opt:hover{background:var(--main);color:var(--on-main)}
 /* 슛 결과만 색을 갖는다 — 성공/실패는 되묻지 않고 색으로 구분되어야 손이 빨라진다 */
 .opt.made{background:var(--green-c);color:var(--on-green-c)}
-.opt.made:hover{background:var(--green);color:#fff}
+.opt.made:hover{background:var(--win);color:#fff}
 .opt.miss{background:var(--red-c);color:var(--on-red-c)}
-.opt.miss:hover{background:var(--red);color:#fff}
+/* 흰 글자를 얹는 붉은 면은 한 단계 어둡게 — #ef4444는 3.8:1로 AA 미달이다 */
+.opt.miss:hover{background:#b91c1c;color:#fff}
 .opt small{font-size:11px;font-weight:500;opacity:.7}
 .sheet .cancel{width:100%;height:44px;border:none;border-radius:var(--r-btn);background:transparent;color:var(--on-surface-variant);font-family:var(--font);font-weight:600;font-size:14px;cursor:pointer}
 .sheet .cancel:hover{background:var(--surface-variant)}
@@ -1642,8 +1645,9 @@ body.modal-open{overflow:hidden}
 .sheet .acts button:hover{background:var(--main);color:var(--on-main)}
 .sheet .acts .acts-lab{font-size:11px;font-weight:700;color:var(--on-surface-variant);padding:6px 2px 0}
 .sheet .acts .acts-lab:first-child{padding-top:0}
-.sheet .acts button.danger{color:#c0392b}
-.sheet .acts button.danger:hover{background:var(--red);color:#fff}
+.sheet .acts button.danger{color:#a4321f}
+/* #ef4444에 흰 글자는 3.8:1로 AA(4.5:1) 미달 — 위험한 동작일수록 라벨이 또렷해야 한다 */
+.sheet .acts button.danger:hover{background:#b91c1c;color:#fff}
 
 /* ---------- 전체 기록 페이지 (Play-by-Play) ---------- */
 .pbp-head{display:grid;grid-template-columns:1fr 120px 1fr;align-items:center;background:var(--surface);border-radius:16px;padding:16px 24px;position:sticky;top:0;z-index:5}
@@ -1878,7 +1882,7 @@ body.modal-open{overflow:hidden}
 
     <div class="main3">
       <div class="cc">
-        <h3 id="homeTeamTitle"></h3>
+        <h2 id="homeTeamTitle"></h2>
         <!-- PlayerRow[] (홈) -->
         <div id="homeList" role="listbox" aria-label="홈팀 선수 명단"></div>
         <div class="team-foot" id="homeFoot"></div>
@@ -1902,7 +1906,7 @@ body.modal-open{overflow:hidden}
       </div>
 
       <div class="cc">
-        <h3 id="awayTeamTitle"></h3>
+        <h2 id="awayTeamTitle"></h2>
         <!-- PlayerRow[] (원정) -->
         <div id="awayList" role="listbox" aria-label="원정팀 선수 명단"></div>
         <div class="team-foot" id="awayFoot"></div>
@@ -1912,7 +1916,7 @@ body.modal-open{overflow:hidden}
     <!-- 정지 안내 — 비네팅은 상태를 알릴 뿐이라, 무엇을 할 수 있고 어떻게 빠져나오는지는 여기서 말한다 -->
     <div class="pauseCard" id="pauseCard" role="status" aria-live="polite">
       <div class="pcIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg></div>
-      <h3>기록이 멈춰 있습니다</h3>
+      <h2>기록이 멈춰 있습니다</h2>
       <p>이 동안 새 기록은 입력되지 않습니다. 지난 기록을 수정하거나 삭제하는 것은 그대로 할 수 있습니다.</p>
       <button type="button" class="btn btn-main" id="pauseResume">
         <svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>기록 재개
@@ -2168,7 +2172,7 @@ body.modal-open{overflow:hidden}
 <!-- 하위 선택 다이얼로그 — 리바운드처럼 세부 유형을 골라야 하는 스탯에서 사용 -->
 <div class="modal" id="subModal" role="dialog" aria-modal="true" aria-labelledby="subTitle" aria-hidden="true">
   <div class="sheet">
-    <h4 id="subTitle">리바운드</h4>
+    <h2 id="subTitle">리바운드</h2>
     <div class="sub" id="subDesc">선수 이름</div>
     <div class="opts" id="subOpts"></div>
     <button type="button" class="cancel" id="subCancel">취소</button>
@@ -2178,7 +2182,7 @@ body.modal-open{overflow:hidden}
 <!-- 팀 만들기 / 수정 -->
 <div class="modal" id="teamModal" role="dialog" aria-modal="true" aria-labelledby="teamModalTitle" aria-hidden="true">
   <div class="sheet">
-    <h4 id="teamModalTitle">팀 만들기</h4>
+    <h2 id="teamModalTitle">팀 만들기</h2>
     <div class="field">
       <label for="teamNameInput">팀 이름 <span style="color:var(--red)">*</span></label>
       <input id="teamNameInput" type="text" placeholder="예) 서울 타이탄스" autocomplete="off">
@@ -2206,8 +2210,8 @@ body.modal-open{overflow:hidden}
 <!-- 팀 로고 사진 크롭 -->
 <div class="modal" id="logoCropModal" role="dialog" aria-modal="true" aria-labelledby="logoCropTitle" aria-hidden="true">
   <div class="sheet" style="max-width:340px">
-    <h4 id="logoCropTitle">로고 사진 자르기</h4>
-    <div class="crop-stage" id="cropStage"><img id="cropImg" alt=""><div class="crop-mask" aria-hidden="true"></div></div>
+    <h2 id="logoCropTitle">로고 사진 자르기</h2>
+    <div class="crop-stage" id="cropStage"><img id="cropImg" alt="" hidden src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><div class="crop-mask" aria-hidden="true"></div></div>
     <div class="field">
       <label>확대/축소</label>
       <input type="range" id="cropZoom" min="100" max="300" value="100">
@@ -2222,7 +2226,7 @@ body.modal-open{overflow:hidden}
 <!-- 선수 등록 / 수정 -->
 <div class="modal" id="playerModal" role="dialog" aria-modal="true" aria-labelledby="playerModalTitle" aria-hidden="true">
   <div class="sheet subs">
-    <h4 id="playerModalTitle">선수 등록</h4>
+    <h2 id="playerModalTitle">선수 등록</h2>
     <div class="field">
       <label for="pName">이름 <span style="color:var(--red)">*</span></label>
       <input id="pName" type="text" placeholder="홍길동" autocomplete="off">
@@ -2260,7 +2264,7 @@ body.modal-open{overflow:hidden}
 <!-- 여러 명 한번에 등록 (엑셀 양식 · 업로드 · 직접 입력) -->
 <div class="modal" id="bulkModal" role="dialog" aria-modal="true" aria-labelledby="bulkTitle" aria-hidden="true">
   <div class="sheet xwide">
-    <h4 id="bulkTitle">여러 명 한번에 등록</h4>
+    <h2 id="bulkTitle">여러 명 한번에 등록</h2>
     <div class="sub" id="bulkSub">엑셀 양식을 내려받아 채운 뒤 업로드하거나, 아래에서 직접 입력하세요.</div>
     <div class="xlbar">
       <button type="button" class="btn btn-tonal btn-sm" id="btnXlTemplate">엑셀 양식 다운로드</button>
@@ -2282,7 +2286,7 @@ body.modal-open{overflow:hidden}
 <!-- 선수 교체 다이얼로그 -->
 <div class="modal" id="subsModal" role="dialog" aria-modal="true" aria-labelledby="subsTitle" aria-hidden="true">
   <div class="sheet subs">
-    <h4 id="subsTitle">선수 교체</h4>
+    <h2 id="subsTitle">선수 교체</h2>
     <div class="sub" id="subsSub"></div>
     <div class="subs-cols">
       <div>
@@ -2308,7 +2312,7 @@ body.modal-open{overflow:hidden}
      "쐈다 → 들어갔나?" 순서가 실제 경기 흐름과 같아 오입력이 줄어든다. -->
 <div class="modal" id="shotModal" role="dialog" aria-modal="true" aria-labelledby="shotTitle" aria-hidden="true">
   <div class="sheet">
-    <h4 id="shotTitle"></h4>
+    <h2 id="shotTitle"></h2>
     <div class="sub" id="shotDesc"></div>
     <div class="opts">
       <button type="button" class="opt made" data-res="made">성공<small id="shotMadeLb"></small></button>
@@ -2322,7 +2326,7 @@ body.modal-open{overflow:hidden}
      터치가 배로 늘고, 몇 구째인지 기록자가 머릿속으로 세야 해서 빠뜨리기 쉽다. -->
 <div class="modal" id="ftModal" role="dialog" aria-modal="true" aria-labelledby="ftTitle" aria-hidden="true">
   <div class="sheet">
-    <h4 id="ftTitle">자유투</h4>
+    <h2 id="ftTitle">자유투</h2>
     <div class="ft-top">
       <div class="sub" id="ftDesc" style="margin:0"></div>
       <div class="ft-count" role="group" aria-label="자유투 개수">
@@ -2345,7 +2349,7 @@ body.modal-open{overflow:hidden}
     <div class="cf-head">
       <span class="cf-icon" id="confirmIcon" aria-hidden="true"></span>
       <div>
-        <h4 id="confirmTitle"></h4>
+        <h2 id="confirmTitle"></h2>
         <div class="sub" id="confirmDesc"></div>
       </div>
     </div>
@@ -2363,7 +2367,7 @@ body.modal-open{overflow:hidden}
 <!-- 내 프로필 — GNB 프로필 드롭다운 -->
 <div class="modal" id="profileModal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle" aria-hidden="true">
   <div class="sheet">
-    <h4 id="profileModalTitle">내 프로필</h4>
+    <h2 id="profileModalTitle">내 프로필</h2>
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
       <div class="av" style="width:56px;height:56px;font-size:20px" id="pfAvatarBig">신</div>
       <div><div style="font-weight:800;font-size:17px" id="pfNameBig">김신열</div><div class="sub" id="pfRoleBig">대회 관리자</div></div>
@@ -2380,7 +2384,7 @@ body.modal-open{overflow:hidden}
 <!-- 계정 설정 — GNB 프로필 드롭다운 -->
 <div class="modal" id="accountModal" role="dialog" aria-modal="true" aria-labelledby="accountModalTitle" aria-hidden="true">
   <div class="sheet">
-    <h4 id="accountModalTitle">계정 설정</h4>
+    <h2 id="accountModalTitle">계정 설정</h2>
     <div class="field"><label for="acEmail">이메일</label><input id="acEmail" type="email" placeholder="you@example.com"></div>
     <div class="field"><label for="acPw">비밀번호 변경</label><input id="acPw" type="password" placeholder="새 비밀번호"></div>
     <button type="button" class="check-row" id="acNotify" role="checkbox" aria-checked="true" style="margin-top:4px">
@@ -2396,7 +2400,7 @@ body.modal-open{overflow:hidden}
 <!-- 설정 — GNB 프로필 드롭다운(앱 환경설정) -->
 <div class="modal" id="appSettingsModal" role="dialog" aria-modal="true" aria-labelledby="appSettingsModalTitle" aria-hidden="true">
   <div class="sheet">
-    <h4 id="appSettingsModalTitle">설정</h4>
+    <h2 id="appSettingsModalTitle">설정</h2>
     <div class="field"><label for="asLang">언어</label>
       <select id="asLang"><option value="ko">한국어</option><option value="en">English</option></select>
     </div>
@@ -2413,7 +2417,7 @@ body.modal-open{overflow:hidden}
 <!-- 기록 수정/삭제 다이얼로그 — 최근 기록 태그를 누르면 열림 -->
 <div class="modal" id="evtModal" role="dialog" aria-modal="true" aria-labelledby="evtTitle" aria-hidden="true">
   <div class="sheet">
-    <h4 id="evtTitle">기록 관리</h4>
+    <h2 id="evtTitle">기록 관리</h2>
     <div class="sub" id="evtDesc"></div>
     <div class="acts" id="evtActs"></div>
     <button type="button" class="cancel" id="evtCancel">닫기</button>
@@ -2423,7 +2427,7 @@ body.modal-open{overflow:hidden}
 <!-- 선수 카드 OVR 계산 방식 안내 -->
 <div class="modal" id="ovrInfoModal" role="dialog" aria-modal="true" aria-labelledby="ovrInfoTitle" aria-hidden="true">
   <div class="sheet">
-    <h4 id="ovrInfoTitle">OVR은 어떻게 정해지나요?</h4>
+    <h2 id="ovrInfoTitle">OVR은 어떻게 정해지나요?</h2>
     <div class="sub">경기당 득점·리바운드·어시스트·스틸·블록 생산력과 슈팅 성공률(2점·3점·자유투)을 함께 반영해 계산돼요. 생산력과 효율이 높을수록 점수가 올라가고, 최대 99까지 올라가요. 선수 등급(브론즈·실버·골드)은 이렇게 산출된 OVR 구간에 따라 자동으로 매겨져요.<br><br>* 정식 랭킹 로직이 확정되기 전까지 사용하는 임시 산출 방식이에요.</div>
     <button type="button" class="cancel" id="ovrInfoClose">닫기</button>
   </div>
@@ -3846,6 +3850,7 @@ function cropApplyTransform(){
 }
 function openCropModal(dataUrl){
   var img = document.getElementById('cropImg');
+  img.hidden = false;   // 파일을 고르기 전까진 감춰 둔다 — src 없는 img는 깨진 이미지로 보인다
   img.onload = function(){
     cropImgNatural.w = img.naturalWidth; cropImgNatural.h = img.naturalHeight;
     img.style.width = cropImgNatural.w+'px'; img.style.height = cropImgNatural.h+'px';
