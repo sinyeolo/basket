@@ -181,7 +181,7 @@ main{padding:10px 10px 32px;display:flex;flex-direction:column;gap:10px}
 .res-crown{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px}
 .lw{display:flex;align-items:center;color:#e0a92e;flex:none}
 .lw.r{transform:scaleX(-1)}
-.laurel{width:29px;height:48px}
+.laurel{width:26px;height:43px}
 .res-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
 .res-win{font-size:17px;font-weight:800}
 .res-gap{font-size:13px;font-weight:700;color:var(--on-surface-variant)}
@@ -500,7 +500,7 @@ function viewSummary(){
   /* 결과와 일시는 경기 전체에 대한 사실이라 선수 카드 안에 있으면 그 선수 이야기로 읽힌다.
      맨 위로 빼고 승패를 한눈에 보이게 세운다. */
   var result = '<div class="card resCard">'+
-    '<div class="res-crown">'+ LAUREL_L + teamMark(win, 56) + LAUREL_R +'</div>'+
+    '<div class="res-crown">'+ LAUREL_L + teamMark(win, 62) + LAUREL_R +'</div>'+
     '<div class="res-line"><span class="res-win">'+win.name+'</span>'+
       '<span class="res-gap">'+Math.abs(G.home.score - G.away.score)+'점 차 승</span></div>'+
     '<div class="res-meta">'+G.date.replace(/-/g,'.')+' '+G.time+' · '+G.court+' · '+G.label+'</div>'+
