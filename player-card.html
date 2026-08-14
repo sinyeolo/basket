@@ -395,7 +395,11 @@ button{font-family:var(--font)}
   display:flex;align-items:center;justify-content:flex-end;gap:4px}
 .ovrBox .vl{font-family:var(--font-display);font-size:43px;font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--g-text)}
 /* OVR 라벨 전체(텍스트+아이콘)를 하나의 버튼으로 묶어 탭 영역을 넓힘. 아이콘 자체는 배경 없이 테두리만 */
-.ovrInfoBtn{background:none;border:none;padding:0;font:inherit;cursor:pointer}
+/* 시각 크기는 45×15지만 손가락은 그만큼 정확하지 않다. 카드 우상단이라 여백을 더 줄 수 없으므로
+   히트 영역만 바깥으로 넓힌다(WCAG 2.5.8 최소 24×24). 카드 탭-뒤집기와 겹치지만
+   이 버튼이 위에 있어 먼저 받고, 핸들러가 전파를 막는다. */
+.ovrInfoBtn{position:relative;background:none;border:none;padding:0;font:inherit;cursor:pointer}
+.ovrInfoBtn::after{content:"";position:absolute;left:-10px;right:-10px;top:-11px;bottom:-11px}
 .ovrInfoBtn:hover{color:rgba(255,255,255,.8)}
 .ovrInfoIcon{width:15px;height:15px;border-radius:50%;border:1px solid rgba(255,255,255,.5);flex:none;
   color:inherit;font-size:11px;font-weight:800;line-height:1;display:inline-flex;align-items:center;justify-content:center}
