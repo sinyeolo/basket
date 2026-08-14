@@ -723,7 +723,7 @@ button{font-family:var(--font)}
               <div class="backTitle hasRec">시즌 평균 기록</div>
               <div class="backGrid hasRec" id="backGrid"></div>
               <div class="backTitle hasRec">최근 경기</div>
-              <a class="recRow hasRec" href="game.html"><span class="op"><span>07.23</span><span class="wl w">W</span><span>vs 인천 파이터스</span></span><b>24점</b></a>
+              <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span>07.23</span><span class="wl w">W</span><span>vs 인천 파이터스</span></span><b>24점</b></a>
               <div class="recEmpty noRec">아직 뛴 경기가 없어요<br>첫 경기를 마치면 기록이 채워집니다</div>
               <div class="backNote" id="backUpdated">update 2026.07.23 13:20</div>
             </div>
@@ -797,8 +797,8 @@ button{font-family:var(--font)}
       <div class="section">
         <h3>최근 대회 기록</h3>
         <div class="recEmpty noRec">참가한 대회가 아직 없어요</div>
-        <a class="recRow hasRec" href="game.html"><span class="op"><span>2026 여름 3×3 리그 · 8강</span><span class="wl w">W</span></span><b>24점 8리바 4어시</b></a>
-        <a class="recRow hasRec" href="game.html"><span class="op"><span>2026 여름 3×3 리그 · 예선</span><span class="wl l">L</span></span><b>18점 6리바 3어시</b></a>
+        <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span>2026 여름 3×3 리그 · 8강</span><span class="wl w">W</span></span><b>24점 8리바 4어시</b></a>
+        <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span>2026 여름 3×3 리그 · 예선</span><span class="wl l">L</span></span><b>18점 6리바 3어시</b></a>
       </div>
       <div class="section">
         <h3>획득 배지</h3>
@@ -953,7 +953,7 @@ function sealLabel(){
 // 값이 없는 경우(데모/구버전 링크 등)에만 등급 기준치+일부 스탯으로 임시 추정한다.
 function ovrFor(key){
   if(PLAYER._ovr != null) return PLAYER._ovr;
-  var base = { starter:45, bronze:58, silver:74, gold:88 }[key] || 45;
+  var base = { starter:0, bronze:58, silver:72, gold:85 }[key] || 58;   // 운영 콘솔 구간(80/65)의 중앙값
   var s = PLAYER.stats;
   var bonus = s ? Math.min(10, Math.round((s.pts+s.reb+s.ast)/6)) : 0;
   return Math.min(99, base+bonus);
