@@ -514,7 +514,22 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .paused .save .d{background:var(--on-surface-variant)}
 .paused .save .d::after{display:none}
 .paused .clock{opacity:.45;color:var(--on-surface-variant)}
-.paused .clock .colon{animation:none}
+/* 시계가 멈춰 있으면 숫자도 쉰다 — 붉은 세그먼트가 살아 있으면 시간이 흐르는 것으로 읽힌다 */
+.clock-off .clock{color:var(--on-surface-variant)}
+.clock-ctl{display:flex;gap:6px;margin-top:8px}
+.ckbtn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:30px;padding:0 12px;
+  border:1px solid var(--outline-variant);border-radius:100px;background:var(--surface);color:var(--on-surface);
+  font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:.12s;white-space:nowrap}
+.ckbtn:hover{background:var(--surface-variant)}
+.ckbtn[disabled]{opacity:.4;cursor:default}
+.ckbtn svg{fill:currentColor;stroke:none;width:11px;height:11px}
+/* 멈춰 있을 때는 '시작'이 이 화면의 다음 행동이라 채워서 세우고,
+   도는 중에는 정지가 급한 일이 아니므로 테두리만 남기고 물러난다 */
+.ckbtn.run{background:var(--main);color:var(--on-main);border-color:var(--main)}
+.ckbtn.run:hover{filter:brightness(1.18)}
+.ckbtn.run.on{background:var(--surface);color:var(--on-surface-variant);border-color:var(--outline-variant)}
+.ckbtn.run.on:hover{background:var(--surface-variant);color:var(--on-surface);filter:none}
+.paused .clock .colon,.clock-off .clock .colon{animation:none;opacity:1}
 .paused .console-center{opacity:.5;pointer-events:none}
 /* 명단·팀 액션도 함께 잠근다 — 선수가 선택되면 입력이 열린 것처럼 보인다 */
 .paused .main3 > .cc > [role=listbox],
@@ -705,6 +720,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
     "home   center away"
     "log    log    log";}
 #page-record > .appbar{grid-area:bar;margin:0;padding:2px 6px}
+.appbar-acts{display:inline-flex;align-items:center;gap:6px}
 #page-record > .sb-card{grid-area:board}
 /* .main3를 투명하게 만들어 세 카드가 직접 그리드 아이템이 되게 한다 */
 #page-record .main3{display:contents}
@@ -1839,7 +1855,11 @@ body.modal-open{overflow:hidden}
       <span class="meta">서울 타이탄스 vs 인천 파이터스</span>
       <span class="spacer"></span>
       <span class="save" id="saveState"><i class="d" aria-hidden="true"></i>저장됨 · 오프라인 기록 중</span>
-      <button class="btn btn-outline btn-sm" id="btnPause" aria-pressed="false"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>일시정지</button>
+      <!-- 경기 진행 조작 한 벌 — 서로 붙여 두어야 같은 성격의 버튼으로 읽힌다 -->
+      <span class="appbar-acts">
+        <button class="btn btn-outline btn-sm" id="btnPause" aria-pressed="false"><svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>일시정지</button>
+        <button class="btn btn-outline btn-sm" id="btnNextQ">쿼터 종료</button>
+      </span>
     </div>
 
     <!-- Scoreboard (홈/원정 팀 + 쿼터·시계 + 쿼터별 점수 스트립) -->
@@ -2412,6 +2432,7 @@ body.modal-open{overflow:hidden}
 
 var ICONS = {
   // 득점 성공 표시 — 색 점 대신 무엇이 일어났는지 그림으로 바로 읽힌다
+  pauseFill: '<rect x="8" y="5" width="3.2" height="14" rx="1"/><rect x="13" y="5" width="3.2" height="14" rx="1"/>',
   ballFill: '<circle cx="12" cy="12" r="9" fill="#e06a26" stroke="none"/>'+
         '<path d="M12 3v18M3.2 12h17.6M5.6 5.6c3.4 3.4 3.4 9.4 0 12.8M18.4 5.6c-3.4 3.4-3.4 9.4 0 12.8" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".9"/>',
   // 다이얼로그 헤더 아이콘 — 무엇을 묻는 상황인지 한눈에
@@ -2549,6 +2570,9 @@ var ALL_GAMES = [
 var MATCH = {
   court:'A코트 · 남자 일반부 8강',
   vs:'서울 타이탄스 vs 인천 파이터스',
+  /* 시계는 파생값이다 — qNow/secLeft가 원본이고 quarterLabel·clockMin/Sec은 표시용으로 따라간다.
+     기존 렌더·기록 코드가 후자를 참조하므로 갱신할 때 함께 맞춘다. */
+  qNow:3, qTotal:4, secLeft:272, running:false,
   quarterLabel:'3쿼터',
   clockMin:'04', clockSec:'32',
   // 쿼터별 점수 — status: 'done' | 'now' | 'upcoming'
@@ -2708,6 +2732,13 @@ function applyEvent(e, sign){
   if(m.shot && e.made){
     MATCH[e.team].score += m.pts * sign;
     if(p) p.pts += m.pts * sign;
+    // 쿼터 칸도 같이 움직인다 — 이벤트에 찍힌 쿼터를 쓰므로 나중에 고쳐도 제자리를 찾아간다
+    var qi = parseInt(e.q, 10) - 1;
+    var qs = MATCH.quarterScores && MATCH.quarterScores[qi];
+    if(qs){
+      if(qs[e.team] == null) qs[e.team] = 0;
+      qs[e.team] += m.pts * sign;
+    }
   }
   if(m.foul){
     MATCH[e.team].foul += sign;
@@ -3000,13 +3031,91 @@ function teamFoulHtml(n){
   return '<div class="tfoul'+cls+'">팀 파울 '+n+tag+'</div>';
 }
 
+/* ---- 경기 시계 ----
+   시계가 멈춰 있으면 기록만 되고 경기는 진행되지 않는다. 쿼터를 넘기고 시간을 돌리는 건
+   기록자가 매 경기 하는 일이라 스코어보드 안, 시계 바로 아래에 둔다. */
+var clockTimer = null;
+function quarterSeconds(){
+  var m = /(\d+)\s*분/.exec(TOURNAMENT_SETTINGS.quarters || '');
+  return (m ? Number(m[1]) : 10) * 60;
+}
+function quarterTotal(){
+  var m = /(\d+)\s*쿼터/.exec(TOURNAMENT_SETTINGS.quarters || '');
+  return m ? Number(m[1]) : 4;
+}
+function syncClockFields(){
+  var s = Math.max(0, MATCH.secLeft);
+  MATCH.clockMin = String(Math.floor(s / 60)).padStart(2,'0');
+  MATCH.clockSec = String(s % 60).padStart(2,'0');
+  MATCH.quarterLabel = MATCH.qNow + '쿼터';
+}
+function setClockRunning(on){
+  MATCH.running = !!on && MATCH.secLeft > 0;
+  clearInterval(clockTimer);
+  if(MATCH.running){
+    clockTimer = setInterval(function(){
+      MATCH.secLeft = Math.max(0, MATCH.secLeft - 1);
+      syncClockFields();
+      renderScoreboard();
+      // 0:00에 멈추고 쿼터 종료를 알린다 — 시간이 다 됐는데 계속 도는 것처럼 보이면 안 된다
+      if(MATCH.secLeft === 0){ setClockRunning(false); onQuarterTimeUp(); }
+    }, 1000);
+  }
+  renderScoreboard();
+  document.getElementById('page-record').classList.toggle('clock-off', !MATCH.running);
+}
+/* 시간이 다 됐을 때 — 중간 쿼터면 알리기만 하고, 마지막 쿼터면 무엇을 해야 하는지까지 말한다.
+   자동으로 종료하지는 않는다: 버저비터 판정이나 미입력 기록이 남아 있을 수 있다. */
+function onQuarterTimeUp(){
+  if(MATCH.qNow < MATCH.qTotal){ showToast(MATCH.qNow + '쿼터 종료'); return; }
+  var tied = MATCH.home.score === MATCH.away.score;
+  openConfirm({
+    icon: tied ? 'alert' : 'ask',
+    title: tied ? MATCH.qTotal + '쿼터 종료 · 동점입니다' : MATCH.qTotal + '쿼터 종료',
+    desc: MATCH.home.name + ' ' + MATCH.home.score + ' : ' + MATCH.away.score + ' ' + MATCH.away.name,
+    foot: tied
+      ? '연장을 진행하려면 취소를 누르고 대회 규정(' + (TOURNAMENT_SETTINGS.overtime || '연장') + ')에 따라 이어서 기록하세요.'
+      : '남은 기록이 없으면 경기를 종료하고 검수로 넘깁니다.',
+    ok: tied ? '그래도 종료' : '경기 종료',
+    onOk: function(){ document.getElementById('btnFinish').click(); }
+  });
+}
+
+/* 다음 쿼터로 — 남은 시간이 있어도 넘길 수 있다(콜드게임·시간 오차 정정) */
+function nextQuarter(){
+  if(MATCH.qNow >= MATCH.qTotal) return;
+  setClockRunning(false);
+  logSystemEvent(MATCH.qNow + '쿼터 종료');
+  MATCH.qNow += 1;
+  MATCH.secLeft = quarterSeconds();
+  syncClockFields();
+  MATCH.quarterScores.forEach(function(q, i){
+    q.status = (i + 1 < MATCH.qNow) ? 'done' : (i + 1 === MATCH.qNow ? 'now' : 'upcoming');
+    if(i + 1 === MATCH.qNow && q.home == null){ q.home = 0; q.away = 0; }
+  });
+  logSystemEvent(MATCH.qNow + '쿼터 시작');
+  renderScoreboard(); renderQuarterStrip(); renderRecentEvents();
+}
+
 // <Scoreboard/>
+function renderQuarterBtn(){
+  var b = document.getElementById('btnNextQ');
+  if(!b) return;
+  var last = MATCH.qNow >= MATCH.qTotal;
+  b.textContent = last ? '최종 쿼터' : MATCH.qNow + '쿼터 종료';
+  b.disabled = last;
+}
 function renderScoreboard(){
+  renderQuarterBtn();
   document.getElementById('scoreboard').innerHTML =
     '<div class="tside"><div class="tname"><span class="dot" style="background:'+MATCH.home.colorVar+'"></span>'+MATCH.home.name+'</div>'+
       '<div class="tscore">'+MATCH.home.score+'</div>'+teamFoulHtml(MATCH.home.foul)+'</div>'+
     '<div class="center"><span class="qchip">'+MATCH.quarterLabel+'</span>'+
-      '<span class="clock">'+MATCH.clockMin+'<span class="colon">:</span>'+MATCH.clockSec+'</span></div>'+
+      '<span class="clock">'+MATCH.clockMin+'<span class="colon">:</span>'+MATCH.clockSec+'</span>'+
+      '<div class="clock-ctl">'+
+        '<button type="button" class="ckbtn run'+(MATCH.running?' on':'')+'" id="btnClock" aria-pressed="'+(MATCH.running?'true':'false')+'">'+
+          icon(MATCH.running ? 'pauseFill' : 'play','ic ic-sm')+(MATCH.running ? '정지' : '시작')+'</button>'+
+      '</div></div>'+
     '<div class="tside away"><div class="tname"><span class="dot" style="background:'+MATCH.away.colorVar+'"></span>'+MATCH.away.name+'</div>'+
       '<div class="tscore">'+MATCH.away.score+'</div>'+teamFoulHtml(MATCH.away.foul)+'</div>';
   document.getElementById('homeTeamTitle').innerHTML = '<span class="dot" style="background:'+MATCH.home.colorVar+'"></span>'+MATCH.home.name;
@@ -3085,6 +3194,7 @@ function setEventDeleted(e, del){
 /* 기록이 바뀌면 점수·명단·최근 기록이 함께 움직여야 한다 */
 function refreshConsole(){
   renderScoreboard();
+  renderQuarterStrip();
   renderPlayerList('homeList', HOME_PLAYERS, 'home'); bindPlayerList('homeList');
   renderPlayerList('awayList', AWAY_PLAYERS, 'away'); bindPlayerList('awayList');
   if(selectedPlayer){
@@ -5278,6 +5388,10 @@ function loadGame(gameId){
   matchEnded = false; matchConfirmed = false; // 다른 경기로 전환하면 검수 상태도 해당 경기 기준으로 초기화
   MATCH.court = g.court + '코트 · ' + g.label;
   MATCH.vs = g.home.name + ' vs ' + g.away.name;
+  // 이전 경기 타이머가 살아 있으면 새 경기 시계를 갉아먹는다 — 먼저 끊는다
+  setClockRunning(false);
+  MATCH.qNow = g.q; MATCH.qTotal = quarterTotal();
+  MATCH.secLeft = Number(g.clockMin) * 60 + Number(g.clockSec);
   MATCH.quarterLabel = g.q + '쿼터';
   MATCH.clockMin = g.clockMin; MATCH.clockSec = g.clockSec;
   MATCH.home = { id:'home', name:g.home.name, colorVar:g.home.color, score:g.home.score, foul:g.home.foul, timeoutsLeft:g.home.timeouts };
@@ -5329,6 +5443,7 @@ function initPauseButton(){
       : '<svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14"/></svg>일시정지';
     save.innerHTML = '<i class="d" aria-hidden="true"></i>' + (paused ? '일시정지됨 · 기록 대기' : '저장됨 · 오프라인 기록 중');
     logSystemEvent(paused ? '경기 일시정지' : '경기 재개');
+    if(paused) setClockRunning(false);
     // 정지하면 선택을 푼다 — 멈춰 있는 동안 선택이 남아 있으면 재개 후 엉뚱한 선수에게 기록이 붙는다.
     // 재개할 때도 자동으로 다시 고르지 않는다(누굴 기록할지는 그때 다시 정해야 한다).
     selectedPlayer = null;
@@ -5984,6 +6099,29 @@ function initFtDialog(){
     if(e.key === 'Escape' && ftModal.classList.contains('open')) closeFtDialog(); });
 }
 
+/* 스코어보드는 초마다 다시 그려진다 — 버튼에 직접 붙이면 리스너가 사라지므로 위임으로 받는다 */
+function initClockControls(){
+  document.addEventListener('click', function(e){
+    if(e.target.closest('#btnClock')){ setClockRunning(!MATCH.running); return; }
+    if(e.target.closest('#btnNextQ')){
+      var b = e.target.closest('#btnNextQ');
+      if(b.disabled) return;
+      openConfirm({
+        icon:'ask',
+        title: MATCH.qNow + '쿼터를 종료할까요?',
+        desc: MATCH.home.name + ' ' + MATCH.home.score + ' : ' + MATCH.away.score + ' ' + MATCH.away.name,
+        foot: '다음 쿼터가 ' + Math.floor(quarterSeconds()/60) + '분으로 시작되고, 팀 파울이 초기화됩니다.',
+        ok: '쿼터 종료', trigger: b,
+        onOk: function(){
+          // 팀 파울은 쿼터마다 리셋된다 — 보너스 판정이 쿼터 단위이므로
+          MATCH.home.foul = 0; MATCH.away.foul = 0;
+          nextQuarter();
+        }
+      });
+    }
+  });
+}
+
 function initShotDialog(){
   var modal=document.getElementById('shotModal'), pending=null, trigger=null;
   function close(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
@@ -6038,6 +6176,10 @@ initProfileMenu();
 initProfileSubModals();
 initShotDialog();
 initFtDialog();
+initClockControls();
+MATCH.qTotal = quarterTotal();
+syncClockFields();
+setClockRunning(false);
 initActionButtons();
 initSubChoiceDialog();
 initSubsDialog();
@@ -6074,6 +6216,7 @@ document.getElementById('btnFinish').addEventListener('click', function(){
     trigger: this,
     onOk: function(){ /* 실제 구현: POST /api/games/:id/submit */
       matchEnded = true; matchConfirmed = false;
+      setClockRunning(false);
       logSystemEvent('경기 종료 · 검수 제출');
       location.hash = '#log';
     }
