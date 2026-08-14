@@ -367,14 +367,29 @@ button{font-family:var(--font)}
    screen .20이면 어두운 배경 위로 무지갯빛 결이 뜨면서 사진의 밝은 부분은 거의 건드리지 않는다.
    overlay는 어두운 카드에서 대비만 키워 오히려 더 어두워지고, soft-light는 아무리 올려도 결이 안 산다.
    기울이면 --holo-tx/--holo-ty로 이 레이어가 함께 밀려서 빛을 따라 결이 흐른다. */
-/* 앞면 포일 블렌드 — screen / overlay / multiply / soft-light을 같은 카드로 찍어 비교했다.
-   · screen: 빛을 '더하는' 블렌드라 포일의 중간 회색이 카드의 검은 부분까지 들어 올린다.
-     하이라이트만 남기려고 contrast/brightness로 눌러 봤지만, 눌러도 밑그림 대비는 회복되지 않는다.
-   · multiply: 가장 선명하지만 어두운 카드에서 포일이 거의 사라져 그냥 사진 카드가 된다.
-   · soft-light: 깨끗하되 무지갯빛이 죽고 따뜻한 안개만 남는다.
-   · overlay: 검정은 검정으로 눌러 사진 대비를 살리면서, 밝은 부분에서만 색이 올라와 포일이 남는다.
-   그래서 overlay .5 — 누르는 필터도 필요 없다(그 필터는 screen의 뿌연 느낌을 덮으려던 임시방편이었다). */
-.cardFace.front .holoFoil{mix-blend-mode:overlay;opacity:.5;filter:none}
+/* 앞면은 두 겹으로 나눠 만든다 — 한 겹으로는 "선명함"과 "홀로그램"이 서로를 잡아먹는다.
+   블렌드를 전부 같은 카드로 찍어 비교한 결과:
+   · screen 진하게: 포일 사진의 중간 회색이 검은 부분까지 들어 올려 우유를 부은 것처럼 뿌옇다.
+   · overlay: 대비는 살지만 색이 빛번짐처럼 새어 번진다.
+   · multiply: 가장 선명하되 포일이 사라져 그냥 사진 카드가 된다.
+   · color-dodge: 카드가 통째로 무지개 깃발이 된다.
+   ① 질감은 포일 사진을 screen으로 아주 옅게(.18) — 결만 얹고 밝기는 건드리지 않는다.
+   ② 무지갯빛은 mix-blend-mode:color로 따로 얹는다. 색(색상·채도)은 이 층에서, 밝기는 밑그림에서
+      가져오는 블렌드라 검은 곳은 검게 남고 밝은 곳만 물든다 — 실제 포일이 빛을 받는 방식 그대로다.
+      그래서 사진 디테일이 하나도 죽지 않는다. */
+.cardFace.front .holoFoil{mix-blend-mode:screen;opacity:.18;filter:none}
+/* 회절격자 — 촘촘한 무지개 띠. 기울기(--holo-tx/ty)를 7배로 증폭해 밀어서,
+   카드를 기울이면 스펙트럼이 표면을 훑고 지나간다. 정지 사진 한 장으로는 낼 수 없는 단서다.
+   대각 띠로 마스크해 카드 전체가 아니라 "빛이 스치는 자리"에만 뜨게 한다. */
+.holoSpectrum{position:absolute;inset:-30%;z-index:4;pointer-events:none;mix-blend-mode:color;opacity:.16;
+  background:repeating-linear-gradient(74deg,
+    hsl(350 85% 55%) 0px, hsl(45 90% 55%) 16px, hsl(150 80% 50%) 32px,
+    hsl(195 90% 52%) 48px, hsl(265 85% 55%) 64px, hsl(350 85% 55%) 80px);
+  transform:translate(calc(var(--holo-tx,0px) * 7), calc(var(--holo-ty,0px) * 7));
+  -webkit-mask-image:linear-gradient(74deg, transparent 8%, #000 34%, #000 60%, transparent 88%);
+          mask-image:linear-gradient(74deg, transparent 8%, #000 34%, #000 60%, transparent 88%)}
+/* 뒷면은 사진이 없어 색을 물들일 밑그림이 없다 — 스펙트럼은 앞면에만 둔다 */
+.cardFace.back .holoSpectrum{display:none}
 /* 그레인·오라도 같은 이유로 옅게 — 셋이 겹치면 각각은 미미해도 합이 안개가 된다 */
 .card-photo .holoGrain{opacity:.05}
 .card-photo .pdAura{opacity:.10}
@@ -686,6 +701,7 @@ button{font-family:var(--font)}
               <div class="cardPhotoBg" id="fPhotoBg"></div>
               <div class="pdAura" aria-hidden="true"></div>
               <div class="holoFoil" aria-hidden="true"></div>
+              <div class="holoSpectrum" aria-hidden="true"></div>
               <div class="holoGrain" aria-hidden="true"></div>
               <div class="topRow">
                 <div class="brandCol"><span class="brandLogo logoMark" role="img" aria-label="BASKET"></span><span class="gradeBadge" id="fGradeChip">GOLD</span></div>
@@ -1385,6 +1401,7 @@ function lbCardFrontHTML(grade){
     '<div class="cardPhotoBg">'+(PLAYER.photo ? '<img class="avatarPhotoFull" src="'+PLAYER.photo+'" alt="">' : '')+'</div>'+
     '<div class="pdAura" aria-hidden="true"></div>'+
     '<div class="holoFoil '+holo+'" aria-hidden="true"></div>'+
+    '<div class="holoSpectrum" aria-hidden="true"></div>'+
     '<div class="holoGrain" aria-hidden="true"></div>'+
     '<div class="topRow">'+
       '<div class="brandCol"><span class="brandLogo logoMark" role="img" aria-label="BASKET"></span><span class="gradeBadge">'+g.label+'</span></div>'+
