@@ -44,7 +44,9 @@ button{font-family:inherit;border:none;background:none;color:inherit;cursor:poin
 .gh.compact .gh-score{padding:2px 14px 7px}
 .gh.compact .gh-pt{transform:scale(.44);transform-origin:center top;margin-bottom:-24px}
 .gh.compact .gh-nm{font-size:11px}
-.gh.compact .tmark{width:15px!important;height:15px!important;font-size:7px!important}
+.gh.compact .tmark{width:15px!important;height:15px!important}
+/* 15px 원 안의 이니셜은 어떤 크기로도 안 읽힌다. 팀명이 바로 옆에 있으니 접었을 땐 컬러칩만 남긴다 */
+.gh.compact .tmark.chip{font-size:0}
 .gh.compact .gh-team{gap:2px}
 /* 접힘 전환 — 스크롤 내내가 아니라 임계선을 지날 때 한 번만 일어난다.
    점수 축소는 font-size 대신 transform:scale로 옮겨 레이아웃 재계산에서 빼고,
@@ -154,7 +156,7 @@ main{padding:10px 10px 32px;display:flex;flex-direction:column;gap:10px}
 .mvpCard .sil{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:88px;opacity:.9}
 .mvpCard .nm{position:relative;font-size:16px;font-weight:800;color:#fff;letter-spacing:-.02em}
 .mvpCard .tm{position:relative;font-size:11px;color:rgba(255,255,255,.66);margin-top:2px}
-.mvpCard .badge{position:relative;margin-bottom:6px;font-family:var(--font-display);font-size:10px;
+.mvpCard .badge{position:relative;margin-bottom:6px;font-family:var(--font-display);font-size:11px;
   font-weight:800;padding:2px 7px;border-radius:5px;background:var(--g-b);color:var(--g-c);letter-spacing:.04em}
 /* 이 경기 기록 — 카드가 선수를, 아래 줄이 오늘 무엇을 했는지를 말한다 */
 .mvp-line{display:flex;gap:0;text-align:center;width:100%}

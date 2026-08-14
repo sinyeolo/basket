@@ -1156,7 +1156,8 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    텍스트 정보는 한 줄로 눕혀 밀도를 낮췄습니다. */
 /* 선수 카드 — BASKET 플레이어 카드를 화면 중앙에 크게, 클릭하면 뒷면(시즌 평균)으로 플립.
    레퍼런스: 신한카드 상품 페이지(큰 카드 중앙 배치 + 미니멀한 주변 UI + 카드 상세/뒷면 인터랙션).
-   등급 토큰은 카드 공유 화면(player-card.html)과 동일 값 — OVR을 index.html에서 산출해 URL로 전달하고, 등급은 그 OVR 구간으로 역산(ovrFor/gradeForOvr) */
+   등급 토큰은 카드 공유 화면(player-card.html)과 동일 값 — OVR을 index.html에서 산출해 URL로 전달하고, 등급은 그 OVR 구간으로 역산(ovrFor/gradeFor) */
+[data-grade="starter"]{--g-a:#4e5157; --g-b:#868b93; --g-c:#26282c; --g-text:#e4e6ea; --shine-op:.18; }
 [data-grade="bronze"]{ --g-a:#7a4a2a; --g-b:#c9905a; --g-c:#3d2412; --g-text:#f0d9c2; --shine-op:.28; }
 [data-grade="silver"]{ --g-a:#8b929b; --g-b:#e7ebef; --g-c:#3d4249; --g-text:#eef1f4; --shine-op:.4;  }
 [data-grade="gold"]{   --g-a:#9c7415; --g-b:#f4d16a; --g-c:#4a3608; --g-text:#fbedc4; --shine-op:.55; }
@@ -4355,8 +4356,13 @@ function ovrFor(s){
   var raw = per36 * (0.85 + shootEff*0.3);
   return Math.max(40, Math.min(99, Math.round(40 + raw*1.05)));
 }
-function gradeForOvr(ovr){
-  if(ovr == null) return 'bronze';
+/* 등급 — 스타터만 OVR이 아니라 '표본이 없다'는 사실로 정한다. 한 경기 이하면 어떤 수치가
+   나와도 그 선수를 대표하지 못하므로 등급을 매기지 않고 시작 등급에 둔다. 두 경기부터 구간으로 나눈다.
+   기록이 아예 없는 선수도 여기로 떨어진다 — 예전엔 브론즈로 발급돼 "못하는 선수"처럼 보였다. */
+function gradeFor(s){
+  if(!s || !s.g || s.g <= 1) return 'starter';
+  var ovr = ovrFor(s);
+  if(ovr == null) return 'starter';
   return ovr >= 80 ? 'gold' : (ovr >= 65 ? 'silver' : 'bronze');
 }
 /* ---- 카드 기울기·뒤집기 인터랙션 — player-card.html의 createCardController와 완전히 동일한 로직.
@@ -4438,8 +4444,8 @@ function renderPlayerDetail(){
 
   // ① 프로필 카드 — 화면 중앙에 크게, 클릭하면 뒷면(시즌 평균 상세)으로 플립
   var ovrScore = ovrFor(s);
-  var grade = gradeForOvr(ovrScore);
-  var gradeLabel = { bronze:'BRONZE', silver:'SILVER', gold:'GOLD' }[grade];
+  var grade = gradeFor(s);
+  var gradeLabel = { starter:'STARTER', bronze:'BRONZE', silver:'SILVER', gold:'GOLD' }[grade];
   var teamColor = t ? t.color : '#6b6a72';   // 카드 링크 파라미터·팀 씰 배지에만 쓰인다(페이지 배경 틴트는 제거됨)
   var holo = holoSkin(p.id);                 // 이 선수 카드에 걸릴 홀로그램 무늬(h1~h4)
 
