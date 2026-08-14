@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BASKET · 경기 상세 (선수·관중)</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap">
+<style>
+/* ================================================================
+ * 선수·관중 경기 상세 — 기획서 A-10
+ * 운영 콘솔(index.html)과 목적이 다르다. 여기서는 아무것도 입력하지 않고,
+ * "무슨 일이 있었나"만 본다. 그래서 모바일 우선 · 세로 스크롤 한 줄기로 짠다.
+ * 토큰은 운영 콘솔과 같은 값을 쓴다(같은 서비스로 읽혀야 하므로).
+ * ================================================================ */
+/* 타입 스케일 — 11(캡션) / 13(본문·표) / 16(강조) / 20(제목·큰 수치) / 38(점수, 좁은 폭 32).
+   단계를 늘리면 위계가 아니라 표류가 된다. 소수점은 쓰지 않고, 기능 텍스트는 11px이 하한. */
+:root{
+  --font:'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif;
+  --font-display:'Tektur',var(--font);
+  --primary:#ff9100; --on-primary:#1a1200; --primary-container:#ffe7cf; --on-primary-container:#7a3600;
+  --main:#1b1b1f; --on-main:#ffffff;
+  --surface:#ffffff; --surface-container:#f3f1f5; --surface-variant:#f4eef2; --head-bg:#f8f7f9;
+  --on-surface:#1c1b1f; --on-surface-variant:#6b6a72;
+  --outline:#c9c6cf; --outline-variant:#e6e2ea;
+  --green:#22c55e; --red:#ef4444; --amber:#f59e0b;
+  --green-c:#d9f4e6; --on-green-c:#0c5c37; --red-c:#fde2e2; --on-red-c:#a41e1e;
+  --home:#3b82f6; --away:#ef4444;
+  --r-card:16px; --r-btn:100px;
+  --e1:0 1px 2px rgba(0,0,0,.10),0 1px 3px rgba(0,0,0,.06);
+  --e2:0 2px 6px rgba(0,0,0,.12),0 1px 3px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);color:var(--on-surface);background:var(--surface-container);
+  -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button{font-family:inherit;border:none;background:none;color:inherit;cursor:pointer}
+.wrap{position:relative;max-width:520px;margin:0 auto;min-height:100dvh;background:var(--surface-container)}
+/* ---- 헤더 — 스크롤해도 점수는 붙어 있어야 한다. 어느 탭을 보든 "지금 몇 대 몇"이 기준점이다 ---- */
+.gh{position:sticky;top:0;z-index:20;background:var(--surface);box-shadow:var(--e1)}
+/* 스크롤하면 헤더를 접는다 — 점수는 남기되 쿼터 줄과 여백을 걷어 본문에 화면을 돌려준다.
+   폰에서 헤더가 화면의 3분의 1을 계속 차지하면 정작 보러 온 내용이 안 보인다. */
+.gh.compact .gh-score{padding:2px 14px 7px}
+.gh.compact .gh-pt{transform:scale(.44);transform-origin:center top;margin-bottom:-24px}
+.gh.compact .gh-nm{font-size:11px}
+.gh.compact .tmark{width:15px!important;height:15px!important;font-size:7px!important}
+.gh.compact .gh-team{gap:2px}
+/* 접힘 전환 — 스크롤 내내가 아니라 임계선을 지날 때 한 번만 일어난다.
+   점수 축소는 font-size 대신 transform:scale로 옮겨 레이아웃 재계산에서 빼고,
+   높이 변화는 컨테이너 여백에만 짧게 준다. */
+.gh-score{transition:padding .2s ease}
+.gh-pt,.gh-nm,.tmark{transition:transform .2s ease, font-size .2s ease}
+@media (prefers-reduced-motion:reduce){
+  .gh-score,.gh-pt,.gh-nm,.tmark{transition:none}
+}
+.gh-top{display:flex;align-items:center;gap:10px;padding:10px 14px 0}
+.gh-back{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;
+  border-radius:50%;color:var(--on-surface-variant);flex:none}
+.gh-meta{font-size:11px;font-weight:600;color:var(--on-surface-variant);min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gh-state{margin-left:auto;flex:none;display:inline-flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800}
+.gh-state.end{background:var(--surface-variant);color:var(--on-surface-variant)}
+.gh-state.live{background:var(--primary-container);color:var(--on-primary-container)}
+.gh-state.fix{background:var(--green-c);color:var(--on-green-c)}
+
+.gh-score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:10px 14px 14px}
+.gh-team{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
+.gh-nm{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:700;max-width:100%;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tmark{flex:none;border-radius:50%;object-fit:cover;background:var(--surface-variant)}
+.tmark.chip{display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:800;
+  font-family:var(--font);line-height:1}
+.gh-pt{font-family:var(--font-display);font-size:52px;font-weight:800;line-height:1;letter-spacing:-.03em}
+.gh-team.lose .gh-pt,.gh-team.lose .gh-nm{color:var(--on-surface-variant)}
+.gh-vs{font-size:11px;font-weight:700;color:var(--outline)}
+
+/* ---- 탭 ---- */
+.tabs{display:flex;gap:2px;background:var(--surface);padding:0 8px;
+  border-top:1px solid var(--outline-variant);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1;min-width:64px;height:44px;font-size:13px;font-weight:700;color:var(--on-surface-variant);
+  position:relative;white-space:nowrap}
+.tab.on{color:var(--on-surface)}
+.tab.on::after{content:"";position:absolute;left:12px;right:12px;bottom:0;height:2.5px;
+  border-radius:2px 2px 0 0;background:var(--main)}
+.tab[disabled]{opacity:.35;cursor:default}
+
+/* ---- 공통 카드 ---- */
+main{padding:10px 10px 32px;display:flex;flex-direction:column;gap:10px}
+.card{background:var(--surface);border-radius:var(--r-card);padding:14px}
+.card h3{font-size:13px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.card h3 .sub{margin-left:auto;display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:600;color:var(--on-surface-variant)}
+.card h3 .sub .lg{width:8px;height:8px;border-radius:50%;display:inline-block}
+/* 정렬 선택 — 네이티브 select라 모바일에서 OS 피커가 뜬다. 커스텀 드롭다운보다 손에 익다 */
+.sortSel{appearance:none;-webkit-appearance:none;border:none;background:var(--surface-variant);
+  color:var(--on-surface);font-family:var(--font);font-size:12px;font-weight:700;
+  height:30px;padding:0 26px 0 11px;border-radius:100px;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6a72' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center;background-size:12px}
+.sortDir{display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 11px 0 9px;border-radius:100px;
+  background:var(--surface-variant);color:var(--on-surface);font-family:var(--font);font-size:12px;
+  font-weight:700;white-space:nowrap}
+/* 글리프(▾▴)는 폰트마다 크기·기준선이 달라 방향을 바꿀 때마다 들쭉날쭉해진다 — 같은 SVG를 뒤집는다 */
+.sortDir svg{width:13px;height:13px;flex:none;transition:transform .15s}
+.sortDir.asc svg{transform:rotate(180deg)}
+@media (prefers-reduced-motion:reduce){ .sortDir svg{transition:none} }
+.sortDir:hover{background:var(--outline-variant)}
+.empty{padding:36px 12px;text-align:center;font-size:13px;color:var(--on-surface-variant);line-height:1.7}
+
+/* ---- 요약: 베스트 플레이어 ----
+   선수 카드(player-card.html)의 축소판을 세운다. 이름과 숫자만 늘어놓는 것보다
+   "이 경기의 얼굴"이 한 장으로 서는 편이 요약 첫 화면에 맞다. */
+.mvp{display:flex;flex-direction:column;align-items:center;gap:14px;perspective:900px}
+.mvpCard{position:relative;display:block;width:150px;aspect-ratio:5/7;border-radius:14px;padding:2px;
+  cursor:pointer}
+/* 손에 들고 천천히 기울이는 듯한 움직임. 정지해 있으면 그림처럼 보여 누를 수 있다는 신호가 없다.
+   각도는 7도 안쪽 — 더 주면 카드가 흔들려 글자가 읽히지 않는다. */
+.mvpCard{animation:mvpTilt 6.5s ease-in-out infinite;transform-style:preserve-3d;will-change:transform}
+@keyframes mvpTilt{
+  0%,100%{ transform:rotateY(-7deg) rotateX(2.5deg) translateY(0) }
+  50%    { transform:rotateY(7deg)  rotateX(-2deg)  translateY(-5px) }
+}
+/* 누르는 동안에는 멈춰 세운다 — 손이 잡은 것처럼 */
+.mvpCard:active{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){
+  .mvpCard{animation:none;transition:none;transform:none}
+  .mvpCard::before{animation:none}
+}
+.mvpCard{
+  background:linear-gradient(155deg,var(--g-b),var(--g-a) 42%,var(--g-b) 70%,var(--g-a));
+  box-shadow:0 10px 24px rgba(0,0,0,.22)}
+/* 테두리를 도는 빛 — player-card.html의 .cardFace::before와 같은 방식.
+   카드보다 큰 원뿔 그라디언트를 돌리고 가운데를 .in이 덮어, 2px 프레임에서만 빛줄기가 흐른다.
+   .mvpCard의 overflow:hidden이 회전하는 사각형을 카드 모양으로 잘라 준다. */
+.mvpCard{overflow:hidden;text-decoration:none;color:inherit}
+.mvpCard::before{content:"";position:absolute;inset:-60%;pointer-events:none;
+  background:conic-gradient(from 0deg, transparent 0deg, transparent 296deg,
+    rgba(255,255,255,.62) 334deg, transparent 360deg);
+  animation:mvpSweep 3.4s linear infinite}
+@keyframes mvpSweep{to{transform:rotate(1turn)}}
+@media (prefers-reduced-motion:reduce){ .mvpCard::before{animation:none} }
+.mvpCard .in{position:relative;height:100%;border-radius:12px;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:10px 8px 11px;
+  background:radial-gradient(120% 80% at 50% 0%, color-mix(in srgb,var(--g-a) 42%, transparent), transparent 66%),
+             linear-gradient(175deg, color-mix(in srgb,var(--g-c) 92%, #0b0c10), #0a0b0e 84%)}
+.mvpCard .ovr{position:absolute;top:8px;left:9px;font-family:var(--font-display);font-size:20px;font-weight:800;
+  line-height:1;color:var(--g-text)}
+.mvpCard .ovr em{display:block;font-style:normal;font-size:11px;font-weight:700;opacity:.7;letter-spacing:.04em}
+.mvpCard .no{position:absolute;top:9px;right:10px;font-family:var(--font-display);font-size:16px;font-weight:800;
+  color:var(--g-text);opacity:.9}
+.mvpCard .sil{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:88px;opacity:.9}
+.mvpCard .nm{position:relative;font-size:16px;font-weight:800;color:#fff;letter-spacing:-.02em}
+.mvpCard .tm{position:relative;font-size:11px;color:rgba(255,255,255,.66);margin-top:2px}
+.mvpCard .badge{position:relative;margin-bottom:6px;font-family:var(--font-display);font-size:10px;
+  font-weight:800;padding:2px 7px;border-radius:5px;background:var(--g-b);color:var(--g-c);letter-spacing:.04em}
+/* 이 경기 기록 — 카드가 선수를, 아래 줄이 오늘 무엇을 했는지를 말한다 */
+.mvp-line{display:flex;gap:0;text-align:center;width:100%}
+.mvp-line div{flex:1;display:flex;flex-direction:column;gap:2px;position:relative}
+.mvp-line div+div::before{content:"";position:absolute;left:0;top:3px;bottom:3px;width:1px;background:var(--outline-variant)}
+.mvp-line b{font-family:var(--font-display);font-size:20px;font-weight:800;line-height:1}
+.mvp-line span{font-size:11px;color:var(--on-surface-variant)}
+/* ---- 요약: 결과 ---- */
+.resCard{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;padding:18px 14px 16px}
+.res-crown{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px}
+.lw{display:flex;align-items:center;color:#e0a92e;flex:none}
+.lw.r{transform:scaleX(-1)}
+.laurel{width:29px;height:48px}
+.res-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+.res-win{font-size:17px;font-weight:800}
+.res-gap{font-size:13px;font-weight:700;color:var(--on-surface-variant)}
+.res-meta{font-size:11px;color:var(--on-surface-variant)}
+
+/* ---- 요약: 쿼터별 점수 ---- */
+.qflow{display:flex;flex-direction:column}
+.qf-row{display:grid;grid-template-columns:minmax(0,1fr) repeat(4,34px) 44px;align-items:center;gap:2px;
+  padding:9px 0;border-bottom:1px solid var(--outline-variant)}
+.qf-row:last-child{border-bottom:none}
+.qf-head{padding:0 0 7px;font-size:11px;font-weight:600;color:var(--on-surface-variant)}
+.qf-head span{text-align:center}
+.qf-row span{text-align:center;font-family:var(--font-display);font-size:13px;font-weight:500;
+  color:var(--on-surface-variant)}
+.qf-row .qf-up{color:var(--on-surface);font-weight:800}
+.qf-nm{display:flex;align-items:center;gap:6px;font-family:var(--font);font-size:13px;font-weight:600;
+  color:var(--on-surface);text-align:left;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.qf-tot{font-weight:800;color:var(--on-surface)}
+.qf-row.win .qf-tot{font-size:15px}
+.mvp-hint{font-size:11px;color:var(--on-surface-variant);opacity:.8}
+
+/* ---- 요약: 팀 기록 비교 ----
+   합계를 100%로 나눠 채우면 34대27이 56:44로 보여 격차가 실제보다 작아지고,
+   7대7 같은 동점은 반반이라 "둘 다 7"인지 "합쳐서 14"인지 읽히지 않는다.
+   중앙에서 양쪽으로 뻗되 각자 트랙을 두어, 큰 쪽 대비 얼마인지가 길이로 드러나게 한다. */
+.cmp{display:flex;flex-direction:column;gap:13px}
+.cmp-row{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:10px}
+.cmp-v{font-family:var(--font-display);font-size:16px;font-weight:800;text-align:center}
+.cmp-v.dim{color:var(--on-surface-variant);font-weight:700}
+.cmp-bar{display:flex;flex-direction:column;gap:5px}
+.cmp-lb{font-size:11px;font-weight:600;color:var(--on-surface-variant);text-align:center}
+.cmp-bars{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.cmp-half{height:7px;border-radius:4px;background:var(--surface-variant);display:flex}
+.cmp-half.l{justify-content:flex-end}
+.cmp-half i{display:block;height:100%;border-radius:4px}
+
+/* ---- 중계(PBP) ----
+   말풍선 카드를 겹겹이 쌓으면 스크롤이 길어지고 시선이 좌우로 튄다.
+   전광판 로그처럼 한 줄 = 한 사건으로 눕히고, 홀짝 배경으로 줄을 구분한다. */
+.pbp-qtabs{display:flex;gap:6px;margin-bottom:2px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.pbp-qtabs::-webkit-scrollbar{display:none}
+.qtab{flex:none;height:32px;padding:0 14px;border-radius:100px;background:var(--surface-variant);
+  color:var(--on-surface-variant);font-size:13px;font-weight:700}
+.qtab.on{background:var(--main);color:var(--on-main)}
+.pbp{display:flex;flex-direction:column;margin:0 -14px}
+.pbp-q{text-align:center;padding:14px 0 10px;font-size:13px;font-weight:800}
+.pbp-row{display:grid;grid-template-columns:1fr 62px 1fr;align-items:center;gap:8px;
+  padding:9px 14px;min-height:44px}
+.pbp-row:nth-child(odd){background:var(--head-bg)}
+.pbp-ev{display:flex;align-items:center;gap:7px;min-width:0;font-size:13px;line-height:1.4}
+.pbp-ev.away{justify-content:flex-end;text-align:right}
+.pbp-ev .ball{width:15px;height:15px;flex:none}
+.pbp-mid{display:flex;flex-direction:column;align-items:center;gap:1px;flex:none}
+.pbp-t{font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--on-surface-variant)}
+.pbp-sc{font-family:var(--font-display);font-size:13px;font-weight:800;letter-spacing:-.02em}
+.pbp-sys{grid-column:1 / -1;text-align:center;font-size:12px;font-weight:600;
+  color:var(--on-surface-variant);padding:2px 0}
+/* 득점이 난 줄은 점수가 바뀐 지점이라 살짝 세운다 */
+.pbp-row.goal .pbp-sc{color:var(--on-surface)}
+
+/* ---- 기록(박스스코어) ---- */
+.bs-tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
+.bs-tabs::-webkit-scrollbar{display:none}
+.bs-tab{flex:1 0 auto;min-width:88px;height:36px;padding:0 14px;border-radius:100px;
+  background:var(--surface-variant);color:var(--on-surface-variant);
+  font-size:13px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.bs-tab.on{background:var(--main);color:var(--on-main)}
+.bs-wrap{position:relative}
+/* 오른쪽 끝 페이드 — 표가 잘린 게 아니라 옆으로 더 있다는 신호. 끝까지 밀면 사라진다 */
+.bs-wrap::after{content:"";position:absolute;top:0;right:-14px;width:34px;height:100%;pointer-events:none;
+  background:linear-gradient(90deg,transparent,var(--surface));opacity:1;transition:opacity .2s}
+.bs-wrap.end::after{opacity:0}
+.bs-scroll{overflow-x:auto;scrollbar-width:thin;margin:0 -14px;padding:0 14px;
+  -webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:470px}
+/* 숫자를 전부 굵게 두면 표 전체가 소리를 질러 어디를 봐야 할지 알 수 없다.
+   기본은 보통 굵기로 두고 득점만 세운다. 행 간격은 손가락으로 짚어 읽을 만큼 넓힌다. */
+th,td{padding:12px 7px;font-size:13px;text-align:center;white-space:nowrap}
+th{font-size:11px;font-weight:600;color:var(--on-surface-variant);border-bottom:1px solid var(--outline-variant);
+  padding:0}
+.th-sort{width:100%;padding:10px 7px;font-family:var(--font);font-size:11px;font-weight:600;
+  color:inherit;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:3px}
+th:first-child .th-sort{justify-content:flex-start;padding-left:2px}
+th.sorted{color:var(--on-surface)}
+th.sorted .th-sort{font-weight:800}
+.arw{width:10px;height:10px;flex:none}
+.arw.asc{transform:rotate(180deg)}
+/* 정렬 중인 열은 셀까지 살짝 세워 어느 기준으로 늘어놨는지 표를 훑을 때도 보이게 한다 */
+td.sorted{color:var(--on-surface);font-weight:700;background:var(--head-bg)}
+td{border-bottom:1px solid var(--outline-variant);font-family:var(--font-display);font-weight:500;
+  color:var(--on-surface-variant)}
+td.key{font-weight:700;color:var(--on-surface)}
+th:first-child,td:first-child{text-align:left;padding-left:2px;position:sticky;left:0;background:var(--surface)}
+td:first-child{font-family:var(--font);font-weight:600;font-size:13px;color:var(--on-surface)}
+td .no{font-family:var(--font-display);color:var(--on-surface-variant);font-size:11px;margin-right:6px}
+td .tmdot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:1px}
+tr.out td:first-child{color:var(--on-surface-variant);text-decoration:line-through;text-decoration-thickness:1px}
+tfoot td{font-weight:700;color:var(--on-surface);border-bottom:none;background:var(--head-bg)}
+tfoot td:first-child{background:var(--head-bg)}
+
+.note{font-size:11px;color:var(--on-surface-variant);line-height:1.6;padding:2px 2px 0}
+/* 안내는 카드 밖 — 데이터가 아니라 데이터를 읽는 규칙이라 카드 경계 바깥에 둔다 */
+.notes{list-style:none;display:flex;flex-direction:column;gap:4px;padding:2px 4px}
+.notes li{position:relative;padding-left:11px;font-size:11px;line-height:1.6;color:var(--on-surface-variant)}
+.notes li::before{content:"";position:absolute;left:2px;top:8px;width:3px;height:3px;border-radius:50%;
+  background:var(--outline)}
+
+@media (max-width:380px){
+  .gh-pt{font-size:44px}
+  .pbp-row{grid-template-columns:1fr 46px 1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="gh">
+    <div class="gh-top">
+      <a class="gh-back" id="ghBack" href="index.html#games" aria-label="뒤로">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      </a>
+      <span class="gh-meta" id="ghMeta"></span>
+      <span class="gh-state" id="ghState"></span>
+    </div>
+    <div class="gh-score" id="ghScore"></div>
+    <nav class="tabs" id="tabs"></nav>
+  </header>
+
+  <main id="view"></main>
+</div>
+
+<script>
+/* ================================================================
+ * 목업 데이터 — 운영 콘솔에서 기록이 끝나 검수까지 마친 경기를 가정한다.
+ * 실제 구현에서는 GET /api/games/:id (박스스코어 집계 포함)로 받는다.
+ * ================================================================ */
+var G = {
+  tour:'2026 여름 3×3 리그', label:'남자 일반부 8강', court:'A코트',
+  date:'2026-07-23', time:'12:00', status:'fix',
+  // logo가 없으면 팀 컬러 칩으로 떨어진다 — 대회 초반에는 로고를 안 올린 팀이 대부분이다
+  home:{ name:'서울 타이탄스', color:'#3b82f6', score:72, logo:null },
+  away:{ name:'인천 파이터스', color:'#ef4444', score:68, logo:null },
+  quarters:[ {h:18,a:17},{h:17,a:15},{h:20,a:19},{h:17,a:17} ]
+};
+
+/* 박스스코어 — fg/tp/ft는 [성공, 시도] */
+var BOX = {
+  home:[
+    { no:'7',  name:'김민수', min:31, pts:24, reb:6, ast:5, stl:2, blk:1, to:3, pf:3, fg:[9,16], tp:[3,7], ft:[3,4] },
+    { no:'11', name:'박정우', min:28, pts:14, reb:4, ast:7, stl:3, blk:0, to:2, pf:2, fg:[5,11], tp:[2,5], ft:[2,2] },
+    { no:'23', name:'이현수', min:26, pts:12, reb:9, ast:1, stl:0, blk:3, to:1, pf:4, fg:[5,9],  tp:[0,1], ft:[2,3] },
+    { no:'15', name:'최영호', min:19, pts:8,  reb:5, ast:2, stl:1, blk:0, to:2, pf:5, fg:[3,7],  tp:[1,3], ft:[1,2], out:true },
+    { no:'32', name:'한지훈', min:22, pts:9,  reb:7, ast:2, stl:1, blk:1, to:1, pf:2, fg:[4,8],  tp:[1,2], ft:[0,0] },
+    { no:'9',  name:'서동현', min:9,  pts:5,  reb:2, ast:1, stl:0, blk:0, to:0, pf:1, fg:[2,4],  tp:[1,2], ft:[0,0] },
+    { no:'24', name:'임재현', min:5,  pts:0,  reb:1, ast:0, stl:0, blk:0, to:1, pf:1, fg:[0,2],  tp:[0,1], ft:[0,0] }
+  ],
+  away:[
+    { no:'3',  name:'이정호', min:33, pts:26, reb:5, ast:4, stl:1, blk:0, to:4, pf:3, fg:[10,19], tp:[4,9], ft:[2,2] },
+    { no:'9',  name:'최민석', min:29, pts:15, reb:8, ast:2, stl:2, blk:2, to:2, pf:4, fg:[6,13],  tp:[1,4], ft:[2,4] },
+    { no:'12', name:'박준영', min:27, pts:13, reb:3, ast:6, stl:3, blk:0, to:3, pf:2, fg:[5,10],  tp:[2,4], ft:[1,1] },
+    { no:'21', name:'김태호', min:24, pts:8,  reb:6, ast:1, stl:1, blk:1, to:1, pf:3, fg:[3,8],   tp:[0,2], ft:[2,2] },
+    { no:'31', name:'윤성민', min:20, pts:4,  reb:4, ast:3, stl:0, blk:0, to:2, pf:2, fg:[2,6],   tp:[0,2], ft:[0,1] },
+    { no:'8',  name:'조현우', min:7,  pts:2,  reb:1, ast:0, stl:0, blk:0, to:0, pf:1, fg:[1,3],   tp:[0,1], ft:[0,0] }
+  ]
+};
+
+/* 중계 — 최신순. type이 있으면 경기 기록, sys면 운영 이력 */
+var PBP = [
+  { q:4, t:'00:02', team:'home', no:'7',  name:'김민수', type:'ft',  made:true,  seq:'2/2', score:[72,68] },
+  { q:4, t:'00:02', team:'home', no:'7',  name:'김민수', type:'ft',  made:true,  seq:'1/2', score:[71,68] },
+  { q:4, t:'00:04', team:'away', no:'9',  name:'최민석', type:'pf',  sub:'일반' },
+  { q:4, t:'00:21', team:'away', no:'3',  name:'이정호', type:'3pt', made:true,  score:[70,68] },
+  { q:4, t:'00:38', team:'home', no:'11', name:'박정우', type:'ast' },
+  { q:4, t:'00:38', team:'home', no:'23', name:'이현수', type:'2pt', made:true,  score:[70,65] },
+  { q:4, t:'01:05', team:'away', no:'12', name:'박준영', type:'to' },
+  { q:4, t:'01:26', team:'home', no:'32', name:'한지훈', type:'reb', sub:'수비' },
+  { q:4, t:'01:31', team:'away', no:'3',  name:'이정호', type:'3pt', made:false },
+  { q:4, t:'02:10', sys:true, desc:'인천 파이터스 타임아웃' },
+  { q:4, t:'02:44', team:'home', no:'15', name:'최영호', type:'pf', sub:'일반', foulOut:true },
+  { q:3, t:'00:12', team:'away', no:'9',  name:'최민석', type:'2pt', made:true,  score:[55,51] },
+  { q:3, t:'01:33', team:'home', no:'7',  name:'김민수', type:'3pt', made:true,  score:[55,49] },
+  { q:3, t:'04:02', team:'home', no:'23', name:'이현수', type:'blk' },
+  { q:3, t:'06:18', team:'away', no:'21', name:'김태호', type:'stl' },
+  { q:2, t:'00:45', team:'home', no:'11', name:'박정우', type:'2pt', made:true,  score:[35,32] },
+  { q:2, t:'05:11', team:'away', no:'3',  name:'이정호', type:'2pt', made:true,  score:[33,32] },
+  { q:1, t:'00:00', sys:true, desc:'1쿼터 종료' },
+  { q:1, t:'02:16', team:'home', no:'7',  name:'김민수', type:'2pt', made:true,  score:[18,17] },
+  { q:1, t:'10:00', sys:true, desc:'경기 시작' }
+];
+
+/* 등급 팔레트 — player-card.html과 같은 톤. OVR 구간으로 자동 배정 */
+var GRADES = {
+  gold:   { a:'#f7d774', b:'#c9982f', c:'#3a2c0d', text:'#ffe9a8' },
+  silver: { a:'#e3e6ec', b:'#9aa1ad', c:'#22252b', text:'#eef0f4' },
+  bronze: { a:'#e0a878', b:'#a9713f', c:'#2b1e14', text:'#f2d3b6' }
+};
+function gradeOf(ovr){ return ovr >= 85 ? 'gold' : ovr >= 72 ? 'silver' : 'bronze'; }
+/* 이 경기 활약으로 산출하는 임시 OVR — 실제로는 시즌 누적 기록에서 계산한다 */
+function ovrOf(p){
+  return Math.min(99, Math.round(52 + p.pts * 1.1 + p.reb * 0.9 + p.ast * 1.1 + p.stl * 1.4 + p.blk * 1.4 - p.to * 0.6));
+}
+var SIL = '<svg class="sil" viewBox="0 0 100 130" fill="rgba(255,255,255,.30)" aria-hidden="true">'+
+  '<circle cx="50" cy="20" r="13"/><rect x="34" y="36" width="32" height="46" rx="12"/>'+
+  '<rect x="37" y="80" width="11" height="46" rx="5.5"/><rect x="52" y="80" width="11" height="46" rx="5.5"/>'+
+  '<rect x="31" y="36" width="10" height="38" rx="5" transform="rotate(14 36 36)"/>'+
+  '<rect x="59" y="36" width="10" height="38" rx="5" transform="rotate(-14 64 36)"/></svg>';
+
+/* 월계관 — PO가 준 원본 SVG(2200×1466)에서 왼쪽 가지 하나만 잘라 쓴다. 직접 그린 잎보다
+   원본이 정확하고, 오른쪽은 .lw.r 이 뒤집어 재사용한다. viewBox 는 실측 getBBox 값. */
+var LAUREL = '<svg class="laurel" viewBox="175 386 415 693" fill="currentColor" aria-hidden="true">'+
+  '<path d="M476.526,966.922c3.249-3.806,6.264-7.843,8.996-12.115 c13.323-20.826,19.634-47.255,15.336-72.373c-4.299-25.123-19.751-48.401-41.371-59.159 c-22.969,40.63-35.884,86.024-1.921,131.449c-14.556-9.412-28.918-18.933-42.546-29.085c-6.94-5.157-13.703-10.543-20.28-16.144 c3.313-3.576,6.396-7.396,9.205-11.463c13.202-19.106,20.007-43.699,16.813-67.423c-3.195-23.727-16.922-46.095-36.859-56.912 c-21.558,35.15-34.904,74.556-11.145,115.542c-4.396-4.387-8.683-8.885-12.855-13.493c-17.482-18.861-32.66-39.805-45.152-62.149 c4.572-2.477,8.985-5.299,13.19-8.487c18.508-14.027,32.653-35.266,37.027-58.801c4.375-23.538-1.681-49.074-17.243-65.576 c-31.074,26.336-55.832,59.121-47.009,104.601c-12.948-29.65-21.315-61.105-24.312-92.983c5.208-0.587,10.398-1.559,15.529-2.955 c22.41-6.092,43.469-20.504,56.322-40.698c12.856-20.197,16.784-46.145,8.519-67.268c-36.967,12.249-70.778,32.127-81.383,73.595 c1.334-32.768,8.623-65.416,22.717-96.459c4.453,1.515,9.026,2.744,13.709,3.645c22.805,4.39,48.056,0.715,68.485-11.763 c20.431-12.48,35.377-34.052,37.25-56.657c-33.671-4.596-67.741-2.92-94.327,19.224c0.443-0.703,0.886-1.406,1.331-2.106 c6.245-9.699,12.754-19.279,19.633-28.579c71.199-1.153,100.844-64.956,95.426-94.015c-23.272-4.487-43.293,2.009-62.847,15.822 c-19.551,13.815-32.934,35.54-37.937,58.218c-0.744,3.364-1.309,6.744-1.708,10.13c-2.744,3.561-5.439,7.155-8.094,10.769 c-12.586,17.402-24.24,35.428-34.439,54.324c5.608-42.326-18.267-73.371-47.909-98.539c-15.58,16.489-21.657,42.018-17.304,65.56 c4.355,23.539,18.48,44.79,36.977,58.834c3.993,3.035,8.176,5.742,12.506,8.134c-10.592,28.005-16.26,57.64-17.371,87.515 c-16.202-33.655-48.991-48.443-83.849-56.568c-6.315,21.788-0.045,47.271,14.592,66.217 c14.637,18.942,36.917,31.381,59.789,35.413c3.78,0.669,7.571,1.108,11.359,1.347c3.515,29.796,11.409,59.11,23.317,86.549 c-31.186-32.548-71.624-31.945-110.662-22.699c4.05,22.318,21.013,42.344,42.555,52.788 c21.539,10.444,47.028,11.659,69.301,5.083c4.694-1.385,9.241-3.101,13.631-5.106c14.917,26.89,33.385,51.727,54.518,74.067 c-38.119-17.819-74.706-4.841-107.571,15.316c10.817,19.937,33.185,33.664,56.912,36.859c23.724,3.195,48.317-3.61,67.423-16.813 c3.885-2.684,7.543-5.62,10.98-8.765c6.717,5.845,13.625,11.466,20.704,16.851c14.211,10.83,29.08,20.911,43.971,30.777 c-50.482-21.143-91.068,1.175-125.04,31.944c15.243,18.73,41.347,28.693,66.8,27.37c25.449-1.323,49.847-13.283,67.239-30.855 c4.479-4.524,8.507-9.397,12.091-14.539c38.719,25.644,78.188,52.97,103.954,91.997c1.844,2.793,5.566,3.626,8.405,1.854 l2.969-1.853c4.98-3.109,6.293-9.76,2.905-14.555C559.163,1021.26,517.994,993.619,476.526,966.922z"/></svg>';
+var LAUREL_L = '<span class="lw l">'+LAUREL+'</span>';
+var LAUREL_R = '<span class="lw r">'+LAUREL+'</span>';
+
+var TYPE_LB = { '2pt':'2점', '3pt':'3점', 'ft':'자유투', reb:'리바운드', ast:'어시스트',
+                stl:'스틸', blk:'블록', to:'턴오버', pf:'파울' };
+var BALL = '<svg class="ball" viewBox="0 0 24 24" aria-hidden="true">'+
+  '<circle cx="12" cy="12" r="9" fill="#e06a26"/>'+
+  '<path d="M12 3v18M3.2 12h17.6M5.6 5.6c3.4 3.4 3.4 9.4 0 12.8M18.4 5.6c-3.4 3.4-3.4 9.4 0 12.8" '+
+  'stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".9"/></svg>';
+
+/* 팀 마크 — 로고가 있으면 이미지, 없으면 팀 컬러 칩에 이름 첫 글자.
+   빈 자리를 두면 팀이 안 보이고, 회색 자리표시자를 두면 로고가 깨진 것처럼 읽힌다. */
+function teamMark(t, size){
+  var px = size + 'px';
+  if(t.logo) return '<img class="tmark" src="'+t.logo+'" alt="" style="width:'+px+';height:'+px+'">';
+  return '<span class="tmark chip" style="width:'+px+';height:'+px+';background:'+t.color+
+    ';font-size:'+Math.round(size*0.44)+'px">'+t.name.charAt(0)+'</span>';
+}
+
+var STATE_LB = { live:{t:'진행 중', c:'live'}, end:{t:'검수 대기', c:'end'}, fix:{t:'경기 종료', c:'fix'} };
+
+function evDesc(e){
+  if(e.sys) return e.desc;
+  var lb = TYPE_LB[e.type] || e.type;
+  if(e.type === 'ft')  return e.name + ' 자유투' + (e.seq ? '(' + e.seq + ')' : '') + ' ' + (e.made ? '성공' : '실패');
+  if(e.type === '2pt' || e.type === '3pt') return e.name + ' ' + lb + ' ' + (e.made ? '성공' : '실패');
+  if(e.sub) return e.name + ' ' + (e.type === 'pf' ? e.sub + ' 파울' : lb + '(' + e.sub + ')');
+  return e.name + ' ' + lb;
+}
+function isGoal(e){ return !e.sys && (e.type==='2pt'||e.type==='3pt'||e.type==='ft') && e.made; }
+/* 한글 조사 — 받침 유무로 갈린다. "타이탄스이(가)"처럼 괄호로 도망가면 읽는 사람이 대신 고른다 */
+function hasJong(w){
+  var c = w.charCodeAt(w.length - 1) - 0xAC00;
+  return c >= 0 && c <= 11171 && (c % 28) !== 0;
+}
+function josa(w, withJong, without){ return w + (hasJong(w) ? withJong : without); }
+
+function pct(a, b){ return b ? Math.round(a / b * 100) : 0; }
+function sum(list, key){ return list.reduce(function(t, p){ return t + p[key]; }, 0); }
+function sumPair(list, key, i){ return list.reduce(function(t, p){ return t + p[key][i]; }, 0); }
+
+/* ---- 헤더 ---- */
+function renderHeader(){
+  document.getElementById('ghMeta').textContent = G.tour + ' · ' + G.label + ' · ' + G.court;
+  var st = STATE_LB[G.status];
+  var stEl = document.getElementById('ghState');
+  stEl.textContent = st.t; stEl.className = 'gh-state ' + st.c;
+
+  var hw = G.home.score > G.away.score, aw = G.away.score > G.home.score;
+  document.getElementById('ghScore').innerHTML =
+    team(G.home, aw) + '<span class="gh-vs">VS</span>' + team(G.away, hw);
+  function team(t, lost){
+    return '<div class="gh-team'+(lost?' lose':'')+'">'+
+      '<span class="gh-nm">'+teamMark(t, 18)+t.name+'</span>'+
+      '<span class="gh-pt">'+t.score+'</span></div>';
+  }
+}
+
+/* ---- 탭 ---- */
+/* 응원·더보기(기획서 A-10·A-11)는 로그인·업로드가 붙어야 뜻이 있어 지금은 아예 내린다.
+   비활성으로 남겨 두면 눌러 보고 빈 화면을 만나 "고장난 것"으로 읽힌다. */
+var TABS = [
+  { key:'summary', label:'요약' },
+  { key:'pbp',     label:'중계' },
+  { key:'box',     label:'기록' }
+];
+var tab = 'summary';
+function renderTabs(){
+  document.getElementById('tabs').innerHTML = TABS.map(function(t){
+    return '<button type="button" class="tab'+(t.key===tab?' on':'')+'" data-tab="'+t.key+'"'+
+      (t.off?' disabled':'')+'>'+t.label+'</button>';
+  }).join('');
+}
+
+/* ---- 요약 ---- */
+function bestPlayer(){
+  // 득점 위주로 뽑되 리바운드·어시스트도 셈에 넣는다 — 24점 6리바 5어시가 26점 5리바보다 앞선다
+  var all = BOX.home.map(function(p){ return {p:p, side:'home'}; })
+    .concat(BOX.away.map(function(p){ return {p:p, side:'away'}; }));
+  all.sort(function(a, b){ return score(b.p) - score(a.p); });
+  function score(p){ return p.pts + p.reb * 1.2 + p.ast * 1.5 + p.stl * 2 + p.blk * 2 - p.to; }
+  return all[0];
+}
+function viewSummary(){
+  var b = bestPlayer(), p = b.p, t = G[b.side];
+  var hw = G.home.score > G.away.score;
+  var win = hw ? G.home : G.away, lose = hw ? G.away : G.home;
+  var ovr = ovrOf(p), gk = gradeOf(ovr), g = GRADES[gk];
+
+  var mvp = '<div class="card"><h3>베스트 플레이어</h3><div class="mvp">'+
+    '<a class="mvpCard" href="player-card.html" target="_blank" rel="noopener" '+
+      'aria-label="'+p.name+' 선수 카드 보기 (새 창)" '+
+      'style="--g-a:'+g.a+';--g-b:'+g.b+';--g-c:'+g.c+';--g-text:'+g.text+'">'+
+      '<div class="in">'+
+        '<span class="ovr">'+ovr+'<em>OVR</em></span>'+
+        '<span class="no">'+p.no+'</span>'+ SIL +
+        '<span class="badge">'+({gold:'GOLD',silver:'SILVER',bronze:'BRONZE'}[gk])+'</span>'+
+        '<span class="nm">'+p.name+'</span>'+
+        '<span class="tm">'+t.name+'</span>'+
+      '</div>'+
+    '</a>'+
+    '<span class="mvp-hint">카드를 누르면 선수 카드가 새 창으로 열려요</span>'+
+    '<div class="mvp-line">'+
+      '<div><b>'+p.pts+'</b><span>득점</span></div>'+
+      '<div><b>'+p.reb+'</b><span>리바운드</span></div>'+
+      '<div><b>'+p.ast+'</b><span>어시스트</span></div>'+
+      '<div><b>'+p.min+'</b><span>출전(분)</span></div>'+
+    '</div>'+
+  '</div></div>';
+
+  /* 결과와 일시는 경기 전체에 대한 사실이라 선수 카드 안에 있으면 그 선수 이야기로 읽힌다.
+     맨 위로 빼고 승패를 한눈에 보이게 세운다. */
+  var result = '<div class="card resCard">'+
+    '<div class="res-crown">'+ LAUREL_L + teamMark(win, 56) + LAUREL_R +'</div>'+
+    '<div class="res-line"><span class="res-win">'+win.name+'</span>'+
+      '<span class="res-gap">'+Math.abs(G.home.score - G.away.score)+'점 차 승</span></div>'+
+    '<div class="res-meta">'+G.date.replace(/-/g,'.')+' '+G.time+' · '+G.court+' · '+G.label+'</div>'+
+  '</div>';
+
+  /* 쿼터별 흐름 — 헤더에도 있지만 스크롤하면 접혀 사라진다. 어느 구간에서 갈렸는지는
+     요약에서 가장 자주 찾는 정보라 표로 한 번 더 세운다. */
+  var qsum = { h:0, a:0 };
+  var qflow = '<div class="card"><h3>쿼터별 점수</h3><div class="qflow">'+
+    '<div class="qf-row qf-head"><span></span>'+
+      G.quarters.map(function(q, i){ return '<span>'+(i+1)+'Q</span>'; }).join('')+
+      '<span class="qf-tot">합계</span></div>'+
+    ['home','away'].map(function(side){
+      var t = G[side], won = t.score === Math.max(G.home.score, G.away.score);
+      return '<div class="qf-row'+(won?' win':'')+'">'+
+        '<span class="qf-nm">'+teamMark(t, 16)+t.name+'</span>'+
+        G.quarters.map(function(q, i){
+          var mine = side === 'home' ? q.h : q.a, other = side === 'home' ? q.a : q.h;
+          // 그 쿼터를 이긴 쪽만 진하게 — 어디서 벌어졌는지가 표를 훑을 때 바로 보인다
+          return '<span class="'+(mine > other ? 'qf-up' : '')+'">'+mine+'</span>';
+        }).join('')+
+        '<span class="qf-tot">'+t.score+'</span></div>';
+    }).join('')+
+  '</div></div>';
+
+  // 팀 기록 비교 — 막대는 큰 쪽 대비 비율. 수치가 붙어 있어야 막대만 보고 오해하지 않는다
+  var rows = [
+    { lb:'야투 성공률', h:pct(sumPair(BOX.home,'fg',0), sumPair(BOX.home,'fg',1)), a:pct(sumPair(BOX.away,'fg',0), sumPair(BOX.away,'fg',1)), unit:'%' },
+    { lb:'3점 성공률', h:pct(sumPair(BOX.home,'tp',0), sumPair(BOX.home,'tp',1)), a:pct(sumPair(BOX.away,'tp',0), sumPair(BOX.away,'tp',1)), unit:'%' },
+    { lb:'자유투 성공률', h:pct(sumPair(BOX.home,'ft',0), sumPair(BOX.home,'ft',1)), a:pct(sumPair(BOX.away,'ft',0), sumPair(BOX.away,'ft',1)), unit:'%' },
+    { lb:'리바운드', h:sum(BOX.home,'reb'), a:sum(BOX.away,'reb') },
+    { lb:'어시스트', h:sum(BOX.home,'ast'), a:sum(BOX.away,'ast') },
+    { lb:'스틸',     h:sum(BOX.home,'stl'), a:sum(BOX.away,'stl') },
+    { lb:'블록',     h:sum(BOX.home,'blk'), a:sum(BOX.away,'blk') },
+    { lb:'턴오버',   h:sum(BOX.home,'to'),  a:sum(BOX.away,'to'), lowGood:true }
+  ];
+  var cmp = '<div class="card"><h3>팀 기록 비교 '+
+    '<span class="sub"><i class="lg" style="background:'+G.home.color+'"></i>'+G.home.name+
+    ' <i class="lg" style="background:'+G.away.color+'"></i>'+G.away.name+'</span></h3><div class="cmp">'+
+    rows.map(function(r){
+    // 퍼센트 지표는 0~100 절대 스케일로 그린다. 최댓값 기준으로 늘리면 49%와 46%가
+    // 나란히 꽉 차 버려 "거의 같다"는 사실이 오히려 "둘 다 최고"로 읽힌다.
+    // 개수 지표는 값의 폭이 커서 절대 스케일이 무의미하므로 큰 쪽을 100%로 잡는다.
+    var max = r.unit === '%' ? 100 : (Math.max(r.h, r.a) || 1);
+    var hBetter = r.lowGood ? r.h < r.a : r.h > r.a;
+    var aBetter = r.lowGood ? r.a < r.h : r.a > r.h;
+    return '<div class="cmp-row">'+
+      '<span class="cmp-v'+(hBetter?'':' dim')+'">'+r.h+(r.unit||'')+'</span>'+
+      '<div class="cmp-bar"><span class="cmp-lb">'+r.lb+'</span>'+
+        '<span class="cmp-bars">'+
+          '<span class="cmp-half l"><i style="width:'+(r.h/max*100)+'%;background:'+G.home.color+'"></i></span>'+
+          '<span class="cmp-half r"><i style="width:'+(r.a/max*100)+'%;background:'+G.away.color+'"></i></span>'+
+        '</span></div>'+
+      '<span class="cmp-v'+(aBetter?'':' dim')+'">'+r.a+(r.unit||'')+'</span>'+
+    '</div>';
+  }).join('') + '</div></div>';
+
+  return result + qflow + mvp + cmp;
+}
+
+/* ---- 중계 ---- */
+var pbpQ = 'all';
+function viewPbp(){
+  var qs = [];
+  PBP.forEach(function(e){ if(qs.indexOf(e.q) < 0) qs.push(e.q); });
+  qs.sort();
+  var list = pbpQ === 'all' ? PBP : PBP.filter(function(e){ return e.q === pbpQ; });
+
+  var tabs = '<div class="pbp-qtabs">'+
+    '<button type="button" class="qtab'+(pbpQ==='all'?' on':'')+'" data-q="all">전체</button>'+
+    qs.map(function(q){
+      return '<button type="button" class="qtab'+(pbpQ===q?' on':'')+'" data-q="'+q+'">'+q+'쿼터</button>';
+    }).join('')+'</div>';
+
+  var out = '', lastQ = null;
+  list.forEach(function(e){
+    if(pbpQ === 'all' && e.q !== lastQ){ out += '<div class="pbp-q">'+e.q+'쿼터</div>'; lastQ = e.q; }
+    if(e.sys){
+      out += '<div class="pbp-row"><span class="pbp-sys">'+e.t+' · '+e.desc+'</span></div>';
+      return;
+    }
+    var goal = isGoal(e);
+    var ev = '<span class="pbp-ev'+(e.team==='away'?' away':'')+'">'+
+      (goal && e.team==='home' ? BALL : '')+'<span>'+evDesc(e)+'</span>'+
+      (goal && e.team==='away' ? BALL : '')+'</span>';
+    out += '<div class="pbp-row'+(goal?' goal':'')+'">'+
+      (e.team==='home' ? ev : '<span></span>')+
+      '<div class="pbp-mid"><span class="pbp-t">'+e.t+'</span>'+
+        (e.score?'<span class="pbp-sc">'+e.score[0]+':'+e.score[1]+'</span>':'')+'</div>'+
+      (e.team==='away' ? ev : '<span></span>')+
+    '</div>';
+  });
+  if(!list.length) out = '<div class="empty">이 쿼터에 기록이 없습니다.</div>';
+
+  return '<div class="card"><h3>경기 중계 <span class="sub">최신순</span></h3>'+
+    tabs + '<div class="pbp">'+out+'</div></div>';
+}
+
+/* ---- 기록(박스스코어) ---- */
+/* 기본은 양 팀 전체 — 관중은 "누가 잘했나"를 보러 오지 특정 팀 명단을 보러 오지 않는다.
+   팀만 보고 싶으면 필터로 좁힌다. */
+var boxSide = 'all';
+/* 정렬 — 기본은 득점순. 열 이름을 눌러 바꾼다. 같은 열을 다시 누르면 오름차순으로 뒤집는다.
+   "어시스트를 누가 제일 많이 했나"를 보려고 표 전체를 눈으로 훑게 두지 않는다. */
+var boxSort = 'pts', boxDesc = true;
+var SORT_KEYS = {
+  min:function(p){ return p.min; },   pts:function(p){ return p.pts; },
+  reb:function(p){ return p.reb; },   ast:function(p){ return p.ast; },
+  stl:function(p){ return p.stl; },   blk:function(p){ return p.blk; },
+  to: function(p){ return p.to; },    pf: function(p){ return p.pf; },
+  fg: function(p){ return p.fg[0]; }, tp: function(p){ return p.tp[0]; },
+  ft: function(p){ return p.ft[0]; },
+  name:function(p){ return p.name; }
+};
+function viewBox(){
+  var list, showTeam = boxSide === 'all';
+  if(showTeam){
+    list = BOX.home.map(function(p){ return Object.assign({ side:'home' }, p); })
+      .concat(BOX.away.map(function(p){ return Object.assign({ side:'away' }, p); }));
+  } else {
+    list = BOX[boxSide].map(function(p){ return Object.assign({ side:boxSide }, p); });
+  }
+  var get = SORT_KEYS[boxSort] || SORT_KEYS.pts;
+  list.sort(function(a, b){
+    var x = get(a), y = get(b);
+    // 이름은 가나다순, 숫자는 크기순. 같으면 득점으로 갈라 순서가 흔들리지 않게 한다
+    var d = (typeof x === 'string') ? x.localeCompare(y, 'ko') : x - y;
+    if(!d) d = a.pts - b.pts;
+    return boxDesc ? -d : d;
+  });
+
+  var head = [
+    {k:'name', n:'선수'}, {k:'min', n:'분'},  {k:'pts', n:'득점'}, {k:'reb', n:'리바'},
+    {k:'ast',  n:'어시'}, {k:'stl', n:'스틸'}, {k:'blk', n:'블록'}, {k:'to',  n:'턴'},
+    {k:'pf',   n:'파울'}, {k:'fg',  n:'야투'}, {k:'tp',  n:'3점'},  {k:'ft',  n:'자유투'}
+  ];
+  var rows = list.map(function(p){
+    function td(k, v, cls){
+      return '<td class="'+(cls||'')+(boxSort===k?' sorted':'')+'">'+v+'</td>';
+    }
+    return '<tr'+(p.out?' class="out"':'')+'><td class="'+(boxSort==='name'?'sorted':'')+'">'+
+      (showTeam ? '<i class="tmdot" style="background:'+G[p.side].color+'"></i>' : '')+
+      '<span class="no">'+p.no+'</span>'+p.name+'</td>'+
+      td('min', p.min)+ td('pts', p.pts, 'key')+ td('reb', p.reb)+ td('ast', p.ast)+
+      td('stl', p.stl)+ td('blk', p.blk)+ td('to', p.to)+ td('pf', p.pf)+
+      td('fg', p.fg[0]+'/'+p.fg[1])+ td('tp', p.tp[0]+'/'+p.tp[1])+ td('ft', p.ft[0]+'/'+p.ft[1])+'</tr>';
+  }).join('');
+
+  // 합계는 한 팀을 볼 때만 뜻이 있다 — 양 팀을 더한 숫자는 아무것도 말해 주지 않는다
+  var foot = '';
+  if(!showTeam){
+    var L = BOX[boxSide];
+    foot = '<tfoot><tr><td>합계</td><td>-</td><td class="key">'+sum(L,'pts')+'</td><td>'+sum(L,'reb')+'</td>'+
+      '<td>'+sum(L,'ast')+'</td><td>'+sum(L,'stl')+'</td><td>'+sum(L,'blk')+'</td>'+
+      '<td>'+sum(L,'to')+'</td><td>'+sum(L,'pf')+'</td>'+
+      '<td>'+sumPair(L,'fg',0)+'/'+sumPair(L,'fg',1)+'</td>'+
+      '<td>'+sumPair(L,'tp',0)+'/'+sumPair(L,'tp',1)+'</td>'+
+      '<td>'+sumPair(L,'ft',0)+'/'+sumPair(L,'ft',1)+'</td></tr></tfoot>';
+  }
+
+  var tabs = [{k:'all',n:'전체'},{k:'home',n:G.home.name},{k:'away',n:G.away.name}].map(function(o){
+    var dot = o.k === 'all' ? '' : '<i style="width:8px;height:8px;border-radius:50%;background:'+G[o.k].color+'"></i>';
+    return '<button type="button" class="bs-tab'+(o.k===boxSide?' on':'')+'" data-box="'+o.k+'">'+dot+o.n+'</button>';
+  }).join('');
+
+  var ths = head.map(function(h){
+    var on = boxSort === h.k;
+    return '<th class="'+(on?'sorted':'')+'"><button type="button" class="th-sort" data-sort="'+h.k+'"'+
+      ' aria-label="'+h.n+' 기준 정렬">'+h.n+
+      (on ? '<svg class="arw'+(boxDesc?'':' asc')+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" '+
+        'stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
+        '<path d="M6 9l6 6 6-6"/></svg>' : '')+'</button></th>';
+  }).join('');
+
+  // 정렬 선택 — 열 이름을 눌러도 되지만 열이 12개라 가로로 밀어야 닿는다.
+  // 자주 보는 기준은 카드 오른쪽 위에서 바로 고를 수 있게 둔다.
+  var sel = '<span class="sub"><select class="sortSel" data-sortsel aria-label="정렬 기준">'+
+    head.filter(function(h){ return h.k !== 'name'; }).map(function(h){
+      return '<option value="'+h.k+'"'+(h.k===boxSort?' selected':'')+'>'+h.n+'순</option>';
+    }).join('')+
+    '<option value="name"'+(boxSort==='name'?' selected':'')+'>이름순</option>'+
+    '</select>'+
+    '<button type="button" class="sortDir'+(boxDesc?'':' asc')+'" data-sortdir aria-label="정렬 방향 바꾸기">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" '+
+      'stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'+
+      (boxDesc?'많은순':'적은순')+'</button></span>';
+
+  return '<div class="card"><h3>선수 기록 '+sel+'</h3>'+
+    '<div class="bs-tabs">'+tabs+'</div>'+
+    '<div class="bs-wrap"><div class="bs-scroll"><table><thead><tr>'+ths+
+    '</tr></thead><tbody>'+rows+'</tbody>'+foot+'</table></div></div></div>'+
+    // 표를 읽는 규칙은 카드 밖으로 뺀다 — 카드 안에 있으면 데이터의 일부처럼 보이고,
+    // 한 문장에 몰아넣으면 세 가지 다른 이야기가 붙어 하나도 눈에 안 들어온다
+    '<ul class="notes">'+
+      '<li>열 이름을 누르면 정렬 기준이 바뀝니다</li>'+
+      '<li>취소선은 5파울 퇴장</li>'+
+      '<li>야투는 3점을 포함한 전체 필드골</li>'+
+    '</ul>';
+}
+
+function render(){
+  renderTabs();
+  var v = document.getElementById('view');
+  if(tab === 'summary') v.innerHTML = viewSummary();
+  else if(tab === 'pbp') v.innerHTML = viewPbp();
+  else if(tab === 'box') v.innerHTML = viewBox();
+  else v.innerHTML = '<div class="card"><div class="empty">준비 중입니다.</div></div>';
+}
+
+document.addEventListener('click', function(e){
+  var t = e.target.closest('[data-tab]');
+  if(t && !t.disabled){ tab = t.dataset.tab; render(); window.scrollTo(0,0); return; }
+  var b = e.target.closest('[data-box]');
+  if(b){ boxSide = b.dataset.box; render(); return; }
+  if(e.target.closest('[data-sortdir]')){ boxDesc = !boxDesc; render(); return; }
+  var so = e.target.closest('[data-sort]');
+  if(so){
+    var k = so.dataset.sort;
+    // 같은 열을 다시 누르면 방향만 뒤집는다. 새 열은 큰 값부터가 기본(이름만 가나다순)
+    if(boxSort === k) boxDesc = !boxDesc;
+    else { boxSort = k; boxDesc = k !== 'name'; }
+    render(); return;
+  }
+  var q = e.target.closest('[data-q]');
+  if(q){ pbpQ = q.dataset.q === 'all' ? 'all' : Number(q.dataset.q); render(); return; }
+});
+
+document.addEventListener('change', function(e){
+  if(e.target.matches('[data-sortsel]')){
+    boxSort = e.target.value;
+    boxDesc = boxSort !== 'name';   // 이름은 가나다순이 기본, 숫자는 큰 값부터
+    render();
+  }
+});
+
+renderHeader();
+render();
+
+/* 헤더 접기 — 임계선이 하나면 그 근처에서 접힘/펼침이 번갈아 일어난다.
+   접히는 순간 헤더가 45px 줄고, 브라우저의 스크롤 앵커링이 보이던 카드를 제자리에
+   두려고 scrollY를 그만큼 되돌리기 때문이다. 되돌아온 위치가 다시 임계선 아래면 펴지고,
+   펴지면 또 내려가고 — 그게 특정 구간에서 팅기는 이유다.
+   그래서 접는 선(120)과 펴는 선(40)을 높이 변화폭(45)보다 넉넉히 벌려 둔다. */
+var gh = document.querySelector('.gh');
+function syncHeaderFold(){
+  if(window.scrollY > 120) gh.classList.add('compact');
+  else if(window.scrollY < 40) gh.classList.remove('compact');
+}
+addEventListener('scroll', syncHeaderFold, { passive: true });
+syncHeaderFold();   // 새로고침으로 스크롤 위치가 복원된 경우
+
+/* 뒤로가기 — 선수 카드 뒷면, 시트, 경기 목록 등 여러 곳에서 들어온다.
+   어디서 왔든 왔던 자리로 돌려보내고, 직접 연 경우에만 href(경기 목록)로 간다. */
+document.getElementById('ghBack').addEventListener('click', function(e){
+  if(history.length > 1){ e.preventDefault(); history.back(); }
+});
+
+// 표를 끝까지 밀면 페이드를 지운다
+document.addEventListener('scroll', function(e){
+  var sc = e.target;
+  if(sc.classList && sc.classList.contains('bs-scroll')){
+    var wrap = sc.parentElement;
+    wrap.classList.toggle('end', sc.scrollLeft + sc.clientWidth >= sc.scrollWidth - 2);
+  }
+}, true);
+</script>
+</body>
+</html>

@@ -43,7 +43,7 @@ button{font-family:var(--font)}
    heroFixed(헤더+카드)는 화면에 고정. sheet도 이제 화면 하단에 고정된 별도 레이어로,
    평소엔 헤드(핸들+이름)만 보이는 접힌 상태였다가, 헤드를 누르면 모바일 화면 전체를 채우며 펼쳐진다 */
 /* overflow:hidden — 빛줄기 레이어(.stageRays)가 화면보다 넓어서(220%) 그대로 두면 가로 스크롤이 생긴다 */
-.heroFixed{position:fixed;top:0;left:0;right:0;bottom:92px;z-index:1;overflow:hidden;display:flex;flex-direction:column;align-items:center;
+.heroFixed{position:fixed;top:0;left:0;right:0;bottom:74px;z-index:1;overflow:hidden;display:flex;flex-direction:column;align-items:center;
   /* 배경 팀 컬러 틴트는 제거 — 카드 주변 등급 오라(.cardGlow)와 색이 겹쳐 서로 탁해졌다 */
   background:radial-gradient(circle at 50% -10%,var(--stage-bg2),var(--stage-bg) 60%)}
 
@@ -136,29 +136,38 @@ button{font-family:var(--font)}
 /* 시트 전용 라이트 테마 토큰 — 어두운 카드 배경 위에 얹히는 시트라 색이 겹쳐 보이지 않도록 화이트 테마로 분리 */
 .sheet{--sh-bg:#ffffff; --sh-bg2:#f4f5f7; --sh-border:#e7e8ec; --sh-on:#16171b; --sh-on-dim:#71737c;
   position:fixed;left:0;right:0;bottom:0;z-index:3;background:var(--sh-bg);color:var(--sh-on);border-radius:26px 26px 0 0;
-  box-shadow:0 -14px 32px rgba(0,0,0,.28);height:92px;overflow:hidden;
+  box-shadow:0 -14px 32px rgba(0,0,0,.28);height:74px;overflow:hidden;
   transform:translateY(110%);
   transition:transform .8s cubic-bezier(.16,.8,.24,1), height .45s cubic-bezier(.2,.9,.25,1.05), border-radius .3s ease}
 .sheet.sheet-visible{transform:translateY(0)}
 /* 100dvh — CSS가 100vh(툴바 숨김 기준 고정값)를 쓰면 JS의 window.innerHeight와 어긋나서,
    모바일에서 펼쳤을 때 시트가 화면보다 길어져 하단 내용에 닿지 못한다. dvh가 innerHeight와 일치한다.
    화면 전체를 덮는 상태라 위쪽 라운드도 없앤다 — 남겨두면 상단 스티키 헤더가 그 곡선에 잘려 보인다. */
-/* 시트는 3단이다: 접힘(92px) → 중간(50dvh) → 최상단(100dvh).
+/* 시트는 3단이다: 접힘(74px) → 중간(50dvh) → 최상단(100dvh).
    .sheet-open은 '접힘이 아닌' 두 단이 공유하는 성질(내용 스크롤·닫기 버튼·스티키 헤더)을 담고,
    높이와 라운드만 단계별로 다르다. */
 .sheet.sheet-open{overflow-y:auto;-webkit-overflow-scrolling:touch}
-.sheet.sheet-half{height:50vh;height:50dvh}
+/* 중간 단은 훑어보는 자리다. 여기서 내부 스크롤까지 되면 위로 미는 제스처가
+   "시트를 더 올린다"와 "내용을 굴린다" 둘 사이에서 갈린다 — 중간에서는 굴리지 않는다.
+   내용을 더 보려면 시트를 최상단까지 올리면 된다. */
+.sheet.sheet-half{height:50vh;height:50dvh;overflow-y:hidden}
 /* 화면 전체를 덮는 상태라 위쪽 라운드도 없앤다 — 남겨두면 상단 스티키 헤더가 그 곡선에 잘려 보인다.
    중간 단은 아래에서 올라온 시트라 라운드를 그대로 유지한다. */
 .sheet.sheet-expanded{height:100vh;height:100dvh;border-radius:0}
+/* 최상단에 닿은 뒤 — 시트를 문서 흐름에 앉힌다(fixed→relative). 그러면 시트가 내용만큼 길어지고
+   페이지가 대신 굴러가므로 시트 안에 또 하나의 스크롤이 생기지 않는다. 스크롤 두 겹이 사라지니
+   위로 미는 제스처가 갈릴 일도 없다. 이 상태에서 시트는 스크롤에 반응하지 않고,
+   핸들을 끌어내리거나 X를 눌러야 닫힌다. 펼침 애니메이션(height .45s)이 끝난 뒤에 거는 이유는,
+   fixed·100dvh로 다 올라온 순간과 흐름에 앉은 순간의 화면이 정확히 같아서 튀지 않기 때문이다. */
+.sheet.sheet-pinned{position:relative;height:auto;min-height:100vh;min-height:100dvh;overflow:visible}
 /* 넛지는 transform이 아니라 height로 살짝 부풀렸다 줄인다 — bottom:0로 고정된 시트를 translateY로 들어올리면
    바닥이 뜨면서 그 틈으로 뒤 배경이 잘려 보이는 것처럼 드러나는 문제가 있어, height를 쓰면 아래쪽은 그대로 붙어있고
    위쪽만 살짝 솟아오르는 것처럼 자연스럽게 보인다 */
 .sheet.sheet-nudge{animation:sheetNudge 5s cubic-bezier(.4,0,.2,1) infinite}
 @keyframes sheetNudge{
-  0%,20%,100%{height:92px}
-  5%,15%{height:104px}
-  10%{height:92px}
+  0%,20%,100%{height:74px}
+  5%,15%{height:86px}
+  10%{height:74px}
 }
 /* 핸들은 접힘·중간 단에서 보이고 최상단에서만 숨긴다.
    중간 단은 아직 더 올릴 수 있는 상태라 손잡이가 그 여지를 알려줘야 한다.
@@ -224,7 +233,6 @@ button{font-family:var(--font)}
 
 /* ---------------- 헤더 — 카드보다 시각적으로 약해야 함 ---------------- */
 .pcHeader{display:flex;align-items:center;gap:10px;padding:14px 16px;width:100%}
-.pcHeader .wm{width:74px;height:26px;color:var(--on-dark-dim);opacity:.9}
 .pcHeader .sp{flex:1}
 .pcHeader button{width:36px;height:36px;border-radius:50%;border:1px solid #2a2d36;background:#15171d;color:var(--on-dark);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
 .pcHeader button:hover{background:#1c1f27}
@@ -270,14 +278,19 @@ button{font-family:var(--font)}
    모서리에 떨어져서 밝은 좌측·하단 사이에 검은 얼룩처럼 보였다. 어두운 끝을 빼고 밝은 두 톤만
    왕복시켜 네 모서리 모두 같은 금속 톤을 유지한다. */
 .cardFace{padding:2px;background:linear-gradient(155deg,var(--g-b),var(--g-a) 42%,var(--g-b) 70%,var(--g-a))}
-/* 테두리를 도는 빛 — 카드보다 큰 원뿔 그라디언트를 회전시키고, 가운데는 .inner가 덮어
+/* 빛줄기는 180° 마주 보는 두 개다. 하나만 돌면 반대편 변이 계속 죽어 있어서
+   "빛이 도는 테두리"가 아니라 "한쪽만 밝은 테두리"로 읽힌다. 두 개면 어느 순간에도
+   양쪽이 함께 살아나고, 실제 홀로그램 카드를 기울일 때의 반사와 같은 인상이 된다.
+   테두리를 도는 빛 — 카드보다 큰 원뿔 그라디언트를 회전시키고, 가운데는 .inner가 덮어
    3px 프레임에서만 빛줄기가 흐르는 것처럼 보이게 한다. 밝기는 등급별 --shine-op를 따라간다.
    .cardFace의 overflow:hidden이 회전하는 사각형을 카드 모양으로 잘라주고,
    .inner는 DOM상 뒤에 있어 z-index 없이도 위에 그려진다. */
 .cardFace::before{
   content:"";position:absolute;inset:-60%;pointer-events:none;
   background:conic-gradient(from 0deg,
-    transparent 0deg, transparent 296deg,
+    transparent 0deg, transparent 116deg,
+    rgba(255,255,255,calc(var(--shine-op,.4) * 1.6)) 154deg,
+    transparent 180deg, transparent 296deg,
     rgba(255,255,255,calc(var(--shine-op,.4) * 1.6)) 334deg,
     transparent 360deg);
   animation:frameSweep 3.4s linear infinite}
@@ -354,8 +367,15 @@ button{font-family:var(--font)}
    overlay는 어두운 카드에서 대비만 키워 오히려 더 어두워지고, soft-light는 아무리 올려도 결이 안 산다.
    기울이면 --holo-tx/--holo-ty로 이 레이어가 함께 밀려서 빛을 따라 결이 흐른다. */
 .card-photo .holoFoil{opacity:.20;mix-blend-mode:screen}
-.card-photo .holoGrain{opacity:.08}
-.card-photo .pdAura{opacity:.18}
+/* 앞면이 뿌옇던 이유 — screen은 밑그림에 빛을 '더하는' 블렌드라, 포일 사진의 중간 회색이
+   카드의 검은 부분까지 통째로 들어 올려 우유를 부은 것처럼 보였다. 포일을 먼저 눌러
+   (contrast로 그림자를 검정까지 내리고 brightness로 전체를 낮춘다) 하이라이트만 남기면,
+   더할 빛이 있는 곳에만 무지갯빛이 뜨고 검정은 검정으로 남는다. 강도는 opacity로 되돌려 준다.
+   뒷면은 밑그림이 없어 이 문제가 없으므로 앞면에만 건다. */
+.cardFace.front .holoFoil{filter:contrast(1.85) brightness(.62);opacity:.34}
+/* 그레인·오라도 같은 이유로 옅게 — 셋이 겹치면 각각은 미미해도 합이 안개가 된다 */
+.card-photo .holoGrain{opacity:.05}
+.card-photo .pdAura{opacity:.10}
 
 .topRow{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;align-items:flex-start}
 .brandCol{display:flex;flex-direction:column;align-items:center;gap:6px}
@@ -502,8 +522,16 @@ button{font-family:var(--font)}
 .section h3{font-size:13px;font-weight:800;color:var(--sh-on-dim);margin:0 0 14px;letter-spacing:.02em}
 /* .recRow는 카드 뒷면(다크)에도 쓰이는 공용 클래스라 기본값은 그대로 두고, 시트 안에서만 화이트로 덮어씀 */
 .recRow{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);
-  border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:12.5px}
+  border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:12px;
+  color:inherit;text-decoration:none;cursor:pointer;transition:background .12s}
 .recRow:last-child{margin-bottom:0}
+/* 경기 상세로 가는 줄 — 오른쪽 끝의 작은 > 하나로 "들어갈 수 있다"를 알린다.
+   currentColor라 카드 뒷면(라이트)과 시트(다크) 양쪽에서 저절로 맞는다. */
+.recRow::after{content:"";flex:none;width:6px;height:6px;margin-left:8px;opacity:.45;
+  border-right:1.5px solid currentColor;border-top:1.5px solid currentColor;transform:rotate(45deg)}
+.recRow:active{background:rgba(255,255,255,.16)}
+.sheet .recRow:active{background:var(--sh-border)}
+@media (prefers-reduced-motion:reduce){ .recRow{transition:none} }
 .recRow .op{color:var(--on-dark-dim)}
 /* 점수·리바·어시 — 800은 너무 굵어 행 전체가 무거웠다. 대회명과 위계만 구분되면 충분하다 */
 .recRow b{font-weight:600}
@@ -514,7 +542,10 @@ button{font-family:var(--font)}
 .sheet .recRow .op{color:var(--sh-on-dim)}
 /* 승패 뱃지 — 좁은 카드 뒷면에 맞춰 W/L 한 글자로. 운영 화면이 Win/Lose를 쓰므로 같은 말의 축약이다.
    승은 운영 화면과 같은 브랜드 컬러, 패는 회색. 시트(화이트)에서는 패의 회색만 밝은 톤으로 바꾼다. */
-.recRow .op{display:inline-flex;align-items:center;gap:8px;min-width:0}
+/* flex:1 — 오른쪽 끝 > 가 붙으면서 세 칸이 되었다. 대회명 칸이 남는 폭을 다 먹어야
+   기록과 화살표가 오른쪽에 붙는다(space-between만 두면 기록이 가운데로 밀린다). */
+.recRow .op{display:inline-flex;align-items:center;gap:8px;min-width:0;flex:1}
+.recRow b{flex:none;margin-left:10px}
 .recRow .op > span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .wl{display:inline-flex;align-items:center;justify-content:center;flex:none;
   width:22px;height:18px;padding:0;box-sizing:border-box;
@@ -613,11 +644,10 @@ button{font-family:var(--font)}
   <div class="heroFixed" id="heroFixed">
     <!-- 무대 조명 — 등급 컬러 빛줄기가 위에서 쏟아지며 일렁인다. 두 겹이 서로 다른 속도로 움직인다 -->
     <div class="stageRays" aria-hidden="true"><i></i><i></i><i></i></div>
+    <!-- 카드 자체에 BASKET 마크가 박혀 있어 헤더 로고는 같은 말의 반복이었다. 남는 건 공유 하나뿐 -->
     <header class="pcHeader">
-      <span class="wm logoMark" role="img" aria-label="BASKET"></span>
       <span class="sp"></span>
       <button id="btnShareTop" aria-label="공유"></button>
-      <button id="btnMore" aria-label="더보기"></button>
     </header>
 
     <!-- 헤더 아래 남는 공간에서 카드 묶음을 세로 중앙 정렬 -->
@@ -675,7 +705,7 @@ button{font-family:var(--font)}
               <div class="backTitle">시즌 평균 기록</div>
               <div class="backGrid" id="backGrid"></div>
               <div class="backTitle">최근 경기</div>
-              <div class="recRow"><span class="op"><span>07.23</span><span class="wl w">W</span><span>vs 인천 파이터스</span></span><b>24점</b></div>
+              <a class="recRow" href="game.html"><span class="op"><span>07.23</span><span class="wl w">W</span><span>vs 인천 파이터스</span></span><b>24점</b></a>
               <div class="backEmptyNote" id="backEmptyNote">아직 기록된 경기가 없어요 · 위 수치는 예시 데이터입니다</div>
               <div class="backNote" id="backUpdated">update 2026.07.23 13:20</div>
             </div>
@@ -747,8 +777,8 @@ button{font-family:var(--font)}
       <!-- ============ 기록 ============ -->
       <div class="section">
         <h3>최근 대회 기록</h3>
-        <div class="recRow"><span class="op"><span>2026 여름 3×3 리그 · 8강</span><span class="wl w">W</span></span><b>24점 8리바 4어시</b></div>
-        <div class="recRow"><span class="op"><span>2026 여름 3×3 리그 · 예선</span><span class="wl l">L</span></span><b>18점 6리바 3어시</b></div>
+        <a class="recRow" href="game.html"><span class="op"><span>2026 여름 3×3 리그 · 8강</span><span class="wl w">W</span></span><b>24점 8리바 4어시</b></a>
+        <a class="recRow" href="game.html"><span class="op"><span>2026 여름 3×3 리그 · 예선</span><span class="wl l">L</span></span><b>18점 6리바 3어시</b></a>
       </div>
       <div class="section">
         <h3>획득 배지</h3>
@@ -950,7 +980,6 @@ document.getElementById('stTeam').textContent = PLAYER.team;
 document.getElementById('stNum').textContent = PLAYER.no;
 document.getElementById('stVerified').innerHTML = icon('verified');
 document.getElementById('btnShareTop').innerHTML = icon('share');
-document.getElementById('btnMore').innerHTML = icon('more');
 document.getElementById('btnFlip').innerHTML = icon('flip','ic ic-sm')+'카드 뒤집기';
 document.getElementById('btnShare').innerHTML = icon('share','ic ic-sm')+'링크 공유';
 document.getElementById('btnSaveImg').innerHTML = icon('download','ic ic-sm')+'이미지 저장';
@@ -1057,7 +1086,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     });
   }
 
-  var COLLAPSED_H = 92; // .sheet 기본 height와 동일한 값
+  var COLLAPSED_H = 74; // .sheet 기본 height와 동일한 값
   function expandedH(){ return window.innerHeight; }
   function currentH(){ return sheet.getBoundingClientRect().height; }
 
@@ -1068,26 +1097,34 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     cardStage.style.setProperty('--recede', t.toFixed(3));
   }
 
-  /* 시트 3단 — 'collapsed'(92px) / 'half'(화면 절반) / 'full'(최상단).
+  /* 시트 3단 — 'collapsed'(74px) / 'half'(화면 절반) / 'full'(최상단).
      높이는 클래스가 정하고(인라인 height는 지운다), 카드가 뒤로 빠지는 정도(--recede)만 여기서 맞춘다. */
   function stateH(st){ return st==='full' ? expandedH() : st==='half' ? expandedH()*0.5 : COLLAPSED_H; }
   function sheetState(){
     return sheet.classList.contains('sheet-expanded') ? 'full'
          : sheet.classList.contains('sheet-half') ? 'half' : 'collapsed';
   }
+  /* 고정 해제 — 흐름에 앉아 있던 시트를 다시 fixed로 되돌린다. 페이지가 굴러가 있던 만큼
+     먼저 되감지 않으면, fixed가 되는 순간 시트가 뷰포트 기준으로 다시 잡히면서 내용이 튄다. */
+  var pinTimer = null;
+  function unpinSheet(){
+    clearTimeout(pinTimer);
+    if(!sheet.classList.contains('sheet-pinned')) return;
+    sheet.classList.remove('sheet-pinned');
+    window.scrollTo(0, 0);
+  }
   function setSheet(st){
+    if(st !== 'full') unpinSheet(); else clearTimeout(pinTimer);
     sheet.style.transition = '';
     sheet.style.height = '';
     sheet.classList.toggle('sheet-open', st !== 'collapsed');
     sheet.classList.toggle('sheet-half', st === 'half');
     sheet.classList.toggle('sheet-expanded', st === 'full');
     applyRecede(stateH(st));
-    if(st === 'collapsed'){
-      sheet.scrollTop = 0; // 접힌 상태에선 항상 헤드부터 깔끔하게 보이도록 스크롤 위치 초기화
-      startNudge();
-    } else {
-      stopNudge();
-    }
+    sheet.scrollTop = 0;
+    // 펼침 애니메이션(height .45s)이 끝난 뒤에 흐름으로 넘긴다 — 그 순간의 화면이 같아 튀지 않는다
+    if(st === 'full') pinTimer = setTimeout(function(){ sheet.classList.add('sheet-pinned'); }, 480);
+    if(st === 'collapsed') startNudge(); else stopNudge();
   }
 
   // 드래그 도중엔 손가락을 그대로 따라 높이가 실시간으로 바뀌다가(transition 없음),
@@ -1134,7 +1171,9 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
   // 끝까지(위/아래) 도달했을 때만 펼침/접힘 상태로 확정되어, 다 올렸을 땐 이어서 내용 스크롤이 되고
   // 다 내렸을 땐 다시 넛지 힌트가 재생된다. 펼친 뒤 내용을 스크롤 중일 땐 손대지 않고 기본 스크롤 그대로 둔다
   document.addEventListener('wheel', function(e){
-    if(sheet.classList.contains('sheet-open') && sheet.scrollTop > 0) return;
+    // 최상단에 도착했으면 시트는 그 자리에 못박힌다 — 스크롤은 페이지 몫이고,
+    // 닫는 건 핸들을 끌어내리거나 X를 누르는 것뿐이다
+    if(sheetState() === 'full') return;
     stopNudge();
     var h = setLiveHeight(currentH() + e.deltaY);
     if(h >= expandedH() - 0.5) setSheet('full');
@@ -1146,6 +1185,8 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
   var DRAG_MOVE_EPS = 4;
   dragTargets.forEach(function(el){
     el.addEventListener('pointerdown', function(e){
+      // 못박힌 상태에서는 시트 높이가 '내용 길이'라 그대로 끌면 기준이 어긋난다 — 먼저 fixed로 되돌린다
+      unpinSheet();
       dragStartY = e.clientY;
       dragStartH = currentH();
       dragMoved = false;
@@ -1243,7 +1284,7 @@ function createCardController(wrapEl, opts){
     wrapEl.addEventListener('pointerleave', resetTilt);
   }
   wrapEl.addEventListener('click', function(e){
-    if(e.target.closest('button')) return;
+    if(e.target.closest('button, a')) return;   // 뒷면 최근 경기 줄은 경기 상세로 나간다
     if(dragMoved) return; // 기울이려고 드래그한 제스처는 탭-뒤집기로 처리하지 않음
     flipped = !flipped;
     inner.classList.toggle('flipped', flipped);
@@ -1392,7 +1433,6 @@ document.getElementById('btnShareTop').addEventListener('click', doShare);
 document.getElementById('btnSaveImg').addEventListener('click', function(){
   showToast('이미지 저장은 실제 구현 단계에서 서버 생성 방식으로 연결됩니다');
 });
-document.getElementById('btnMore').addEventListener('click', function(){ showToast('더보기 메뉴는 MVP 범위 확정 후 구현됩니다'); });
 
 /* ---- OVR 계산 방식 안내 팝업 ---- */
 document.getElementById('ovrInfoBtn').addEventListener('click', function(e){
