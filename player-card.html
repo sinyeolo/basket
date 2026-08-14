@@ -462,7 +462,7 @@ button{font-family:var(--font)}
 .cardFace.back .inner > .backTitle,
 .cardFace.back .inner > .backGrid,
 .cardFace.back .inner > .recRow,
-.cardFace.back .inner > .backEmptyNote,
+.cardFace.back .inner > .recEmpty,
 .cardFace.back .inner > .backNote{position:relative;z-index:2}
 .cardFace.back .inner{padding:20px 16px;display:flex;flex-direction:column;gap:14px;filter:opacity(1);
   background:
@@ -478,8 +478,16 @@ button{font-family:var(--font)}
 .backStat b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800}
 .backStat span{font-size:11px;color:var(--on-dark-dim)}
 .backNote{margin-top:auto;font-size:11px;color:var(--on-dark-dim);text-align:center}
-.backEmptyNote{display:none;font-size:11px;color:rgba(255,255,255,.6);text-align:center;line-height:1.5;
-  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:9px 10px}
+/* 스타터 = 아직 표본이 없는 등급. 앞면 OVR이 00인데 뒷면·시트에 수치가 차 있으면 서로 어긋난다.
+   한 등급으로 카드 전체가 같은 말을 하도록, 기록 블록을 통째로 빈 상태와 맞바꾼다. */
+.noRec{display:none}
+[data-grade="starter"] .hasRec{display:none}
+[data-grade="starter"] .noRec{display:block}
+/* 뒷면에서는 위아래 auto 마진이 .backNote의 것과 남은 공간을 나눠 가져 자연스레 가운데 선다 */
+.cardFace.back .recEmpty{margin-top:auto}
+.recEmpty{font-size:11px;color:var(--sh-on-dim);text-align:center;padding:18px 8px;
+  background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:12px;line-height:1.6}
+.cardFace.back .recEmpty{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.13);color:var(--on-dark-dim)}
 
 .flipBtn{display:flex;justify-content:center;margin-top:10px}
 
@@ -489,11 +497,13 @@ button{font-family:var(--font)}
 .hint.hide{opacity:0;pointer-events:none}
 
 /* 핵심 요약 스트립 — 시트 안에서만 쓰여서 화이트 테마로 바로 정의 */
+/* 요약 스트립만 반전 — 시트 전체가 흰 면이라 네 수치가 다른 카드들과 같은 무게로 흩어졌다.
+   여기 하나만 검게 깔면 "이 선수를 한 줄로 요약한 값"이라는 게 먼저 읽힌다. */
 .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:340px;margin:22px auto 0;
-  background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:16px;padding:16px 6px}
+  background:#16171b;border:1px solid #16171b;border-radius:16px;padding:16px 6px}
 .summary .it{text-align:center;padding:0 4px}
-.summary .it b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:var(--sh-on)}
-.summary .it span{font-size:11px;color:var(--sh-on-dim);margin-top:3px;display:block}
+.summary .it b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:#ffffff}
+.summary .it span{font-size:11px;color:rgba(255,255,255,.66);margin-top:3px;display:block}
 
 /* 섹션 간격 — 36px에서 키웠다. 카드 앨범·배지·기록이 붙어 있으면 하나의 긴 목록처럼 읽혀서
    어디서 주제가 바뀌는지가 안 잡힌다. */
@@ -706,11 +716,11 @@ button{font-family:var(--font)}
               <div class="backLogoPat" aria-hidden="true"></div>
               <div class="holoFoil" aria-hidden="true"></div>
               <div class="holoGrain" aria-hidden="true"></div>
-              <div class="backTitle">시즌 평균 기록</div>
-              <div class="backGrid" id="backGrid"></div>
-              <div class="backTitle">최근 경기</div>
-              <a class="recRow" href="game.html"><span class="op"><span>07.23</span><span class="wl w">W</span><span>vs 인천 파이터스</span></span><b>24점</b></a>
-              <div class="backEmptyNote" id="backEmptyNote">아직 기록된 경기가 없어요 · 위 수치는 예시 데이터입니다</div>
+              <div class="backTitle hasRec">시즌 평균 기록</div>
+              <div class="backGrid hasRec" id="backGrid"></div>
+              <div class="backTitle hasRec">최근 경기</div>
+              <a class="recRow hasRec" href="game.html"><span class="op"><span>07.23</span><span class="wl w">W</span><span>vs 인천 파이터스</span></span><b>24점</b></a>
+              <div class="recEmpty noRec">아직 뛴 경기가 없어요<br>첫 경기를 마치면 기록이 채워집니다</div>
               <div class="backNote" id="backUpdated">update 2026.07.23 13:20</div>
             </div>
           </div>
@@ -771,7 +781,8 @@ button{font-family:var(--font)}
       <!-- ============ 시즌 평균 ============ -->
       <div class="section">
         <h3>시즌 평균</h3>
-        <div class="avgRow">
+        <div class="recEmpty noRec">아직 뛴 경기가 없어요</div>
+        <div class="avgRow hasRec">
           <div class="avgIt"><b id="sAvgPts">21.4</b><span>득점</span></div>
           <div class="avgIt"><b id="sAvgReb">7.1</b><span>리바운드</span></div>
           <div class="avgIt"><b id="sAvgAst">3.2</b><span>어시스트</span></div>
@@ -781,18 +792,21 @@ button{font-family:var(--font)}
       <!-- ============ 기록 ============ -->
       <div class="section">
         <h3>최근 대회 기록</h3>
-        <a class="recRow" href="game.html"><span class="op"><span>2026 여름 3×3 리그 · 8강</span><span class="wl w">W</span></span><b>24점 8리바 4어시</b></a>
-        <a class="recRow" href="game.html"><span class="op"><span>2026 여름 3×3 리그 · 예선</span><span class="wl l">L</span></span><b>18점 6리바 3어시</b></a>
+        <div class="recEmpty noRec">참가한 대회가 아직 없어요</div>
+        <a class="recRow hasRec" href="game.html"><span class="op"><span>2026 여름 3×3 리그 · 8강</span><span class="wl w">W</span></span><b>24점 8리바 4어시</b></a>
+        <a class="recRow hasRec" href="game.html"><span class="op"><span>2026 여름 3×3 리그 · 예선</span><span class="wl l">L</span></span><b>18점 6리바 3어시</b></a>
       </div>
       <div class="section">
         <h3>획득 배지</h3>
-        <div class="badgeRow" id="badgeRow"></div>
+        <div class="recEmpty noRec">아직 받은 배지가 없어요</div>
+        <div class="badgeRow hasRec" id="badgeRow"></div>
       </div>
 
       <!-- ============ 앨범 — 카드가 여러 장이면 가로로 스와이프, 누르면 실제 카드가 확대되어 열림 ============ -->
       <div class="section">
         <h3>카드 앨범</h3>
-        <div class="albumScroll" id="album"></div>
+        <div class="recEmpty noRec">첫 카드가 이 카드예요</div>
+        <div class="albumScroll hasRec" id="album"></div>
       </div>
 
       <!-- ============ 공유 및 저장 ============ -->
@@ -940,24 +954,30 @@ function ovrFor(key){
   var bonus = s ? Math.min(10, Math.round((s.pts+s.reb+s.ast)/6)) : 0;
   return Math.min(99, base+bonus);
 }
+function pad2(n){ return n < 10 ? '0'+n : ''+n; }
 function applyGrade(key){
   var g = GRADES[key];
   document.getElementById('fGradeChip').textContent = g.label;
   var ovrEl = document.getElementById('fOvr');
-  var ovrVal = PLAYER.hasRecord ? ovrFor(key) : null;
+  /* 스타터는 '아직 잴 수 없다'는 등급이라 물음표가 아니라 00을 세운다.
+     ?는 "값을 못 불러왔나?"로도 읽히지만, 00은 출발선이라는 뜻이 분명하다. */
+  var ovrVal = (key === 'starter') ? 0 : (PLAYER.hasRecord ? ovrFor(key) : null);
   ovrEl.dataset.target = ovrVal != null ? ovrVal : '';
-  ovrEl.textContent = ovrVal != null ? ovrVal : '?';
+  ovrEl.textContent = ovrVal != null ? pad2(ovrVal) : '?';
   document.getElementById('fLevel').textContent = 'Lv.'+g.level;
   document.getElementById('fExpBar').style.width = g.exp+'%';
   document.getElementById('sLevel').textContent = g.level;
+  var blank = (key === 'starter');
+  document.getElementById('sTour').textContent  = blank ? 0 : 6;
+  document.getElementById('sGames').textContent = blank ? 0 : 42;
+  document.getElementById('sBadge').textContent = blank ? 0 : PLAYER.badges.length;
   // 시트 상단 OVR·등급 — 카드 앞면과 같은 값을 쓴다(등급을 바꾸면 둘 다 함께 바뀐다)
-  document.getElementById('sOvr').textContent = ovrVal != null ? ovrVal : '?';
+  document.getElementById('sOvr').textContent = ovrVal != null ? pad2(ovrVal) : '?';
   var sg = document.getElementById('sGrade');
   sg.textContent = g.label; sg.dataset.g = key;
   document.querySelectorAll('.previewBar button[data-g]').forEach(function(b){ b.classList.toggle('on', b.dataset.g===key); });
 }
 // OVR 카운트업 — 카드가 화면에 등장한 직후 00에서 목표 수치까지 올라가며 표시(easeOutCubic)
-function pad2(n){ return n < 10 ? '0'+n : ''+n; }
 function animateOvrCountUp(){
   var el = document.getElementById('fOvr');
   var target = parseInt(el.dataset.target, 10);
@@ -969,7 +989,7 @@ function animateOvrCountUp(){
     var p = Math.min(1, (ts - start) / duration);
     var eased = 1 - Math.pow(1 - p, 3);
     el.textContent = pad2(Math.round(target * eased));
-    if(p < 1) requestAnimationFrame(tick); else el.textContent = target;
+    if(p < 1) requestAnimationFrame(tick); else el.textContent = pad2(target);
   }
   requestAnimationFrame(tick);
 }
@@ -1015,9 +1035,6 @@ document.getElementById('sealTextMain').textContent = sealLabel().repeat(3);
 document.getElementById('fPos').textContent = PLAYER.pos;
 document.getElementById('fNameEn').textContent = PLAYER.en || '';
 document.getElementById('fNo').textContent = PLAYER.no;
-document.getElementById('sTour').textContent = 6;
-document.getElementById('sGames').textContent = 42;
-document.getElementById('sBadge').textContent = PLAYER.badges.length;
 // 시즌 평균 — 카드 뒷면과 같은 PLAYER.stats를 쓴다(운영 콘솔이 URL로 넘긴 실측값)
 document.getElementById('sAvgPts').textContent = PLAYER.stats.pts;
 document.getElementById('sAvgReb').textContent = PLAYER.stats.reb;
@@ -1026,7 +1043,6 @@ document.getElementById('backGrid').innerHTML =
   '<div class="backStat"><b>'+PLAYER.stats.pts+'</b><span>득점</span></div>'+
   '<div class="backStat"><b>'+PLAYER.stats.reb+'</b><span>리바운드</span></div>'+
   '<div class="backStat"><b>'+PLAYER.stats.ast+'</b><span>어시스트</span></div>';
-document.getElementById('backEmptyNote').style.display = PLAYER.hasRecord ? 'none' : 'block';
 document.getElementById('badgeRow').innerHTML = PLAYER.badges.map(function(b){
   return '<div class="badge"><span class="badgeCircle"><i></i></span><span class="badgeLabel">'+b+'</span></div>';
 }).join('');

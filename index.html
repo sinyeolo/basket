@@ -4455,10 +4455,12 @@ function renderPlayerDetail(){
     pos: p.pos1||'', season: '2026 여름 3×3 리그', grade: grade
   });
   if(p.no != null) cardParams.set('no', p.no);
-  if(s){ cardParams.set('pts', s.pts.toFixed(1)); cardParams.set('reb', s.reb.toFixed(1)); cardParams.set('ast', s.ast.toFixed(1)); cardParams.set('ovr', ovrScore); }
+  if(s && grade !== 'starter'){ cardParams.set('pts', s.pts.toFixed(1)); cardParams.set('reb', s.reb.toFixed(1)); cardParams.set('ast', s.ast.toFixed(1)); cardParams.set('ovr', ovrScore); }
   cardLinkTop.href = 'player-card.html?' + cardParams.toString();
   var posLabel = p.pos1||'';
-  var ovr = ovrScore != null ? ovrScore : '?';
+  /* 스타터는 '아직 잴 수 없다'는 등급이라 물음표가 아니라 00을 세운다 — 카드 공유 화면과 같은 규칙.
+     스타터의 스탯은 카드로 넘기지 않는다(한 경기 평균은 평균이 아니다). */
+  var ovr = grade === 'starter' ? '00' : (ovrScore != null ? ovrScore : '?');
   // 팀 로고 씰 배지에 도는 원형 텍스트 — 오늘 날짜 · BASKET
   var sealDate = (function(){
     var d = new Date(), z = function(n){ return n<10?'0'+n:''+n; };
@@ -4548,7 +4550,7 @@ function renderPlayerDetail(){
     return '<div class="stile"><div class="lb">'+lb+'</div>'+
       '<div class="vl">'+vl+(unit?'<small>'+unit+'</small>':'')+'</div></div>';
   }
-  var avgPanel = '<div class="pdSeasonAvg">'+(s
+  var avgPanel = '<div class="pdSeasonAvg">'+((s && grade !== 'starter')
     ? '<div class="sec-title">시즌 평균 <span class="n">'+s.g+'경기 · 경기당</span></div>'+
       '<div class="stiles stiles-5">'+
         tile('득점', s.pts.toFixed(1)) + tile('리바운드', s.reb.toFixed(1)) + tile('어시스트', s.ast.toFixed(1)) +
