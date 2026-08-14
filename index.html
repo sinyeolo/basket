@@ -350,6 +350,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 
 /* shared buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:var(--h-md);padding:0 24px;border:none;border-radius:var(--r-btn);font-family:var(--font);font-weight:600;font-size:14px;cursor:pointer;transition:.15s;white-space:nowrap}
+.btn[disabled]{opacity:.38;box-shadow:none;cursor:default;filter:none;pointer-events:none}
 .btn-main{background:var(--main);color:var(--on-main);box-shadow:var(--e1)}
 .btn-main:hover{box-shadow:var(--e2);filter:brightness(1.18)}
 .btn-primary{background:var(--primary);color:var(--on-primary);box-shadow:var(--e1)}
@@ -405,6 +406,10 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .page-head .sub{color:var(--on-surface-variant);font-size:13px;margin-top:6px}
 .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:8px}
 .kpi{background:var(--surface);border-radius:var(--r-card);padding:13px 18px}
+.kpi-go{display:block;width:100%;border:none;font-family:var(--font);text-align:left;cursor:pointer;transition:.12s}
+.kpi-go:hover{background:var(--surface-variant)}
+.kpi-arrow{color:var(--on-surface-variant);opacity:.45;transition:.12s}
+.kpi-go:hover .kpi-arrow{opacity:1;transform:translateX(2px)}
 .kpi .k-top{display:flex;align-items:center;justify-content:space-between;min-height:18px}
 .kpi .label{font-size:12px;color:var(--on-surface-variant);font-weight:500}
 .kpi .num{font-family:var(--font-display);font-size:25px;font-weight:700;margin:5px 0 2px;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
@@ -467,6 +472,10 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .chip.neutral,.chip.info{background:var(--surface-variant);color:var(--on-surface-variant)}
 .chip.confirmed{background:var(--green-c);color:var(--on-green-c)}
 .chip.review{background:var(--red-c);color:var(--on-red-c)}
+/* 검수 점검 결과 — high(빨강)는 확정 전에 봐야 하는 것, mid(노랑)는 사유가 있으면 넘어가도 되는 것 */
+.chip.caution{background:#fdf0d5;color:#8a5a00}
+.chip.ok{background:var(--green-c);color:var(--on-green-c)}
+.chip.meta{background:var(--surface-variant);color:var(--on-surface-variant);font-weight:600}
 /* 승패 뱃지 — 표기는 W/L로 통일했다(선수 카드와 같은 표기여야 두 화면을 오갈 때 다시 읽지 않는다).
    W와 L은 글자 폭이 달라서 padding만 주면 두 뱃지 크기가 어긋난다 — 폭·높이를 고정한다.
    색은 초록. 빨강은 이 시스템에서 '확인 필요'(문제 있음)라 승리에 쓰면 의미가 섞이고,
@@ -777,7 +786,13 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
    확인하는 용도라 계속 남아 있으면 오히려 최신이 어느 것인지 흐려진다 */
 .rchip.latest{box-shadow:inset 0 0 0 2px var(--main)}
 .rchip b{font-weight:700;color:var(--on-surface-variant);font-size:12px}
-.rchip .d{width:7px;height:7px;border-radius:50%;flex:none}
+.evt-ball{width:16px;height:16px;flex:none;margin-right:-4px}   /* 칩 gap 8 - 4 = 라벨과 4px */
+/* 팀 컬러는 왼쪽에서만 옅게 — 칩 전체를 물들이면 글자가 묻히고 최신 강조도 안 보인다 */
+.rchip{background:linear-gradient(90deg,
+  color-mix(in srgb, var(--tc, transparent) 20%, var(--surface-variant)) 0%,
+  var(--surface-variant) 30%)}
+.rchip:hover{background:linear-gradient(90deg,
+  color-mix(in srgb, var(--tc, transparent) 28%, #e7e1e8) 0%, #e7e1e8 30%)}
 /* 삭제된 기록 — 목록에서 없애지 않고 취소선 + 흐리게 남겨 기록 이력을 추적 가능하게 유지 */
 .rchip.deleted{opacity:.45;background:transparent;border:1px dashed var(--outline)}
 .rchip.deleted .tx{text-decoration:line-through}
@@ -985,7 +1000,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 쿼터 열(3번째)을 auto로 두면 쿼터 수(2Q/3Q/4Q)·예정 경기 여부에 따라 폭이 0~118px로 제각각이라
    "점수 열이 정렬된다"는 의도와 달리 행마다 점수 위치가 최대 115px까지 어긋났다.
    4쿼터 기준 폭(22px×4 + gap 10px×3 = 118px)으로 트랙을 고정하고, 연장 등으로 열이 늘면 그만큼만 넓어지게 한다 */
-.grow{display:grid;grid-template-columns:74px minmax(0,1fr) minmax(118px,auto) auto;align-items:center;gap:14px;padding:12px 18px;
+.grow{display:grid;grid-template-columns:86px minmax(0,1fr) minmax(118px,auto) auto;align-items:center;gap:14px;padding:12px 18px;
   width:100%;border:none;background:transparent;font-family:var(--font);text-align:left;cursor:pointer;transition:.12s}
 .grow+.grow{border-top:1px solid var(--outline-variant)}
 .grow:hover{background:var(--surface-variant)}
@@ -996,11 +1011,20 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    옆 팀의 컬러 점과 겹쳤다(태블릿·폰 폭). 열 폭은 아래에서 74px로 맞추고 여기선 넘칠 때 말줄임 처리 */
 .gstat .gs-t{font-family:var(--font-score);font-size:13px;font-weight:700;color:var(--on-surface-variant);
   font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gstat .gs-l{font-size:10.5px;font-weight:600;color:var(--on-surface-variant);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gstat .gs-l{display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;color:var(--on-surface-variant);white-space:nowrap}
+/* 상태는 모든 행에 있는 공통 정보라 위치를 옮기면 훑는 패턴이 깨진다 — 자리는 그대로 두고
+   코트명에 묻혀 있던 것을 색 있는 뱃지로 떼어 낸다 */
+.gs-badge{display:inline-flex;align-items:center;flex:none;padding:2px 6px;border-radius:5px;
+  font-size:10px;font-weight:800;letter-spacing:-.01em}
+.gs-badge.st-live{background:var(--primary-container);color:var(--on-primary-container)}
+.gs-badge.st-soon{background:var(--surface-variant);color:var(--on-surface-variant)}
+.gs-badge.st-end{background:var(--red-c);color:var(--on-red-c)}
+.gs-badge.st-fix{background:var(--green-c);color:var(--on-green-c)}
 /* 흰 배경 위 텍스트에 순수 --primary(#ff9100)를 쓰면 대비가 2.26:1로 WCAG AA(4.5:1)에 크게 못 미친다.
    '진행중'을 브랜드컬러로 표시한다는 규칙은 유지하되, 다른 진행중 표시(.chip.live/.st-live)의 글자색과
    같은 --on-primary-container(8.9:1)로 맞춘다 */
 .grow.is-live .gstat .gs-t,.grow.is-live .gstat .gs-l{color:var(--on-primary-container)}
+.grow.is-live .gs-badge{color:var(--on-primary-container)}
 .gsides{display:flex;flex-direction:column;gap:5px;min-width:0}
 .gside{display:grid;grid-template-columns:9px minmax(0,1fr) auto;align-items:center;gap:8px}
 .gside .dot{width:9px;height:9px;border-radius:50%}
@@ -1059,11 +1083,14 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 확정자·조 이름 같은 부가 정보 — 행 맨 아래 전체 폭 한 줄 */
 .grow-note{grid-column:1 / -1;font-size:11.5px;color:var(--on-surface-variant);opacity:.8;
   text-align:left;margin-top:-2px}
+/* 검수 점검 결과 — 버튼 열에 넣으면 세로로 쌓여 행이 두 배로 높아진다. 아래 한 줄에 가로로 편다 */
+.grow-checks{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
+.grow-checks .chip{font-size:11px;padding:4px 9px}
 @media (max-width:900px){
   /* 좁아지면 버튼이 쿼터 열을 밀어내므로 행을 접고 액션을 아래로 내린다.
      .grow .gact{display:none}(모바일에서 기본 액션을 숨기는 규칙)이 검수 행 버튼까지 지워버려서
      .gact-multi는 display를 되살려 준다 — 검수는 버튼이 곧 그 화면의 목적이라 숨기면 안 된다 */
-  .grow-multi{grid-template-columns:74px minmax(0,1fr);row-gap:10px}
+  .grow-multi{grid-template-columns:86px minmax(0,1fr);row-gap:10px}
   .grow-multi .gq{display:none}
   /* 특이도를 한 단계 올려 둔다(.grow.grow-multi .gact.gact-multi) — 숨기는 규칙이 이 블록보다
      뒤에 있어서, 같은 특이도로는 순서에 밀려 계속 숨겨진다 */
@@ -1091,14 +1118,15 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 }
 /* 좁은 폭에선 쿼터별 점수와 액션 버튼을 접고 [상태][팀·점수]만 남긴다 — 행 자체가 클릭 가능하므로
    액션 버튼이 없어도 기능은 그대로다 */
-/* 상태 열은 가장 긴 라벨("A코트 · 검수 대기" 72px)이 들어갈 74px로 고정 — 이전 값(58/54px)에서는
+/* 상태 열은 코트명 + 상태 뱃지가 들어갈 86px로 고정 — 텍스트였을 땐 74px로 맞았지만
+   뱃지가 되면서 "A코트 + 진행 중"이 78px가 되어 옆 팀 열을 침범했다. 이전 값(58/54/74px)에서는
    라벨이 열 밖으로 흘러 팀 컬러 점과 겹쳤다 */
 @media (max-width:900px){
-  .grow{grid-template-columns:74px minmax(0,1fr) auto;gap:10px;padding:12px 14px}
+  .grow{grid-template-columns:86px minmax(0,1fr) auto;gap:10px;padding:12px 14px}
   .gq{display:none}
 }
 @media (max-width:640px){
-  .grow{grid-template-columns:74px minmax(0,1fr)}
+  .grow{grid-template-columns:86px minmax(0,1fr)}
   .grow .gact{display:none}
   .gside .gt-nm{font-size:13.5px}
 }
@@ -1494,7 +1522,48 @@ body.modal-open{overflow:hidden}
 .sheet{width:100%;max-width:380px;margin:auto;background:var(--surface);border-radius:20px;box-shadow:var(--e3);padding:20px;transform:translateY(8px) scale(.98);transition:transform .16s ease}
 .modal.open .sheet{transform:none}
 .sheet h4{font-size:17px;font-weight:700;letter-spacing:-.02em}
-.sheet .sub{font-size:13px;color:var(--on-surface-variant);margin-top:5px}
+/* ---- 확인 다이얼로그 ---- */
+/* 아이콘을 위, 제목·설명을 그 아래로 — 옆에 두면 아이콘이 제목 한 줄에 묶여 상황의 무게가 덜 전달된다 */
+/* 구수는 보조 선택이다 — 대부분 2구이고 1·3구는 예외라, 결과 버튼과 같은 무게로 세우지 않는다.
+   부제 줄 오른쪽에 작은 세그먼트로 붙인다. */
+.ft-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:5px}
+.ft-count{display:inline-flex;flex:none;padding:3px;border-radius:100px;background:var(--surface-variant)}
+.ft-count button{height:28px;padding:0 12px;border:none;border-radius:100px;background:none;color:var(--on-surface-variant);
+  font-family:var(--font);font-weight:700;font-size:12px;cursor:pointer;transition:.12s}
+.ft-count button.on{background:var(--surface);color:var(--on-surface);box-shadow:var(--e1)}
+/* 결과는 슛 팝업(.opt.made/.miss)과 같은 색 언어 — 같은 판단을 다른 색으로 물으면 손이 멈춘다 */
+.ft-rows{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.ft-row{display:grid;grid-template-columns:30px 1fr 1fr;align-items:center;gap:8px}
+.ft-row .n{font-size:12px;font-weight:700;color:var(--on-surface-variant)}
+.ft-row button{height:52px;border:none;border-radius:14px;font-family:var(--font);font-weight:700;font-size:15px;
+  cursor:pointer;transition:.12s}
+.ft-row button[data-r="made"]{background:var(--green-c);color:var(--on-green-c)}
+.ft-row button[data-r="miss"]{background:var(--red-c);color:var(--on-red-c)}
+/* 고른 쪽만 채우고 나머지는 옅게 물러난다 — 무엇을 찍었는지 한눈에 */
+.ft-row button.on[data-r="made"]{background:var(--green);color:#fff}
+.ft-row button.on[data-r="miss"]{background:var(--red);color:#fff}
+.ft-row.done button:not(.on){opacity:.4}
+/* 아직 차례가 아닌 구 — 눌리지 않는다는 걸 색까지 빼서 보여준다 */
+.ft-row.locked .n{opacity:.4}
+.ft-row.locked button{background:var(--surface-variant);color:var(--on-surface-variant);opacity:.45;cursor:default}
+.cf-head{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.cf-icon{display:flex;align-items:center;justify-content:center;flex:none;width:40px;height:40px;border-radius:50%}
+.cf-icon .ic{width:22px;height:22px;stroke:currentColor;fill:none;stroke-linecap:round}
+.cf-ask{background:var(--surface-variant);color:var(--on-surface-variant)}
+.cf-alert{background:#fdf0d5;color:#8a5a00}
+.cf-danger{background:var(--red-c);color:var(--on-red-c)}
+.cf-ok{background:var(--green-c);color:var(--on-green-c)}
+/* 항목은 줄로 나눠 세운다 — 색은 목록 화면의 칩과 같은 언어를 쓴다 */
+.cf-items{list-style:none;margin:14px 0 0;padding:11px 13px;border-radius:12px;
+  background:#faf7fa;
+  display:flex;flex-direction:column;gap:7px}
+.cf-items[hidden]{display:none}   /* display:flex가 hidden 기본값을 덮어 빈 박스가 남는다 */
+.cf-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;font-weight:600;color:var(--on-surface);line-height:1.5}
+.cf-item i{flex:none;width:7px;height:7px;border-radius:50%;margin-top:6px;background:var(--outline)}
+.cf-item.lv-high i{background:var(--red)}
+.cf-item.lv-mid i{background:#e0a020}
+.cf-foot{margin-top:12px;font-size:12px;color:var(--on-surface-variant);line-height:1.55}
+.sheet .sub{font-size:13px;color:var(--on-surface-variant);margin-top:5px;white-space:pre-line;line-height:1.6}
 .sheet .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 10px}
 .sheet .opts .opt small{white-space:nowrap}
 /* 빈도로 크기를 나눈 선택지 — 6열 격자 위에서 span으로 폭을, padding으로 높이를 준다 */
@@ -1582,7 +1651,7 @@ body.modal-open{overflow:hidden}
 .pbp-score{font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;background:var(--surface-variant);border-radius:6px;padding:2px 8px}
 .pbp-evt{display:inline-flex;align-items:center;gap:9px;max-width:100%;padding:10px 14px;border:none;border-radius:12px;background:var(--surface-variant);font-family:var(--font);font-size:14px;color:var(--on-surface);text-align:left;cursor:pointer;transition:.12s}
 .pbp-evt:hover{background:#e7e1e8}
-.pbp-evt .d{width:8px;height:8px;border-radius:50%;flex:none}
+
 .pbp-cell{display:flex;min-width:0}
 .pbp-cell.home{justify-content:flex-end}
 .pbp-cell.away{justify-content:flex-start}
@@ -1974,7 +2043,7 @@ body.modal-open{overflow:hidden}
         <div class="sub" id="reviewSub"></div>
       </div>
     </div>
-    <div class="card"><div class="card-body glist" id="reviewQueueList"></div></div>
+    <div id="reviewQueueList"></div>
     <div class="section" id="reviewFixedWrap" hidden style="margin-top:8px">
       <div class="sec-title">확정된 경기 <span class="n">필요 시 검수로 되돌릴 수 있습니다</span></div>
       <div class="card">
@@ -2219,11 +2288,41 @@ body.modal-open{overflow:hidden}
   </div>
 </div>
 
+<!-- 자유투 — 연속으로 던지는 것이라 한 화면에서 세트로 받는다. 구마다 따로 팝업을 띄우면
+     터치가 배로 늘고, 몇 구째인지 기록자가 머릿속으로 세야 해서 빠뜨리기 쉽다. -->
+<div class="modal" id="ftModal" role="dialog" aria-modal="true" aria-labelledby="ftTitle" aria-hidden="true">
+  <div class="sheet">
+    <h4 id="ftTitle">자유투</h4>
+    <div class="ft-top">
+      <div class="sub" id="ftDesc" style="margin:0"></div>
+      <div class="ft-count" role="group" aria-label="자유투 개수">
+        <button type="button" data-n="1">1구</button>
+        <button type="button" data-n="2" class="on">2구</button>
+        <button type="button" data-n="3">3구</button>
+      </div>
+    </div>
+    <div class="ft-rows" id="ftRows"></div>
+    <div class="acts-row">
+      <button type="button" class="btn btn-outline" id="ftCancel">취소</button>
+      <button type="button" class="btn btn-main" id="ftSave" disabled>기록</button>
+    </div>
+  </div>
+</div>
+
 <!-- 공용 확인 다이얼로그 (타임아웃 등 되돌리기 번거로운 액션) -->
 <div class="modal" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-hidden="true">
   <div class="sheet">
-    <h4 id="confirmTitle"></h4>
-    <div class="sub" id="confirmDesc"></div>
+    <div class="cf-head">
+      <span class="cf-icon" id="confirmIcon" aria-hidden="true"></span>
+      <div>
+        <h4 id="confirmTitle"></h4>
+        <div class="sub" id="confirmDesc"></div>
+      </div>
+    </div>
+    <!-- 확인이 필요한 항목은 본문 문장에 섞지 않고 따로 세운다 — 문장 안에 쉼표로 나열하면
+         몇 건인지도, 무엇이 심각한지도 세어지지 않는다 -->
+    <ul class="cf-items" id="confirmItems" hidden></ul>
+    <div class="cf-foot" id="confirmFoot"></div>
     <div class="acts-row">
       <button type="button" class="btn btn-outline" id="confirmNo">취소</button>
       <button type="button" class="btn btn-main" id="confirmYes">확인</button>
@@ -2312,6 +2411,14 @@ body.modal-open{overflow:hidden}
  * ================================================================ */
 
 var ICONS = {
+  // 득점 성공 표시 — 색 점 대신 무엇이 일어났는지 그림으로 바로 읽힌다
+  ballFill: '<circle cx="12" cy="12" r="9" fill="#e06a26" stroke="none"/>'+
+        '<path d="M12 3v18M3.2 12h17.6M5.6 5.6c3.4 3.4 3.4 9.4 0 12.8M18.4 5.6c-3.4 3.4-3.4 9.4 0 12.8" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".9"/>',
+  // 다이얼로그 헤더 아이콘 — 무엇을 묻는 상황인지 한눈에
+  alert: '<path d="M12 8v5" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="17" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9" stroke-width="2"/>',
+  ask:   '<path d="M9.5 9.2a2.6 2.6 0 115 .9c-.4 1-1.4 1.4-2 2.1-.4.5-.5 1-.5 1.6" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.4" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9" stroke-width="2"/>',
+  danger:'<path d="M12 9.5v4" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="16.8" r="1.3" fill="currentColor" stroke="none"/><path d="M10.3 3.9L2.6 17.2A2 2 0 004.3 20h15.4a2 2 0 001.7-2.8L13.7 3.9a2 2 0 00-3.4 0z" stroke-width="2" stroke-linejoin="round"/>',
+  checkOk:'<circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M8.2 12.3l2.6 2.6 5-5.2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
   dashboard: '<rect x="3" y="3" width="7" height="9" rx="1.5" stroke-width="2"/><rect x="14" y="3" width="7" height="5" rx="1.5" stroke-width="2"/><rect x="14" y="12" width="7" height="9" rx="1.5" stroke-width="2"/><rect x="3" y="16" width="7" height="5" rx="1.5" stroke-width="2"/>',
   tournament: '<path d="M8 21h8M12 17v4M4 4h16v9a4 4 0 01-4 4H8a4 4 0 01-4-4V4z" stroke-width="2" stroke-linecap="round"/>',
   shield: '<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke-width="2" stroke-linejoin="round"/>',
@@ -2371,17 +2478,17 @@ var NAV_GROUPS = [
 // ---- 대시보드: KPI (Tournament dashboard summary) ----
 var KPIS = [
   // value는 렌더 시점에 오늘 날짜 경기(ALL_GAMES[0])를 기준으로 '남은/전체'로 다시 계산된다(아래 renderKpis 참고)
-  { id:'today', label:'오늘 경기', value:'', delta:'남은 경기' },
+  { id:'today', label:'오늘 경기', value:'', delta:'남은 경기', go:'games' },
   // pulseIfPositive → 라벨 텍스트 자체가 이미 '진행 중'이라 옆에 같은 문구 뱃지를 또 붙이는 게 중복이었음.
   // 대신 다른 곳의 '진행 중' 표시(.chip.live 등)와 같은 방식으로 라벨 앞에 펄스 점만 붙이고, 값이 0이면 점도 안 뜬다.
   // 델타 '실시간 기록 중'은 실제로 실시간 동기화가 아니라 수동 기록이라 부정확한 문구여서 제거.
-  { label:'진행 중',   value:'3',  delta:'', pulseIfPositive:true },
+  { label:'진행 중',   value:'3',  delta:'', pulseIfPositive:true, go:'games', tab:'live' },
   // '확인' 뱃지는 델타 텍스트('결과 확정 필요')·라벨('검수 대기')과 뜻이 겹치기만 하고 새 정보가 없어 제거.
   // 검수 대기도 진행 중과 같은 방식으로, 대기 건이 있을 때만 펄스 점이 뜬다.
-  { id:'review', label:'검수 대기', value:'2',  delta:'결과 확정 필요', pulseIfPositive:true },
+  { id:'review', label:'검수 대기', value:'2',  delta:'결과 확정 필요', pulseIfPositive:true, go:'review' },
   // 숫자 줄의 '· 선수 168'과 델타의 '전원 승인 완료'(실제 승인 플로우 없이 걸려있던 문구)가 중복이라,
   // 숫자는 팀 수만 남기고 선수 인원 정보를 델타 자리로 옮겼다
-  { label:'참가 팀',   value:'24', delta:'선수 168명' }
+  { label:'참가 팀',   value:'24', delta:'선수 168명', go:'team' }
 ];
 
 // ---- 대시보드: 진행 중 경기 (Game[] where status='진행 중') ----
@@ -2413,10 +2520,14 @@ var ALL_GAMES = [
       home:{ name:'종로 샤크스', color:'#0ea5e9', score:null }, away:{ name:'은평 코브라', color:'#84cc16', score:null }, status:'soon' },
     { id:'g5', court:'B', time:'15:30', label:'남자 일반부 4강',
       home:{ name:'동대문 피닉스', color:'#ec4899', score:null }, away:{ name:'강서 불스', color:'#6b7280', score:null }, status:'soon' },
+    /* rec: 검수용 기록 요약 — 실제 구현에서는 GameEvent 집계를 서버가 내려준다.
+       q는 쿼터별 [홈,원정]. 합이 최종 점수와 어긋나면 어딘가 기록이 새거나 겹친 것이다. */
     { id:'g6', court:'A', time:'09:00', label:'예선 3조',
-      home:{ name:'종로 샤크스', color:'#0ea5e9', score:64 }, away:{ name:'은평 코브라', color:'#84cc16', score:61 }, status:'end' },
+      home:{ name:'종로 샤크스', color:'#0ea5e9', score:64 }, away:{ name:'은평 코브라', color:'#84cc16', score:61 }, status:'end',
+      rec:{ events:58, deleted:2, q:[[18,16],[14,15],[17,14],[14,16]], pf5:[] } },
     { id:'g7', court:'B', time:'10:30', label:'예선 4조',
-      home:{ name:'동대문 피닉스', color:'#ec4899', score:70 }, away:{ name:'강서 불스', color:'#6b7280', score:70 }, status:'end' }
+      home:{ name:'동대문 피닉스', color:'#ec4899', score:70 }, away:{ name:'강서 불스', color:'#6b7280', score:70 }, status:'end',
+      rec:{ events:63, deleted:9, q:[[20,18],[16,17],[18,19],[16,16]], pf5:['강서 불스 12 오세훈'] } }
   ]},
   { date:'2026-07-20', day:'일', venue:'송파 체육관', items:[
     { id:'g8', court:'A', time:'13:00', label:'예선 1조',
@@ -2535,21 +2646,42 @@ function eventDesc(e){
   if(e.sys || e.teamEvt) return e.desc;
   var m = EVENT_META[e.type];
   if(!m) return e.desc || '';
-  if(m.shot) return e.name + ' ' + m.label + ' ' + (e.made ? '성공' : '실패');
+  // 자유투는 몇 구 중 몇 번째인지 항상 남긴다 — 1구뿐이어도 "자유투 성공"만으로는
+  // 몇 개를 던져 몇 개를 넣었는지 알 수 없다
+  if(m.shot){
+    var seq = (e.type === 'ft' && e.shotOf) ? ' ' + e.shotNo + '/' + e.shotOf : '';
+    return e.name + ' ' + m.label + seq + ' ' + (e.made ? '성공' : '실패');
+  }
   var sub = m.subs && e.sub ? m.subs[e.sub] : '';
   if(e.type === 'pf'){
     return e.name + ' ' + (sub ? sub + ' 파울' : '파울') + (e.victim ? ' (' + e.victim + ')' : '');
   }
   return e.name + ' ' + m.label + (sub ? '(' + sub + ')' : '');
 }
-function eventDot(e){
-  if(e.teamEvt) return e.dot;
+/* 자유투 세트를 한 줄로 — 구마다 따로 남기면 칩 두세 개가 같은 상황을 나눠 갖는다.
+   (성공/시도)로 묶으면 "2개 던져 1개"가 한눈에 읽히고 다른 슛 표기와 결이 맞는다. */
+function ftSetOf(e){
+  if(e.type !== 'ft' || !e.ftSet) return null;
+  var list = RECENT_EVENTS.filter(function(x){ return x.ftSet === e.ftSet && !x.deleted; });
+  if(!list.length) return null;
+  var made = list.filter(function(x){ return x.made; }).length;
+  return { made: made, of: list[0].shotOf || list.length, list: list };
+}
+function ftSetDesc(e, set){
+  return e.name + ' 자유투(' + set.made + '/' + set.of + ') ' + (set.made ? '성공' : '실패');
+}
+
+/* 목록 앞머리 표시 — 색 점은 무슨 색이 무슨 뜻인지 외워야 읽힌다.
+   득점이 실제로 들어간 기록에만 공을 붙이고, 나머지는 비워 둔다. */
+function eventMark(e){
+  if(e.sys || e.teamEvt) return '';
   var m = EVENT_META[e.type];
-  if(!m) return 'var(--on-surface-variant)';
-  if(m.shot) return e.made ? 'var(--green)' : 'var(--red)';
-  if(m.foul) return 'var(--red)';
-  if(e.type === 'to') return 'var(--amber)';
-  return 'var(--on-surface-variant)';
+  return (m && m.shot && e.made) ? icon('ballFill','ic evt-ball') : '';
+}
+/* 최근 기록 칩의 팀 구분 — 왼쪽에서 옅게 번지는 팀 컬러. 어느 팀 기록인지 색으로 잡힌다 */
+function eventTeamVar(e){
+  if(!e.team) return '';
+  return ' style="--tc:'+MATCH[e.team].colorVar+'"';
 }
 /* sign: +1 반영 / -1 되돌리기. 삭제는 -1, 복원은 +1, 수정은 옛 값 -1 후 새 값 +1 */
 function applyEvent(e, sign){
@@ -2600,14 +2732,14 @@ var RECENT_EVENTS = [
   { q:'3Q', time:'06:35', team:'away', no:'12', name:'박준영', type:'2pt', made:true,  score:[40,39] },
   { q:'3Q', time:'06:51', team:'home', no:'23', name:'이현수', type:'blk' },
   { q:'3Q', time:'07:14', team:'home', no:'15', name:'최영호', type:'to' },
-  { q:'3Q', time:'07:30', team:'away', no:'31', name:'윤성민', type:'ft',  made:true,  score:[40,37] },
+  { q:'3Q', time:'07:30', team:'away', no:'31', name:'윤성민', type:'ft',  made:true,  shotNo:1, shotOf:1, ftSet:9001, score:[40,37] },
   { q:'3Q', time:'07:52', team:'away', no:'21', name:'김태호', type:'ast' },
   { q:'3Q', time:'08:10', team:'away', no:'8',  name:'조현우', type:'pf', sub:'pf_normal', victim:'박정우' },
   { q:'3Q', time:'09:30', team:'home', no:'7',  name:'김민수', type:'3pt', made:true,  score:[40,36] },
   { q:'2Q', time:'00:38', team:'away', no:'12', name:'박준영', type:'2pt', made:true,  score:[37,36] },
   { q:'2Q', time:'01:52', team:'home', no:'32', name:'한지훈', type:'reb', sub:'dreb' },
   { q:'2Q', time:'03:07', team:'away', no:'9',  name:'최민석', type:'to' },
-  { q:'2Q', time:'05:44', team:'home', no:'23', name:'이현수', type:'ft',  made:true,  score:[37,34] },
+  { q:'2Q', time:'05:44', team:'home', no:'23', name:'이현수', type:'ft',  made:true,  shotNo:2, shotOf:2, ftSet:9002, score:[37,34] },
   { q:'2Q', time:'08:21', team:'away', no:'21', name:'김태호', type:'stl' },
   { q:'1Q', time:'02:16', team:'home', no:'11', name:'박정우', type:'2pt', made:true,  score:[36,34] },
   { q:'1Q', time:'04:40', team:'away', no:'31', name:'윤성민', type:'reb', sub:'oreb' },
@@ -2798,10 +2930,20 @@ function renderKpis(){
   root.innerHTML = KPIS.map(function(k){
     var dot = (k.pulseIfPositive && Number(k.value) > 0) ? '<i class="livedot" aria-hidden="true"></i>' : '';
     var delta = k.delta ? '<div class="delta">'+k.delta+'</div>' : '';
-    return '<div class="kpi">'+
-      '<div class="k-top"><span class="label">'+dot+k.label+'</span></div>'+
-      '<div class="num">'+k.value+'</div>'+delta+'</div>';
+    // 지표를 보고 바로 그 화면으로 — 대시보드에서 숫자만 보고 다시 GNB를 찾아가게 두지 않는다
+    var go = k.go ? ' data-go="'+k.go+'"'+(k.tab ? ' data-gotab="'+k.tab+'"' : '') : '';
+    var tag = k.go ? 'button' : 'div';
+    return '<'+tag+' class="kpi'+(k.go?' kpi-go':'')+'"'+go+(k.go?' type="button"':'')+'>'+
+      '<div class="k-top"><span class="label">'+dot+k.label+'</span>'+
+        (k.go ? icon('arrowRight','ic ic-sm kpi-arrow') : '')+'</div>'+
+      '<div class="num">'+k.value+'</div>'+delta+'</'+tag+'>';
   }).join('');
+  root.querySelectorAll('[data-go]').forEach(function(b){
+    b.addEventListener('click', function(){
+      if(b.dataset.gotab) gameFilter = b.dataset.gotab;
+      location.hash = '#' + b.dataset.go;
+    });
+  });
 }
 
 // <GameRow variant="live"/> — 클릭 시 경기 기록 콘솔로 이동
@@ -2988,6 +3130,23 @@ var confirmModal, confirmTrigger = null, confirmCb = null;
 function openConfirm(opt){
   document.getElementById('confirmTitle').textContent = opt.title;
   document.getElementById('confirmDesc').textContent = opt.desc || '';
+  // 아이콘 — 되돌릴 수 없는 삭제(danger)와 그냥 되묻는 것(ask)은 무게가 다르다
+  var ic = document.getElementById('confirmIcon');
+  var kind = opt.icon || 'ask';
+  var KEY = { alert:'alert', ask:'ask', danger:'danger', ok:'checkOk' };
+  ic.className = 'cf-icon cf-' + kind;
+  ic.innerHTML = icon(KEY[kind] || 'ask', 'ic');
+  // 항목 목록 — 검수 목록에서 쓴 심각도 색을 그대로 이어 쓴다
+  var ul = document.getElementById('confirmItems');
+  if(opt.items && opt.items.length){
+    ul.hidden = false;
+    ul.innerHTML = opt.items.map(function(it){
+      return '<li class="cf-item lv-'+(it.lv||'mid')+'"><i aria-hidden="true"></i>'+it.t+'</li>';
+    }).join('');
+  } else { ul.hidden = true; ul.innerHTML = ''; }
+  var foot = document.getElementById('confirmFoot');
+  foot.textContent = opt.foot || '';
+  foot.hidden = !opt.foot;
   var yes = document.getElementById('confirmYes');
   yes.textContent = opt.ok || '확인';
   confirmCb = opt.onOk; confirmTrigger = opt.trigger || null;
@@ -3255,13 +3414,23 @@ function renderRecentEvents(){
     return;
   }
   more.style.display = '';
-  wrap.innerHTML = playEvents().slice(0, RECENT_LIMIT).map(function(e) {
+  // 같은 자유투 세트는 첫 구(최신순이므로 배열에서 마지막)만 남기고 접는다
+  var seenSet = {};
+  var list = playEvents().filter(function(e){
+    if(!e.ftSet) return true;
+    if(seenSet[e.ftSet]) return false;
+    seenSet[e.ftSet] = 1; return true;
+  });
+  wrap.innerHTML = list.slice(0, RECENT_LIMIT).map(function(e) {
     var i = RECENT_EVENTS.indexOf(e);
+    var set = ftSetOf(e);
+    var label = set ? ftSetDesc(e, set) : eventDesc(e);
+    var mark = set ? (set.made ? icon('ballFill','ic evt-ball') : '') : eventMark(e);
     var del = e.deleted;
     return '<button type="button" class="rchip'+(del?' deleted':'')+'" data-evt="'+i+'"'+
-      ' aria-haspopup="dialog" aria-label="'+e.time+' '+eventDesc(e)+(del?' (삭제됨)':'')+', 수정 또는 삭제">'+
-      '<b>'+e.time+'</b><i class="d" style="background:'+eventDot(e)+'" aria-hidden="true"></i>'+
-      '<span class="tx">'+eventDesc(e)+'</span>'+
+      eventTeamVar(e)+' aria-haspopup="dialog" aria-label="'+e.time+' '+label+(del?' (삭제됨)':'')+', 수정 또는 삭제">'+
+      '<b>'+e.time+'</b>'+mark+
+      '<span class="tx">'+label+'</span>'+
       (del?'<span class="del-tag">삭제됨</span>':'')+'</button>';
   }).join('');
   more.textContent = '더보기 ' + playEvents().length;
@@ -3464,7 +3633,7 @@ function bindRosterActions(){
     b.addEventListener('click', function(){
       var t = teamById(b.dataset.delTeam); if(!t) return;
       var n = playersOf(t.id).length;
-      openConfirm({ title:'팀 삭제', trigger:b,
+      openConfirm({ icon:'danger', title:'팀 삭제', trigger:b,
         desc: t.name + ' 팀을 삭제합니다.' + (n ? ' 소속 선수 '+n+'명은 미배정 상태가 됩니다.' : ''),
         ok:'삭제', onOk:function(){
           PLAYERS.forEach(function(p){ if(p.teamId===t.id) p.teamId = null; });
@@ -3479,7 +3648,7 @@ function bindRosterActions(){
   document.querySelectorAll('[data-del-player]').forEach(function(b){
     b.addEventListener('click', function(){
       var p = PLAYERS.find(function(x){ return x.id===b.dataset.delPlayer; }); if(!p) return;
-      openConfirm({ title:'선수 삭제', desc:p.name+' 선수를 명단에서 삭제합니다.', ok:'삭제', trigger:b,
+      openConfirm({ icon:'danger', title:'선수 삭제', desc:p.name+' 선수를 명단에서 삭제합니다.', ok:'삭제', trigger:b,
         onOk:function(){ PLAYERS = PLAYERS.filter(function(x){ return x.id!==p.id; }); renderRosterPage(); renderStatsPage(); }});
     });
   });
@@ -3923,12 +4092,13 @@ function gameRowHtml(g, opts){
       ' aria-label="'+g.court+'코트 '+g.home.name+' '+(scored?g.home.score:'')+' 대 '+g.away.name+' '+(scored?g.away.score:'')+
         (win ? ', '+(win==='home'?g.home.name:g.away.name)+' 승' : '')+', '+label+'">'+
     '<span class="gstat"><span class="gs-t">'+(isLive ? g.clock : g.time)+'</span>'+
-      '<span class="gs-l">'+g.court+'코트 · '+label+'</span></span>'+
+      '<span class="gs-l">'+g.court+'코트<span class="gs-badge '+m.cls+'">'+label+'</span></span></span>'+
     '<span class="gsides">'+side(g.home, win==='home', aw)+side(g.away, win==='away', hw)+'</span>'+
     quarters+
     act+
     // 날짜·조·확정자 같은 부가 정보는 상태 열(74px)에 넣으면 잘린다. 행 아래 전체 폭 한 줄로 뺀다
     (opts.note ? '<span class="grow-note">'+opts.note+'</span>' : '')+
+    (opts.checks ? '<span class="grow-checks">'+opts.checks+'</span>' : '')+
   '</'+tag+'>';
 }
 /* 액션이 여러 개인 행(검수 페이지)의 클릭 처리 — 버튼 영역(.gact)에서 시작된 클릭은 무시한다.
@@ -4261,7 +4431,7 @@ function renderPlayerDetail(){
   });
 
   document.getElementById('pdDelete').addEventListener('click', function(){
-    openConfirm({ title:'선수 삭제', desc:p.name+' 선수를 명단에서 삭제합니다.', ok:'삭제', trigger:this,
+    openConfirm({ icon:'danger', title:'선수 삭제', desc:p.name+' 선수를 명단에서 삭제합니다.', ok:'삭제', trigger:this,
       onOk:function(){
         PLAYERS = PLAYERS.filter(function(x){ return x.id!==p.id; });
         currentPlayerId = null; location.hash = '#team'; renderRosterPage(); renderStatsPage();
@@ -4725,7 +4895,7 @@ function deleteTournament(id, trigger, onDone){
   if(TOURNAMENTS.length <= 1) return; // 최소 1개는 남겨둔다
   var t = TOURNAMENTS.find(function(x){ return x.id===id; });
   if(!t) return;
-  openConfirm({ title:'대회 삭제', desc:'"'+t.name+'" 대회를 삭제합니다. 이 작업은 되돌릴 수 없습니다.', ok:'삭제', trigger:trigger,
+  openConfirm({ icon:'danger', title:'대회 삭제', desc:'"'+t.name+'" 대회를 삭제합니다. 이 작업은 되돌릴 수 없습니다.', ok:'삭제', trigger:trigger,
     onOk:function(){
       TOURNAMENTS = TOURNAMENTS.filter(function(x){ return x.id!==id; });
       delete TOURNAMENT_SETTINGS_MAP[id];
@@ -4915,6 +5085,30 @@ function initTournamentSettingsPage(){
     deleteTournament(VIEWING_TOURNAMENT_ID, this, function(){ location.hash = '#tourlist'; });
   });
 }
+/* 검수는 결국 "숫자가 맞는가"를 보는 일이다. 사람이 눈으로 훑는 대신 어긋난 곳을 먼저 짚어 준다.
+   high는 확정 전에 반드시 봐야 하는 것, mid는 사유가 있으면 넘어가도 되는 것. */
+function reviewChecks(g){
+  var out = [], r = g.rec;
+  if(g.home.score === g.away.score) out.push({ lv:'high', t:'동점 · 연장 여부 확인' });
+  if(!r) return out;
+  if(!r.events){ out.push({ lv:'high', t:'기록 없음' }); return out; }
+  var qh = 0, qa = 0;
+  (r.q || []).forEach(function(x){ qh += x[0]; qa += x[1]; });
+  if(r.q && r.q.length && (qh !== g.home.score || qa !== g.away.score)){
+    out.push({ lv:'high', t:'쿼터 합 '+qh+':'+qa+' ≠ 최종 '+g.home.score+':'+g.away.score });
+  }
+  // 삭제가 많다는 건 입력이 흔들렸다는 뜻 — 지운 이유를 확인할 값어치가 있다
+  if(r.deleted && r.deleted / (r.events + r.deleted) >= 0.12){
+    out.push({ lv:'mid', t:'삭제 '+r.deleted+'건' });
+  }
+  (r.pf5 || []).forEach(function(n){ out.push({ lv:'mid', t:'5파울 · '+n }); });
+  return out;
+}
+function reviewSummary(g){
+  var r = g.rec; if(!r) return '';
+  return '기록 ' + r.events + '건' + (r.deleted ? ' · 삭제 ' + r.deleted + '건' : '');
+}
+
 function renderReviewPage(){
   var all = allGameItemsWithDate();
   var pending = all.filter(function(g){ return g.status==='end'; });
@@ -4928,26 +5122,34 @@ function renderReviewPage(){
   if(!pending.length){
     root.innerHTML = emptyRow('검수를 기다리는 경기가 없습니다.');
   } else {
-    root.innerHTML = pending.map(function(g){
-      var tied = g.home.score === g.away.score;
-      var md = g.date.slice(5).replace('-','/');
-      return gameRowHtml(g, {
-        note: md+'('+g.day+') · '+g.label,
-        // 동점은 그냥 넘기면 안 되는 상황이라 행 안에서 경고 칩으로 세운다
-        chip: tied ? '<span class="chip review">확인 필요 · 연장?</span>' : '',
-        actions:
-          '<button type="button" class="btn btn-outline btn-sm" data-detail="'+g.id+'">상세 기록</button>'+
-          '<button type="button" class="btn btn-main btn-sm" data-confirm="'+g.id+'">결과 확정</button>'
-      });
+    // 경기 페이지와 같은 날짜·경기장 헤더로 묶는다 — 같은 목록 컴포넌트인데 검수만 평평하면 낯설다
+    var byDate = {};
+    pending.forEach(function(g){ (byDate[g.date] = byDate[g.date] || []).push(g); });
+    root.innerHTML = Object.keys(byDate).sort().reverse().map(function(date){
+      var items = byDate[date], d0 = items[0];
+      var md = date.slice(5).replace('-','/');
+      return '<div class="daygroup"><div class="dayhead">'+
+        '<span class="d1">'+md+' ('+d0.day+')</span><span class="d2">'+d0.venue+'</span>'+
+        '<span class="n">'+items.length+'경기</span></div>'+
+        items.map(function(g){
+          var checks = reviewChecks(g);
+          var r = g.rec;
+          // 기록·삭제 건수를 점검 줄 맨 앞에 둔다 — 판단의 전제라 점검 결과와 같은 줄에 있어야 읽힌다
+          var meta = r ? '<span class="chip meta">기록 '+r.events+(r.deleted ? ' · 삭제 '+r.deleted : '')+'</span>' : '';
+          return gameRowHtml(g, {
+            note: g.label,
+            checks: meta + (checks.map(function(c){
+              return '<span class="chip ' + (c.lv === 'high' ? 'review' : 'caution') + '">' + c.t + '</span>';
+            }).join('') || '<span class="chip ok">점검 이상 없음</span>'),
+            // 상세 기록 버튼은 뺐다 — 행을 누르면 어차피 상세로 간다
+            actions: '<button type="button" class="btn btn-main btn-sm" data-confirm="'+g.id+'">결과 확정</button>'
+          });
+        }).join('')+
+      '</div>';
     }).join('');
     root.querySelectorAll('[data-confirm]').forEach(function(b){
-      b.addEventListener('click', function(){ confirmReviewGame(b.dataset.confirm); });
+      b.addEventListener('click', function(){ askConfirmReview(b.dataset.confirm, b); });
     });
-    root.querySelectorAll('[data-detail]').forEach(function(b){
-      // 그 경기를 로드해야 전체 기록이 해당 경기 기준으로 뜬다 (예전엔 항상 직전 경기 PBP가 떴음)
-      b.addEventListener('click', function(){ loadGame(b.dataset.detail); location.hash = '#log'; });
-    });
-    // 행 자체(버튼 밖)를 눌러도 상세 기록으로 — 경기 페이지와 같은 동작
     bindGameRows(root, function(id){ loadGame(id); location.hash = '#log'; });
   }
 
@@ -4959,7 +5161,8 @@ function renderReviewPage(){
       var md = g.date.slice(5).replace('-','/');
       return gameRowHtml(g, {
         note: md+'('+g.day+') · '+g.fixedBy+'님이 '+g.fixedAt+' 확정',
-        actions: '<button type="button" class="btn btn-outline btn-sm" data-revert="'+g.id+'">검수로 되돌리기</button>'
+        actions: '<button type="button" class="btn btn-outline btn-sm" data-revert="'+g.id+'" aria-label="검수 대기로 되돌리기">'+
+          icon('undo','ic ic-sm')+'되돌리기</button>'
       });
     }).join('');
     bindGameRows(fixedRoot, function(id){ loadGame(id); location.hash = '#log'; });
@@ -4968,6 +5171,25 @@ function renderReviewPage(){
     });
   }
 }
+/* 확정은 되돌리기 번거로운 액션이다 — 점검에 걸린 게 있으면 무엇인지 보여주고 한 번 묻는다.
+   막지는 않는다. 동점이 정말 무승부인 대회도 있고, 삭제가 많아도 사유가 있을 수 있다. */
+function askConfirmReview(gameId, trigger){
+  var g = allGameItems().filter(function(x){ return x.id === gameId; })[0];
+  if(!g) return;
+  var checks = reviewChecks(g);
+  openConfirm({
+    icon: checks.length ? 'alert' : 'ok',
+    title: checks.length ? '확인할 항목이 있습니다' : '결과 확정',
+    desc: g.home.name + ' ' + g.home.score + ' : ' + g.away.score + ' ' + g.away.name
+        + (g.rec ? ' · ' + reviewSummary(g) : ''),
+    items: checks,
+    foot: '확정하면 이 결과가 순위·기록에 정식 반영됩니다.',
+    ok: '확정',
+    trigger: trigger,
+    onOk: function(){ confirmReviewGame(gameId); }
+  });
+}
+
 function confirmReviewGame(gameId){
   var g = allGameItems().find(function(x){ return x.id === gameId; });
   if(!g) return;
@@ -5309,6 +5531,19 @@ function showPage(name){
 }
 function routeFromHash(){ showPage((location.hash||'#dashboard').slice(1)); }
 
+/* 뒤로가기 — 하위 페이지는 들어오는 길이 여러 개다(경기 상세는 경기 목록·대시보드·검수에서,
+   전체 기록은 경기 상세·검수에서, 선수 상세는 팀·선수·기록 순위에서). 목적지를 고정해 두면
+   검수에서 들어왔는데 경기 목록으로 튕긴다. 앱 안에서 넘어왔으면 온 길로 돌려보낸다.
+   URL로 직접 열었을 땐 히스토리가 없으므로 href에 적힌 기본 목적지로 간다. */
+var entryHistoryLen = history.length;
+function initBackLinks(){
+  document.querySelectorAll('a.back').forEach(function(a){
+    a.addEventListener('click', function(e){
+      if(history.length > entryHistoryLen){ e.preventDefault(); history.back(); }
+    });
+  });
+}
+
 // ---- 선수 선택 상태 ----
 var TEAM_NAME = { home: MATCH.home.name, away: MATCH.away.name };
 /* 화면에 들어온 순간에는 아무도 선택돼 있지 않다 — 미리 골라 두면 다른 선수의 기록이
@@ -5509,7 +5744,7 @@ function renderPbp(){
     }
     var evt = '<button type="button" class="pbp-evt'+(e.deleted?' deleted':'')+'" data-evt="'+i+'"'+
       ' aria-label="'+e.time+' '+eventDesc(e)+(e.deleted?' (삭제됨)':'')+', 수정 또는 삭제">'+
-      '<i class="d" style="background:'+eventDot(e)+'" aria-hidden="true"></i><span class="tx">'+eventDesc(e)+'</span>'+
+      eventMark(e)+'<span class="tx">'+eventDesc(e)+'</span>'+
       (e.deleted?'<span class="del-tag">삭제됨</span>':'')+'</button>';
     var score = e.score ? '<span class="pbp-score">'+e.score[0]+' : '+e.score[1]+'</span>' : '';
     rows += '<div class="pbp-row">'+
@@ -5545,8 +5780,10 @@ function renderReviewBar(){
       '<button type="button" class="btn btn-primary" id="reviewConfirmBtn">이상 없음 · 결과 확정</button>';
     document.getElementById('reviewConfirmBtn').addEventListener('click', function(){
       openConfirm({
+        icon: 'alert',
         title: '결과 확정',
-        desc: summary + '. 확정하면 선수·관중에게 공식 결과로 공개되며 되돌릴 수 없습니다.',
+        desc: summary,
+        foot: '확정하면 선수·관중에게 공식 결과로 공개되며 되돌릴 수 없습니다.',
         ok: '확정',
         trigger: this,
         onOk: function(){ /* 실제 구현: POST /api/games/:id/confirm → status end→fix */
@@ -5679,6 +5916,74 @@ function initActionButtons(){
   });
 }
 
+/* 자유투 세트 — 구수를 고르고 각 구의 성공/실패를 찍은 뒤 한 번에 기록한다.
+   전부 찍기 전에는 기록 버튼이 잠겨 있어 "2구를 안 찍고 넘어가는" 누락이 막힌다. */
+var ftModal, ftN = 2, ftRes = [], ftTrigger = null;
+function openFtDialog(trigger){
+  if(!selectedPlayer) return;
+  ftTrigger = trigger || null;
+  ftN = 2; ftRes = [];
+  document.getElementById('ftDesc').textContent =
+    selectedPlayer.no + ' ' + selectedPlayer.name + ' · ' + TEAM_NAME[selectedPlayer.team];
+  renderFtRows();
+  ftModal.classList.add('open');
+  ftModal.setAttribute('aria-hidden','false');
+}
+function closeFtDialog(){
+  ftModal.classList.remove('open');
+  ftModal.setAttribute('aria-hidden','true');
+  if(ftTrigger && document.body.contains(ftTrigger)) ftTrigger.focus();
+}
+function renderFtRows(){
+  ftModal.querySelectorAll('.ft-count button').forEach(function(b){
+    b.classList.toggle('on', Number(b.dataset.n) === ftN);
+  });
+  var rows = '';
+  for(var i = 0; i < ftN; i++){
+    // 자유투는 순서대로 던진다 — 앞 구를 찍기 전에는 다음 구를 열지 않는다
+    var locked = i > 0 && !ftRes[i-1];
+    var dis = locked ? ' disabled' : '';
+    rows += '<div class="ft-row'+(ftRes[i]?' done':'')+(locked?' locked':'')+'"><span class="n">'+(i+1)+'구</span>'+
+      '<button type="button" data-i="'+i+'" data-r="made"'+(ftRes[i]==='made'?' class="on"':'')+dis+'>성공</button>'+
+      '<button type="button" data-i="'+i+'" data-r="miss"'+(ftRes[i]==='miss'?' class="on"':'')+dis+'>실패</button>'+
+    '</div>';
+  }
+  document.getElementById('ftRows').innerHTML = rows;
+  var done = 0, made = 0;
+  for(var j = 0; j < ftN; j++){ if(ftRes[j]) done++; if(ftRes[j] === 'made') made++; }
+  var save = document.getElementById('ftSave');
+  save.disabled = done < ftN;
+  save.textContent = done < ftN ? '기록'
+    : (made ? made + '점 · ' + ftN + '구 기록' : '노득점 · ' + ftN + '구 기록');
+}
+function initFtDialog(){
+  ftModal = document.getElementById('ftModal');
+  ftModal.addEventListener('click', function(e){
+    var c = e.target.closest('.ft-count button');
+    if(c){ ftN = Number(c.dataset.n); ftRes = ftRes.slice(0, ftN); renderFtRows(); return; }
+    var r = e.target.closest('.ft-row button');
+    if(r){
+      var i = Number(r.dataset.i);
+      ftRes[i] = r.dataset.r;
+      renderFtRows();
+      return;
+    }
+    if(e.target === ftModal) closeFtDialog();
+  });
+  document.getElementById('ftCancel').addEventListener('click', closeFtDialog);
+  document.getElementById('ftSave').addEventListener('click', function(){
+    // 박스스코어는 자유투를 시도 단위로 세므로 구마다 이벤트를 따로 남긴다
+    var n = ftN, setId = ++eventSeq;
+    ftRes.slice(0, n).forEach(function(r, i){
+      addPlayEvent('ft', { made: r === 'made', shotNo: i + 1, shotOf: n, ftSet: setId });
+    });
+    clearJustIn(selectedPlayer.team);
+    closeFtDialog();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && ftModal.classList.contains('open')) closeFtDialog(); });
+}
+
 function initShotDialog(){
   var modal=document.getElementById('shotModal'), pending=null, trigger=null;
   function close(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true');
@@ -5686,6 +5991,7 @@ function initShotDialog(){
   document.querySelectorAll('#scoreActions .act-score').forEach(function(b){
     b.addEventListener('click',function(){
       var a=SCORE_ACTIONS.filter(function(x){return x.key===b.dataset.action})[0];
+      if(a.key === 'ft'){ openFtDialog(b); return; }
       pending=a; trigger=b;
       document.getElementById('shotTitle').textContent=a.sub+' 슛, 들어갔나요?';
       document.getElementById('shotDesc').textContent=
@@ -5731,11 +6037,13 @@ initMobileNav();
 initProfileMenu();
 initProfileSubModals();
 initShotDialog();
+initFtDialog();
 initActionButtons();
 initSubChoiceDialog();
 initSubsDialog();
 initJustInRelease();
 initUndo();
+initBackLinks();
 initConfirm();
 initEventDialog();
 initOvrInfoDialog();
@@ -5757,10 +6065,11 @@ document.getElementById('btnFinish').addEventListener('click', function(){
   var valid = playEvents().filter(function(e){ return !e.deleted; }).length;
   var deleted = playEvents().length - valid;
   openConfirm({
+    icon: 'alert',
     title: '경기 종료',
     desc: MATCH.home.name + ' ' + MATCH.home.score + ' : ' + MATCH.away.score + ' ' + MATCH.away.name +
-          ' · 기록 ' + valid + '건' + (deleted ? ' (삭제 ' + deleted + '건)' : '') +
-          '. 제출하면 검수 대기 상태가 되며 기록을 더 이상 입력할 수 없습니다.',
+          ' · 기록 ' + valid + '건' + (deleted ? ' (삭제 ' + deleted + '건)' : ''),
+    foot: '제출하면 검수 대기 상태가 되며 기록을 더 이상 입력할 수 없습니다.',
     ok: '제출',
     trigger: this,
     onOk: function(){ /* 실제 구현: POST /api/games/:id/submit */
