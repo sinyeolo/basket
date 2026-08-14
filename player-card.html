@@ -33,6 +33,7 @@ button{font-family:var(--font)}
 .ic-sm{width:16px;height:16px}
 
 /* ---------------- 등급 토큰 — 프레임 재질·반사광 강도·홀로그램 패턴이 등급마다 달라짐 ---------------- */
+[data-grade="starter"]{--g-a:#4e5157; --g-b:#868b93; --g-c:#26282c; --g-text:#e4e6ea; --shine-op:.18; --holo-op:.06; }
 [data-grade="bronze"]{ --g-a:#7a4a2a; --g-b:#c9905a; --g-c:#3d2412; --g-text:#f0d9c2; --shine-op:.28; --holo-op:.10; }
 [data-grade="silver"]{ --g-a:#8b929b; --g-b:#e7ebef; --g-c:#3d4249; --g-text:#eef1f4; --shine-op:.4;  --holo-op:.14; }
 [data-grade="gold"]{   --g-a:#9c7415; --g-b:#f4d16a; --g-c:#4a3608; --g-text:#fbedc4; --shine-op:.55; --holo-op:.18; }
@@ -496,10 +497,10 @@ button{font-family:var(--font)}
 
 /* 섹션 간격 — 36px에서 키웠다. 카드 앨범·배지·기록이 붙어 있으면 하나의 긴 목록처럼 읽혀서
    어디서 주제가 바뀌는지가 안 잡힌다. */
-.section{max-width:340px;margin:52px auto 0;padding:0 4px}
+.section{max-width:340px;margin:34px auto 0;padding:0 4px}
 /* OVR 히어로 — 박스 없이. 회색 박스로 감싸면 아래 4지표 카드와 무게가 비슷해져 '가장 중요한 수치'로
    안 읽힌다. 등급 뱃지를 위에 올리고 그 아래 큰 숫자를 놓아 위에서 아래로 읽히게 했다. */
-.ovrHero{max-width:340px;margin:22px auto 0;padding:0 4px;display:flex;flex-direction:row;
+.ovrHero{max-width:340px;margin:16px auto 0;padding:0 4px;display:flex;flex-direction:row;
   align-items:center;justify-content:space-between;gap:12px}
 /* 라벨을 숫자 앞에 둬서 큰 숫자가 오른쪽 끝을 붙잡게 한다 — 숫자를 앞에 두면 오른쪽 끝이 작은 라벨로
    끝나 시선이 흐려진다 */
@@ -512,6 +513,7 @@ button{font-family:var(--font)}
 .ohGrade[data-g="gold"]{background:#f4d16a;color:#4a3608}
 .ohGrade[data-g="silver"]{background:#dde2e8;color:#3d4249}
 .ohGrade[data-g="bronze"]{background:#e0a874;color:#4a2a12}
+.ohGrade[data-g="starter"]{background:#d7dade;color:#3a3d42}
 /* 시즌 평균 3스탯 */
 .avgRow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .avgIt{text-align:center;padding:14px 4px;background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:14px}
@@ -519,7 +521,7 @@ button{font-family:var(--font)}
    같은 칸을 줘서 '21.4'가 벌어져 보였다. 표처럼 자릿수를 맞출 필요가 없는 자리라 비례 숫자가 맞다. */
 .avgIt b{font-family:var(--font-display);display:block;font-size:19px;font-weight:800;color:var(--sh-on);line-height:1.1;letter-spacing:-.01em}
 .avgIt span{display:block;margin-top:4px;font-size:10.5px;color:var(--sh-on-dim)}
-.section h3{font-size:13px;font-weight:800;color:var(--sh-on-dim);margin:0 0 14px;letter-spacing:.02em}
+.section h3{font-size:13px;font-weight:800;color:var(--sh-on-dim);margin:0 0 10px;letter-spacing:.02em}
 /* .recRow는 카드 뒷면(다크)에도 쓰이는 공용 클래스라 기본값은 그대로 두고, 시트 안에서만 화이트로 덮어씀 */
 .recRow{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);
   border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:12px;
@@ -609,11 +611,9 @@ button{font-family:var(--font)}
 /* 브랜드 푸터 앞 굵은 구분선 — 위쪽 안내문까지가 '내용'이고 여기부터는 서비스 표기라 성격이 다르다.
    얇은 선으론 섹션 사이 구분선과 헷갈려서 8px 블록으로 확실히 끊는다. */
 .footDivider{height:8px;background:var(--sh-bg2);margin:40px -20px 0}
-.brandFoot{display:flex;flex-direction:column;align-items:center;gap:8px;margin:32px auto 0}
-.brandFootLogo{width:40px;height:40px;border-radius:50%;background:var(--sh-bg2, rgba(255,255,255,.06));border:1px solid var(--sh-border, rgba(255,255,255,.14));
-  display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:var(--sh-on, var(--on-dark))}
+.brandFoot{display:flex;align-items:center;justify-content:center;margin:24px auto 0}
 .brandFootName{width:88px;height:30px;color:var(--sh-on-dim, var(--on-dark-dim))}
-.copyright{text-align:center;font-size:10.5px;color:var(--sh-on-dim, #4a4c53);margin:8px auto 0}
+.copyright{text-align:center;font-size:11px;color:var(--sh-on-dim, #4a4c53);margin:8px auto 0}
 
 /* 검토 전용 미리보기 바 — 실제 서비스 화면 아님. 헤더 바로 아래 고정, 하단 탭바와 겹치지 않게 분리 */
 .previewBar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:8px 12px;
@@ -636,6 +636,7 @@ button{font-family:var(--font)}
 <body>
 <div class="previewBar" aria-label="등급·포즈 미리보기 (검토용, 실제 화면 아님)">
   <span>등급 미리보기</span>
+  <button data-g="starter">Starter</button>
   <button data-g="bronze">Bronze</button>
   <button data-g="silver">Silver</button>
   <button data-g="gold" class="on">Gold</button>
@@ -807,7 +808,6 @@ button{font-family:var(--font)}
 
       <div class="footDivider" aria-hidden="true"></div>
       <div class="brandFoot">
-        <span class="brandFootLogo">B</span>
         <span class="brandFootName logoMark" role="img" aria-label="BASKET"></span>
       </div>
       <p class="copyright">© 2026 BASKET. All rights reserved.</p>
@@ -843,6 +843,8 @@ function icon(key, cls){ return '<svg class="'+(cls||'ic')+'" viewBox="0 0 24 24
 var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 var GRADES = {
+  // 첫 카드 — 아직 기록이 없거나 이제 막 시작한 선수. 무광 회색이라 위의 세 등급과 섞이지 않는다
+  starter: { label:'STARTER', level:1,  exp:8,  albumTint:['#9aa0a8','#4a4d53'] },
   bronze:  { label:'BRONZE',   level:3,  exp:20, albumTint:['#e0a874','#6b4120'] },
   silver:  { label:'SILVER',   level:8,  exp:40, albumTint:['#f2f5f8','#6a727c'] },
   gold:    { label:'GOLD',     level:15, exp:62, albumTint:['#ffdf85','#836013'] }
@@ -933,7 +935,7 @@ function sealLabel(){
 // 값이 없는 경우(데모/구버전 링크 등)에만 등급 기준치+일부 스탯으로 임시 추정한다.
 function ovrFor(key){
   if(PLAYER._ovr != null) return PLAYER._ovr;
-  var base = { bronze:58, silver:74, gold:88 }[key] || 58;
+  var base = { starter:45, bronze:58, silver:74, gold:88 }[key] || 45;
   var s = PLAYER.stats;
   var bonus = s ? Math.min(10, Math.round((s.pts+s.reb+s.ast)/6)) : 0;
   return Math.min(99, base+bonus);
@@ -1174,14 +1176,38 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
   // 끝까지(위/아래) 도달했을 때만 펼침/접힘 상태로 확정되어, 다 올렸을 땐 이어서 내용 스크롤이 되고
   // 다 내렸을 땐 다시 넛지 힌트가 재생된다. 펼친 뒤 내용을 스크롤 중일 땐 손대지 않고 기본 스크롤 그대로 둔다
   document.addEventListener('wheel', function(e){
-    // 최상단에 도착했으면 시트는 그 자리에 못박힌다 — 스크롤은 페이지 몫이고,
-    // 닫는 건 핸들을 끌어내리거나 X를 누르는 것뿐이다
-    if(sheetState() === 'full') return;
+    /* 최상단에 도착했으면 시트는 못박히고 스크롤은 페이지 몫이다.
+       예외는 하나 — 페이지가 이미 맨 위인데 더 아래로 끌어내리려는 손짓(deltaY < 0)이다.
+       읽을 게 남았을 땐 페이지가 굴러가고, 다 올라와 있는데 또 내리려 하면 그건
+       "시트를 내리겠다"는 뜻이므로 그때만 시트가 따라 내려온다. */
+    if(sheetState() === 'full'){
+      if(window.scrollY > 0 || e.deltaY >= 0) return;
+      unpinSheet();
+    }
     stopNudge();
     var h = setLiveHeight(currentH() + e.deltaY);
     if(h >= expandedH() - 0.5) setSheet('full');
     else if(h <= COLLAPSED_H + 0.5) setSheet('collapsed');
   }, { passive:true });
+
+  /* 손가락도 같게 — 폰에는 휠이 없다. 최상단·페이지 맨 위에서 아래로 쓸어내리면 시트가 따라 내려온다.
+     헤드/핸들에서 시작한 손짓은 아래 포인터 드래그가 이미 맡고 있으므로 건드리지 않는다. */
+  var swipeY = null, swipeH = 0;
+  document.addEventListener('touchstart', function(e){
+    swipeY = (sheetState() === 'full' && window.scrollY === 0
+      && !e.target.closest('.sheetHead, .sheetHandle')) ? e.touches[0].clientY : null;
+  }, { passive:true });
+  document.addEventListener('touchmove', function(e){
+    if(swipeY == null) return;
+    var dy = e.touches[0].clientY - swipeY;   // 아래로 끌면 양수
+    if(dy <= 0) return;                       // 위로 미는 건 평소대로 페이지 스크롤
+    if(!swipeH){ unpinSheet(); swipeH = currentH(); }
+    setLiveHeight(swipeH - dy);
+  }, { passive:true });
+  document.addEventListener('touchend', function(){
+    if(swipeH) settleFromHeight(currentH());
+    swipeY = null; swipeH = 0;
+  });
 
   // 드래그/스와이프 — 핸들이나 헤드를 누른 채 위아래로 끌면 시트가 실시간으로 따라 움직이고, 놓으면 50% 기준으로 스냅된다
   var dragStartY = null, dragStartH = 0, dragMoved = false;
