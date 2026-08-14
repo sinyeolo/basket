@@ -627,6 +627,10 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .prow .pstat{font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--on-surface-variant);
   white-space:nowrap;text-align:right}
 .prow .pstat .f4{color:var(--red)}
+/* 퇴장 — 코트에 남아 보이면 안 되지만 교체 전까지는 자리가 비어 있음을 알려야 한다 */
+.prow .pstat.out{color:var(--red);font-weight:800}
+.prow.out{opacity:.55}
+.prow.out .nm{text-decoration:line-through;text-decoration-thickness:1px}
 .prow.sel .pstat{color:rgba(255,255,255,.8)}
 .prow.sel .pstat .f4{color:#ffd4d4}
 /* 벤치 선수 — 통짜 opacity로 흐리게 하면 등번호·득점이 읽히지 않으므로
@@ -3039,6 +3043,12 @@ function quarterSeconds(){
   var m = /(\d+)\s*분/.exec(TOURNAMENT_SETTINGS.quarters || '');
   return (m ? Number(m[1]) : 10) * 60;
 }
+/* 개인 파울 한도 — 대회 설정("개인 5파울")에서 읽는다. 값이 없으면 퇴장 규정이 없는 것으로 본다
+   (순수 FIBA 3×3은 개인 파울 누적 퇴장이 없고 팀 파울만 센다). */
+function foulOutLimit(){
+  var m = /(\d+)/.exec(TOURNAMENT_SETTINGS.foulOut || '');
+  return m ? Number(m[1]) : 0;
+}
 function quarterTotal(){
   var m = /(\d+)\s*쿼터/.exec(TOURNAMENT_SETTINGS.quarters || '');
   return m ? Number(m[1]) : 4;
@@ -3178,11 +3188,44 @@ function addPlayEvent(type, opts){
   };
   if(opts) for(var k in opts) e[k] = opts[k];
   applyEvent(e, +1);
+  var foulCheck = (EVENT_META[type] && EVENT_META[type].foul) ? { team:e.team, no:e.no } : null;
   // 득점 이벤트는 그 시점 스코어를 함께 남긴다 — 전체 기록에서 흐름을 따라가는 기준
   if(EVENT_META[type] && EVENT_META[type].shot && e.made) e.score = [MATCH.home.score, MATCH.away.score];
   RECENT_EVENTS.unshift(e);
   refreshConsole();
+  if(foulCheck) checkFoulOut(foulCheck.team, foulCheck.no);
   return e;
+}
+
+/* 한도에 닿으면 퇴장 — 그 선수는 더 뛸 수 없으므로 코트를 비우고 교체로 채워야 경기가 재개된다.
+   데드볼 상황이라 시계도 멈춘다. */
+function checkFoulOut(teamId, no){
+  var lim = foulOutLimit();
+  if(!lim) return;
+  var roster = teamId === 'home' ? HOME_PLAYERS : AWAY_PLAYERS;
+  var p = roster.filter(function(x){ return x.no === no; })[0];
+  if(!p || p.bench || p.fouledOut || p.pf < lim) return;
+  p.fouledOut = true;
+  setClockRunning(false);
+  logSystemEvent(p.no + ' ' + p.name + ' ' + lim + '파울 퇴장 · ' + TEAM_NAME[teamId]);
+  // 선택 중이던 선수가 퇴장하면 선택을 푼다 — 퇴장 선수에게 기록이 더 붙으면 안 된다
+  if(selectedPlayer && selectedPlayer.team === teamId && selectedPlayer.no === no){
+    selectedPlayer = null;
+    roster.forEach(function(x){ x.selected = false; });
+    renderSelbarEmpty();
+  }
+  refreshConsole();
+  var bench = roster.filter(function(x){ return x.bench && !x.fouledOut; });
+  openConfirm({
+    icon: 'alert',
+    title: lim + '파울 퇴장',
+    desc: p.no + ' ' + p.name + ' · ' + TEAM_NAME[teamId],
+    foot: bench.length
+      ? '교체로 코트를 채워야 경기를 재개할 수 있습니다.'
+      : '교체할 벤치 선수가 없습니다. 대회 규정에 따라 진행하세요.',
+    ok: bench.length ? '교체하기' : '확인',
+    onOk: function(){ if(bench.length) openSubsDialog(MATCH[teamId], null); }
+  });
 }
 /* 삭제·복원 — applyEvent를 반대로 한 번 더 돌리면 점수와 스탯이 정확히 제자리로 돌아간다 */
 function setEventDeleted(e, del){
@@ -3223,10 +3266,13 @@ function handleTeamAction(act, team, trigger){
     openConfirm({
       title: '타임아웃 기록',
       desc: team.name + ' · 잔여 ' + team.timeoutsLeft + '회 → ' + (team.timeoutsLeft - 1) + '회',
+      foot: '경기 시계가 멈춥니다. 재개할 때 시작을 다시 눌러 주세요.',
       ok: '타임아웃 기록',
       trigger: trigger,
       onOk: function(){
         team.timeoutsLeft -= 1;
+        // 타임아웃은 데드볼에서만 요청할 수 있고 그동안 시계는 멈춘다(FIBA·KBL·3×3 공통)
+        setClockRunning(false);
         logTeamEvent(team, team.name + ' 타임아웃 (잔여 ' + team.timeoutsLeft + ')', 'var(--amber)');
       }
     });
@@ -3329,14 +3375,17 @@ function renderSubsLists(){
     return list.map(function(p){
       // 코트 쪽은 방금 들어온 선수를, 벤치 쪽은 방금 나간 선수를 잠근다
       var fresh = (side==='out' && justIn[subsTeam.id].indexOf(p.no) > -1)
-               || (side==='in'  && justOutNo[subsTeam.id].indexOf(p.no) > -1);
+               || (side==='in'  && justOutNo[subsTeam.id].indexOf(p.no) > -1)
+               || (side==='in'  && p.fouledOut);   // 퇴장 선수는 다시 들어올 수 없다
       return '<button type="button" class="subs-item'+(p.no===selNo?' on':'')+'" role="option"'+
         ' aria-selected="'+(p.no===selNo)+'" data-side="'+side+'" data-no="'+p.no+'"'+
         (fresh?' disabled title="같은 데드볼에서는 되돌릴 수 없습니다 · 기록이 하나 입력되면 풀립니다"':'')+'>'+
         '<span class="no">'+p.no+'</span><span>'+p.name+'</span>'+
         (p.no===selNo
           ? '<span class="subs-tag '+side+'">'+(side==='out'?'OUT':'IN')+'</span>'
-          : '<span class="meta">'+(fresh ? (side==='out'?'방금 투입':'방금 교체 아웃') : p.pts+'점 · '+p.pf+'파울')+'</span>')+'</button>';
+          : '<span class="meta">'+(p.fouledOut ? '퇴장'
+              : fresh ? (side==='out'?'방금 투입':'방금 교체 아웃')
+              : p.pts+'점 · '+p.pf+'파울')+'</span>')+'</button>';
     }).join('');
   }
   document.getElementById('subsOut').innerHTML = tpl(out, subsOutNo, 'out');
@@ -3431,11 +3480,16 @@ function renderPlayerList(containerId, players, teamId){
 
   // 4파울부터 빨강 — 한 번만 더 하면 퇴장이라 기록자가 먼저 알아야 한다
   function stat(p){
+    if(p.fouledOut) return '<span class="pstat out">퇴장 '+p.pf+'F</span>';
     return '<span class="pstat">'+p.pts+'점 <span class="'+(p.pf>=4?'f4':'')+'">'+p.pf+'F</span></span>';
   }
   function row(p){
     if(p.bench){
       return '<div class="prow bench" aria-disabled="true"><span class="no">'+p.no+'</span>'+
+        '<span class="nm">'+p.name+'</span>'+stat(p)+'</div>';
+    }
+    if(p.fouledOut){
+      return '<div class="prow bench out" aria-disabled="true"><span class="no">'+p.no+'</span>'+
         '<span class="nm">'+p.name+'</span>'+stat(p)+'</div>';
     }
     return '<button type="button" class="prow'+(p.selected?' sel':'')+'" role="option" aria-selected="'+(!!p.selected)+'"'+
@@ -5697,9 +5751,11 @@ function initSubChoiceDialog(){
     }).join('');
     opts.querySelectorAll('.opt').forEach(function(b){
       b.addEventListener('click', function(){
-        addPlayEvent(action.key, { sub: b.dataset.sub });
-        clearJustIn(selectedPlayer.team);
+        // 퇴장 처리가 selectedPlayer를 비울 수 있으므로 팀을 먼저 붙잡는다
+        var team = selectedPlayer.team;
         close();
+        addPlayEvent(action.key, { sub: b.dataset.sub });
+        clearJustIn(team);
       });
     });
     modal.classList.add('open');
@@ -5717,7 +5773,7 @@ function initSubChoiceDialog(){
     if(!btn) return;
     // 하위 선택이 있으면 다이얼로그를, 없으면 한 번 눌러 바로 기록
     if(a.subOptions) btn.addEventListener('click', function(){ open(a, btn); });
-    else btn.addEventListener('click', function(){ addPlayEvent(a.key); });
+    else btn.addEventListener('click', function(){ addPlayEvent(a.key); });   // 하위 선택이 없어 닫을 다이얼로그가 없다
   });
 
   document.getElementById('subCancel').addEventListener('click', close);
@@ -6088,12 +6144,12 @@ function initFtDialog(){
   document.getElementById('ftCancel').addEventListener('click', closeFtDialog);
   document.getElementById('ftSave').addEventListener('click', function(){
     // 박스스코어는 자유투를 시도 단위로 세므로 구마다 이벤트를 따로 남긴다
-    var n = ftN, setId = ++eventSeq;
+    var n = ftN, setId = ++eventSeq, team = selectedPlayer.team;
+    closeFtDialog();
     ftRes.slice(0, n).forEach(function(r, i){
       addPlayEvent('ft', { made: r === 'made', shotNo: i + 1, shotOf: n, ftSet: setId });
     });
-    clearJustIn(selectedPlayer.team);
-    closeFtDialog();
+    clearJustIn(team);
   });
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape' && ftModal.classList.contains('open')) closeFtDialog(); });
@@ -6142,9 +6198,10 @@ function initShotDialog(){
   modal.querySelectorAll('.opt').forEach(function(o){
     o.addEventListener('click',function(){
       var TYPE = { '2pt':'2pt', '3pt':'3pt', 'ft':'ft' };
-      addPlayEvent(TYPE[pending.key] || pending.key, { made: o.dataset.res === 'made' });
-      clearJustIn(selectedPlayer.team);
+      var team = selectedPlayer.team, key = TYPE[pending.key] || pending.key, made = o.dataset.res === 'made';
       close();
+      addPlayEvent(key, { made: made });
+      clearJustIn(team);
     });
   });
   document.getElementById('shotCancel').addEventListener('click', close);
