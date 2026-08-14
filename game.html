@@ -168,15 +168,22 @@ main{padding:10px 10px 32px;display:flex;flex-direction:column;gap:10px}
   display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:10px 8px 11px;
   background:radial-gradient(120% 80% at 50% 0%, color-mix(in srgb,var(--g-a) 42%, transparent), transparent 66%),
              linear-gradient(175deg, color-mix(in srgb,var(--g-c) 92%, #0b0c10), #0a0b0e 84%)}
-.mvpCard .ovr{position:absolute;top:8px;left:9px;font-family:var(--font-display);font-size:20px;font-weight:800;
+.mvpCard .ovr{position:absolute;z-index:2;top:8px;left:9px;font-family:var(--font-display);font-size:20px;font-weight:800;
   line-height:1;color:var(--g-text)}
 .mvpCard .ovr em{display:block;font-style:normal;font-size:11px;font-weight:700;opacity:.7;letter-spacing:.04em}
-.mvpCard .no{position:absolute;top:9px;right:10px;font-family:var(--font-display);font-size:16px;font-weight:800;
+.mvpCard .no{position:absolute;z-index:2;top:9px;right:10px;font-family:var(--font-display);font-size:16px;font-weight:800;
   color:var(--g-text);opacity:.9}
-.mvpCard .sil{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:88px;opacity:.9}
-.mvpCard .nm{position:relative;font-size:16px;font-weight:800;color:#fff;letter-spacing:-.02em}
-.mvpCard .tm{position:relative;font-size:11px;color:rgba(255,255,255,.66);margin-top:2px}
-.mvpCard .badge{position:relative;margin-bottom:6px;font-family:var(--font-display);font-size:11px;
+.mvpCard .sil{position:absolute;z-index:0;left:50%;top:46%;transform:translate(-50%,-50%);width:88px;opacity:.9}
+/* 인물 사진 — 카드를 가득 채우고 위쪽(얼굴)을 기준으로 자른다. 이름·팀은 그 위에 얹히므로
+   아래쪽을 어둡게 깔아 글자가 사진에 묻히지 않게 한다. */
+.mvpCard .ph{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;object-position:top center}
+.mvpCard .in::after{content:"";position:absolute;left:0;right:0;bottom:0;height:52%;z-index:1;pointer-events:none;
+  background:linear-gradient(to bottom, transparent, rgba(8,9,12,.72) 62%, rgba(8,9,12,.92))}
+/* OVR·등번호도 사진 위로 올린다 — 위쪽엔 딤이 없으므로 그림자로 읽히게 받친다 */
+.mvpCard .ph ~ .ovr, .mvpCard .ph ~ .no{text-shadow:0 1px 6px rgba(0,0,0,.85)}
+.mvpCard .nm{position:relative;z-index:2;font-size:16px;font-weight:800;color:#fff;letter-spacing:-.02em}
+.mvpCard .tm{position:relative;z-index:2;font-size:11px;color:rgba(255,255,255,.66);margin-top:2px}
+.mvpCard .badge{position:relative;z-index:2;margin-bottom:6px;font-family:var(--font-display);font-size:11px;
   font-weight:800;padding:2px 7px;border-radius:5px;background:var(--g-b);color:var(--g-c);letter-spacing:.04em}
 /* 이 경기 기록 — 카드가 선수를, 아래 줄이 오늘 무엇을 했는지를 말한다 */
 .mvp-line{display:flex;gap:0;text-align:center;width:100%}
@@ -493,7 +500,10 @@ function viewSummary(){
       'style="--g-a:'+g.a+';--g-b:'+g.b+';--g-c:'+g.c+';--g-text:'+g.text+'">'+
       '<div class="in">'+
         '<span class="ovr">'+ovr+'<em>OVR</em></span>'+
-        '<span class="no">'+p.no+'</span>'+ SIL +
+        '<span class="no">'+p.no+'</span>'+
+        /* 사진을 올린 선수는 사진, 아니면 실루엣. 선수 카드(player-card.html)와 같은 규칙이라
+           같은 선수가 두 화면에서 다른 얼굴로 보이지 않는다. */
+        (p.photo ? '<img class="ph" src="'+p.photo+'" alt="">' : SIL) +
         '<span class="badge">'+({gold:'GOLD',silver:'SILVER',bronze:'BRONZE'}[gk])+'</span>'+
         '<span class="nm">'+p.name+'</span>'+
         '<span class="tm">'+t.name+'</span>'+

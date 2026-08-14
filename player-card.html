@@ -33,7 +33,10 @@ button{font-family:var(--font)}
 .ic-sm{width:16px;height:16px}
 
 /* ---------------- 등급 토큰 — 프레임 재질·반사광 강도·홀로그램 패턴이 등급마다 달라짐 ---------------- */
-[data-grade="starter"]{--g-a:#4e5157; --g-b:#868b93; --g-c:#26282c; --g-text:#e4e6ea; --shine-op:.18; --holo-op:.06; }
+/* 스타터가 자꾸 실버로 읽힌 이유 — 밝은 쪽(#868b93)이 실버의 어두운 쪽(#8b929b)과 거의 같은 톤이었다.
+   같은 재질을 흐리게 한 것으로 보일 뿐이다. 두 색의 간격 자체를 좁혀 금속 광택을 없앤다:
+   위아래 밝기 차가 있어야 금속으로 읽히므로, 차이를 줄이면 무광 흑연이 된다. 등급이 아니라 재질이 다르다. */
+[data-grade="starter"]{--g-a:#33363b; --g-b:#4d5158; --g-c:#1e2024; --g-text:#c9ccd2; --shine-op:.09; --holo-op:.04; }
 [data-grade="bronze"]{ --g-a:#7a4a2a; --g-b:#c9905a; --g-c:#3d2412; --g-text:#f0d9c2; --shine-op:.28; --holo-op:.10; }
 [data-grade="silver"]{ --g-a:#8b929b; --g-b:#e7ebef; --g-c:#3d4249; --g-text:#eef1f4; --shine-op:.4;  --holo-op:.14; }
 [data-grade="gold"]{   --g-a:#9c7415; --g-b:#f4d16a; --g-c:#4a3608; --g-text:#fbedc4; --shine-op:.55; --holo-op:.18; }

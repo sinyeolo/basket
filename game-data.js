@@ -47,7 +47,10 @@ var BASKET_RECORDS = {
   g12: {
     quarters:[ {h:17,a:16},{h:16,a:15},{h:18,a:17},{h:16,a:16} ],
     home:[
-      { no:'7',  name:'김민수', min:31, pts:24, reb:6, ast:5, stl:2, blk:1, to:3, pf:3, fg:[9,16], tp:[3,7], ft:[3,4] },
+      /* photo — 선수가 올린 인물 사진(배경 제거본). 안 올린 선수는 이 필드가 없고 실루엣으로 떨어진다.
+         실제 서비스에선 선수 프로필의 업로드 이미지가 그대로 내려온다. */
+      { no:'7',  name:'김민수', min:31, pts:24, reb:6, ast:5, stl:2, blk:1, to:3, pf:3, fg:[9,16], tp:[3,7], ft:[3,4],
+        photo:'https://images.pexels.com/photos/20615486/pexels-photo-20615486.jpeg?cs=srgb&dl=pexels-hanuman-photo-studio-564865561-20615486.jpg&fm=jpg' },
       { no:'11', name:'박정우', min:28, pts:14, reb:4, ast:7, stl:3, blk:0, to:2, pf:2, fg:[5,11], tp:[2,5], ft:[2,2] },
       { no:'23', name:'이현수', min:26, pts:12, reb:9, ast:1, stl:0, blk:3, to:1, pf:4, fg:[5,9],  tp:[0,1], ft:[2,3] },
       { no:'32', name:'한지훈', min:22, pts:9,  reb:7, ast:2, stl:1, blk:1, to:1, pf:2, fg:[4,8],  tp:[1,2], ft:[0,0] },
