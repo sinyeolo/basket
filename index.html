@@ -81,7 +81,7 @@
   --font-score:'FS_Numbers','FSNumbers',var(--font);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{background:var(--surface-container);color:var(--on-surface);font-family:var(--font);-webkit-font-smoothing:antialiased;letter-spacing:-.01em;font-size:14px}
+html,body{background:var(--surface-container);color:var(--on-surface);font-family:var(--font);-webkit-font-smoothing:antialiased;letter-spacing:-.01em;font-size:13px}
 /* 키보드 포커스 표시 — 실제 서비스에서 접근성 심사 통과를 위해 필수 */
 :focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:8px}
 /* 전정기관 민감 사용자 대응 — 점멸·확산 애니메이션을 모두 정지 */
@@ -133,7 +133,7 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 .mt-logo{width:32px;height:32px;border-radius:50%;background:var(--mono-fill);color:var(--mono-on);
   display:flex;align-items:center;justify-content:center;flex:none}
 .mt-logo svg{width:19px;height:19px}
-.mt-name{font-weight:700;font-size:14px;color:var(--on-surface);min-width:0;
+.mt-name{font-weight:700;font-size:13px;color:var(--on-surface);min-width:0;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mt-chev{color:var(--on-surface-variant);flex:none;transition:transform .15s}
 .mt-tourwrap.open .mt-chev{transform:rotate(180deg)}
@@ -166,7 +166,7 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 .tourSwitch:hover{background:var(--surface-variant)}
 .tourSwitch .ts-logo{width:36px;height:36px;border-radius:50%;background:var(--mono-fill);display:flex;align-items:center;justify-content:center;flex:none}
 .tourSwitch .ts-info{min-width:0;flex:1}
-.tourSwitch .ts-name{display:block;font-weight:600;font-size:14px;color:var(--on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tourSwitch .ts-name{display:block;font-weight:600;font-size:13px;color:var(--on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tourSwitch .ts-sub{display:block;font-size:11px;color:var(--on-surface-variant);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tourSwitch .chev{color:var(--on-surface-variant);font-size:11px;flex:none;transition:transform .15s}
 .nav-collapsed .tourSwitch{justify-content:center;padding:8px 0}
@@ -236,14 +236,14 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 /* 다른 메뉴(.nitem)와 동일한 호버 도형·색 — 완전 라운드 필로 통일 */
 .profile{display:flex;align-items:center;gap:12px;padding:8px 14px;border-radius:28px;cursor:pointer;transition:.12s;border:none;background:transparent;width:100%;font-family:var(--font);text-align:left}
 .profile:hover{background:var(--surface-variant)}
-.profile .av{width:40px;height:40px;border-radius:50%;background:var(--mono-fill);color:var(--mono-on);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex:none}
-.profile .pn{font-weight:600;font-size:15px;color:var(--on-surface)}
-.profile .pr{color:var(--on-surface-variant);font-size:12px;margin-top:2px}
+.profile .av{width:40px;height:40px;border-radius:50%;background:var(--mono-fill);color:var(--mono-on);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex:none}
+.profile .pn{font-weight:600;font-size:16px;color:var(--on-surface)}
+.profile .pr{color:var(--on-surface-variant);font-size:13px;margin-top:2px}
 .profile .caret{margin-left:auto;color:var(--on-surface-variant);font-size:11px}
 /* 프로필이 사이드바 맨 아래에 있어서 메뉴는 아래가 아니라 위로 펼침 */
 .pmenu{position:absolute;bottom:calc(100% + 4px);left:8px;right:8px;background:var(--surface);border-radius:14px;box-shadow:var(--e3);border:1px solid var(--outline-variant);padding:6px;z-index:50;visibility:hidden;opacity:0;transform:translateY(4px);transition:.14s}
 .profile-wrap:hover .pmenu,.profile-wrap.open .pmenu{visibility:visible;opacity:1;transform:translateY(0)}
-.pmenu .mi{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:14px;font-weight:500;color:var(--on-surface);cursor:pointer;border:none;background:transparent;width:100%;font-family:var(--font);text-align:left}
+.pmenu .mi{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:500;color:var(--on-surface);cursor:pointer;border:none;background:transparent;width:100%;font-family:var(--font);text-align:left}
 .pmenu .mi:hover{background:var(--surface-variant)}
 .pmenu .mi.danger{color:#a4321f}
 .pmenu .mi svg{width:17px;height:17px;stroke:currentColor;opacity:.85;flex:none}
@@ -251,7 +251,7 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 /* nav 자체가 아니라 메뉴 목록만 스크롤되게: min-height:0으로 flex 아이템이 줄어들 수 있게 함 */
 #navGroups{overflow-y:auto;min-height:0}
 .nav-label{font-size:11px;font-weight:600;color:var(--on-surface-variant);padding:12px 16px 4px;letter-spacing:.02em}
-.nitem{position:relative;display:flex;align-items:center;gap:12px;height:46px;padding:0 16px;border-radius:23px;font-weight:400;font-size:14px;color:var(--on-surface-variant);cursor:pointer;transition:.12s;text-decoration:none;width:100%;border:none;background:transparent;font-family:var(--font);text-align:left}
+.nitem{position:relative;display:flex;align-items:center;gap:12px;height:46px;padding:0 16px;border-radius:23px;font-weight:400;font-size:13px;color:var(--on-surface-variant);cursor:pointer;transition:.12s;text-decoration:none;width:100%;border:none;background:transparent;font-family:var(--font);text-align:left}
 a.nitem:visited{color:inherit}
 .nitem:hover{background:var(--surface-variant)}
 /* 활성 메뉴는 상태 표시이므로 무채색 강조 (포인트 컬러는 액션 전용) */
@@ -351,7 +351,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 }
 
 /* shared buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:var(--h-md);padding:0 24px;border:none;border-radius:var(--r-btn);font-family:var(--font);font-weight:600;font-size:14px;cursor:pointer;transition:.15s;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:var(--h-md);padding:0 24px;border:none;border-radius:var(--r-btn);font-family:var(--font);font-weight:600;font-size:13px;cursor:pointer;transition:.15s;white-space:nowrap}
 .btn[disabled]{opacity:.38;box-shadow:none;cursor:default;filter:none;pointer-events:none}
 .btn-main{background:var(--main);color:var(--on-main);box-shadow:var(--e1)}
 .btn-main:hover{box-shadow:var(--e2);filter:brightness(1.18)}
@@ -382,7 +382,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .main{padding:26px 20px 48px;min-width:0}
 /* 대회 선택 · 검색 바 ↔ 타이틀 사이도 타이틀 영역과 동일하게 16px 예외 */
 .topbar{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.input{position:relative;flex:1;display:flex;align-items:center;gap:10px;height:48px;padding:0 18px;background:var(--surface-variant);border-radius:var(--r-btn);color:var(--on-surface-variant);font-size:14px;border:none;font-family:var(--font)}
+.input{position:relative;flex:1;display:flex;align-items:center;gap:10px;height:48px;padding:0 18px;background:var(--surface-variant);border-radius:var(--r-btn);color:var(--on-surface-variant);font-size:13px;border:none;font-family:var(--font)}
 .input input{flex:1;min-width:0;border:none;background:transparent;outline:none;font:inherit;color:var(--on-surface)}
 .input input::placeholder{color:var(--on-surface-variant)}
 /* 대시보드 상단 통합 검색 — page-head 안, 버튼 옆에 놓이므로 넓은 화면에선 300px 고정.
@@ -394,10 +394,10 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
   max-height:380px;overflow-y:auto;z-index:50;display:none;padding:8px;text-align:left}
 .searchPanel.open{display:block}
 .searchPanel .sec{padding:8px 10px 4px;font-size:11px;font-weight:700;color:var(--on-surface-variant);letter-spacing:.02em}
-.searchPanel .row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;font-size:14px;color:var(--on-surface)}
+.searchPanel .row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;font-size:13px;color:var(--on-surface)}
 .searchPanel .row:hover{background:var(--surface-variant)}
 .searchPanel .row .dot{width:8px;height:8px;border-radius:50%;flex:none}
-.searchPanel .row .sub{font-size:12px;color:var(--on-surface-variant);margin-left:auto;white-space:nowrap}
+.searchPanel .row .sub{font-size:13px;color:var(--on-surface-variant);margin-left:auto;white-space:nowrap}
 .searchPanel .row .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .searchPanel .empty{padding:16px 10px;text-align:center;font-size:13px;color:var(--on-surface-variant)}
 /* 타이틀 영역만 예외 — 페이지 제목과 콘텐츠 사이는 16px로 위계 구분 (나머지 모듈 간격은 8px) */
@@ -413,9 +413,9 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .kpi-arrow{color:var(--on-surface-variant);opacity:.45;transition:.12s}
 .kpi-go:hover .kpi-arrow{opacity:1;transform:translateX(2px)}
 .kpi .k-top{display:flex;align-items:center;justify-content:space-between;min-height:18px}
-.kpi .label{font-size:12px;color:var(--on-surface-variant);font-weight:500}
-.kpi .num{font-family:var(--font-display);font-size:25px;font-weight:700;margin:5px 0 2px;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
-.kpi .num small{font-size:14px;font-weight:600;color:var(--on-surface-variant)}
+.kpi .label{font-size:13px;color:var(--on-surface-variant);font-weight:500}
+.kpi .num{font-family:var(--font-display);font-size:26px;font-weight:700;margin:5px 0 2px;letter-spacing:-.03em;line-height:1.05;font-variant-numeric:tabular-nums}
+.kpi .num small{font-size:13px;font-weight:600;color:var(--on-surface-variant)}
 /* '5/7'의 분모 — 남은 경기가 읽어야 할 값이고 전체 경기 수는 맥락일 뿐이라 한 단계 작고 얇게.
    숫자 크기가 같으면 둘 중 뭘 봐야 하는지가 안 잡힌다 */
 .kpi .num .num-sub{font-size:16px;font-weight:500;color:var(--on-surface-variant);letter-spacing:0}
@@ -429,7 +429,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .card-header{display:flex;align-items:center;justify-content:space-between;padding:20px 22px 8px}
 /* 섹션 제목은 페이지를 막론하고 동일 규격 (card-title / sec-title / cc > h3) */
 .card-title{font-size:16px;font-weight:700;letter-spacing:-.02em}
-.card-title .cnt{color:var(--on-surface-variant);font-weight:600;font-size:14px;margin-left:6px}
+.card-title .cnt{color:var(--on-surface-variant);font-weight:600;font-size:13px;margin-left:6px}
 .card-action{position:relative;color:var(--on-surface-variant);font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;font-family:var(--font);text-decoration:none}
 /* 글자 높이(16px)가 곧 탭 영역이라 터치로 누르기 어려웠다. 레이아웃은 그대로 두고 히트 영역만 넓힌다 */
 .card-action::after{content:"";position:absolute;inset:-14px -8px}
@@ -450,23 +450,23 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .row-click:hover{background:var(--surface-variant)}
 .row+.row{border-top:1px solid var(--outline-variant)}
 .row.done{opacity:.5}
-.court{flex:none;width:46px;height:46px;border-radius:13px;background:var(--surface-variant);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:var(--on-surface)}
+.court{flex:none;width:46px;height:46px;border-radius:13px;background:var(--surface-variant);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:var(--on-surface)}
 .court small{font-size:11px;font-weight:500;color:var(--on-surface-variant);margin-top:1px}
-.court-time{font-size:12px;letter-spacing:-.02em} /* "09:00"처럼 court 배지보다 글자 수가 많은 시간 표기용 — 46px 박스 안에서 줄바꿈 방지 */
+.court-time{font-size:13px;letter-spacing:-.02em} /* "09:00"처럼 court 배지보다 글자 수가 많은 시간 표기용 — 46px 박스 안에서 줄바꿈 방지 */
 .match{flex:1;display:flex;align-items:center;gap:12px;min-width:0}
 /* 긴 팀명 대비 — nowrap만 두면 레이아웃을 밀어내므로 말줄임 처리 (title 속성으로 전체 이름 확인 가능) */
-.team{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.team{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
 /* '오늘 일정' 행은 팀 이름 하나가 아니라 "남자 일반부 8강 · A팀 vs B팀" 한 줄 요약이 들어간다.
    .team의 max-width(데스크톱 220px / 폰 110px)는 팀명 하나 기준이라, 옆에 700px 넘게 빈 공간이 있는데도
    문장이 잘렸다. 여기서는 폭 제한을 풀고 좁은 화면에서는 두 줄로 접히게 한다 */
 #scheduleList .team{display:block;max-width:none;white-space:normal;overflow:visible;word-break:keep-all}
 .dot{width:10px;height:10px;border-radius:50%;flex:none}
 .score{display:flex;align-items:center;gap:7px;font-variant-numeric:tabular-nums}
-.score b{font-size:19px;font-weight:700}
+.score b{font-size:20px;font-weight:700}
 .score .sep{color:var(--on-surface-variant)}
 .rec-btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 16px;border-radius:var(--r-btn);background:var(--surface-variant);color:var(--on-surface);font-size:13px;font-weight:600;white-space:nowrap;transition:.12s;text-decoration:none}
 .row:hover .rec-btn{background:var(--main);color:var(--on-main)}
-.chip{display:inline-flex;align-items:center;font-size:12px;font-weight:600;padding:5px 11px;border-radius:var(--r-chip);white-space:nowrap}
+.chip{display:inline-flex;align-items:center;font-size:13px;font-weight:600;padding:5px 11px;border-radius:var(--r-chip);white-space:nowrap}
 /* 상태 뱃지 색상 통일 — 진행중은 브랜드컬러, 예정/기본은 회색, 확정은 초록, 확인 필요는 빨강. 테두리는 전부 없앰 */
 .chip.live{background:var(--primary-container);color:var(--on-primary-container)}
 .chip.live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--primary);margin-right:6px;animation:pulse 1.4s infinite}
@@ -509,7 +509,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .appbar .t{font-weight:700;font-size:16px}
 .appbar .meta{color:var(--on-surface-variant);font-size:13px}
 .spacer{flex:1}
-.save{display:inline-flex;align-items:center;gap:8px;color:var(--on-surface-variant);font-weight:600;font-size:12px}
+.save{display:inline-flex;align-items:center;gap:8px;color:var(--on-surface-variant);font-weight:600;font-size:13px}
 .save .d{position:relative;width:9px;height:9px;border-radius:50%;background:var(--green);flex:none}
 .save .d::after{content:"";position:absolute;inset:-4px;border-radius:50%;background:var(--green);opacity:.5;animation:rec-pulse 1.6s ease-out infinite}
 /* 일시정지 상태 — 기록이 멈췄다는 걸 시계·인디케이터·본문 톤으로 함께 알림 */
@@ -521,7 +521,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .clock-ctl{display:flex;gap:6px;margin-top:8px}
 .ckbtn{display:inline-flex;align-items:center;justify-content:center;gap:5px;height:30px;padding:0 12px;
   border:1px solid var(--outline-variant);border-radius:100px;background:var(--surface);color:var(--on-surface);
-  font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;transition:.12s;white-space:nowrap}
+  font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:.12s;white-space:nowrap}
 .ckbtn:hover{background:var(--surface-variant)}
 .ckbtn[disabled]{opacity:.4;cursor:default}
 .ckbtn svg{fill:currentColor;stroke:none;width:11px;height:11px}
@@ -554,7 +554,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .pauseCard .pcIcon{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;
   background:var(--red-c);color:var(--on-red-c)}
 .pauseCard .pcIcon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round}
-.pauseCard h2{font-size:17px;font-weight:800;letter-spacing:-.02em}
+.pauseCard h2{font-size:16px;font-weight:800;letter-spacing:-.02em}
 .pauseCard p{font-size:13px;line-height:1.55;color:var(--on-surface-variant)}
 .pauseCard .btn{margin-top:6px;padding:0 22px}
 .pauseCard .btn svg{fill:currentColor;stroke:none}
@@ -568,7 +568,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .qstrip{display:flex;align-items:stretch;justify-content:center;gap:10px;border-top:1px solid var(--outline-variant);padding:8px 16px}
 .qcell{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:74px;padding:6px 10px;border-radius:10px}
 .qcell .ql{font-size:11px;font-weight:600;color:var(--on-surface-variant);letter-spacing:.02em}
-.qcell .qv{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.qcell .qv{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
 .qcell .qv{color:var(--on-surface)}
 .qcell .qv .x{color:var(--outline);margin:0 3px;font-weight:600}
 .qcell.now{background:var(--surface-variant)}
@@ -578,19 +578,19 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* min-width:0 없으면 1fr 트랙이 팀명(.tname)의 min-content까지 부풀어 scoreboard 그리드가
    카드 밖으로 밀려 나간다(폰 폭에서 원정팀 이름이 카드 오른쪽으로 잘려 나갔다) — 그리드 아이템의 흔한 함정 */
 .tside{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;min-width:0}
-.tname{display:flex;align-items:center;justify-content:center;gap:9px;font-weight:700;font-size:18px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 8px}
+.tname{display:flex;align-items:center;justify-content:center;gap:9px;font-weight:700;font-size:20px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 8px}
 /* 100점 이상 3자리 스코어에서도 좌우 폭이 흔들리지 않도록 최소 폭 확보 */
 .tscore{min-width:3ch}
 .tname .dot{width:14px;height:14px;border-radius:50%;flex:none}
 .tscore{font-family:var(--font-display);font-size:60px;font-weight:800;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.tfoul{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--on-surface-variant);font-weight:500}
+.tfoul{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--on-surface-variant);font-weight:500}
 .tfoul.bonus,.tfoul.penalty{color:var(--red);font-weight:700}
 .fbadge{display:inline-flex;align-items:center;height:18px;padding:0 7px;border-radius:5px;
   background:var(--red);color:#fff;font-size:11px;font-weight:800;letter-spacing:.02em}
 .tfoul.penalty .fbadge{background:#a41e1e}
 .center{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 40px}
 /* 쿼터 상태·시계는 '상태 표시'이지 액션이 아니므로 포인트 컬러를 쓰지 않음 */
-.qchip{background:var(--surface-variant);color:var(--on-surface-variant);font-weight:700;font-size:12px;padding:5px 13px;border-radius:var(--r-btn);white-space:nowrap}
+.qchip{background:var(--surface-variant);color:var(--on-surface-variant);font-weight:700;font-size:13px;padding:5px 13px;border-radius:var(--r-btn);white-space:nowrap}
 /* DSEG7은 자폭이 넓어 일반 폰트보다 작은 사이즈로 맞춥니다 */
 /* nowrap 필수 — .colon이 inline-block이라 줄바꿈 지점이 생기고, 그러면 scoreboard의 auto 트랙이
    min-content("04" 폭)까지 줄어들어 폰 폭에서 시계가 "04 / 32" 두 줄로 쪼개졌다 */
@@ -601,8 +601,8 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 @media (max-width:1180px){.main3{grid-template-columns:1fr 1fr}.console-center{grid-column:1 / -1;order:-1}}
 @media (max-width:900px){
   /* 시계 열 좌우 여백을 줄여 팀명 열에 폭을 돌려준다 — 14px일 땐 폰 폭에서 팀명이 말줄임됐다 */
-  .scoreboard{padding:14px 16px} .tscore{font-size:40px} .tname{font-size:15px;padding:0 2px} .center{padding:0 8px}
-  .clock{font-size:22px} .qchip{font-size:11px;padding:4px 10px} .main3{grid-template-columns:1fr} .prow{padding:12px 10px}
+  .scoreboard{padding:14px 16px} .tscore{font-size:40px} .tname{font-size:16px;padding:0 2px} .center{padding:0 8px}
+  .clock{font-size:20px} .qchip{font-size:11px;padding:4px 10px} .main3{grid-template-columns:1fr} .prow{padding:12px 10px}
 }
 .cc{background:var(--surface);border-radius:16px;padding:16px}
 .cc > h3,.cc > h2{font-size:16px;font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;margin-bottom:10px}
@@ -613,7 +613,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .tbtn:hover{background:var(--surface-variant)}
 .tbtn .n{font-weight:800;color:var(--on-surface-variant)}
 .tbtn[disabled]{opacity:.4;cursor:default}
-@media (max-width:900px){.tbtn{height:40px;font-size:12px}}
+@media (max-width:900px){.tbtn{height:40px;font-size:13px}}
 .ph{display:grid;grid-template-columns:auto 1fr auto 34px auto;gap:8px;padding:0 8px 8px;font-size:11px;color:var(--on-surface-variant);font-weight:600}
 .prow{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:8px;padding:10px 8px;border-radius:12px;cursor:pointer;transition:.1s;width:100%;border:none;background:transparent;font-family:var(--font);text-align:left}
 .prow:hover{background:var(--surface-variant)}
@@ -623,10 +623,10 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 #awayList .prow.sel{background:color-mix(in srgb, var(--away) 14%, var(--surface));box-shadow:inset 3px 0 0 var(--away)}
 .prow .no{width:26px;text-align:center;font-weight:700;font-size:13px;color:var(--on-surface-variant)}
 .prow.sel .no{color:var(--on-surface)}
-.prow .nm{display:flex;align-items:center;gap:7px;font-weight:600;font-size:14px}
+.prow .nm{display:flex;align-items:center;gap:7px;font-weight:600;font-size:13px}
 .prow .oc{width:7px;height:7px;border-radius:50%;background:var(--green)}
 /* 득점과 파울을 한 덩어리로 — 열을 나누면 숫자 사이가 비어 "이 선수의 성적"으로 안 읽힌다 */
-.prow .pstat{font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--on-surface-variant);
+.prow .pstat{font-family:var(--font-display);font-size:13px;font-weight:700;color:var(--on-surface-variant);
   white-space:nowrap;text-align:right}
 .prow .pstat .f4{color:var(--red)}
 /* 퇴장 — 코트에 남아 보이면 안 되지만 교체 전까지는 자리가 비어 있음을 알려야 한다 */
@@ -648,7 +648,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .plist-sub::after{content:"";flex:1;height:1px;background:var(--outline-variant)}
 .plist-sub:first-child{margin-top:0}
 .selbar{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 10px;border-bottom:1px solid var(--outline-variant);padding:2px 4px 14px;margin-bottom:14px}
-.selbar .who{font-size:18px;font-weight:800;color:var(--on-surface)}
+.selbar .who{font-size:20px;font-weight:800;color:var(--on-surface)}
 .selbar .who.empty{color:var(--on-surface-variant)}
 .selbar .sep{color:var(--outline-variant)}
 .selbar .team{font-size:13px;font-weight:600;color:var(--on-surface-variant)}
@@ -659,14 +659,14 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
    리바운드·어시스트 등 기타 스탯은 별도 그룹으로 분리해 적용 범위를 시각적으로 명확히 함 */
 .grp{margin-bottom:14px}
 .grp:last-child{margin-bottom:0}
-.grp-lab{display:flex;align-items:baseline;gap:8px;padding:0 2px 8px;font-size:12px;font-weight:700;color:var(--on-surface)}
+.grp-lab{display:flex;align-items:baseline;gap:8px;padding:0 2px 8px;font-size:13px;font-weight:700;color:var(--on-surface)}
 .grp-lab span{font-size:11px;font-weight:500;color:var(--on-surface-variant)}
 .grp+.grp{padding-top:4px}
 /* 성공/실패 토글도 라운드 계열로 통일 (M3 세그먼트 컨트롤) */
 .toggle{position:relative;display:flex;background:var(--surface-variant);border-radius:var(--r-btn);padding:4px;margin-bottom:10px}
 .toggle-thumb{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:var(--r-btn);background:var(--green);transition:transform .22s cubic-bezier(.2,.9,.25,1.2),background .18s ease;z-index:0}
 .toggle-thumb.miss{transform:translateX(100%);background:var(--red)}
-.toggle-opt{flex:1;position:relative;z-index:1;height:44px;border:none;background:transparent;font-family:var(--font);font-weight:700;font-size:14px;cursor:pointer;color:var(--on-surface-variant);transition:color .15s}
+.toggle-opt{flex:1;position:relative;z-index:1;height:44px;border:none;background:transparent;font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;color:var(--on-surface-variant);transition:color .15s}
 .toggle-opt.active{color:#fff}
 .arow{display:grid;gap:10px;margin-bottom:10px}
 .arow:last-child{margin-bottom:0}
@@ -684,7 +684,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .toast{position:fixed;left:50%;bottom:84px;z-index:200;transform:translate(-50%,calc(100% + 84px));
   display:flex;align-items:center;gap:9px;max-width:calc(100vw - 32px);
   padding:13px 20px;border-radius:100px;background:#26252a;color:#fff;
-  font-size:14px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.28);
+  font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.28);
   opacity:0;pointer-events:none;transition:transform .26s cubic-bezier(.2,.8,.25,1),opacity .2s}
 .toast.on{transform:translate(-50%,0);opacity:1}
 .act.cooling{pointer-events:none;opacity:.5}
@@ -703,7 +703,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .act-score:hover{filter:brightness(1.2)}
 /* 눌렀을 때 인터렉션은 기타 기록 버튼(.act-stat)과 동일: 모서리가 순간적으로 좁아지는 shape morph */
 .split .act-score:active,.split .act-score.morph{border-radius:14px}
-.act-score b{font-size:22px;font-weight:800}
+.act-score b{font-size:20px;font-weight:800}
 .act-score small{font-size:11px;opacity:.8}
 
 /* ---- 기타 기록: M3 Filled tonal button (round shape) ----
@@ -734,7 +734,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 #page-record .main3 > .console-center{grid-area:center}
 #page-record .main3 > .cc:nth-of-type(3){grid-area:away}
 #page-record .main3 > .cc{min-height:0;display:flex;flex-direction:column;padding:10px}
-#page-record .main3 > .cc > h2{font-size:12px;font-weight:700;color:var(--on-surface-variant);padding:2px 4px 6px;margin:0}
+#page-record .main3 > .cc > h2{font-size:13px;font-weight:700;color:var(--on-surface-variant);padding:2px 4px 6px;margin:0}
 #page-record .main3 > .cc > [role=listbox]{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:3px}
 #page-record .team-foot{margin-top:auto;padding-top:8px;border-top:1px solid var(--outline-variant)}
 /* 선택 선수는 팀 컬러로 꽉 채운다 — 옅은 배경 + 좌측 라인으로는 명단을 훑을 때 눈에 덜 걸린다.
@@ -788,7 +788,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
     overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   #page-record .tbtn{padding:0 8px;gap:5px}
   #page-record .tbtn .ic,#page-record .tbtn .ic-sm{width:18px;height:18px}
-  #page-record .tbtn .n{font-size:14px}
+  #page-record .tbtn .n{font-size:13px}
 }
 @media (max-width:560px){
   #page-record{padding:6px;gap:6px}
@@ -807,7 +807,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* 방금 들어간 기록 — 5초만 테두리로 표시한다. 연속 입력 중 "지금 내가 넣은 게 이것"을
    확인하는 용도라 계속 남아 있으면 오히려 최신이 어느 것인지 흐려진다 */
 .rchip.latest{box-shadow:inset 0 0 0 2px var(--main)}
-.rchip b{font-weight:700;color:var(--on-surface-variant);font-size:12px}
+.rchip b{font-weight:700;color:var(--on-surface-variant);font-size:13px}
 .evt-ball{width:16px;height:16px;flex:none;margin-right:-4px}   /* 칩 gap 8 - 4 = 라벨과 4px */
 /* 팀 컬러는 왼쪽에서만 옅게 — 칩 전체를 물들이면 글자가 묻히고 최신 강조도 안 보인다 */
 .rchip{background:linear-gradient(90deg,
@@ -851,15 +851,15 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .lrow:hover{background:var(--surface-variant)}
 /* border 대신 box-shadow로 테두리를 그린다 — border를 쓰면 배경 사진(cover)이 padding-box 기준으로 계산되면서
    테두리 바로 안쪽에 얇게 안 채워진 틈이 생기는 문제가 있어(사진 등록 시에만 눈에 띔) box-shadow로 대체 */
-.av-c{width:44px;height:44px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+.av-c{width:44px;height:44px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.06)}
 .av-c.av-logo{position:relative;background-size:cover;background-position:center;overflow:hidden}
 .av-c.av-logo::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.4)}
 .av-c.av-logo b{position:relative;z-index:1}
 .lmain{flex:1;min-width:0}
-.lname{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;min-width:0}
+.lname{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;min-width:0}
 .lname > :first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lname .sub{font-weight:500;font-size:13px;color:var(--on-surface-variant)}
-.lmeta{display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap;font-size:12px;color:var(--on-surface-variant)}
+.lmeta{display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap;font-size:13px;color:var(--on-surface-variant)}
 .tag-owner{font-size:11px;font-weight:700;background:var(--surface-variant);color:var(--on-surface-variant);border-radius:6px;padding:2px 7px}
 /* 주장 서클 — 주황 배경에 검정 폰트로 C, 이름 옆에 붙는다 */
 .tag-captain{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;
@@ -868,7 +868,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
    정렬도 어긋나서, 이 파일의 다른 커스텀 컨트롤(.chipsel, .sw)과 같은 방식으로 버튼 기반 M3 체크박스를 직접 그린다 */
 /* min-height:44px — 체크박스(18px)+라벨만으로는 탭 영역이 18px밖에 안 돼 접근성 최소 기준(44px)에 못 미쳤다.
    박스와 글자는 그대로 세로 중앙에 놓이므로 보이는 모양은 바뀌지 않고 눌리는 범위만 넓어진다 */
-.check-row{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;font-size:14px;color:var(--on-surface);font-weight:500;
+.check-row{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;font-size:13px;color:var(--on-surface);font-weight:500;
   border:none;background:transparent;padding:0;font-family:var(--font);text-align:left}
 .m3check{position:relative;width:18px;height:18px;flex:none;border-radius:6px;border:2px solid var(--outline);
   background:var(--surface);transition:background .12s,border-color .12s}
@@ -893,13 +893,13 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .iconbtn:hover{background:var(--mono-fill);color:var(--on-surface)}
 .iconbtn.danger:hover{background:#fee2e2;color:#b91c1c}
 .empty-box{background:var(--surface);border-radius:var(--r-card);padding:48px 20px;text-align:center;color:var(--on-surface-variant)}
-.empty-box b{display:block;color:var(--on-surface);font-size:15px;margin-bottom:6px}
+.empty-box b{display:block;color:var(--on-surface);font-size:16px;margin-bottom:6px}
 
 /* 기록표 (네이버 KBL 스타일) */
 .tablewrap{background:var(--surface);border-radius:var(--r-card);padding:0 0 10px;overflow-x:auto}
 table.dt{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:640px}
 table.dt th,table.dt td{padding:12px 10px;font-size:13px;text-align:right;white-space:nowrap}
-table.dt th{font-size:12px;font-weight:700;color:var(--on-surface-variant);border-bottom:1px solid var(--outline-variant);position:sticky;top:0;background:var(--head-bg)}
+table.dt th{font-size:13px;font-weight:700;color:var(--on-surface-variant);border-bottom:1px solid var(--outline-variant);position:sticky;top:0;background:var(--head-bg)}
 table.dt th.sortable{cursor:pointer;user-select:none}
 table.dt th.sortable:hover{color:var(--on-surface)}
 table.dt th.on{color:var(--on-surface)}
@@ -915,7 +915,7 @@ table.dt .nm{display:flex;align-items:center;gap:9px;font-weight:700}
 table.dt .nm .d{width:10px;height:10px;border-radius:50%;flex:none}
 table.dt .hi{font-weight:800}
 table.dt tbody tr.me{background:var(--mono-fill)}
-.tnote{font-size:12px;color:var(--on-surface-variant);padding:10px 12px 2px}
+.tnote{font-size:13px;color:var(--on-surface-variant);padding:10px 12px 2px}
 
 /* 색상 팔레트 — M3 방식대로 선택 상태를 체크 아이콘으로 명시 (링만으로는 밝은 색에서 잘 안 보임) */
 .palette{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
@@ -936,7 +936,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 
 /* M3 Filled text field — 배경 surface-variant + 상단 라운드 + 포커스 시 하단 인디케이터 */
 .field{margin-top:16px}
-.field > label,.fieldrow > div > label{display:block;font-size:12px;font-weight:600;color:var(--on-surface-variant);margin-bottom:6px;padding-left:4px}
+.field > label,.fieldrow > div > label{display:block;font-size:13px;font-weight:600;color:var(--on-surface-variant);margin-bottom:6px;padding-left:4px}
 /* 하단만 각진 M3 기본형은 전체가 라운드인 우리 UI와 어긋나서, 네 모서리를 모두 라운드로 통일.
    대신 하단 인디케이터(직선)를 없애고 포커스 링으로 상태를 표현합니다. */
 /* 선택자에 .fieldrow를 함께 두는 이유 — 대회 관리처럼 .field 없이 .fieldrow만 단독으로 쓰는 화면이 있는데,
@@ -944,7 +944,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    입력칸이 M3 필드가 아니라 브라우저 기본 인풋으로 렌더링됐다. :is()는 특이도가 인자 중 가장 높은 값(0-1-0)이라
    기존 규칙과 우선순위가 동일하다 */
 :is(.field,.fieldrow) input,:is(.field,.fieldrow) select{width:100%;height:52px;padding:0 16px;border:none;
-  border-radius:14px;background:var(--surface-variant);font-family:var(--font);font-size:15px;color:var(--on-surface);
+  border-radius:14px;background:var(--surface-variant);font-family:var(--font);font-size:16px;color:var(--on-surface);
   box-shadow:inset 0 0 0 1px var(--outline-variant);transition:box-shadow .12s,background .12s}
 :is(.field,.fieldrow) select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6a72' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px;padding-right:42px}
 :is(.field,.fieldrow) input:hover,:is(.field,.fieldrow) select:hover{background-color:#ebe4ec}
@@ -975,7 +975,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 
 /* M3 Filter chip — 선택 시 컨테이너 톤 + 체크 아이콘 (버튼처럼 solid로 채우지 않음) */
 .chipset{display:flex;flex-wrap:wrap;gap:8px}
-.chipsel{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 18px;border:1px solid var(--outline);border-radius:12px;background:transparent;font-family:var(--font);font-weight:600;font-size:14px;color:var(--on-surface);cursor:pointer;transition:.12s}
+.chipsel{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 18px;border:1px solid var(--outline);border-radius:12px;background:transparent;font-family:var(--font);font-weight:600;font-size:13px;color:var(--on-surface);cursor:pointer;transition:.12s}
 .chipsel:hover{background:var(--surface-variant)}
 .chipsel.on{background:var(--main);color:var(--on-main);border-color:transparent;font-weight:700}
 .chipsel .ck{width:0;overflow:hidden;transition:width .14s}
@@ -1004,7 +1004,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .bulk-head,.bulk-row{display:grid;grid-template-columns:1.5fr 1fr 1fr .8fr .9fr .9fr 40px;gap:10px;align-items:center}
 .bulk-head{font-size:11px;font-weight:700;color:var(--on-surface-variant);padding:0 4px 10px}
 .bulk-row+.bulk-row{margin-top:8px}
-.bulk-row input,.bulk-row select{height:48px;padding:0 12px;border:none;border-radius:12px;background:var(--surface-variant);font-family:var(--font);font-size:14px;color:var(--on-surface);min-width:0;box-shadow:inset 0 0 0 1px var(--outline-variant);transition:box-shadow .12s,background .12s}
+.bulk-row input,.bulk-row select{height:48px;padding:0 12px;border:none;border-radius:12px;background:var(--surface-variant);font-family:var(--font);font-size:13px;color:var(--on-surface);min-width:0;box-shadow:inset 0 0 0 1px var(--outline-variant);transition:box-shadow .12s,background .12s}
 .bulk-row input:focus,.bulk-row select:focus{outline:none;background:#ebe4ec;box-shadow:inset 0 0 0 2px var(--on-surface)}
 .bulk-row select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6a72' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:16px;padding-right:32px}
 @media (max-width:820px){.bulk{overflow-x:auto}.bulk-head,.bulk-row{min-width:680px}}
@@ -1013,9 +1013,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    날짜별로 묶고, 상태(예정/진행/종료/확정)에 따라 다음 행동이 달라집니다. */
 .daygroup{background:var(--surface);border-radius:var(--r-card);overflow:hidden;margin-bottom:8px}
 .dayhead{display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--head-bg)}
-.dayhead .d1{font-size:14px;font-weight:800;letter-spacing:-.02em}
-.dayhead .d2{font-size:12px;color:var(--on-surface-variant);font-weight:500}
-.dayhead .n{margin-left:auto;font-size:12px;color:var(--on-surface-variant);font-weight:600}
+.dayhead .d1{font-size:13px;font-weight:800;letter-spacing:-.02em}
+.dayhead .d2{font-size:13px;color:var(--on-surface-variant);font-weight:500}
+.dayhead .n{margin-left:auto;font-size:13px;color:var(--on-surface-variant);font-weight:600}
 /* 경기 행 — Flashscore 배치 참고: [상태] [팀 2줄] [점수 2줄] [쿼터별] [액션].
    상태를 맨 앞에 두면 목록을 훑을 때 "지금 뭘 봐야 하는지"가 먼저 읽힌다.
    양 팀을 세로로 쌓으면 팀명 길이와 무관하게 점수 열이 정렬된다. */
@@ -1053,7 +1053,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 승리 뱃지는 팀명과 같은 칸(2열) 안에 넣는다 — 점수 앞이나 뒤에 별도 칸으로 두면 뱃지가 있는 줄만
    점수가 밀려서, 위아래 두 팀의 점수가 어긋난다(이 행 레이아웃의 핵심이 점수 열 정렬이다) */
 .gside .gt-who{display:flex;align-items:center;gap:6px;min-width:0}
-.gside .gt-nm{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gside .gt-nm{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gside .gt-sc{font-family:var(--font-display);font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;
   letter-spacing:-.02em;min-width:2.2ch;text-align:right}
 /* 진 팀은 이름·점수를 함께 흐리게 — 어느 쪽이 이겼는지 한눈에 */
@@ -1076,7 +1076,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .gq{display:flex;gap:10px}
 .gq-col{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:22px}
 .gq-col em{font-style:normal;font-size:11px;font-weight:700;color:var(--on-surface-variant);letter-spacing:.02em}
-.gq-col b{font-family:var(--font-score);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.35}
+.gq-col b{font-family:var(--font-score);font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.35}
 .gq-col b.lose{color:var(--on-surface-variant);font-weight:500}
 .gq-col.now em{color:var(--on-primary-container)} /* 9.5px 텍스트 — --primary는 흰 배경 대비 2.26:1이라 사용 불가 */
 .gscore{font-family:var(--font-score);font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
@@ -1085,7 +1085,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .gtime{font-size:13px;color:var(--on-surface-variant);font-weight:600;font-variant-numeric:tabular-nums}
 /* 기록하기 등 텍스트 액션을 라운드 버튼으로 — 새로 기록을 쓰는 액션(기록하기·기록 시작)은 검정, 이미 있는
    기록을 보는 액션(기록 보기·검수하기)은 회색으로 구분 */
-.gact{font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;
+.gact{font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;
   height:32px;padding:0 14px;border-radius:var(--r-btn)}
 .gact.act-main{background:var(--main);color:var(--on-main)}
 .gact.act-gray{background:var(--surface-variant);color:var(--on-surface)}
@@ -1097,7 +1097,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   flex-direction:column;align-items:stretch;justify-content:center}
 /* 행 안 버튼 치수는 경기 페이지의 행 액션(.gact 32px / 12.5px)과 동일하게.
    .btn-sm(40px / 13px)을 그대로 쓰면 같은 행 컴포넌트인데 검수 페이지만 버튼이 한 단계 커 보인다 */
-.gact-multi .btn{height:32px;flex:none;padding:0 14px;font-size:12px}
+.gact-multi .btn{height:32px;flex:none;padding:0 14px;font-size:13px}
 .gact-multi > .chip{justify-content:center}
 /* 행 전체가 <div>라 커서가 안 잡힌다. 버튼 위에서는 버튼 커서로 되돌린다 */
 .grow-multi{cursor:pointer}
@@ -1264,7 +1264,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   border:1px solid color-mix(in srgb,var(--g-b,#fff) 55%,transparent);
   padding:3px 10px;font-size:11px;font-weight:800;letter-spacing:.05em}
 .pdOvr{text-align:right;color:#fff}
-.pdOvr .lb{font-size:14px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);
+.pdOvr .lb{font-size:13px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);
   display:flex;align-items:center;justify-content:flex-end;gap:4px}
 .pdOvr .vl{font-family:var(--font-display);font-size:43px;font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--g-text,#fff)}
 /* OVR 라벨 전체(텍스트+아이콘)를 하나의 버튼으로 묶어 탭 영역을 넓힘. 아이콘 자체는 배경 없이 테두리만 */
@@ -1317,7 +1317,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdIdBlock{min-width:0}
 .pdPos{background:rgba(0,0,0,.4);color:#fff;border:1px solid rgba(255,255,255,.25);margin-bottom:9px;font-size:13px}
 .pdNameKr{font-size:34px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
-.pdNameEn{font-size:14px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
+.pdNameEn{font-size:13px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
 .pdDivider{height:1px;background:rgba(255,255,255,.28)}
 .pdBottomRow{display:flex;align-items:center;gap:8px;padding-right:68px}
 .pdTeamMini{display:flex;align-items:center;gap:7px;min-width:0}
@@ -1373,10 +1373,10 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdBackGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 /* 아래 최근 경기 행(.pdBackGameRow)과 같은 배경·라인·라운드 — 뒷면의 두 블록이 한 벌로 읽히게 */
 .pdBackStat{backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);text-align:center;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:10px 4px}
-.pdBackStat b{font-family:var(--font-display);display:block;font-size:19px;font-weight:800}
+.pdBackStat b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800}
 .pdBackStat span{font-size:11px;color:rgba(255,255,255,.5)}
 .pdBackGameRow{backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);
-  border-radius:12px;padding:11px 14px;font-size:12px;color:rgba(255,255,255,.65)}
+  border-radius:12px;padding:11px 14px;font-size:13px;color:rgba(255,255,255,.65)}
 /* 최근 경기 행 묶음 — 예전엔 행에 margin-top:8px을 줬는데, 부모(.in)가 flex gap:14px이라
    14+8=22px로 벌어졌다. 행들을 자체 컨테이너로 묶어 그 안에서만 6px로 붙인다
    (섹션 사이 간격 14px은 그대로 두고 같은 묶음 안만 좁히는 게 목적). */
@@ -1398,7 +1398,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .stiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:var(--surface);border-radius:20px;overflow:hidden}
 .stile{padding:22px 12px;text-align:center;position:relative}
 .stile+.stile::before{content:"";position:absolute;left:0;top:22px;bottom:22px;width:1px;background:var(--outline-variant)}
-.stile .lb{font-size:12px;color:var(--on-surface-variant);font-weight:600;letter-spacing:.01em}
+.stile .lb{font-size:13px;color:var(--on-surface-variant);font-weight:600;letter-spacing:.01em}
 .stile .vl{font-family:var(--font-display);font-size:20px;font-weight:800;margin-top:8px;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
 .stile .vl small{font-size:13px;font-weight:700;color:var(--on-surface-variant);margin-left:1px}
 @media (max-width:720px){
@@ -1408,7 +1408,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   .stile:nth-child(-n+3){border-top:none}
 }
 .sec-title{display:flex;align-items:baseline;gap:10px;padding:6px 4px 10px;font-size:16px;font-weight:700;letter-spacing:-.02em}
-.sec-title .n,.sec-title .cnt{font-size:12px;font-weight:600;color:var(--on-surface-variant)}
+.sec-title .n,.sec-title .cnt{font-size:13px;font-weight:600;color:var(--on-surface-variant)}
 /* 제목 옆에 링크·설명이 나란히 붙는 섹션(대시보드 카드 등)에서 쓰는 헤더 줄 — .podium-head와 같은 규격 */
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;padding:6px 4px 10px}
 .sec-head .sec-title{padding:0}
@@ -1419,7 +1419,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .badge .badgeCircle{width:52px;height:52px;border-radius:50%;background:var(--surface-variant);border:1px solid var(--outline-variant);
   display:flex;align-items:center;justify-content:center;flex:none}
 .badge .badgeCircle i{width:16px;height:16px;border-radius:50%;background:var(--g-b,#f4d16a)}
-.badge .badgeLabel{font-size:12px;font-weight:600;color:var(--on-surface);text-align:center;line-height:1.3}
+.badge .badgeLabel{font-size:13px;font-weight:600;color:var(--on-surface);text-align:center;line-height:1.3}
 
 /* 조별리그 상위 3팀 — 중앙(1위) 카드를 올려 배치하는 포디움. 참가팀이 3팀 미만이면 없는 순위 카드는 아예 렌더하지 않는다 */
 .podium-head{display:flex;align-items:baseline;justify-content:space-between;padding:6px 4px 10px}
@@ -1436,13 +1436,13 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .podium-card.p1 .podium-crown-wrap svg{width:34px;height:28px}
 .podium-crown-num{margin-top:-3px;min-width:20px;height:19px;padding:0 5px;border-radius:9px;background:var(--g-a);color:var(--g-text);
   display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;box-shadow:0 1px 2px rgba(0,0,0,.18)}
-.podium-card.p1 .podium-crown-num{min-width:22px;height:21px;font-size:12px}
-.podium-avatar{width:52px;height:52px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px}
-.podium-card.p1 .podium-avatar{width:64px;height:64px;font-size:22px}
-.podium-name{font-size:14px;font-weight:700;color:var(--on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.podium-card.p1 .podium-name{font-size:15px}
+.podium-card.p1 .podium-crown-num{min-width:22px;height:21px;font-size:13px}
+.podium-avatar{width:52px;height:52px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:20px}
+.podium-card.p1 .podium-avatar{width:64px;height:64px;font-size:20px}
+.podium-name{font-size:13px;font-weight:700;color:var(--on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.podium-card.p1 .podium-name{font-size:16px}
 .podium-rec{font-size:13px;font-weight:600;color:var(--on-surface-variant);margin-top:5px}
-.podium-pct{font-size:12px;color:var(--on-surface-variant);margin-top:1px;font-variant-numeric:tabular-nums}
+.podium-pct{font-size:13px;color:var(--on-surface-variant);margin-top:1px;font-variant-numeric:tabular-nums}
 @media (max-width:600px){.podium{gap:8px}.podium-card{padding:16px 8px 12px}.podium-card.p1{padding-top:34px}}
 
 /* 대회 상세 — 토너먼트 대진표 (skiper-ui.com/v1/skiper107의 레이아웃을 우리 톤으로 재구성)
@@ -1451,19 +1451,19 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 대회 상세 — 조 편성 화면(팀을 A/B조에 배정) */
 .gaList{display:flex;flex-direction:column;gap:10px;max-width:560px}
 .garow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:var(--surface);border-radius:14px}
-.garow .nm{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px}
+.garow .nm{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px}
 .garow .nm .d{width:10px;height:10px;border-radius:50%;flex:none}
 .gaBtns{display:flex;gap:6px}
 .gaBtn{height:32px;padding:0 12px;border-radius:100px;border:1px solid var(--outline-variant);background:var(--surface);
-  color:var(--on-surface-variant);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer}
+  color:var(--on-surface-variant);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer}
 .gaBtn:hover{background:var(--surface-variant)}
 .gaBtn.on{background:var(--main);color:var(--on-main);border-color:var(--main)}
 /* 조별리그 순위 — 조별로 나뉜 표 사이 간격 */
 .groupStandingBlock+.groupStandingBlock{margin-top:20px}
-.koHint{font-size:12px;color:var(--on-surface-variant);margin-bottom:18px}
+.koHint{font-size:13px;color:var(--on-surface-variant);margin-bottom:18px}
 .koWrap{display:flex;gap:56px;overflow-x:auto;padding:4px 4px 20px}
 .koRound{min-width:230px}
-.koHead{font-size:12px;font-weight:700;color:var(--on-surface-variant);text-align:center;margin-bottom:16px;letter-spacing:.02em}
+.koHead{font-size:13px;font-weight:700;color:var(--on-surface-variant);text-align:center;margin-bottom:16px;letter-spacing:.02em}
 .koStage{position:relative}
 .koConnH{position:absolute;height:2px;background:var(--outline);border-radius:1px}
 .koConnV{position:absolute;width:2px;background:var(--outline);border-radius:1px}
@@ -1494,7 +1494,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .glog table{width:100%;border-collapse:collapse;min-width:600px;font-variant-numeric:tabular-nums}
 .glog th{font-size:11px;font-weight:600;color:var(--on-surface-variant);text-align:right;padding:12px 10px 10px;background:var(--head-bg)}
 .glog th.l{text-align:left}
-.glog td{padding:14px 10px;text-align:right;font-size:14px;border-top:1px solid var(--outline-variant)}
+.glog td{padding:14px 10px;text-align:right;font-size:13px;border-top:1px solid var(--outline-variant)}
 .glog td.l{text-align:left}
 .glog tbody tr:hover{background:var(--surface-variant)}
 .glog tbody tr[data-goto]{cursor:pointer}
@@ -1510,7 +1510,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 대회 관리 · 운영진 권한 목록 — .recRow/.op에 대응하는 규칙이 아예 없어서 이름과 역할이
    "김신열대회 관리자"처럼 붙어 나왔다. 역할은 팀 리스트의 소유자 태그(.tag-owner)와 같은 회색 태그로 분리 */
 .recRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 2px}
-.recRow .op{font-weight:600;font-size:14px;color:var(--on-surface);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.recRow .op{font-weight:600;font-size:13px;color:var(--on-surface);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .recRow b{flex:none;font-size:11px;font-weight:700;background:var(--surface-variant);color:var(--on-surface-variant);border-radius:6px;padding:3px 8px}
 
 /* 참가 설정 타일은 3개뿐인데 .stiles 기본값이 5열이라 오른쪽 40%가 빈 채로 남았다.
@@ -1527,7 +1527,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .searchbox{flex:1;min-width:200px;display:flex;align-items:center;gap:10px;height:44px;padding:0 16px;background:var(--surface);border-radius:var(--r-btn);color:var(--on-surface-variant)}
 /* 팀·선수 페이지 검색창 — 탭 줄 오른쪽 끝에 붙으므로 꽉 채우지 않고 적당한 너비로 고정 */
 .rosterSearch{flex:none;width:280px}
-.searchbox input{flex:1;min-width:0;border:none;background:transparent;outline:none;font:inherit;font-size:14px;color:var(--on-surface)}
+.searchbox input{flex:1;min-width:0;border:none;background:transparent;outline:none;font:inherit;font-size:13px;color:var(--on-surface)}
 .fchip{height:var(--h-sm);padding:0 15px;border:1px solid var(--outline-variant);border-radius:var(--r-btn);background:var(--surface);font-family:var(--font);font-size:13px;font-weight:600;color:var(--on-surface-variant);cursor:pointer;transition:.12s;display:inline-flex;align-items:center;gap:6px}
 .fchip:hover{background:var(--surface-variant)}
 .fchip.on{background:var(--mono-fill);color:var(--on-surface);border-color:transparent;font-weight:700}
@@ -1545,7 +1545,7 @@ body.modal-open{overflow:hidden}
 .modal.open{opacity:1;visibility:visible}
 .sheet{width:100%;max-width:380px;margin:auto;background:var(--surface);border-radius:20px;box-shadow:var(--e3);padding:20px;transform:translateY(8px) scale(.98);transition:transform .16s ease}
 .modal.open .sheet{transform:none}
-.sheet h4,.sheet h2{font-size:17px;font-weight:700;letter-spacing:-.02em}
+.sheet h4,.sheet h2{font-size:16px;font-weight:700;letter-spacing:-.02em}
 /* ---- 확인 다이얼로그 ---- */
 /* 아이콘을 위, 제목·설명을 그 아래로 — 옆에 두면 아이콘이 제목 한 줄에 묶여 상황의 무게가 덜 전달된다 */
 /* 구수는 보조 선택이다 — 대부분 2구이고 1·3구는 예외라, 결과 버튼과 같은 무게로 세우지 않는다.
@@ -1553,13 +1553,13 @@ body.modal-open{overflow:hidden}
 .ft-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:5px}
 .ft-count{display:inline-flex;flex:none;padding:3px;border-radius:100px;background:var(--surface-variant)}
 .ft-count button{height:28px;padding:0 12px;border:none;border-radius:100px;background:none;color:var(--on-surface-variant);
-  font-family:var(--font);font-weight:700;font-size:12px;cursor:pointer;transition:.12s}
+  font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;transition:.12s}
 .ft-count button.on{background:var(--surface);color:var(--on-surface);box-shadow:var(--e1)}
 /* 결과는 슛 팝업(.opt.made/.miss)과 같은 색 언어 — 같은 판단을 다른 색으로 물으면 손이 멈춘다 */
 .ft-rows{display:flex;flex-direction:column;gap:8px;margin-top:16px}
 .ft-row{display:grid;grid-template-columns:30px 1fr 1fr;align-items:center;gap:8px}
-.ft-row .n{font-size:12px;font-weight:700;color:var(--on-surface-variant)}
-.ft-row button{height:52px;border:none;border-radius:14px;font-family:var(--font);font-weight:700;font-size:15px;
+.ft-row .n{font-size:13px;font-weight:700;color:var(--on-surface-variant)}
+.ft-row button{height:52px;border:none;border-radius:14px;font-family:var(--font);font-weight:700;font-size:16px;
   cursor:pointer;transition:.12s}
 .ft-row button[data-r="made"]{background:var(--green-c);color:var(--on-green-c)}
 .ft-row button[data-r="miss"]{background:var(--red-c);color:var(--on-red-c)}
@@ -1586,14 +1586,14 @@ body.modal-open{overflow:hidden}
 .cf-item i{flex:none;width:7px;height:7px;border-radius:50%;margin-top:6px;background:var(--outline)}
 .cf-item.lv-high i{background:var(--red)}
 .cf-item.lv-mid i{background:#e0a020}
-.cf-foot{margin-top:12px;font-size:12px;color:var(--on-surface-variant);line-height:1.55}
+.cf-foot{margin-top:12px;font-size:13px;color:var(--on-surface-variant);line-height:1.55}
 .sheet .sub{font-size:13px;color:var(--on-surface-variant);margin-top:5px;white-space:pre-line;line-height:1.6}
 .sheet .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 10px}
 .sheet .opts .opt small{white-space:nowrap}
 /* 빈도로 크기를 나눈 선택지 — 6열 격자 위에서 span으로 폭을, padding으로 높이를 준다 */
 .sheet .opts.tiered{grid-template-columns:repeat(6,1fr);gap:8px}
-.opt.w-lg{grid-column:span 6;padding:24px 0;font-size:18px}
-.opt.w-md{grid-column:span 6;padding:15px 0;font-size:15px}
+.opt.w-lg{grid-column:span 6;padding:24px 0;font-size:20px}
+.opt.w-md{grid-column:span 6;padding:15px 0;font-size:16px}
 .opt.w-sm{grid-column:span 3;padding:11px 0;font-size:13px;background:var(--surface);
   box-shadow:inset 0 0 0 1px var(--outline-variant)}
 .opt.w-sm small{font-size:11px}
@@ -1607,7 +1607,7 @@ body.modal-open{overflow:hidden}
 /* 흰 글자를 얹는 붉은 면은 한 단계 어둡게 — #ef4444는 3.8:1로 AA 미달이다 */
 .opt.miss:hover{background:#b91c1c;color:#fff}
 .opt small{font-size:11px;font-weight:500;opacity:.7}
-.sheet .cancel{width:100%;height:44px;border:none;border-radius:var(--r-btn);background:transparent;color:var(--on-surface-variant);font-family:var(--font);font-weight:600;font-size:14px;cursor:pointer}
+.sheet .cancel{width:100%;height:44px;border:none;border-radius:var(--r-btn);background:transparent;color:var(--on-surface-variant);font-family:var(--font);font-weight:600;font-size:13px;cursor:pointer}
 .sheet .cancel:hover{background:var(--surface-variant)}
 
 /* 다이얼로그 하단 액션 (취소 / 확인) */
@@ -1628,10 +1628,10 @@ body.modal-open{overflow:hidden}
 .subs-item.on .subs-tag.out{background:rgba(255,255,255,.22);color:#fff}
 .subs-item.on .subs-tag.in{background:rgba(255,255,255,.22);color:#fff}
 .subs-list{max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
-.subs-item{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:8px;padding:11px 10px;border:none;border-radius:12px;background:var(--surface-variant);font-family:var(--font);font-size:14px;font-weight:600;color:var(--on-surface);text-align:left;cursor:pointer;transition:.12s}
+.subs-item{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:8px;padding:11px 10px;border:none;border-radius:12px;background:var(--surface-variant);font-family:var(--font);font-size:13px;font-weight:600;color:var(--on-surface);text-align:left;cursor:pointer;transition:.12s}
 .subs-item:hover{background:#e7e1e8}
 .subs-item.on{background:var(--main);color:var(--on-main)}
-.subs-item .no{font-weight:700;font-size:12px;color:var(--on-surface-variant);text-align:center}
+.subs-item .no{font-weight:700;font-size:13px;color:var(--on-surface-variant);text-align:center}
 .subs-item.on .no{color:var(--on-main);opacity:.75}
 .subs-item .meta{font-size:11px;font-weight:500;color:var(--on-surface-variant)}
 .subs-item.on .meta{color:var(--on-main);opacity:.75}
@@ -1641,7 +1641,7 @@ body.modal-open{overflow:hidden}
 .subs-empty{font-size:13px;color:var(--on-surface-variant);padding:20px 4px}
 @media (max-width:600px){.subs-cols{grid-template-columns:1fr}.subs-mid{transform:rotate(90deg);align-self:center}}
 .sheet .acts{display:flex;flex-direction:column;gap:8px;margin:16px 0 10px}
-.sheet .acts button{width:100%;height:48px;border:none;border-radius:12px;background:var(--surface-variant);color:var(--on-surface);font-family:var(--font);font-weight:700;font-size:14px;cursor:pointer;transition:.12s}
+.sheet .acts button{width:100%;height:48px;border:none;border-radius:12px;background:var(--surface-variant);color:var(--on-surface);font-family:var(--font);font-weight:700;font-size:13px;cursor:pointer;transition:.12s}
 .sheet .acts button:hover{background:var(--main);color:var(--on-main)}
 .sheet .acts .acts-lab{font-size:11px;font-weight:700;color:var(--on-surface-variant);padding:6px 2px 0}
 .sheet .acts .acts-lab:first-child{padding-top:0}
@@ -1654,8 +1654,8 @@ body.modal-open{overflow:hidden}
 .pbp-team{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px}
 .pbp-team.away{justify-content:flex-end}
 .pbp-team .dot{width:12px;height:12px;border-radius:50%;flex:none}
-.pbp-team .sc{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-.pbp-head .mid{text-align:center;font-size:12px;font-weight:600;color:var(--on-surface-variant)}
+.pbp-team .sc{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.pbp-head .mid{text-align:center;font-size:13px;font-weight:600;color:var(--on-surface-variant)}
 .qtabs{display:flex;flex-wrap:wrap;gap:8px}
 .qtab{height:38px;padding:0 18px;border:1px solid var(--outline-variant);border-radius:var(--r-btn);background:var(--surface);color:var(--on-surface-variant);font-family:var(--font);font-weight:600;font-size:13px;cursor:pointer;transition:.12s}
 .qtab:hover{background:var(--surface-variant)}
@@ -1663,19 +1663,19 @@ body.modal-open{overflow:hidden}
 .pbp{background:var(--surface);border-radius:16px;padding:8px 16px 16px}
 /* 시스템 이벤트 줄 — 좌우 팀 칸을 쓰지 않고 가운데를 가로지른다. 경기 사건이 아니라는 뜻 */
 .pbp-sys{display:flex;align-items:center;justify-content:center;gap:10px;padding:7px 0;margin:2px 0;
-  font-size:12px;font-weight:600;color:var(--on-surface-variant)}
+  font-size:13px;font-weight:600;color:var(--on-surface-variant)}
 .pbp-sys::before,.pbp-sys::after{content:"";flex:1;height:1px;background:var(--outline-variant)}
 .pbp-sys .pbp-time{font-variant-numeric:tabular-nums;opacity:.75}
 /* 경기 시계(왼쪽)와 벽시계(오른쪽)를 나란히 두되 무게를 달리해 섞이지 않게 한다 */
 .pbp-wall{font-size:11px;font-weight:500;font-variant-numeric:tabular-nums;color:var(--on-surface-variant);opacity:.7}
-.pbp-qlabel{display:flex;align-items:center;gap:12px;padding:16px 0 10px;font-size:12px;font-weight:700;color:var(--on-surface-variant)}
+.pbp-qlabel{display:flex;align-items:center;gap:12px;padding:16px 0 10px;font-size:13px;font-weight:700;color:var(--on-surface-variant)}
 .pbp-qlabel::before,.pbp-qlabel::after{content:"";flex:1;height:1px;background:var(--outline-variant)}
 /* 좌 = 홈, 우 = 원정. 가운데 열에 시간·스코어를 두어 흐름을 한눈에 따라갈 수 있게 함 */
 .pbp-row{display:grid;grid-template-columns:1fr 120px 1fr;align-items:center;gap:8px;padding:4px 0}
 .pbp-mid{display:flex;flex-direction:column;align-items:center;gap:3px}
-.pbp-time{font-size:12px;font-weight:700;color:var(--on-surface-variant);font-variant-numeric:tabular-nums}
-.pbp-score{font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;background:var(--surface-variant);border-radius:6px;padding:2px 8px}
-.pbp-evt{display:inline-flex;align-items:center;gap:9px;max-width:100%;padding:10px 14px;border:none;border-radius:12px;background:var(--surface-variant);font-family:var(--font);font-size:14px;color:var(--on-surface);text-align:left;cursor:pointer;transition:.12s}
+.pbp-time{font-size:13px;font-weight:700;color:var(--on-surface-variant);font-variant-numeric:tabular-nums}
+.pbp-score{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;background:var(--surface-variant);border-radius:6px;padding:2px 8px}
+.pbp-evt{display:inline-flex;align-items:center;gap:9px;max-width:100%;padding:10px 14px;border:none;border-radius:12px;background:var(--surface-variant);font-family:var(--font);font-size:13px;color:var(--on-surface);text-align:left;cursor:pointer;transition:.12s}
 .pbp-evt:hover{background:#e7e1e8}
 
 .pbp-cell{display:flex;min-width:0}
@@ -1683,11 +1683,11 @@ body.modal-open{overflow:hidden}
 .pbp-cell.away{justify-content:flex-start}
 .pbp-evt.deleted{opacity:.45;background:transparent;border:1px dashed var(--outline)}
 .pbp-evt.deleted .tx{text-decoration:line-through}
-.pbp-empty{text-align:center;color:var(--on-surface-variant);font-size:14px;padding:40px 0}
+.pbp-empty{text-align:center;color:var(--on-surface-variant);font-size:13px;padding:40px 0}
 @media (max-width:820px){
   .pbp-head,.pbp-row{grid-template-columns:1fr 84px 1fr}
   .pbp-head{padding:14px 16px}
-  .pbp-team{font-size:14px;gap:7px}.pbp-team .sc{font-size:20px}
+  .pbp-team{font-size:13px;gap:7px}.pbp-team .sc{font-size:20px}
   .pbp-evt{font-size:13px;padding:9px 11px;gap:7px}
   .pbp{padding:4px 10px 12px}
 }
@@ -1702,7 +1702,7 @@ body.modal-open{overflow:hidden}
   /* #page-record는 id로 padding을 직접 잡아 위 보정이 밀린다 — 같은 구체성으로 다시 준다 */
   #page-record{padding-top:70px}
   .page-head{flex-direction:column;align-items:flex-start;gap:12px}
-  .page-head h1{font-size:21px}
+  .page-head h1{font-size:20px}
   .page-head > div:last-child{flex-wrap:wrap;width:100%}
   .searchTop{width:auto;flex:1 1 180px;min-width:0}
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -1726,7 +1726,7 @@ body.modal-open{overflow:hidden}
   .row .court{width:38px;height:38px;font-size:13px}
   .row .court small{font-size:11px}
   .row .chip{padding:4px 8px;font-size:11px}
-  .row .rec-btn{padding:0 10px;height:32px;font-size:12px;gap:4px}
+  .row .rec-btn{padding:0 10px;height:32px;font-size:13px;gap:4px}
   .row .team{max-width:110px;font-size:13px}
   /* court+match+chip+rec-btn 네 요소가 한 줄엔 도저히 안 들어가서, 줄어들 대로 줄여도 팀명이 0폭까지 밀렸었다.
      match가 최소 폭을 확보 못 하면 아예 다음 줄로 내려가게 해서 팀명이 항상 보이도록 한다 */
@@ -2370,7 +2370,7 @@ body.modal-open{overflow:hidden}
     <h2 id="profileModalTitle">내 프로필</h2>
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
       <div class="av" style="width:56px;height:56px;font-size:20px" id="pfAvatarBig">신</div>
-      <div><div style="font-weight:800;font-size:17px" id="pfNameBig">김신열</div><div class="sub" id="pfRoleBig">대회 관리자</div></div>
+      <div><div style="font-weight:800;font-size:16px" id="pfNameBig">김신열</div><div class="sub" id="pfRoleBig">대회 관리자</div></div>
     </div>
     <div class="field"><label for="pfName">이름</label><input id="pfName" type="text" placeholder="이름"></div>
     <div class="field"><label for="pfEmail">이메일</label><input id="pfEmail" type="email" placeholder="you@example.com"></div>
@@ -3758,7 +3758,7 @@ function renderPlayerRoster(){
     root.insertAdjacentHTML('beforeend',
       '<div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 0 10px">'+
       '<button type="button" class="btn btn-outline btn-sm" id="btnMorePlayers">'+Math.min(rest, PLAYER_PAGE)+'명 더 보기</button>'+
-      '<span style="font-size:12px;color:var(--on-surface-variant)">'+shown.length+' / '+list.length+'명 표시 중</span></div>');
+      '<span style="font-size:13px;color:var(--on-surface-variant)">'+shown.length+' / '+list.length+'명 표시 중</span></div>');
     document.getElementById('btnMorePlayers').addEventListener('click', function(){
       playerVisible += PLAYER_PAGE; renderPlayerRoster();
     });
@@ -4759,7 +4759,7 @@ function renderPlayerRecTable(){
     // 기록표의 선수 이름도 상세로 연결 (순위표에서 바로 개인 성적 확인)
     return '<button type="button" class="nm" data-open-player="'+r.p.id+'" style="border:none;background:transparent;font-family:var(--font);cursor:pointer;padding:0;color:inherit">'+
       '<i class="d" style="background:'+(t?t.color:'var(--outline)')+'"></i>'+r.p.name+
-      '<span style="font-weight:500;color:var(--on-surface-variant);font-size:12px">'+(t?t.name:'미배정')+'</span></button>';
+      '<span style="font-weight:500;color:var(--on-surface-variant);font-size:13px">'+(t?t.name:'미배정')+'</span></button>';
   });
   document.querySelectorAll('#tblPlayerRec [data-open-player]').forEach(function(b){
     b.addEventListener('click', function(){ openPlayer(b.dataset.openPlayer); });
