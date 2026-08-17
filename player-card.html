@@ -167,7 +167,12 @@ button{font-family:var(--font)}
    위로 미는 제스처가 갈릴 일도 없다. 이 상태에서 시트는 스크롤에 반응하지 않고,
    핸들을 끌어내리거나 X를 눌러야 닫힌다. 펼침 애니메이션(height .45s)이 끝난 뒤에 거는 이유는,
    fixed·100dvh로 다 올라온 순간과 흐름에 앉은 순간의 화면이 정확히 같아서 튀지 않기 때문이다. */
-.sheet.sheet-pinned{position:relative;height:auto;min-height:100vh;min-height:100dvh;overflow:visible}
+/* 고정 전에는 fixed라 뷰포트 맨 위(y=0)부터 덮다가, 흐름에 앉는 순간 그 위에 있는 것들
+   (검토용 미리보기 바 등)만큼 아래로 내려간다 — 그게 '최상단에 안 붙는' 증상이다.
+   앉기 직전의 문서상 위치를 --pin-offset으로 재서 그만큼 끌어올린다. 위에 아무것도 없으면 0이라
+   실제 서비스(미리보기 바가 없는 화면)에서도 그대로 맞는다. */
+.sheet.sheet-pinned{position:relative;height:auto;min-height:100vh;min-height:100dvh;overflow:visible;
+  margin-top:calc(-1 * var(--pin-offset, 0px))}
 /* 넛지는 transform이 아니라 height로 살짝 부풀렸다 줄인다 — bottom:0로 고정된 시트를 translateY로 들어올리면
    바닥이 뜨면서 그 틈으로 뒤 배경이 잘려 보이는 것처럼 드러나는 문제가 있어, height를 쓰면 아래쪽은 그대로 붙어있고
    위쪽만 살짝 솟아오르는 것처럼 자연스럽게 보인다 */
@@ -1126,16 +1131,25 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     sheet.classList.remove('sheet-nudge');
   }
 
-  if(reduced){
+  /* 등장은 카드 애니메이션이 끝난 뒤가 자연스럽지만, 거기에만 매달리면 안 된다 —
+     탭이 백그라운드였거나 렌더가 멈추면 animationend가 영영 오지 않고, 그동안 시트는
+     기본 transform(translateY(110%))에 갇혀 화면 밖에 남는다. 시간 폴백을 함께 둔다. */
+  var entered = false;
+  function enterOnce(){
+    if(entered) return;
+    entered = true;
     enterSheet();
     animateOvrCountUp();
+  }
+  if(reduced){
+    enterOnce();
   } else {
     heroContent.addEventListener('animationend', function onEnd(e){
       if(e.target !== heroContent || e.animationName !== 'heroRiseIn') return;
       heroContent.removeEventListener('animationend', onEnd);
-      enterSheet();
-      animateOvrCountUp();
+      enterOnce();
     });
+    setTimeout(enterOnce, 1600);   // heroRiseIn보다 넉넉히 뒤 — 정상 경로에서는 이미 들어와 있다
   }
 
   var COLLAPSED_H = 74; // .sheet 기본 height와 동일한 값
@@ -1163,9 +1177,13 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     clearTimeout(pinTimer);
     if(!sheet.classList.contains('sheet-pinned')) return;
     sheet.classList.remove('sheet-pinned');
+    sheet.style.removeProperty('--pin-offset');
     window.scrollTo(0, 0);
   }
   function setSheet(st){
+    /* 조작이 시작됐다면 등장 애니메이션을 기다릴 이유가 없다 — 여기서 보장하지 않으면
+       사용자가 등장 전에 핸들을 눌렀을 때 시트가 110% 아래에 밀린 채로 단계만 바뀐다. */
+    sheet.classList.add('sheet-visible');
     if(st !== 'full') unpinSheet(); else clearTimeout(pinTimer);
     sheet.style.transition = '';
     sheet.style.height = '';
@@ -1175,7 +1193,12 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     applyRecede(stateH(st));
     sheet.scrollTop = 0;
     // 펼침 애니메이션(height .45s)이 끝난 뒤에 흐름으로 넘긴다 — 그 순간의 화면이 같아 튀지 않는다
-    if(st === 'full') pinTimer = setTimeout(function(){ sheet.classList.add('sheet-pinned'); }, 480);
+    if(st === 'full') pinTimer = setTimeout(function(){
+      // 앉을 자리가 뷰포트 맨 위에서 얼마나 떨어져 있는지 재고, 그만큼 끌어올려 fixed일 때와 같은 자리에 둔다
+      var host = sheet.parentElement.getBoundingClientRect().top + window.scrollY;
+      sheet.style.setProperty('--pin-offset', Math.max(0, Math.round(host)) + 'px');
+      sheet.classList.add('sheet-pinned');
+    }, 480);
     if(st === 'collapsed') startNudge(); else stopNudge();
   }
 
