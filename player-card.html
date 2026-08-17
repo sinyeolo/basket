@@ -1222,13 +1222,12 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
   // 시트는 딱 스크롤한 만큼만 올라오거나 내려가고, 멈추면 그 자리에 그대로 머문다.
   // 끝까지(위/아래) 도달했을 때만 펼침/접힘 상태로 확정되어, 다 올렸을 땐 이어서 내용 스크롤이 되고
   // 다 내렸을 땐 다시 넛지 힌트가 재생된다. 펼친 뒤 내용을 스크롤 중일 땐 손대지 않고 기본 스크롤 그대로 둔다
+  var wheelSettle = null;
   document.addEventListener('wheel', function(e){
     /* 최상단에 도착했으면 시트는 못박히고 스크롤은 페이지 몫이다.
        예외는 하나 — 페이지가 이미 맨 위인데 더 아래로 끌어내리려는 손짓(deltaY < 0)이다.
-       읽을 게 남았을 땐 페이지가 굴러가고, 다 올라와 있는데 또 내리려 하면 그건
-       "시트를 내리겠다"는 뜻이므로 그때만 시트가 따라 내려온다. */
-    /* 판단 기준은 '못박혔는가'이지 클래스가 아니다. sheet-expanded는 휠로 내려오는 중에도
-       남아 있어서, 그걸 보고 막으면 중간 높이에 갇혀 다시 못 올라간다(실제로 332px에 갇혔다). */
+       판단 기준은 '못박혔는가'이지 클래스가 아니다 — sheet-expanded는 내려오는 중에도 남아 있어서
+       그걸 보고 막으면 중간 높이에 갇혀 다시 못 올라간다. */
     if(sheet.classList.contains('sheet-pinned')){
       if(window.scrollY > 0 || e.deltaY >= 0) return;
       unpinSheet();
@@ -1237,6 +1236,12 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     var h = setLiveHeight(currentH() + e.deltaY);
     if(h >= expandedH() - 0.5) setSheet('full');
     else if(h <= COLLAPSED_H + 0.5) setSheet('collapsed');
+    /* 손을 떼면 가까운 단계로 정착시킨다. 예전엔 '멈추면 그 자리에 머문다'였는데, 그러면
+       인라인 높이만 남고 클래스는 이전 단계 그대로라 둘이 어긋난다 — 실제로 클래스가 '접힘'인데
+       높이는 646px인 상태가 만들어졌고, 그 뒤 핸들을 눌러도 X를 눌러도 엉뚱한 단계를 계산했다.
+       시트의 위치는 언제나 세 단계 중 하나여야 나머지 조작이 그 위에서 성립한다. */
+    clearTimeout(wheelSettle);
+    wheelSettle = setTimeout(function(){ settleFromHeight(currentH()); }, 160);
   }, { passive:true });
 
   /* 손가락도 같게 — 폰에는 휠이 없다. 최상단·페이지 맨 위에서 아래로 쓸어내리면 시트가 따라 내려온다.
