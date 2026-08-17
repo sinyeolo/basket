@@ -87,10 +87,8 @@ button{font-family:inherit;border:none;background:none;color:inherit;cursor:poin
    내려야 하는데, 그 톤이 칙칙하다는 판단이라 선명함을 택했다. 바꾸려면 background만 손대면 된다. */
 .gh-win{flex:none;margin-left:1px;padding:1px 6px;border-radius:5px;font-size:11px;font-weight:800;
   background:var(--green);color:#ffffff;letter-spacing:.02em}
-/* 이긴 팀의 이름·점수도 같은 계열로 물들인다 — 다만 흰 배경 위 '텍스트'라 원색(#22c55e)은
-   2.3:1이라 못 쓴다. 같은 초록에서 명도만 내려 팀명(15px)이 요구하는 4.5:1을 넘긴 값(5.0:1). */
-.gh-team.win .gh-nm{color:var(--win)}
-.gh-team.win .gh-pt{color:var(--win)}
+/* 이긴 팀 이름·점수는 기본 잉크 그대로 둔다 — 승패는 뱃지와 진 팀의 흐린 처리로 이미 읽힌다.
+   여기까지 초록으로 물들이면 헤더에 색이 셋(팀 컬러·초록·회색)이 되어 오히려 산만해진다. */
 .gh.compact .gh-win{padding:0 5px;font-size:11px}
 .gh-vs{font-size:11px;font-weight:700;color:var(--outline)}
 
@@ -173,14 +171,19 @@ main{padding:10px 10px 32px;display:flex;flex-direction:column;gap:10px}
 @keyframes mvpSweep{to{transform:rotate(1turn)}}
 @media (prefers-reduced-motion:reduce){ .mvpCard::before{animation:none} }
 .mvpCard .in{position:relative;height:100%;border-radius:12px;overflow:hidden;
-  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:10px 8px 11px;
   background:radial-gradient(120% 80% at 50% 0%, color-mix(in srgb,var(--g-a) 42%, transparent), transparent 66%),
              linear-gradient(175deg, color-mix(in srgb,var(--g-c) 92%, #0b0c10), #0a0b0e 84%)}
-.mvpCard .ovr{position:absolute;z-index:2;top:8px;left:9px;font-family:var(--font-display);font-size:20px;font-weight:800;
-  line-height:1;color:var(--g-text)}
-.mvpCard .ovr em{display:block;font-style:normal;font-size:11px;font-weight:700;opacity:.7;letter-spacing:.04em}
-.mvpCard .no{position:absolute;z-index:2;top:9px;right:10px;font-family:var(--font-display);font-size:16px;font-weight:800;
-  color:var(--g-text);opacity:.9}
+/* OVR — 우상단. 선수 카드처럼 라벨을 수치 위에 얹고 오른쪽으로 정렬한다 */
+.mvpCard .ovr{position:absolute;z-index:2;top:8px;right:10px;text-align:right;
+  font-family:var(--font-display);font-size:22px;font-weight:900;line-height:1;color:var(--g-text)}
+.mvpCard .ovr em{display:block;font-style:normal;font-size:11px;font-weight:700;
+  letter-spacing:.1em;color:rgba(255,255,255,.5);margin-bottom:1px}
+/* 아래 줄 — 좌측에 등급·이름·팀(왼쪽 정렬), 우측 끝에 등번호 */
+.mvpCard .foot{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:10px 11px 11px;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
+.mvpCard .idn{min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left}
+.mvpCard .no{flex:none;font-family:var(--font-display);font-size:20px;font-weight:900;
+  line-height:1;color:var(--g-text);opacity:.92}
 .mvpCard .sil{position:absolute;z-index:0;left:50%;top:46%;transform:translate(-50%,-50%);width:88px;opacity:.9}
 /* 인물 사진 — 카드를 가득 채우고 위쪽(얼굴)을 기준으로 자른다. 이름·팀은 그 위에 얹히므로
    아래쪽을 어둡게 깔아 글자가 사진에 묻히지 않게 한다. */
@@ -189,9 +192,11 @@ main{padding:10px 10px 32px;display:flex;flex-direction:column;gap:10px}
   background:linear-gradient(to bottom, transparent, rgba(8,9,12,.72) 62%, rgba(8,9,12,.92))}
 /* OVR·등번호도 사진 위로 올린다 — 위쪽엔 딤이 없으므로 그림자로 읽히게 받친다 */
 .mvpCard .ph ~ .ovr, .mvpCard .ph ~ .no{text-shadow:0 1px 6px rgba(0,0,0,.85)}
-.mvpCard .nm{position:relative;z-index:2;font-size:16px;font-weight:800;color:#fff;letter-spacing:-.02em}
-.mvpCard .tm{position:relative;z-index:2;font-size:11px;color:rgba(255,255,255,.66);margin-top:2px}
-.mvpCard .badge{position:relative;z-index:2;margin-bottom:6px;font-family:var(--font-display);font-size:11px;
+.mvpCard .nm{font-size:16px;font-weight:800;color:#fff;letter-spacing:-.02em;
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mvpCard .tm{font-size:11px;color:rgba(255,255,255,.66);
+  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mvpCard .badge{align-self:flex-start;font-family:var(--font-display);font-size:11px;
   font-weight:800;padding:2px 7px;border-radius:5px;background:var(--g-b);color:var(--g-c);letter-spacing:.04em}
 /* 이 경기 기록 — 카드가 선수를, 아래 줄이 오늘 무엇을 했는지를 말한다 */
 .mvp-line{display:flex;gap:0;text-align:center;width:100%}
@@ -507,14 +512,20 @@ function viewSummary(){
       'aria-label="'+p.name+' 선수 카드 보기 (새 창)" '+
       'style="--g-a:'+g.a+';--g-b:'+g.b+';--g-c:'+g.c+';--g-text:'+g.text+'">'+
       '<div class="in">'+
-        '<span class="ovr">'+ovr+'<em>OVR</em></span>'+
-        '<span class="no">'+p.no+'</span>'+
         /* 사진을 올린 선수는 사진, 아니면 실루엣. 선수 카드(player-card.html)와 같은 규칙이라
            같은 선수가 두 화면에서 다른 얼굴로 보이지 않는다. */
         (p.photo ? '<img class="ph" src="'+p.photo+'" alt="">' : SIL) +
-        '<span class="badge">'+({gold:'GOLD',silver:'SILVER',bronze:'BRONZE'}[gk])+'</span>'+
-        '<span class="nm">'+p.name+'</span>'+
-        '<span class="tm">'+t.name+'</span>'+
+        /* 배치는 선수 카드와 같다 — OVR 우상단, 등번호 우하단, 등급·이름·팀 좌하단 왼쪽 정렬.
+           같은 선수의 카드가 두 화면에서 다르게 생기면 같은 물건으로 안 읽힌다. */
+        '<span class="ovr"><em>OVR</em>'+ovr+'</span>'+
+        '<div class="foot">'+
+          '<div class="idn">'+
+            '<span class="badge">'+({gold:'GOLD',silver:'SILVER',bronze:'BRONZE'}[gk])+'</span>'+
+            '<span class="nm">'+p.name+'</span>'+
+            '<span class="tm">'+t.name+'</span>'+
+          '</div>'+
+          '<span class="no">'+p.no+'</span>'+
+        '</div>'+
       '</div>'+
     '</a>'+
     '<span class="mvp-hint">카드를 누르면 선수 카드가 새 창으로 열려요</span>'+
