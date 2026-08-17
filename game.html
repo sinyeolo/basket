@@ -104,8 +104,10 @@ button{font-family:inherit;border:none;background:none;color:inherit;cursor:poin
 .tab[disabled]{opacity:.35;cursor:default}
 
 /* ---- 공통 카드 ---- */
-main{padding:10px 10px 32px;display:flex;flex-direction:column;gap:10px}
-.card{background:var(--surface);border-radius:var(--r-card);padding:14px}
+/* 좌우 6px + 카드 안쪽 10px = 글자가 화면 끝에서 16px. 선수 카드 시트와 같은 기준이다.
+   카드는 회색 바탕 위에 뜨는 면이라 바깥 여백을 0으로 두면 화면에 붙어 보인다 — 6px은 남긴다. */
+main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
+.card{background:var(--surface);border-radius:var(--r-card);padding:14px 10px}
 .card h3{font-size:13px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:7px}
 .card h3 .sub{margin-left:auto;display:inline-flex;align-items:center;gap:5px;
   font-size:11px;font-weight:600;color:var(--on-surface-variant)}

@@ -177,6 +177,9 @@ button{font-family:var(--font)}
    (검토용 미리보기 바 등)만큼 아래로 내려간다 — 그게 '최상단에 안 붙는' 증상이다.
    앉기 직전의 문서상 위치를 --pin-offset으로 재서 그만큼 끌어올린다. 위에 아무것도 없으면 0이라
    실제 서비스(미리보기 바가 없는 화면)에서도 그대로 맞는다. */
+/* 드래그 중 — transform만 바뀌므로 전환을 끄고 합성 레이어로 올린다.
+   will-change는 끝난 뒤 반드시 걷는다. 계속 올려 두면 레이어가 메모리에 남는다. */
+.sheet.sheet-dragging{transition:none!important;will-change:transform;overflow:hidden}
 .sheet.sheet-pinned{position:relative;height:auto;min-height:100vh;min-height:100dvh;overflow:visible;
   margin-top:calc(-1 * var(--pin-offset, 0px))}
 /* 넛지는 transform이 아니라 height로 살짝 부풀렸다 줄인다 — bottom:0로 고정된 시트를 translateY로 들어올리면
@@ -198,7 +201,7 @@ button{font-family:var(--font)}
   touch-action:none;cursor:pointer}
 .sheetHandle::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:rgba(0,0,0,.14)}
 .sheet.sheet-expanded .sheetHandle{display:none}
-.sheetHead{position:sticky;top:0;z-index:1;background:var(--sh-bg);padding:0 20px 4px;cursor:pointer;touch-action:none;
+.sheetHead{position:sticky;top:0;z-index:1;background:var(--sh-bg);padding:0 16px 4px;cursor:pointer;touch-action:none;
   display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 /* 경계선 대신 아래로 갈수록 옅어지는 블러로 지나가는 내용과의 경계를 만든다 — 선 하나로 자르는 것보다
    내용이 헤더 밑으로 흘러 들어가는 느낌이 자연스럽다. 두 단 모두 내용이 헤드 밑을 지나가므로 공통. */
@@ -218,7 +221,9 @@ button{font-family:var(--font)}
     transparent 100%);
   -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 46%,rgba(0,0,0,.55) 74%,transparent 100%);
           mask-image:linear-gradient(to bottom,#000 0%,#000 46%,rgba(0,0,0,.55) 74%,transparent 100%)}
-.sheetBody{padding:0 20px 48px}
+/* 좌우 16px — 글자가 화면 끝에서 16px 떨어지게 맞춘다(공개 경기 상세와 같은 기준).
+   예전엔 여기 20 + .section 4 = 24였다. */
+.sheetBody{padding:0 16px 48px}
 .sheetTitle{display:flex;align-items:center;gap:6px;margin-bottom:16px;min-width:0}
 /* 펼친 상태(=스티키가 의미 있어지는 상태)에서만 노출되는 닫기 버튼 — 누르면 접힌 상태(첫 화면과 같은 모습)로 되돌아감 */
 .sheetCloseBtn{display:none;flex:none;width:28px;height:28px;border-radius:50%;border:1px solid var(--sh-border);
@@ -540,7 +545,7 @@ button{font-family:var(--font)}
 /* 핵심 요약 스트립 — 시트 안에서만 쓰여서 화이트 테마로 바로 정의 */
 /* 요약 스트립만 반전 — 시트 전체가 흰 면이라 네 수치가 다른 카드들과 같은 무게로 흩어졌다.
    여기 하나만 검게 깔면 "이 선수를 한 줄로 요약한 값"이라는 게 먼저 읽힌다. */
-.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:340px;margin:22px auto 0;
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:520px;margin:22px auto 0;
   background:#16171b;border:1px solid #16171b;border-radius:16px;padding:16px 6px}
 .summary .it{text-align:center;padding:0 4px}
 .summary .it b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:#ffffff}
@@ -548,10 +553,10 @@ button{font-family:var(--font)}
 
 /* 섹션 간격 — 36px에서 키웠다. 카드 앨범·배지·기록이 붙어 있으면 하나의 긴 목록처럼 읽혀서
    어디서 주제가 바뀌는지가 안 잡힌다. */
-.section{max-width:340px;margin:34px auto 0;padding:0 4px}
+.section{max-width:520px;margin:34px auto 0;padding:0}
 /* OVR 히어로 — 박스 없이. 회색 박스로 감싸면 아래 4지표 카드와 무게가 비슷해져 '가장 중요한 수치'로
    안 읽힌다. 등급 뱃지를 위에 올리고 그 아래 큰 숫자를 놓아 위에서 아래로 읽히게 했다. */
-.ovrHero{max-width:340px;margin:16px auto 0;padding:0 4px;display:flex;flex-direction:row;
+.ovrHero{max-width:520px;margin:16px auto 0;padding:0;display:flex;flex-direction:row;
   align-items:center;justify-content:space-between;gap:12px}
 /* 라벨을 숫자 앞에 둬서 큰 숫자가 오른쪽 끝을 붙잡게 한다 — 숫자를 앞에 두면 오른쪽 끝이 작은 라벨로
    끝나 시선이 흐려진다 */
@@ -674,7 +679,7 @@ button{font-family:var(--font)}
   background:#15171d;color:var(--on-dark);cursor:pointer}
 .previewBar button.on{background:#fff;color:#0a0b0f;border-color:#fff}
 
-.footNote{max-width:340px;margin:28px auto 0;text-align:center;font-size:11px;color:var(--sh-on-dim, #565962);line-height:1.6}
+.footNote{max-width:520px;margin:28px auto 0;text-align:center;font-size:11px;color:var(--sh-on-dim, #565962);line-height:1.6}
 
 @media (prefers-reduced-motion:reduce){
   .heroContent{animation:none;transform:none}
@@ -1210,12 +1215,40 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
 
   // 드래그 도중엔 손가락을 그대로 따라 높이가 실시간으로 바뀌다가(transition 없음),
   // 놓는 순간 화면 높이의 50%를 기준으로 완전히 펼쳐지거나 다시 접힌 상태로 스냅한다
+  /* 드래그 중에는 height를 건드리지 않는다 — height는 레이아웃→페인트→합성을 전부 돌리고,
+     시트 안에는 1252px어치 내용이 들어 있어 손가락이 움직일 때마다 그게 통째로 재계산됐다.
+     그게 모바일에서 버벅이던 이유다. 대신 시트를 '펼친 높이'로 고정해 두고 transform으로 민다 —
+     transform은 합성만 하므로 레이아웃이 없다.
+     dragH는 '이 손짓이 목표로 하는 높이'이고, 화면에는 (펼친높이 - dragH)만큼 아래로 민 모습으로 나타난다. */
+  var dragH = 0, rafId = 0;
+  function paintDrag(){
+    rafId = 0;
+    var slide = expandedH() - dragH;
+    sheet.style.transform = 'translate3d(0,' + slide.toFixed(1) + 'px,0)';
+    applyRecede(dragH);
+  }
   function setLiveHeight(h){
-    h = Math.min(expandedH(), Math.max(COLLAPSED_H, h));
+    dragH = Math.min(expandedH(), Math.max(COLLAPSED_H, h));
+    // 프레임당 한 번만 그린다. 포인터 이벤트는 초당 60~240번 오는데 그때마다 그리면 같은 프레임을 여러 번 칠한다
+    if(!rafId) rafId = requestAnimationFrame(paintDrag);
+    return dragH;
+  }
+  /* 드래그 시작 — 시트를 '펼친 높이'로 세워 두고 transform으로 내려 둔다. 여기서 딱 한 번만
+     레이아웃이 일어나고, 이후 손가락을 따라가는 동안에는 합성만 한다. */
+  function beginDrag(fromH){
+    sheet.classList.add('sheet-dragging');
     sheet.style.transition = 'none';
-    sheet.style.height = h + 'px';
-    applyRecede(h);
-    return h;
+    sheet.style.height = expandedH() + 'px';
+    dragH = fromH;
+    paintDrag();
+  }
+  /* 드래그 끝 — transform을 걷고 클래스가 정한 높이로 돌려준다 */
+  function endDrag(){
+    if(rafId){ cancelAnimationFrame(rafId); rafId = 0; }
+    sheet.classList.remove('sheet-dragging');
+    sheet.style.transform = '';
+    sheet.style.height = '';
+    sheet.style.transition = '';
   }
   /* 놓는 순간의 스냅 — 끌어올린 정도가 전체 행정의 50% 이상이면 최상단, 그 미만이면 화면 중간까지만.
      아주 조금(8% 미만) 움직인 건 '올릴 의도가 아니었다'로 보고 접는다. 이 하한이 없으면 손이 살짝
@@ -1262,15 +1295,16 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       unpinSheet();
     }
     stopNudge();
-    var h = setLiveHeight(currentH() + e.deltaY);
-    if(h >= expandedH() - 0.5) setSheet('full');
-    else if(h <= COLLAPSED_H + 0.5) setSheet('collapsed');
+    if(!sheet.classList.contains('sheet-dragging')) beginDrag(currentH());
+    var h = setLiveHeight(dragH + e.deltaY);
+    if(h >= expandedH() - 0.5){ endDrag(); setSheet('full'); }
+    else if(h <= COLLAPSED_H + 0.5){ endDrag(); setSheet('collapsed'); }
     /* 손을 떼면 가까운 단계로 정착시킨다. 예전엔 '멈추면 그 자리에 머문다'였는데, 그러면
        인라인 높이만 남고 클래스는 이전 단계 그대로라 둘이 어긋난다 — 실제로 클래스가 '접힘'인데
        높이는 646px인 상태가 만들어졌고, 그 뒤 핸들을 눌러도 X를 눌러도 엉뚱한 단계를 계산했다.
        시트의 위치는 언제나 세 단계 중 하나여야 나머지 조작이 그 위에서 성립한다. */
     clearTimeout(wheelSettle);
-    wheelSettle = setTimeout(function(){ settleFromHeight(currentH()); }, 160);
+    wheelSettle = setTimeout(function(){ var h = dragH; endDrag(); settleFromHeight(h); }, 160);
   }, { passive:true });
 
   /* 손가락도 같게 — 폰에는 휠이 없다. 최상단·페이지 맨 위에서 아래로 쓸어내리면 시트가 따라 내려온다.
@@ -1284,11 +1318,11 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     if(swipeY == null) return;
     var dy = e.touches[0].clientY - swipeY;   // 아래로 끌면 양수
     if(dy <= 0) return;                       // 위로 미는 건 평소대로 페이지 스크롤
-    if(!swipeH){ unpinSheet(); swipeH = currentH(); }
+    if(!swipeH){ unpinSheet(); swipeH = currentH(); beginDrag(swipeH); }
     setLiveHeight(swipeH - dy);
   }, { passive:true });
   document.addEventListener('touchend', function(){
-    if(swipeH) settleFromHeight(currentH());
+    if(swipeH){ var h = dragH; endDrag(); settleFromHeight(h); }
     swipeY = null; swipeH = 0;
   });
 
@@ -1304,9 +1338,10 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       // 못박힌 상태에서는 시트 높이가 '내용 길이'라 그대로 끌면 기준이 어긋난다 — 먼저 fixed로 되돌린다
       unpinSheet();
       dragStartY = e.clientY;
-      dragStartH = currentH();
+      dragStartH = currentH();      // 여기서 딱 한 번만 잰다 — 드래그 중에는 다시 재지 않는다
       dragMoved = false;
       stopNudge();
+      beginDrag(dragStartH);
       // 포인터 캡처는 실패할 수 있다(이미 놓인 포인터, 일부 브라우저). 여기서 예외가 나면
       // 뒤따르는 드래그 준비가 끊기므로 감싸 둔다 — 캡처가 안 돼도 드래그 자체는 동작한다.
       try{ if(el.setPointerCapture) el.setPointerCapture(e.pointerId); }catch(_){}
@@ -1320,8 +1355,10 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     el.addEventListener('pointerup', function(){
       if(dragStartY === null) return;
       dragStartY = null;
+      var h = dragH;               // 화면에서 다시 재지 않는다 — 드래그가 목표로 한 값을 그대로 쓴다
+      endDrag();
       if(dragMoved){
-        settleFromHeight(currentH());
+        settleFromHeight(h);
         suppressClick = true;
       }
       // 실제로 끌지 않고 뗀 경우(=클릭)는 아무것도 안 함 — 곧 이어질 click 핸들러가 넛지 상태까지 정리한다
@@ -1329,7 +1366,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     el.addEventListener('pointercancel', function(){
       if(dragStartY === null) return;
       dragStartY = null;
-      settleFromHeight(currentH());
+      var h = dragH; endDrag(); settleFromHeight(h);
     });
   });
 })();
