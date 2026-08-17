@@ -28,7 +28,13 @@
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--stage-bg);color:var(--on-dark);font-family:var(--font);-webkit-tap-highlight-color:transparent}
 button{font-family:var(--font)}
-:focus-visible{outline:2px solid #7dd3fc;outline-offset:2px}
+/* 포커스 링 — 이 화면은 배경이 둘이다(어두운 무대 + 흰 시트). 한 색으로는 둘 다 못 덮는다:
+   기존 하늘색은 무대에서 11.8:1이지만 흰 시트 위에서 1.67:1로 사실상 안 보였고, 브랜드 앰버 원색도
+   시트 위에서는 2.26:1이라 실패한다. 표면마다 바꾼다 — 무대는 앰버 원색(8.7:1),
+   시트는 DESIGN.md가 밝은 면용으로 기록해 둔 앰버 텍스트 톤(3.8:1). 둘 다 비텍스트 기준 3:1을 넘는다. */
+:root{--focus:#ff9100}
+.sheet{--focus:#d95f00}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 .ic{width:1em;height:1em}
 .ic-sm{width:16px;height:16px}
 
