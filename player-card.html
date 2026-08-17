@@ -150,7 +150,11 @@ button{font-family:var(--font)}
 /* 시트는 3단이다: 접힘(74px) → 중간(50dvh) → 최상단(100dvh).
    .sheet-open은 '접힘이 아닌' 두 단이 공유하는 성질(내용 스크롤·닫기 버튼·스티키 헤더)을 담고,
    높이와 라운드만 단계별로 다르다. */
-.sheet.sheet-open{overflow-y:auto;-webkit-overflow-scrolling:touch}
+/* 시트는 어느 단계에서도 스크롤 컨테이너가 되지 않는다. 예전엔 여기가 auto라,
+   최상단에 닿고 고정(sheet-pinned)이 걸리기 전 0.48초와 고정을 푼 드래그 도중에
+   내부 스크롤이 되살아났다 — 그 순간 손가락이 시트 대신 내용을 굴린다.
+   최상단에서는 sheet-pinned가 흐름에 앉혀 페이지가 대신 굴러가고, 그 아래 단계에서는 잘린다. */
+.sheet.sheet-open{overflow:hidden}
 /* 중간 단은 훑어보는 자리다. 여기서 내부 스크롤까지 되면 위로 미는 제스처가
    "시트를 더 올린다"와 "내용을 굴린다" 둘 사이에서 갈린다 — 중간에서는 굴리지 않는다.
    내용을 더 보려면 시트를 최상단까지 올리면 된다. */
@@ -1223,7 +1227,9 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
        예외는 하나 — 페이지가 이미 맨 위인데 더 아래로 끌어내리려는 손짓(deltaY < 0)이다.
        읽을 게 남았을 땐 페이지가 굴러가고, 다 올라와 있는데 또 내리려 하면 그건
        "시트를 내리겠다"는 뜻이므로 그때만 시트가 따라 내려온다. */
-    if(sheetState() === 'full'){
+    /* 판단 기준은 '못박혔는가'이지 클래스가 아니다. sheet-expanded는 휠로 내려오는 중에도
+       남아 있어서, 그걸 보고 막으면 중간 높이에 갇혀 다시 못 올라간다(실제로 332px에 갇혔다). */
+    if(sheet.classList.contains('sheet-pinned')){
       if(window.scrollY > 0 || e.deltaY >= 0) return;
       unpinSheet();
     }
@@ -1237,7 +1243,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
      헤드/핸들에서 시작한 손짓은 아래 포인터 드래그가 이미 맡고 있으므로 건드리지 않는다. */
   var swipeY = null, swipeH = 0;
   document.addEventListener('touchstart', function(e){
-    swipeY = (sheetState() === 'full' && window.scrollY === 0
+    swipeY = (sheet.classList.contains('sheet-pinned') && window.scrollY === 0
       && !e.target.closest('.sheetHead, .sheetHandle')) ? e.touches[0].clientY : null;
   }, { passive:true });
   document.addEventListener('touchmove', function(e){

@@ -26,6 +26,7 @@
   --on-surface:#1c1b1f; --on-surface-variant:#6b6a72;
   --outline:#c9c6cf; --outline-variant:#e6e2ea;
   --green:#22c55e; --red:#ef4444; --amber:#f59e0b;
+  --win:#15803d;   /* 흰 배경 위 '승리' 텍스트용 — 원색 초록은 대비가 안 나온다(운영 콘솔과 같은 값) */
   --green-c:#d9f4e6; --on-green-c:#0c5c37; --red-c:#fde2e2; --on-red-c:#a41e1e;
   --home:#3b82f6; --away:#ef4444;
   --r-card:16px; --r-btn:100px;
@@ -81,8 +82,15 @@ button{font-family:inherit;border:none;background:none;color:inherit;cursor:poin
 .gh-team.lose .gh-pt,.gh-team.lose .gh-nm{color:var(--on-surface-variant)}
 /* 승 태그 — 점수만으로도 누가 이겼는지는 알 수 있지만, 두 수가 비슷하면 한 번 더 읽어야 한다.
    이름 옆에 한 글자로 못 박아 훑기만 해도 결과가 잡히게 한다. 접었을 때도 살아남는 크기. */
+/* 승 뱃지 — PO 지정: 원색 초록 바탕에 흰 글자.
+   측정값은 2.3:1로 WCAG AA(4.5:1)에 못 미친다. 읽히게 하려면 바탕을 #15803d(5.0:1)까지
+   내려야 하는데, 그 톤이 칙칙하다는 판단이라 선명함을 택했다. 바꾸려면 background만 손대면 된다. */
 .gh-win{flex:none;margin-left:1px;padding:1px 6px;border-radius:5px;font-size:11px;font-weight:800;
-  background:var(--green-c);color:var(--on-green-c);letter-spacing:.02em}
+  background:var(--green);color:#ffffff;letter-spacing:.02em}
+/* 이긴 팀의 이름·점수도 같은 계열로 물들인다 — 다만 흰 배경 위 '텍스트'라 원색(#22c55e)은
+   2.3:1이라 못 쓴다. 같은 초록에서 명도만 내려 팀명(15px)이 요구하는 4.5:1을 넘긴 값(5.0:1). */
+.gh-team.win .gh-nm{color:var(--win)}
+.gh-team.win .gh-pt{color:var(--win)}
 .gh.compact .gh-win{padding:0 5px;font-size:11px}
 .gh-vs{font-size:11px;font-weight:700;color:var(--outline)}
 
@@ -457,7 +465,7 @@ function renderHeader(){
   document.getElementById('ghScore').innerHTML =
     team(G.home, aw, settled && hw) + '<span class="gh-vs">VS</span>' + team(G.away, hw, settled && aw);
   function team(t, lost, won){
-    return '<div class="gh-team'+(lost?' lose':'')+'">'+
+    return '<div class="gh-team'+(lost?' lose':'')+(won?' win':'')+'">'+
       '<span class="gh-nm">'+teamMark(t, 18)+'<span class="gh-tn">'+t.name+'</span>'+(won?'<span class="gh-win">승</span>':'')+'</span>'+
       '<span class="gh-pt">'+(t.score == null ? '–' : t.score)+'</span></div>';
   }
