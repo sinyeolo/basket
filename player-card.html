@@ -1291,6 +1291,10 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
   var DRAG_MOVE_EPS = 4;
   dragTargets.forEach(function(el){
     el.addEventListener('pointerdown', function(e){
+      /* 닫기 버튼은 드래그 손잡이가 아니다. X가 헤드 안에 있어서 pointerdown이 헤드에 먼저 잡히는데,
+         누르는 동안 손가락이 몇 px만 흔들려도 드래그로 판정되어 놓는 순간 원래 단계로 되돌아가고
+         브라우저가 click을 아예 보내지 않는다 — 그래서 X를 눌렀는데 시트가 최상단에 그대로 남았다. */
+      if(e.target.closest('.sheetCloseBtn')) return;
       // 못박힌 상태에서는 시트 높이가 '내용 길이'라 그대로 끌면 기준이 어긋난다 — 먼저 fixed로 되돌린다
       unpinSheet();
       dragStartY = e.clientY;
