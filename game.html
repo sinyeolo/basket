@@ -585,6 +585,14 @@ function viewSummary(){
 /* ---- 중계 ---- */
 var pbpQ = 'all';
 function viewPbp(){
+  /* 박스스코어는 있는데 중계가 없는 경기가 있다 — 엑셀·종이 기록지로 들어온 경기는
+     쿼터별 집계만 남고 이벤트 단위 로그가 없기 때문이다(기획서의 recordSource 참고).
+     그때는 왜 없는지를 말한다. 빈 목록만 띄우면 고장으로 읽힌다. */
+  if(!PBP.length){
+    return '<div class="card"><div class="empty">'+
+      '<span class="empty-art" aria-hidden="true">'+EMPTY_ART.end+'</span>'+
+      '이 경기는 중계 기록이 없어요<br>최종 기록은 <b>기록</b> 탭에서 볼 수 있습니다</div></div>';
+  }
   var qs = [];
   PBP.forEach(function(e){ if(qs.indexOf(e.q) < 0) qs.push(e.q); });
   qs.sort();

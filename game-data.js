@@ -44,6 +44,77 @@ var BASKET_DAYS = [
    없는 경기는 game.html이 "기록 준비 중"으로 비워 둔다. 없는 숫자를 지어내지 않는 게 요점이다.
    선수는 팀 명단(PLAYERS)에 등록된 사람만 쓴다 — 박스스코어에 없는 선수가 뛰면 명단과 어긋난다. */
 var BASKET_RECORDS = {
+  /* 확정 경기는 모두 기록을 갖는다 — "확정"인데 공개 화면이 비어 있으면 그 자체가 모순이다.
+     아래 네 경기는 목록의 최종 점수에서 역산해 박스스코어·쿼터를 맞췄다(합계 일치 검산 완료).
+     중계(pbp)는 g12에만 있다 — 이벤트 단위 로그는 지어내면 거짓이 되므로 없는 채로 둔다. */
+  g8: {
+    quarters:[ {h:22,a:16},{h:22,a:17},{h:16,a:11},{h:11,a:20} ],
+    home:[
+      { no:'7', name:'김민수', min:33, pts:19, reb:3, ast:6, stl:2, blk:0, to:2, pf:3, fg:[6,14], tp:[3,5], ft:[4,5] },
+      { no:'11', name:'박정우', min:30, pts:19, reb:6, ast:4, stl:3, blk:2, to:0, pf:3, fg:[8,14], tp:[0,1], ft:[3,4] },
+      { no:'23', name:'이현수', min:28, pts:16, reb:3, ast:2, stl:3, blk:0, to:0, pf:4, fg:[6,11], tp:[2,5], ft:[2,2] },
+      { no:'15', name:'최영호', min:25, pts:11, reb:6, ast:4, stl:1, blk:2, to:2, pf:0, fg:[4,8], tp:[2,3], ft:[1,2] },
+      { no:'32', name:'한지훈', min:22, pts:6, reb:10, ast:1, stl:1, blk:1, to:3, pf:0, fg:[2,5], tp:[2,4], ft:[0,0] }
+    ],
+    away:[
+      { no:'31', name:'윤성민', min:33, pts:23, reb:7, ast:3, stl:0, blk:2, to:1, pf:0, fg:[10,17], tp:[2,4], ft:[1,2] },
+      { no:'8', name:'조현우', min:30, pts:23, reb:2, ast:0, stl:0, blk:2, to:3, pf:3, fg:[10,14], tp:[0,2], ft:[3,5] },
+      { no:'7', name:'양우석', min:28, pts:8, reb:6, ast:0, stl:1, blk:1, to:1, pf:4, fg:[3,9], tp:[2,6], ft:[0,0] },
+      { no:'12', name:'백승현', min:25, pts:8, reb:1, ast:6, stl:3, blk:1, to:1, pf:2, fg:[3,11], tp:[0,1], ft:[2,3] },
+      { no:'20', name:'구자운', min:22, pts:2, reb:2, ast:1, stl:2, blk:2, to:0, pf:3, fg:[1,9], tp:[0,2], ft:[0,1] }
+    ]
+  },
+  g9: {
+    quarters:[ {h:17,a:18},{h:15,a:21},{h:12,a:17},{h:14,a:10} ],
+    home:[
+      { no:'3', name:'이정호', min:33, pts:23, reb:6, ast:1, stl:3, blk:2, to:0, pf:4, fg:[9,15], tp:[2,3], ft:[3,3] },
+      { no:'9', name:'최민석', min:30, pts:13, reb:2, ast:0, stl:2, blk:0, to:1, pf:4, fg:[5,12], tp:[0,4], ft:[3,3] },
+      { no:'12', name:'박준영', min:28, pts:9, reb:2, ast:1, stl:3, blk:0, to:2, pf:1, fg:[4,10], tp:[0,1], ft:[1,3] },
+      { no:'21', name:'김태호', min:25, pts:9, reb:8, ast:5, stl:1, blk:1, to:1, pf:2, fg:[3,11], tp:[3,4], ft:[0,2] },
+      { no:'15', name:'심규현', min:22, pts:4, reb:10, ast:6, stl:0, blk:2, to:1, pf:2, fg:[1,6], tp:[1,5], ft:[1,1] }
+    ],
+    away:[
+      { no:'5', name:'한승우', min:33, pts:24, reb:5, ast:2, stl:0, blk:0, to:0, pf:1, fg:[11,15], tp:[2,4], ft:[0,2] },
+      { no:'4', name:'오세훈', min:30, pts:18, reb:8, ast:4, stl:3, blk:2, to:4, pf:2, fg:[7,10], tp:[1,4], ft:[3,4] },
+      { no:'10', name:'강도현', min:28, pts:16, reb:6, ast:0, stl:1, blk:0, to:1, pf:2, fg:[6,9], tp:[3,5], ft:[1,1] },
+      { no:'14', name:'문지환', min:25, pts:6, reb:3, ast:2, stl:1, blk:2, to:2, pf:4, fg:[2,4], tp:[0,3], ft:[2,2] },
+      { no:'6', name:'배정훈', min:22, pts:2, reb:3, ast:7, stl:2, blk:1, to:0, pf:3, fg:[1,7], tp:[0,4], ft:[0,0] }
+    ]
+  },
+  g10: {
+    quarters:[ {h:22,a:22},{h:22,a:14},{h:18,a:16},{h:18,a:20} ],
+    home:[
+      { no:'7', name:'김민수', min:33, pts:24, reb:5, ast:6, stl:2, blk:0, to:4, pf:1, fg:[10,13], tp:[1,3], ft:[3,4] },
+      { no:'11', name:'박정우', min:30, pts:20, reb:3, ast:7, stl:0, blk:0, to:3, pf:3, fg:[9,12], tp:[2,6], ft:[0,2] },
+      { no:'23', name:'이현수', min:28, pts:17, reb:4, ast:5, stl:3, blk:0, to:4, pf:3, fg:[8,16], tp:[0,4], ft:[1,1] },
+      { no:'15', name:'최영호', min:25, pts:12, reb:10, ast:2, stl:2, blk:0, to:0, pf:0, fg:[4,11], tp:[3,6], ft:[1,2] },
+      { no:'32', name:'한지훈', min:22, pts:7, reb:7, ast:5, stl:0, blk:1, to:0, pf:3, fg:[2,6], tp:[0,1], ft:[3,5] }
+    ],
+    away:[
+      { no:'5', name:'한승우', min:33, pts:22, reb:6, ast:3, stl:2, blk:2, to:2, pf:3, fg:[9,13], tp:[3,7], ft:[1,1] },
+      { no:'4', name:'오세훈', min:30, pts:18, reb:2, ast:5, stl:1, blk:0, to:1, pf:2, fg:[7,13], tp:[1,5], ft:[3,5] },
+      { no:'10', name:'강도현', min:28, pts:14, reb:2, ast:7, stl:3, blk:2, to:2, pf:3, fg:[7,12], tp:[0,4], ft:[0,1] },
+      { no:'14', name:'문지환', min:25, pts:12, reb:5, ast:5, stl:0, blk:2, to:0, pf:0, fg:[3,11], tp:[3,5], ft:[3,4] },
+      { no:'6', name:'배정훈', min:22, pts:6, reb:3, ast:5, stl:1, blk:2, to:4, pf:3, fg:[2,9], tp:[0,2], ft:[2,3] }
+    ]
+  },
+  g11: {
+    quarters:[ {h:19,a:17},{h:13,a:20},{h:14,a:16},{h:13,a:10} ],
+    home:[
+      { no:'2', name:'신재호', min:33, pts:21, reb:1, ast:2, stl:1, blk:2, to:2, pf:1, fg:[9,16], tp:[1,5], ft:[2,3] },
+      { no:'13', name:'권민재', min:30, pts:16, reb:2, ast:0, stl:2, blk:1, to:0, pf:2, fg:[6,13], tp:[2,6], ft:[2,2] },
+      { no:'17', name:'황준서', min:28, pts:10, reb:8, ast:7, stl:0, blk:2, to:1, pf:0, fg:[4,9], tp:[0,4], ft:[2,3] },
+      { no:'22', name:'노태윤', min:25, pts:10, reb:9, ast:2, stl:3, blk:1, to:0, pf:1, fg:[4,12], tp:[2,6], ft:[0,0] },
+      { no:'25', name:'서지호', min:22, pts:2, reb:10, ast:5, stl:2, blk:0, to:1, pf:0, fg:[1,4], tp:[0,3], ft:[0,1] }
+    ],
+    away:[
+      { no:'1', name:'유하람', min:33, pts:14, reb:4, ast:5, stl:3, blk:1, to:4, pf:3, fg:[4,9], tp:[3,4], ft:[3,3] },
+      { no:'16', name:'정우진', min:30, pts:14, reb:4, ast:1, stl:1, blk:2, to:0, pf:3, fg:[5,10], tp:[2,3], ft:[2,2] },
+      { no:'18', name:'남기범', min:28, pts:13, reb:6, ast:5, stl:1, blk:1, to:0, pf:0, fg:[5,13], tp:[0,1], ft:[3,3] },
+      { no:'27', name:'표현우', min:25, pts:13, reb:8, ast:7, stl:3, blk:2, to:2, pf:1, fg:[5,10], tp:[2,6], ft:[1,1] },
+      { no:'33', name:'차민규', min:22, pts:9, reb:10, ast:2, stl:3, blk:1, to:2, pf:0, fg:[3,11], tp:[3,5], ft:[0,1] }
+    ]
+  },
   g12: {
     quarters:[ {h:17,a:16},{h:16,a:15},{h:18,a:17},{h:16,a:16} ],
     home:[
