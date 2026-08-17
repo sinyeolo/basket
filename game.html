@@ -26,7 +26,7 @@
   --on-surface:#1c1b1f; --on-surface-variant:#6b6a72;
   --outline:#c9c6cf; --outline-variant:#e6e2ea;
   --green:#22c55e; --red:#ef4444; --amber:#f59e0b;
-  --win:#15803d;   /* 흰 배경 위 '승리' 텍스트용 — 원색 초록은 대비가 안 나온다(운영 콘솔과 같은 값) */
+  --win:#22c55e; --on-win:#ffffff;   /* 승리 — 밝은 초록 하나로 통일(운영 콘솔과 같은 값) */
   --green-c:#d9f4e6; --on-green-c:#0c5c37; --red-c:#fde2e2; --on-red-c:#a41e1e;
   --home:#3b82f6; --away:#ef4444;
   --r-card:16px; --r-btn:100px;
@@ -471,7 +471,7 @@ function renderHeader(){
     team(G.home, aw, settled && hw) + '<span class="gh-vs">VS</span>' + team(G.away, hw, settled && aw);
   function team(t, lost, won){
     return '<div class="gh-team'+(lost?' lose':'')+(won?' win':'')+'">'+
-      '<span class="gh-nm">'+teamMark(t, 18)+'<span class="gh-tn">'+t.name+'</span>'+(won?'<span class="gh-win">승</span>':'')+'</span>'+
+      '<span class="gh-nm">'+teamMark(t, 18)+'<span class="gh-tn">'+t.name+'</span>'+(won?'<span class="gh-win">W</span>':'')+'</span>'+
       '<span class="gh-pt">'+(t.score == null ? '–' : t.score)+'</span></div>';
   }
 }

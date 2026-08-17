@@ -60,7 +60,7 @@
      뒤집으면 배경 톤 그대로 6.5:1이 나온다. */
   /* 승 뱃지 — 흰 글자를 얹으므로 #22c55e(2.3:1)로는 11px 볼드가 읽히지 않는다. 같은 계열에서
      명도만 내려 4.9:1을 맞춘다. 점·토글처럼 글자를 얹지 않는 곳은 --green을 그대로 쓴다. */
-  --win:#15803d; --on-win:#ffffff;
+  --win:#22c55e; --on-win:#ffffff;   /* 승리 — 밝은 초록 하나로 통일(PO 지정). 흰 글자는 2.3:1이라 AA 미달 */
   --home:#3b82f6; --away:#ef4444;
   --r-btn:100px; --r-card:16px; --r-chip:8px; --card-thick:16px;
   /* 컨트롤 높이 3단계 — 이전엔 36/38/40/42/44px가 뒤섞여 있어 정렬이 미세하게 어긋났습니다 */
@@ -2852,12 +2852,12 @@ function recomputeStandings(){
     t.streak = streakOf(t._log);
   });
 }
-/* 연승·연패 — 최근 경기부터 같은 결과가 이어지는 만큼. 무승부에서 끊는다. */
+/* 연속 기록 — 최근 경기부터 같은 결과가 이어지는 만큼(3W·2L). 무승부에서 끊는다. */
 function streakOf(log){
   if(!log.length) return '-';
   var last = log[log.length - 1], n = 0;
   for(var i = log.length - 1; i >= 0 && log[i] === last; i--) n++;
-  return n + (last === 'W' ? '연승' : last === 'L' ? '연패' : '무');
+  return n + last;   // 3W / 2L / 1D — 표기를 W·L로 통일한다
 }
 
 /* ---- 대회 상세: 플레이오프 대진표 (각 조 1~2위 진출, 크로스 시드) ----
@@ -3782,7 +3782,7 @@ function renderTeamList(){
       '<button type="button" class="lmain" data-open-team="'+t.id+'" aria-label="'+t.name+' 선수 보기"'+
         ' style="display:block;width:100%;border:none;background:transparent;font-family:var(--font);text-align:left;cursor:pointer;padding:0">'+
         '<div class="lname">'+t.name+' <span class="sub">'+n+'명</span></div>'+
-        '<div class="lmeta">'+t.w+'승 '+t.l+'패'+(rec?' · 평균 '+rec.pts.toFixed(1)+'점':'')+' · '+t.streak+'</div>'+
+        '<div class="lmeta">'+t.w+'W '+t.l+'L'+(rec?' · 평균 '+rec.pts.toFixed(1)+'점':'')+' · '+t.streak+'</div>'+
       '</button>'+
       '<div class="lacts">'+
         '<button type="button" class="iconbtn" data-edit-team="'+t.id+'" aria-label="'+t.name+' 수정">'+icon('edit','ic ic-sm')+'</button>'+
@@ -4791,7 +4791,7 @@ function renderStandingsPodium(targetId){
     return '<div class="podium-card p'+rank+'" data-grade="'+PODIUM_GRADE[rank]+'">'+crownBadge(rank)+
       '<div class="podium-avatar" style="background:'+r.t.color+'">'+r.t.name.charAt(0)+'</div>'+
       '<div class="podium-name" title="'+r.t.name+'">'+r.t.name+'</div>'+
-      '<div class="podium-rec">'+r.t.w+'승 '+r.t.l+'패</div>'+
+      '<div class="podium-rec">'+r.t.w+'W '+r.t.l+'L</div>'+
       '<div class="podium-pct">'+r.pct.toFixed(3).replace(/^0/,'')+'</div></div>';
   }).join('');
   document.getElementById(targetId).innerHTML = '<div class="podium">'+html+'</div>';
@@ -4804,7 +4804,7 @@ function renderRankTable(targetId){
     return { t:t, g:g, pct:g ? t.w/g : 0, mg:(t.pf - t.pa) };
   }).sort(function(a,b){ return b.pct - a.pct || b.mg - a.mg; });
   var top = rows[0];
-  var head = '<thead><tr><th class="c">순위</th><th class="l">팀</th><th>경기</th><th>승</th><th>패</th>'+
+  var head = '<thead><tr><th class="c">순위</th><th class="l">팀</th><th>경기</th><th>W</th><th>L</th>'+
     '<th>승률</th><th>게임차</th><th>득점</th><th>실점</th><th>마진</th><th class="c">연속</th></tr></thead>';
   var body = rows.map(function(r, i){
     var gb = top ? ((top.t.w - r.t.w) + (r.t.l - top.t.l)) / 2 : 0;
@@ -4941,7 +4941,7 @@ function renderGroupStandings(targetId){
     return '<div class="groupStandingBlock">'+
       '<div class="sec-title" style="margin:0 0 8px">'+(g==='미배정' ? '미배정 팀' : g+'조')+'</div>'+
       '<div class="tablewrap"><table class="dt"><thead><tr><th class="c">순위</th><th class="l">팀</th>'+
-      '<th>경기</th><th>승</th><th>패</th><th>승률</th><th>마진</th></tr></thead>'+
+      '<th>경기</th><th>W</th><th>L</th><th>승률</th><th>마진</th></tr></thead>'+
       '<tbody>'+body+'</tbody></table></div></div>';
   }).join('');
 }
