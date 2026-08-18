@@ -68,14 +68,17 @@ button{font-family:var(--font)}
 
    회전과 밝기는 일부러 다른 애니메이션·다른 주기로 분리했다. 한 키프레임에 같이 넣으면 '밝아질 때
    항상 같은 각도'가 되어 주기가 눈에 띈다. 주기가 어긋나 있어야 매번 다른 조합으로 보인다. */
-.stageRays{position:absolute;top:0;left:50%;width:260%;height:100%;transform:translateX(-50%);
+/* 폭이 260%였다 — 회전 폭(±10도)에 필요한 것보다 훨씬 크다. 겹 하나가 화면의 3배 면적이 되고
+   거기에 큰 블러가 걸리니 GPU가 텍스처를 캐시하지 못해 매 프레임 다시 그린다(실기기 버벅임의 주범).
+   ±10도 회전에도 화면을 덮으려면 150%면 충분하다. */
+.stageRays{position:absolute;top:0;left:50%;width:150%;height:100%;transform:translateX(-50%);
   pointer-events:none;z-index:0;overflow:hidden;
   animation:raysIn 3s ease both}
 /* 등장 — 배경 자체는 움직이지 않는다(scaleY로 아래에서 위로 늘리던 걸 뺐다. 배경이 따라 움직이면
    카드가 올라오는 모션과 겹쳐 화면 전체가 흔들리는 것처럼 보인다). 밝기만 서서히 올라온다.
    방향별로 다르게 드러나는 느낌은 겹마다 밝기 애니메이션 시작 위상을 어긋나게 해서 만든다(animation-delay) */
 @keyframes raysIn{ from{opacity:0} to{opacity:1} }
-.stageRays i{position:absolute;inset:-30% -10% 0;display:block;transform-origin:50% 0;
+.stageRays i{position:absolute;inset:-20% -6% 0;display:block;transform-origin:50% 0;
   -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 18%,rgba(0,0,0,.62) 35%,transparent 55%);
           mask-image:linear-gradient(to bottom,#000 0%,#000 18%,rgba(0,0,0,.62) 35%,transparent 55%)}
 .stageRays i:nth-child(1){
@@ -328,6 +331,14 @@ button{font-family:var(--font)}
   animation:frameSweep 3.4s linear infinite}
 @keyframes frameSweep{to{transform:rotate(1turn)}}
 @media (prefers-reduced-motion:reduce){ .cardFace::before{animation:none} }
+/* 폰에서는 광선을 두 겹으로 줄이고 블러도 낮춘다. 겹이 셋이면 화면 면적의 몇 배를 매 프레임
+   다시 칠하게 되고, 정작 작은 화면에서는 셋째 겹이 앞의 둘에 묻혀 거의 보이지도 않는다.
+   데스크톱은 그대로 셋 — 여유가 있는 쪽까지 깎을 이유는 없다. */
+@media (max-width:520px){
+  .stageRays i:nth-child(3){display:none}
+  .stageRays i:nth-child(1){filter:blur(12px)}
+  .stageRays i:nth-child(2){filter:blur(22px)}
+}
 .cardFace .inner{position:relative;width:100%;height:100%;border-radius:calc(var(--r-card) - 3px);overflow:hidden;
   background:linear-gradient(175deg,#191b22,#0d0e12 70%)}
 
@@ -546,7 +557,10 @@ button{font-family:var(--font)}
 .backTitle{font-size:13px;font-weight:800;color:var(--g-text)}
 .backGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 /* 아래 최근 경기 행(.recRow)과 같은 배경·라인·라운드 — 뒷면의 두 블록이 한 벌로 읽히게 */
-.backStat{backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);text-align:center;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:10px 4px}
+/* backdrop-filter를 뺐다 — 3D로 뒤집히는 카드 안에서 뒤 배경을 흐리는 건 폰에서 비싸고,
+   뒷면에 이런 블록이 여덟(스탯 3 + 경기 5)이라 그 값이 곱해진다.
+   대신 배경을 조금 진하게 해 뒤 패턴이 비쳐 어지러워지는 것만 막는다. */
+.backStat{text-align:center;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:10px 4px}
 .backStat b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800}
 .backStat span{font-size:11px;color:var(--on-dark-dim)}
 .backNote{margin-top:auto;font-size:11px;color:var(--on-dark-dim);text-align:center}
@@ -684,9 +698,15 @@ button{font-family:var(--font)}
    시트와 같은 여백을 쓰면 5행이 카드 밖으로 400px 넘게 흘러나간다.
    글자는 11px(기능 텍스트 하한)까지만 줄이고 나머지는 여백으로 줄인다. */
 .cardFace.back .recRow{margin-bottom:5px;padding:7px 10px;font-size:11px;border-radius:9px;
-  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+  background:rgba(255,255,255,.11)}
 .cardFace.back .recRow:last-child{margin-bottom:0}
 .cardFace.back .recRow .op{gap:5px}
+/* 뒷면 행은 누르는 것이 아니다 — 커서와 화살표를 걷어내 '읽는 줄'로 보이게 한다 */
+.recStatic{cursor:default}
+.cardFace.back .recStatic::after{display:none}
+/* 24/8/1 — 슬래시를 흐리게 해서 숫자 셋이 먼저 읽히게 한다 */
+.recLine{font-family:var(--font-display);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.recLine i{font-style:normal;opacity:.45;margin:0 1px}
 .cardFace.back .wl{width:18px;height:15px;border-radius:4px}
 .cardFace.back .inner{gap:10px}
 .sheet .recRow{background:var(--sh-bg2);border-color:var(--sh-border);color:var(--sh-on)}
@@ -1175,20 +1195,27 @@ function dot(){ return '<span class="newDot" aria-label="새로 바뀜"></span>'
 
 /* ---- 최근 경기 목록 ----
    카드 뒷면은 5경기까지만. 카드는 손에 쥐는 물건이고, 그 크기 안에서 읽히는 만큼만 담아야 한다.
-   시트는 전부 볼 수 있는 자리다 — 처음엔 10경기만 세우고 나머지는 접어 둔다.
+   시트는 전부 볼 수 있는 자리다 — 처음엔 5경기만 세우고 나머지는 접어 둔다.
    한 번에 다 쏟아 놓으면 아래 블록(획득 배지·카드 앨범)이 저 밑으로 밀려 있는 줄도 모른다. */
-var BACK_MAX = 5, SHEET_MAX = 10;
+var BACK_MAX = 5, SHEET_MAX = 5;
 var sheetGamesExpanded = false;
 
 function gameRow(g, opts){
   var o = opts || {};
-  var lead = o.back
-    ? '<span>'+g.date+'</span><span class="wl '+(g.win?'w':'l')+'">'+(g.win?'W':'L')+'</span>'+
-      '<span class="opFlex">vs '+g.opp+'</span>'
-    : (o.newDot ? dot() : '')+'<span class="opFlex">'+g.stage+'</span>'+
-      '<span class="wl '+(g.win?'w':'l')+'">'+(g.win?'W':'L')+'</span>';
-  var stat = o.back ? g.pts+'점' : g.pts+'점 '+g.reb+'리바 '+g.ast+'어시';
-  return '<a class="recRow" href="game.html?id='+g.id+'"><span class="op">'+lead+'</span><b>'+stat+'</b></a>';
+  if(o.back){
+    /* 뒷면은 카드 안에서 훑는 자리다 — 누르면 다른 화면으로 나가는 길을 두지 않는다.
+       카드를 보다가 튕겨 나가면 뒤집어 놓은 카드로 돌아오기가 번거롭다. 경기 상세로 가는 길은
+       시트의 목록이 맡는다. 상대 팀명도 뺐다 — 다섯 줄에서 가장 먼저 잘리던 칸이고,
+       카드 뒷면에서 필요한 건 '언제·이겼나·얼마나 했나'까지다. */
+    return '<div class="recRow recStatic">'+
+      '<span class="op"><span>'+g.date+'</span>'+
+      '<span class="wl '+(g.win?'w':'l')+'">'+(g.win?'W':'L')+'</span></span>'+
+      '<b class="recLine">'+g.pts+'<i>/</i>'+g.reb+'<i>/</i>'+g.ast+'</b></div>';
+  }
+  var lead = (o.newDot ? dot() : '')+'<span class="opFlex">'+g.stage+'</span>'+
+    '<span class="wl '+(g.win?'w':'l')+'">'+(g.win?'W':'L')+'</span>';
+  return '<a class="recRow" href="game.html?id='+g.id+'"><span class="op">'+lead+'</span>'+
+    '<b>'+g.pts+'점 '+g.reb+'리바 '+g.ast+'어시</b></a>';
 }
 
 function renderGameLists(){
@@ -1741,13 +1768,22 @@ function createCardController(wrapEl, opts){
     wrapEl.style.setProperty('--holo-tx', (current.rx * 4).toFixed(1)+'px');
     wrapEl.style.setProperty('--holo-ty', (-current.ry * 4).toFixed(1)+'px');
   }
+  /* 목표에 닿으면 루프를 멈춘다. 예전엔 카드가 가만히 있어도 60fps로 계속 돌았다 —
+     화면에 아무 변화가 없는데 매 프레임 스타일을 쓰는 셈이라 폰에서 그만큼 프레임을 잡아먹는다.
+     새 입력이 들어오면 wake()가 다시 깨운다. */
+  var IDLE_EPS = 0.02;
   function loop(){
     current.rx += (target.rx - current.rx) * 0.14;
     current.ry += (target.ry - current.ry) * 0.14;
     setVars();
+    if(Math.abs(target.rx - current.rx) < IDLE_EPS && Math.abs(target.ry - current.ry) < IDLE_EPS){
+      current.rx = target.rx; current.ry = target.ry; setVars();
+      raf = null; return;                      // 다 따라잡았다 — 다음 입력까지 쉰다
+    }
     raf = requestAnimationFrame(loop);
   }
-  if(!reduceMotion) raf = requestAnimationFrame(loop);
+  function wake(){ if(!reduceMotion && !raf) raf = requestAnimationFrame(loop); }
+  if(!reduceMotion) wake();
 
   function tiltFromPointer(clientX, clientY){
     var r = wrapEl.getBoundingClientRect();
@@ -1755,8 +1791,9 @@ function createCardController(wrapEl, opts){
     var ny = (clientY - r.top) / r.height - 0.5;
     target.rx = nx * MAX_TILT * 2;
     target.ry = -ny * MAX_TILT * 2;
+    wake();
   }
-  function resetTilt(){ target.rx = 0; target.ry = 0; }
+  function resetTilt(){ target.rx = 0; target.ry = 0; wake(); }
 
   wrapEl.addEventListener('pointerdown', function(e){
     dragMoved = false; downX = e.clientX; downY = e.clientY;
@@ -1786,6 +1823,15 @@ function createCardController(wrapEl, opts){
          권한을 묻는 탭과 뒤집는 탭이 같으면 사용자는 뭘 한 건지 알 수 없다. */
   if(opts.orientation && typeof DeviceOrientationEvent !== 'undefined'){
     var tiltOn = false;
+    /* 안내 문구로 센서 상태를 알린다. 아무 말이 없으면 사용자는 폰을 흔들어 보고
+       '안 되는구나'로 끝난다 — 권한을 물어야 켜진다는 사실 자체가 안 보이기 때문이다. */
+    function setHint(state){
+      var el = document.getElementById('hint');
+      if(!el || el.classList.contains('hide')) return;
+      if(state === 'ask')     el.textContent = '카드를 한 번 눌러 기울임 센서를 켜세요 · 다시 누르면 뒷면';
+      if(state === 'granted') el.textContent = '폰을 기울여 보세요 · 눌러서 뒷면을 확인하세요';
+      if(state === 'denied')  el.textContent = '기울임 센서가 꺼져 있어요 · 눌러서 뒷면을 확인하세요';
+    }
     function enableTilt(){
       if(tiltOn) return;
       tiltOn = true;
@@ -1796,17 +1842,29 @@ function createCardController(wrapEl, opts){
         var b = Math.max(-30, Math.min(30, e.beta - 45));
         target.rx = (g / 30) * MAX_TILT;
         target.ry = (b / 30) * MAX_TILT;
+        wake();
       });
     }
     if(typeof DeviceOrientationEvent.requestPermission === 'function'){
-      /* iOS — 첫 탭이 권한 요청을 겸한다. 그 탭은 뒤집기로 세지 않는다(consumeTapForTilt). */
-      wrapEl.addEventListener('pointerdown', function askOnce(){
-        wrapEl.removeEventListener('pointerdown', askOnce);
+      /* iOS — 첫 탭이 권한 요청을 겸한다.
+         요청은 click에서 한다. Safari는 모션 권한을 '사용자 제스처 안에서'만 허락하는데,
+         pointerdown은 기기·버전에 따라 제스처로 인정되지 않는 경우가 있어 팝업이 아예 뜨지 않는다.
+         click은 확실히 인정된다. 다만 뒤집기 억제 플래그는 pointerdown에서 세워야 한다 —
+         뒤집기 click 핸들러가 이 핸들러보다 먼저 등록돼 있어 먼저 실행되기 때문이다. */
+      wrapEl.addEventListener('pointerdown', function armOnce(){
+        wrapEl.removeEventListener('pointerdown', armOnce);
         consumeTapForTilt = true;
+      });
+      wrapEl.addEventListener('click', function askOnce(){
+        wrapEl.removeEventListener('click', askOnce);
         DeviceOrientationEvent.requestPermission()
-          .then(function(state){ if(state === 'granted') enableTilt(); })
-          .catch(function(){});
-      }, { once:true });
+          .then(function(state){
+            if(state === 'granted'){ enableTilt(); setHint('granted'); }
+            else setHint('denied');
+          })
+          .catch(function(){ setHint('denied'); });
+      });
+      setHint('ask');
     } else {
       enableTilt();   // 권한 절차가 없는 환경 — 로드 즉시. 누를 필요 없다.
     }

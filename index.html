@@ -1182,8 +1182,17 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    농도도 한 단계 올렸다. */
 .pdGlow{position:absolute;top:50%;left:50%;width:352px;height:472px;margin:-236px 0 0 -176px;
   z-index:0;pointer-events:none;border-radius:50%;filter:blur(48px);
-  background:radial-gradient(ellipse at 50% 50%,var(--g-b,#ccc) 0%,var(--g-a,#888) 45%,transparent 74%);
+  /* 중간 정지점에 어두운 --g-a를 그대로 쓰면 그 색이 오라의 대부분을 덮어 칙칙해진다
+     (골드의 --g-a는 #9c7415, 금색이 아니라 어두운 올리브다). 밝은 --g-b 쪽으로 끌어와 섞는다 —
+     등급별 색조는 그대로 두고 밝기만 올리는 방법이다. 브론즈·실버도 같은 이유로 함께 밝아진다. */
+  background:radial-gradient(ellipse at 50% 50%,
+    var(--g-b,#ccc) 0%,
+    color-mix(in srgb, var(--g-b,#ccc) 68%, var(--g-a,#888)) 46%,
+    transparent 74%);
   animation:pdBreathe 6s ease-in-out infinite}
+/* 스타터는 색 오라를 걸지 않는다 — 아직 등급이 없다는 뜻이라 색으로 존재감을 주면 말이 어긋난다.
+   카드 자체의 그림자만 남겨 '떠 있다'만 표현한다. */
+.pdCardArea[data-grade="starter"] .pdGlow{display:none}
 .pdStage .pdCard{z-index:1}
 @keyframes pdBreathe{
   0%,100%{opacity:.34;transform:scale(.93)}
@@ -1442,6 +1451,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdBackGameRow b{color:#fff;font-weight:800}
 .pdBackGameRow .gr-l{display:flex;align-items:center;gap:7px;min-width:0}
 .pdBackGameRow .gr-l > span{flex:none}
+/* 24/8/1 — 슬래시를 흐리게 해서 숫자 셋이 먼저 읽히게 한다(선수 카드 .recLine과 같은 값) */
+.pdRecLine{font-family:var(--font-display);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.pdRecLine i{font-style:normal;opacity:.45;margin:0 1px}
 /* 폭이 모자라면 이 칸만 줄어든다 — 날짜와 승패 뱃지는 끝까지 온전해야 읽을 수 있다.
    줄일 칸을 위치(:first-child)로 정하면 날짜가 잘린다(선수 카드에서 실제로 그랬다). */
 .pdBackGameRow .gr-l .opFlex{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
@@ -4725,10 +4737,13 @@ function renderPlayerDetail(){
     (log.length
       ? '<div class="pdBackGames">'+log.slice(0,2).map(function(g){
           // 뱃지는 날짜 뒤 — 날짜가 먼저 읽히고 승패가 그 결과로 따라붙는 순서가 자연스럽다
+          /* 선수 카드 뒷면(player-card.html gameRow)과 같은 형태 — 날짜·승패·24/8/1.
+             상대 팀명은 뺐다: 좁은 카드에서 가장 먼저 잘리던 칸이고, 뒷면에서 필요한 건
+             '언제·이겼나·얼마나 했나'까지다. */
           return '<div class="pdBackGameRow"><span class="gr-l">'+
             '<span>'+g.date.slice(5)+'</span>'+
-            '<span class="wl '+(g.win?'w':'l')+'">'+(g.win?'W':'L')+'</span>'+
-            '<span class="opFlex">vs '+g.opp+'</span></span><b>'+g.pts+'점</b></div>';
+            '<span class="wl '+(g.win?'w':'l')+'">'+(g.win?'W':'L')+'</span></span>'+
+            '<b class="pdRecLine">'+g.pts+'<i>/</i>'+g.reb+'<i>/</i>'+g.ast+'</b></div>';
         }).join('')+'</div>'
       : '<div class="pdBackEmptyNote">아직 기록된 경기가 없어요</div>')+
     '<div class="pdBackNote">'+(log[0] ? 'update '+log[0].date.replace(/-/g,'.') : '')+'</div>';
