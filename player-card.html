@@ -565,7 +565,30 @@ button{font-family:var(--font)}
 .flipBtn .newDot{margin-left:6px}
 /* OVR 추세 — 숫자 옆 작게. 색은 방향을 말한다(상승 초록 · 하락 회색톤 빨강). */
 .ovrVal{display:flex;align-items:center;justify-content:flex-end;gap:1px}
-.ovrTrend{display:inline-flex;align-items:center;flex:none}
+.ovrTrend{display:inline-flex;align-items:center;flex:none;
+  animation:trendPop 2.4s cubic-bezier(.3,0,.2,1) infinite}
+.ovrTrend.down{animation-name:trendPopDown}
+/* 두 번 튀고 멈춰 선다. 계속 흔들면 잔소리가 되고, 한 번만 튀면 못 보고 지나친다 —
+   두 번은 "올랐다"를 말하기에 충분하고, 뒤의 정지(1.6초)가 그 말을 끝맺는다.
+   두 번째가 더 작은 건 튕김이 힘을 잃는 방식이다. 그래야 물리로 읽힌다. */
+@keyframes trendPop{
+  0%  {transform:translateY(0);    animation-timing-function:cubic-bezier(.2,.7,.3,1)}
+  8%  {transform:translateY(-5px); animation-timing-function:cubic-bezier(.5,0,.75,.9)}
+  18% {transform:translateY(0);    animation-timing-function:cubic-bezier(.2,.7,.3,1)}
+  25% {transform:translateY(-3px); animation-timing-function:cubic-bezier(.5,0,.75,.9)}
+  33% {transform:translateY(0)}
+  100%{transform:translateY(0)}    /* 홀드 — 다음 주기까지 가만히 있는다 */
+}
+/* 하락은 같은 리듬을 아래로 — 방향이 뒤집히면 뜻도 뒤집힌다 */
+@keyframes trendPopDown{
+  0%  {transform:translateY(0);    animation-timing-function:cubic-bezier(.2,.7,.3,1)}
+  8%  {transform:translateY(5px);  animation-timing-function:cubic-bezier(.5,0,.75,.9)}
+  18% {transform:translateY(0);    animation-timing-function:cubic-bezier(.2,.7,.3,1)}
+  25% {transform:translateY(3px);  animation-timing-function:cubic-bezier(.5,0,.75,.9)}
+  33% {transform:translateY(0)}
+  100%{transform:translateY(0)}
+}
+@media (prefers-reduced-motion:reduce){ .ovrTrend{animation:none} }
 .ovrTrend svg{width:14px;height:14px;display:block}
 /* 카드 앞면은 상승·하락 색을 쓰지 않는다 — 등급색과 홀로그램이 이미 돌고 있는 표면에 초록·빨강을
    더하면 카드가 대시보드가 된다. 방향은 삼각형 모양만으로 읽힌다. 색은 시트에서만 쓴다.
