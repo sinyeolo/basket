@@ -653,7 +653,9 @@ button{font-family:var(--font)}
    기록과 화살표가 오른쪽에 붙는다(space-between만 두면 기록이 가운데로 밀린다). */
 .recRow .op{display:inline-flex;align-items:center;gap:8px;min-width:0;flex:1}
 .recRow b{flex:none;margin-left:10px}
-.recRow .op > span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.recRow .op > span{flex:none}
+/* 폭이 모자라면 이 칸만 줄어든다 — 날짜와 승패 뱃지는 끝까지 온전해야 읽을 수 있다 */
+.recRow .op .opFlex{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .wl{display:inline-flex;align-items:center;justify-content:center;flex:none;
   width:22px;height:18px;padding:0;box-sizing:border-box;
   font-size:11px;font-weight:800;letter-spacing:.02em;border-radius:5px;line-height:1}
@@ -816,7 +818,7 @@ button{font-family:var(--font)}
               <div class="backTitle hasRec">시즌 평균 기록</div>
               <div class="backGrid hasRec" id="backGrid"></div>
               <div class="backTitle hasRec">최근 경기</div>
-              <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span>07.23</span><span class="wl w">W</span><span>vs 인천 파이터스</span></span><b>24점</b></a>
+              <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span>07.23</span><span class="wl w">W</span><span class="opFlex">vs 인천 파이터스</span></span><b>24점</b></a>
               <div class="recEmpty noRec">아직 뛴 경기가 없어요<br>첫 경기를 마치면 기록이 채워집니다</div>
               <div class="backNote" id="backUpdated">update 2026.07.23 13:20</div>
             </div>
@@ -890,8 +892,8 @@ button{font-family:var(--font)}
       <div class="section">
         <h3>최근 대회 기록</h3>
         <div class="recEmpty noRec">참가한 대회가 아직 없어요</div>
-        <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span class="recNew" id="recNew1"></span><span>2026 여름 3×3 리그 · 8강</span><span class="wl w">W</span></span><b>24점 8리바 4어시</b></a>
-        <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span>2026 여름 3×3 리그 · 예선</span><span class="wl l">L</span></span><b>18점 6리바 3어시</b></a>
+        <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span class="recNew" id="recNew1"></span><span class="opFlex">2026 여름 3×3 리그 · 8강</span><span class="wl w">W</span></span><b>24점 8리바 4어시</b></a>
+        <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span class="opFlex">2026 여름 3×3 리그 · 예선</span><span class="wl l">L</span></span><b>18점 6리바 3어시</b></a>
       </div>
       <div class="section">
         <h3>획득 배지</h3>

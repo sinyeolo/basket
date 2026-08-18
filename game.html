@@ -198,7 +198,7 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
   max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mvpCard .tm{font-size:11px;color:rgba(255,255,255,.66);
   max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mvpCard .badge{align-self:flex-start;font-family:var(--font-display);font-size:11px;
+.mvpCard .badge{position:absolute;z-index:2;top:8px;left:10px;font-family:var(--font-display);font-size:11px;
   font-weight:800;padding:2px 7px;border-radius:5px;background:var(--g-b);color:var(--g-c);letter-spacing:.04em}
 /* 이 경기 기록 — 카드가 선수를, 아래 줄이 오늘 무엇을 했는지를 말한다 */
 .mvp-line{display:flex;gap:0;text-align:center;width:100%}
@@ -257,10 +257,10 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .qtab{flex:none;height:32px;padding:0 14px;border-radius:100px;background:var(--surface-variant);
   color:var(--on-surface-variant);font-size:13px;font-weight:700}
 .qtab.on{background:var(--main);color:var(--on-main)}
-.pbp{display:flex;flex-direction:column;margin:0 -14px}
+.pbp{display:flex;flex-direction:column;margin:0 -10px}   /* 카드 패딩과 같은 값이어야 한다 */
 .pbp-q{text-align:center;padding:14px 0 10px;font-size:13px;font-weight:800}
 .pbp-row{display:grid;grid-template-columns:1fr 62px 1fr;align-items:center;gap:8px;
-  padding:9px 14px;min-height:44px}
+  padding:9px 10px;min-height:44px}
 .pbp-row:nth-child(odd){background:var(--head-bg)}
 .pbp-ev{display:flex;align-items:center;gap:7px;min-width:0;font-size:13px;line-height:1.4}
 .pbp-ev.away{justify-content:flex-end;text-align:right}
@@ -285,7 +285,7 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .bs-wrap::after{content:"";position:absolute;top:0;right:-14px;width:34px;height:100%;pointer-events:none;
   background:linear-gradient(90deg,transparent,var(--surface));opacity:1;transition:opacity .2s}
 .bs-wrap.end::after{opacity:0}
-.bs-scroll{overflow-x:auto;scrollbar-width:thin;margin:0 -14px;padding:0 14px;
+.bs-scroll{overflow-x:auto;scrollbar-width:thin;margin:0 -10px;padding:0 10px;   /* 카드 패딩과 같은 값 */
   -webkit-overflow-scrolling:touch}
 /* separate + spacing 0 — collapse에서는 셀의 box-shadow가 그려지지 않아, 고정된 선수 칸의
    배경을 왼쪽으로 늘려 덮을 수가 없다. 테두리는 셀의 border-bottom만 쓰므로 겹칠 일도 없다. */
@@ -517,12 +517,12 @@ function viewSummary(){
         /* 사진을 올린 선수는 사진, 아니면 실루엣. 선수 카드(player-card.html)와 같은 규칙이라
            같은 선수가 두 화면에서 다른 얼굴로 보이지 않는다. */
         (p.photo ? '<img class="ph" src="'+p.photo+'" alt="">' : SIL) +
-        /* 배치는 선수 카드와 같다 — OVR 우상단, 등번호 우하단, 등급·이름·팀 좌하단 왼쪽 정렬.
+        /* 배치는 선수 카드와 같다 — 등급 좌상단, OVR 우상단, 등번호 우하단, 이름·팀 좌하단.
            같은 선수의 카드가 두 화면에서 다르게 생기면 같은 물건으로 안 읽힌다. */
+        '<span class="badge">'+({gold:'GOLD',silver:'SILVER',bronze:'BRONZE'}[gk])+'</span>'+
         '<span class="ovr"><em>OVR</em>'+ovr+'</span>'+
         '<div class="foot">'+
           '<div class="idn">'+
-            '<span class="badge">'+({gold:'GOLD',silver:'SILVER',bronze:'BRONZE'}[gk])+'</span>'+
             '<span class="nm">'+p.name+'</span>'+
             '<span class="tm">'+t.name+'</span>'+
           '</div>'+
