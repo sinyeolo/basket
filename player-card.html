@@ -271,7 +271,7 @@ button{font-family:var(--font)}
 /* ---------------- 카드 무대 ---------------- */
 /* 시트가 올라오는 만큼(--recede: 0~1) 카드가 뒤로 빠지듯 살짝 작아지고 옅어짐 — .cardWrap 자체가 아니라 이 무대를
    스케일링해서, 틸트를 매 프레임 직접 갱신하는 .cardWrap의 transform과 서로 트랜지션이 겹치지 않게 분리했다 */
-.cardStage{position:relative;display:flex;justify-content:center;padding:18px 20px 8px;perspective:1200px;
+.cardStage{position:relative;z-index:1;display:flex;justify-content:center;padding:18px 20px 8px;perspective:1200px;
   transform:scale(calc(1 - var(--recede,0) * .14));opacity:calc(1 - var(--recede,0) * .45);
   transition:transform .2s ease-out, opacity .2s ease-out}
 .cardWrap{width:var(--card-w);height:var(--card-h);position:relative;transform-style:preserve-3d;
@@ -422,17 +422,22 @@ button{font-family:var(--font)}
 .ovrBox{display:flex;flex-direction:column;align-items:flex-end;color:#fff}
 /* 라벨은 <button>이라 display:flex를 줘도 폭이 내용만큼만 잡힌다(폼 컨트롤의 auto 폭은 fit-content).
    그래서 부모의 text-align:right가 먹지 않았다 — 부모를 flex로 세워 오른쪽에 붙인다. */
-.ovrBox .lb{font-size:14px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);
+.ovrBox .lb{font-size:16px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);
   display:flex;align-items:center;justify-content:flex-end;gap:4px}
 .ovrBox .vl{font-family:var(--font-display);font-size:43px;font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--g-text)}
 /* OVR 라벨 전체(텍스트+아이콘)를 하나의 버튼으로 묶어 탭 영역을 넓힘. 아이콘 자체는 배경 없이 테두리만 */
+/* 아이콘의 letter-spacing:0은 장식이 아니다 — 라벨의 자간(.1em)이 상속되면 한 글자짜리 '?' 뒤에도
+   1.6px가 따라붙어 글자가 원 안에서 왼쪽으로 밀려 보인다. 글리프 자체는 좌우 대칭이다. */
 /* 시각 크기는 45×15지만 손가락은 그만큼 정확하지 않다. 카드 우상단이라 여백을 더 줄 수 없으므로
    히트 영역만 바깥으로 넓힌다(WCAG 2.5.8 최소 24×24). 카드 탭-뒤집기와 겹치지만
    이 버튼이 위에 있어 먼저 받고, 핸들러가 전파를 막는다. */
 .ovrInfoBtn{position:relative;background:none;border:none;padding:0;font:inherit;cursor:pointer}
 .ovrInfoBtn::after{content:"";position:absolute;left:-10px;right:-10px;top:-11px;bottom:-11px}
-.ovrInfoBtn:hover{color:rgba(255,255,255,.8)}
-.ovrInfoIcon{width:15px;height:15px;border-radius:50%;border:1px solid rgba(255,255,255,.5);flex:none;
+.cardFace .ovrInfoBtn:hover{color:rgba(255,255,255,.8)}
+/* 시트는 밝은 표면이다 — 카드용 흰 호버를 그대로 물려받으면 글자가 배경에 묻혀 사라진다. */
+.sheet .ovrInfoBtn:hover{color:var(--sh-on)}
+.sheet .ovrInfoBtn:hover .ovrInfoIcon{border-color:var(--sh-on);color:var(--sh-on)}
+.ovrInfoIcon{width:15px;height:15px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);flex:none;letter-spacing:0;
   color:inherit;font-size:11px;font-weight:800;line-height:1;display:inline-flex;align-items:center;justify-content:center}
 .ovrInfoModal{position:fixed;inset:0;background:rgba(6,7,10,.72);z-index:70;display:flex;align-items:center;justify-content:center;
   opacity:0;pointer-events:none;transition:opacity .18s ease;padding:24px}
@@ -477,8 +482,10 @@ button{font-family:var(--font)}
   /* 테두리는 0.5px·50% — 있는 듯 없는 듯해야 로고가 주인공으로 남는다 */
   box-shadow:0 0 0 .5px rgba(255,255,255,.5),0 2px 6px rgba(0,0,0,.4)}
 /* 레벨·경험치는 카드 바깥 아래에 노출 — 운영단 선수 상세(index.html .pdLevelRow)와 동일 위치 */
-/* 카드보다 뒤에 둔다 — 카드가 기울어 아래로 넘어올 때 바가 그 위에 뜨면 층이 어긋나 보인다.
-   .cardStage .cardWrap이 z-index:1이므로 여기는 0으로 낮춘다. */
+/* 카드보다 뒤에 둔다 — 카드가 기울거나 등장하며 이 줄 위를 지날 때 바가 위에 뜨면 층이 어긋나 보인다.
+   .cardWrap에만 z-index를 걸어서는 안 됐다: .cardStage가 perspective를 가져 그 자체로 쌓임 맥락이라
+   안쪽 z-index가 바깥으로 올라오지 못한다. 그러면 DOM에서 뒤에 오는 이 줄(z:0)이 무대 위에 그려진다.
+   그래서 무대(.cardStage)를 1로 올리고 여기를 0으로 둔다. */
 .levelRow{position:relative;z-index:0;width:100%;max-width:var(--card-w);margin:14px auto 0;display:flex;align-items:center;gap:10px}
 .levelRow .lv{font-size:12px;font-weight:800;color:var(--g-text);white-space:nowrap}
 .expBar{flex:1;height:5px;border-radius:100px;background:rgba(255,255,255,.14);overflow:hidden}
@@ -494,12 +501,23 @@ button{font-family:var(--font)}
    앞면은 사진·오라가 덮고 있어 그대로 두고 뒷면에만 적용한다. */
 /* 뒷면 대각 로고 패턴 — 등급 톤으로 10%. 정보가 없는 넓은 면을 비워 두는 대신 브랜드로 채운다.
    패턴은 positioned라 그냥 두면 static인 본문 위를 덮는다 — 본문에 z-index를 올려 뒤로 보낸다. */
-.backLogoPat{position:absolute;inset:-40%;z-index:1;pointer-events:none;opacity:.07;
+.backLogoPat{position:absolute;inset:-80%;z-index:1;pointer-events:none;opacity:.07;
   background-color:var(--g-b);
   -webkit-mask-image:url(assets/logo-pat.svg);mask-image:url(assets/logo-pat.svg);
   -webkit-mask-size:92px auto;mask-size:92px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat;
-  transform:rotate(-35deg)}
+  transform:rotate(-35deg);
+  animation:backPatDrift 11s linear infinite}
+/* 패턴이 제 방향으로 천천히 흐른다. rotate 뒤에 translateX를 걸면 회전된 축(=타일이 늘어선 방향)을
+   따라가므로 사선 그대로 미끄러진다. 이동량은 타일 한 칸(92px) — 딱 한 주기라 이음매가 안 보인다.
+   transform이라 합성 단계에서만 처리된다(mask-position을 움직이면 매 프레임 다시 칠한다).
+
+   inset이 -80%인 이유: 레이어를 -35도 돌리면 카드 네 귀퉁이가 레이어 안쪽 219px 지점까지 들어온다.
+   여기에 흐르는 거리 92px이 더해지므로 반폭이 311px 넘게 필요하다. -40%(반폭 243px)로는 모자라서
+   흐르는 동안 뒤쪽 가장자리가 카드 안으로 들어왔고, 그 띠에서 패턴이 사라졌다가 한 바퀴 돌면
+   갑자기 다시 나타났다. -80%면 반폭 351px이라 전 구간을 덮는다. */
+@keyframes backPatDrift{from{transform:rotate(-35deg) translateX(0)}to{transform:rotate(-35deg) translateX(-92px)}}
+@media (prefers-reduced-motion:reduce){ .backLogoPat{animation:none} }
 .cardFace.back .inner > .backTitle,
 .cardFace.back .inner > .backGrid,
 .cardFace.back .inner > .recRow,
@@ -539,7 +557,7 @@ button{font-family:var(--font)}
   background:var(--brand);vertical-align:middle;flex:none}
 .flipBtn .newDot{margin-left:6px}
 /* OVR 추세 — 숫자 옆 작게. 색은 방향을 말한다(상승 초록 · 하락 회색톤 빨강). */
-.ovrVal{display:flex;align-items:center;justify-content:flex-end;gap:4px}
+.ovrVal{display:flex;align-items:center;justify-content:flex-end;gap:1px}
 .ovrTrend{display:inline-flex;align-items:center;flex:none}
 .ovrTrend svg{width:14px;height:14px;display:block}
 /* 카드 앞면은 색을 쓰지 않는다 — 등급색과 홀로그램이 이미 돌고 있는 표면에 초록·빨강을 더하면
@@ -548,7 +566,7 @@ button{font-family:var(--font)}
 .sheet .ovrTrend.up{color:#22c55e}
 .sheet .ovrTrend.down{color:#f87171}
 .ovrHero .ovrTrend svg{width:14px;height:14px}
-.ovrHero .ovrTrendSlot{display:inline-flex;align-self:center;margin-right:4px}
+.ovrHero .ovrTrendSlot{display:inline-flex;align-self:center;margin-right:1px}
 
 /* 조작 안내 — 최초 1회만 */
 .hint{max-width:280px;margin:10px auto 0;text-align:center;font-size:12px;color:var(--on-dark-dim);
@@ -576,7 +594,7 @@ button{font-family:var(--font)}
 .ovrHeroMain{display:flex;align-items:center;gap:8px;min-width:0}
 .ohValue{font-family:var(--font-display);font-size:44px;font-weight:800;line-height:.95;color:var(--sh-on);letter-spacing:-.03em}
 .ohLabel{display:inline-flex;align-items:center;gap:4px;background:none;border:none;padding:0;
-  font-family:inherit;font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--sh-on-dim);cursor:pointer}
+  font-family:inherit;font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--sh-on-dim);cursor:pointer}
 /* 시트는 밝은 표면이라 카드의 흰 테두리 아이콘이 안 보인다 — 같은 모양, 표면에 맞는 색 */
 .sheet .ovrInfoIcon{border-color:var(--sh-on-dim);color:var(--sh-on-dim)}
 /* 등급 뱃지 — 검정 대신 등급별 컬러. 어느 등급인지가 색으로 먼저 읽혀야 한다 */
