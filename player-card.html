@@ -1601,6 +1601,7 @@ function createCardController(wrapEl, opts){
   var current = { rx:0, ry:0 };
   var dragMoved = false, downX = 0, downY = 0;
   var raf = null;
+  var consumeTapForTilt = false;   // 센서 권한을 묻느라 쓴 첫 탭 — 이 탭으로 카드가 뒤집히면 안 된다
 
   function setVars(){
     wrapEl.style.setProperty('--rx', current.rx.toFixed(2)+'deg');
@@ -1639,29 +1640,45 @@ function createCardController(wrapEl, opts){
   wrapEl.addEventListener('click', function(e){
     if(e.target.closest('button, a')) return;   // 뒷면 최근 경기 줄은 경기 상세로 나간다
     if(dragMoved) return; // 기울이려고 드래그한 제스처는 탭-뒤집기로 처리하지 않음
+    if(consumeTapForTilt){ consumeTapForTilt = false; return; }
     flipped = !flipped;
     inner.classList.toggle('flipped', flipped);
   });
 
-  // 기기 센서 기울기 — 메인 카드에서만: 카드를 처음 터치하는 순간(사용자 제스처)에 조용히 권한 요청
+  /* ---- 기기 센서 기울기 ----
+     폰을 기울이면 카드가 따라 기운다. 카드를 누를 필요가 없어야 한다 — 누르는 건 뒤집기다.
+
+     그런데 iOS Safari는 모션 센서를 사용자 제스처 안에서만 허락한다(DeviceOrientationEvent.
+     requestPermission). 제스처 없이 부르면 그냥 거부된다. 그래서 두 갈래로 나눈다:
+       · 권한 절차가 없는 환경(안드로이드 등) — 바로 켠다. 탭이 필요 없다.
+       · iOS — 첫 탭에서 권한을 요청하되, 그 탭으로 카드가 뒤집히지는 않게 한다.
+         권한을 묻는 탭과 뒤집는 탭이 같으면 사용자는 뭘 한 건지 알 수 없다. */
   if(opts.orientation && typeof DeviceOrientationEvent !== 'undefined'){
-    wrapEl.addEventListener('pointerdown', function requestOrientationOnce(){
-      wrapEl.removeEventListener('pointerdown', requestOrientationOnce);
-      function enable(){
-        window.addEventListener('deviceorientation', function(e){
-          if(e.beta == null || e.gamma == null) return;
-          var ry = Math.max(-30, Math.min(30, e.gamma));
-          var rx = Math.max(-30, Math.min(30, e.beta - 45));
-          target.rx = (ry / 30) * MAX_TILT;
-          target.ry = (rx / 30) * MAX_TILT;
-        });
-      }
-      if(typeof DeviceOrientationEvent.requestPermission === 'function'){
-        DeviceOrientationEvent.requestPermission().then(function(state){ if(state === 'granted') enable(); }).catch(function(){});
-      } else {
-        enable(); // Android 등 권한 절차 없는 환경
-      }
-    }, { once:true });
+    var tiltOn = false;
+    function enableTilt(){
+      if(tiltOn) return;
+      tiltOn = true;
+      window.addEventListener('deviceorientation', function(e){
+        if(e.beta == null || e.gamma == null) return;
+        // gamma = 좌우 기울기, beta = 앞뒤 기울기(45도를 '똑바로 든 상태'로 본다)
+        var g = Math.max(-30, Math.min(30, e.gamma));
+        var b = Math.max(-30, Math.min(30, e.beta - 45));
+        target.rx = (g / 30) * MAX_TILT;
+        target.ry = (b / 30) * MAX_TILT;
+      });
+    }
+    if(typeof DeviceOrientationEvent.requestPermission === 'function'){
+      /* iOS — 첫 탭이 권한 요청을 겸한다. 그 탭은 뒤집기로 세지 않는다(consumeTapForTilt). */
+      wrapEl.addEventListener('pointerdown', function askOnce(){
+        wrapEl.removeEventListener('pointerdown', askOnce);
+        consumeTapForTilt = true;
+        DeviceOrientationEvent.requestPermission()
+          .then(function(state){ if(state === 'granted') enableTilt(); })
+          .catch(function(){});
+      }, { once:true });
+    } else {
+      enableTilt();   // 권한 절차가 없는 환경 — 로드 즉시. 누를 필요 없다.
+    }
   }
 
   return {
