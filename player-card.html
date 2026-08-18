@@ -537,13 +537,16 @@ button{font-family:var(--font)}
   background:var(--brand);vertical-align:middle;flex:none}
 .flipBtn .newDot{margin-left:6px}
 /* OVR 추세 — 숫자 옆 작게. 색은 방향을 말한다(상승 초록 · 하락 회색톤 빨강). */
-.ovrVal{display:flex;align-items:center;justify-content:flex-end;gap:2px}
+.ovrVal{display:flex;align-items:center;justify-content:flex-end;gap:3px}
 .ovrTrend{display:inline-flex;align-items:center;flex:none}
-.ovrTrend svg{width:10px;height:10px;display:block}
-.ovrTrend.up{color:#22c55e}
-.ovrTrend.down{color:#f87171}
-.ovrHero .ovrTrend svg{width:12px;height:12px}
-.ovrHero .ovrTrendSlot{display:inline-flex;align-self:center;margin-left:4px}
+.ovrTrend svg{width:11px;height:11px;display:block}
+/* 카드 앞면은 색을 쓰지 않는다 — 등급색과 홀로그램이 이미 돌고 있는 표면에 초록·빨강을 더하면
+   카드가 대시보드가 된다. 방향은 삼각형 모양만으로 읽힌다. 색은 시트에서만 쓴다. */
+.cardFace .ovrTrend{color:currentColor;opacity:.75}
+.sheet .ovrTrend.up{color:#22c55e}
+.sheet .ovrTrend.down{color:#f87171}
+.ovrHero .ovrTrend svg{width:13px;height:13px}
+.ovrHero .ovrTrendSlot{display:inline-flex;align-self:center;margin-right:4px}
 
 /* 조작 안내 — 최초 1회만 */
 .hint{max-width:280px;margin:10px auto 0;text-align:center;font-size:12px;color:var(--on-dark-dim);
@@ -585,7 +588,10 @@ button{font-family:var(--font)}
    같은 칸을 줘서 '21.4'가 벌어져 보였다. 표처럼 자릿수를 맞출 필요가 없는 자리라 비례 숫자가 맞다. */
 .avgIt b{font-family:var(--font-display);display:block;font-size:19px;font-weight:800;color:var(--sh-on);line-height:1.1;letter-spacing:-.01em}
 .avgIt span{display:block;margin-top:4px;font-size:11px;color:var(--sh-on-dim)}
-.section h3{font-size:13px;font-weight:800;color:var(--sh-on-dim);margin:0 0 10px;letter-spacing:.02em}
+.section h3{display:flex;align-items:baseline;gap:8px;font-size:13px;font-weight:800;color:var(--sh-on-dim);margin:0 0 10px;letter-spacing:.02em}
+/* 갱신 날짜 — 제목 줄 오른쪽 끝에. 평균이 언제 기준인지는 알아야 하지만, 평균 자체보다
+   중요할 일은 없다. 그래서 가장 약한 무게로 끝에 붙인다. */
+.upAt{margin-left:auto;font-size:11px;font-weight:500;letter-spacing:0;color:var(--sh-on-dim);opacity:.7}
 /* .recRow는 카드 뒷면(다크)에도 쓰이는 공용 클래스라 기본값은 그대로 두고, 시트 안에서만 화이트로 덮어씀 */
 .recRow{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);
   border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:12px;
@@ -605,6 +611,9 @@ button{font-family:var(--font)}
    두 값이 겹치면 14+10=24px로 벌어진다. 시트 안 .recRow는 flex가 아니라 마진이 필요해 그대로 둔다. */
 .cardFace.back .recRow{margin-bottom:0;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
 .sheet .recRow{background:var(--sh-bg2);border-color:var(--sh-border);color:var(--sh-on)}
+.recRow .op{display:flex;align-items:center;gap:6px}
+.recRow .newDot{margin-left:0}
+.recNew:empty{display:none}   /* 새 기록이 아닐 땐 자리도 차지하지 않는다 */
 .sheet .recRow .op{color:var(--sh-on-dim)}
 /* 승패 뱃지 — 좁은 카드 뒷면에 맞춰 W/L 한 글자로. 운영 화면이 Win/Lose를 쓰므로 같은 말의 축약이다.
    승은 운영 화면과 같은 브랜드 컬러, 패는 회색. 시트(화이트)에서는 패의 회색만 밝은 톤으로 바꾼다. */
@@ -737,7 +746,7 @@ button{font-family:var(--font)}
               <div class="holoGrain" aria-hidden="true"></div>
               <div class="topRow">
                 <div class="brandCol"><span class="brandLogo logoMark" role="img" aria-label="BASKET"></span><span class="gradeBadge" id="fGradeChip">GOLD</span></div>
-                <div class="ovrBox"><button type="button" class="lb ovrInfoBtn" id="ovrInfoBtn" aria-label="OVR 계산 방식 안내">OVR<span class="ovrInfoIcon" aria-hidden="true">?</span></button><div class="ovrVal"><div class="vl" id="fOvr">88</div><span class="ovrTrendSlot" id="fOvrTrend"></span></div></div>
+                <div class="ovrBox"><button type="button" class="lb ovrInfoBtn" id="ovrInfoBtn" aria-label="OVR 계산 방식 안내">OVR<span class="ovrInfoIcon" aria-hidden="true">?</span></button><div class="ovrVal"><span class="ovrTrendSlot" id="fOvrTrend"></span><div class="vl" id="fOvr">88</div></div></div>
               </div>
               <div class="photoLayer"><div class="avatarSil" id="fAvatar"></div></div>
               <div class="infoBlur infoBlur1" aria-hidden="true"></div>
@@ -823,7 +832,7 @@ button{font-family:var(--font)}
         <span class="ohGrade" id="sGrade" data-g="gold">GOLD</span>
         <div class="ovrHeroMain">
           <span class="ohLabel">OVR</span>
-          <span class="ohValue" id="sOvr">88</span><span class="ovrTrendSlot" id="sOvrTrend"></span>
+          <span class="ovrTrendSlot" id="sOvrTrend"></span><span class="ohValue" id="sOvr">88</span>
         </div>
       </div>
 
@@ -836,7 +845,7 @@ button{font-family:var(--font)}
 
       <!-- ============ 시즌 평균 ============ -->
       <div class="section">
-        <h3>시즌 평균<span id="dotAvg"></span></h3>
+        <h3>시즌 평균<span class="upAt" id="avgUpAt"></span></h3>
         <div class="recEmpty noRec">아직 뛴 경기가 없어요</div>
         <div class="avgRow hasRec">
           <div class="avgIt"><b id="sAvgPts">21.4</b><span>득점</span></div>
@@ -847,9 +856,9 @@ button{font-family:var(--font)}
 
       <!-- ============ 기록 ============ -->
       <div class="section">
-        <h3>최근 대회 기록<span id="dotRec"></span></h3>
+        <h3>최근 대회 기록</h3>
         <div class="recEmpty noRec">참가한 대회가 아직 없어요</div>
-        <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span>2026 여름 3×3 리그 · 8강</span><span class="wl w">W</span></span><b>24점 8리바 4어시</b></a>
+        <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span class="recNew" id="recNew1"></span><span>2026 여름 3×3 리그 · 8강</span><span class="wl w">W</span></span><b>24점 8리바 4어시</b></a>
         <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span>2026 여름 3×3 리그 · 예선</span><span class="wl l">L</span></span><b>18점 6리바 3어시</b></a>
       </div>
       <div class="section">
@@ -931,6 +940,7 @@ var PLAYER = {
      실제 서비스에서는 이 선수의 카드를 마지막으로 연 시점의 스냅샷이 서버(또는 로컬)에서 온다.
      여기서는 프로토타입이라 목업으로 둔다: 지난번보다 OVR 2 오르고, 평균 득점이 늘고, 경기 1건이 추가된 상태. */
   seen:{ ovr:88, stats:{ pts:20.6, reb:7.1, ast:3.0 }, games:41 },
+  statsUpdatedAt:'2026-08-16',   // 시즌 평균이 마지막으로 갱신된 날(= 마지막 확정 경기일)
   photo:'https://images.pexels.com/photos/20615486/pexels-photo-20615486.jpeg?cs=srgb&dl=pexels-hanuman-photo-studio-564865561-20615486.jpg&fm=jpg',
   badges:['첫 대회 참가','10회 출전','팀 로열티']
 };
@@ -1046,6 +1056,11 @@ function ovrTrendHtml(delta){
   '</span>';
 }
 function dot(){ return '<span class="newDot" aria-label="새로 바뀜"></span>'; }
+// 2026-08-16 → 8.16 — 연도는 시즌 안에서 늘 같으므로 뺀다
+function fmtUpAt(iso){
+  var p = String(iso).split('-');
+  return p.length === 3 ? (+p[1]) + '.' + (+p[2]) : iso;
+}
 
 function applyGrade(key){
   var g = GRADES[key];
@@ -1078,9 +1093,13 @@ function paintChanges(){
   var fT = document.getElementById('fOvrTrend'), sT = document.getElementById('sOvrTrend');
   if(fT) fT.innerHTML = trend;
   if(sT) sT.innerHTML = trend;
-  var dAvg = document.getElementById('dotAvg'), dRec = document.getElementById('dotRec');
-  if(dAvg) dAvg.innerHTML = c.avg ? dot() : '';
-  if(dRec) dRec.innerHTML = c.games ? dot() : '';
+  /* 시즌 평균은 점 대신 '언제 기준인지'를 적는다 — 평균은 매 경기 조금씩 움직이는 값이라
+     바뀔 때마다 점을 찍으면 늘 켜져 있는 표시가 되고, 그러면 아무 뜻도 없어진다. */
+  var upAt = document.getElementById('avgUpAt');
+  if(upAt) upAt.textContent = PLAYER.statsUpdatedAt ? fmtUpAt(PLAYER.statsUpdatedAt) + ' 기준' : '';
+  /* 새 기록은 목록 제목이 아니라 그 경기 앞에 찍는다 — 어느 경기가 새것인지 알아야 의미가 있다. */
+  var rn = document.getElementById('recNew1');
+  if(rn) rn.innerHTML = c.games ? dot() : '';
   /* 카드 앞면에서 새 기록은 뒷면에 있다 — 뒤집을 이유를 버튼에 붙인다. */
   var flipBtn = document.getElementById('btnFlip');
   if(flipBtn){
@@ -1425,7 +1444,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
        높이는 646px인 상태가 만들어졌고, 그 뒤 핸들을 눌러도 X를 눌러도 엉뚱한 단계를 계산했다.
        시트의 위치는 언제나 세 단계 중 하나여야 나머지 조작이 그 위에서 성립한다. */
     clearTimeout(wheelSettle);
-    wheelSettle = setTimeout(function(){ var h = dragH; endDrag(); settleFromHeight(h); }, 160);
+    wheelSettle = setTimeout(function(){ settleFromHeight(dragH); }, 160);
   }, { passive:true });
 
   /* 손가락도 같게 — 폰에는 휠이 없다. 최상단·페이지 맨 위에서 아래로 쓸어내리면 시트가 따라 내려온다.
@@ -1443,7 +1462,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     setLiveHeight(swipeH - dy);
   }, { passive:true });
   document.addEventListener('touchend', function(){
-    if(swipeH){ var h = dragH; endDrag(); settleFromHeight(h); }
+    if(swipeH){ settleFromHeight(dragH); }
     swipeY = null; swipeH = 0;
   });
 
@@ -1477,17 +1496,22 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       if(dragStartY === null) return;
       dragStartY = null;
       var h = dragH;               // 화면에서 다시 재지 않는다 — 드래그가 목표로 한 값을 그대로 쓴다
-      endDrag();
       if(dragMoved){
+        /* endDrag()를 여기서 부르면 안 된다. transform이 지워지는 순간 시트가 드래그 전
+           위치로 되돌아가고, 스냅은 거기서부터 시작된다 — 손을 뗄 때 튕겨 보이던 정체다.
+           드래그 상태를 유지한 채 넘기면 goSheet가 지금 위치(dragH)를 출발점으로 삼는다. */
         settleFromHeight(h);
         suppressClick = true;
+      } else {
+        // 끌지 않고 뗀 경우(=탭)만 정리한다. 이어질 click 핸들러가 같은 자리에서 다시 계산한다.
+        endDrag();
       }
       // 실제로 끌지 않고 뗀 경우(=클릭)는 아무것도 안 함 — 곧 이어질 click 핸들러가 넛지 상태까지 정리한다
     });
     el.addEventListener('pointercancel', function(){
       if(dragStartY === null) return;
       dragStartY = null;
-      var h = dragH; endDrag(); settleFromHeight(h);
+      settleFromHeight(dragH);   // 끌던 자리에서 이어간다 — endDrag를 먼저 부르면 되돌아간 뒤 튄다
     });
   });
 })();
