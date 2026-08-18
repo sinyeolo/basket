@@ -419,7 +419,9 @@ button{font-family:var(--font)}
 .gradeBadge{border-radius:100px;background:rgba(0,0,0,.4);color:var(--g-text);
   border:1px solid color-mix(in srgb,var(--g-b) 55%,transparent);
   padding:3px 10px;font-size:11px;font-weight:800;letter-spacing:.05em}
-.ovrBox{text-align:right;color:#fff}
+.ovrBox{display:flex;flex-direction:column;align-items:flex-end;color:#fff}
+/* 라벨은 <button>이라 display:flex를 줘도 폭이 내용만큼만 잡힌다(폼 컨트롤의 auto 폭은 fit-content).
+   그래서 부모의 text-align:right가 먹지 않았다 — 부모를 flex로 세워 오른쪽에 붙인다. */
 .ovrBox .lb{font-size:14px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);
   display:flex;align-items:center;justify-content:flex-end;gap:4px}
 .ovrBox .vl{font-family:var(--font-display);font-size:43px;font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--g-text)}
@@ -537,15 +539,15 @@ button{font-family:var(--font)}
   background:var(--brand);vertical-align:middle;flex:none}
 .flipBtn .newDot{margin-left:6px}
 /* OVR 추세 — 숫자 옆 작게. 색은 방향을 말한다(상승 초록 · 하락 회색톤 빨강). */
-.ovrVal{display:flex;align-items:center;justify-content:flex-end;gap:3px}
+.ovrVal{display:flex;align-items:center;justify-content:flex-end;gap:4px}
 .ovrTrend{display:inline-flex;align-items:center;flex:none}
-.ovrTrend svg{width:11px;height:11px;display:block}
+.ovrTrend svg{width:14px;height:14px;display:block}
 /* 카드 앞면은 색을 쓰지 않는다 — 등급색과 홀로그램이 이미 돌고 있는 표면에 초록·빨강을 더하면
    카드가 대시보드가 된다. 방향은 삼각형 모양만으로 읽힌다. 색은 시트에서만 쓴다. */
 .cardFace .ovrTrend{color:currentColor;opacity:.75}
 .sheet .ovrTrend.up{color:#22c55e}
 .sheet .ovrTrend.down{color:#f87171}
-.ovrHero .ovrTrend svg{width:13px;height:13px}
+.ovrHero .ovrTrend svg{width:14px;height:14px}
 .ovrHero .ovrTrendSlot{display:inline-flex;align-self:center;margin-right:4px}
 
 /* 조작 안내 — 최초 1회만 */
@@ -567,13 +569,16 @@ button{font-family:var(--font)}
 .section{max-width:520px;margin:34px auto 0;padding:0}
 /* OVR 히어로 — 박스 없이. 회색 박스로 감싸면 아래 4지표 카드와 무게가 비슷해져 '가장 중요한 수치'로
    안 읽힌다. 등급 뱃지를 위에 올리고 그 아래 큰 숫자를 놓아 위에서 아래로 읽히게 했다. */
-.ovrHero{max-width:520px;margin:16px auto 0;padding:0;display:flex;flex-direction:row;
+.ovrHero{max-width:520px;margin:34px auto 0;padding:0;display:flex;flex-direction:row;
   align-items:center;justify-content:space-between;gap:12px}
 /* 라벨을 숫자 앞에 둬서 큰 숫자가 오른쪽 끝을 붙잡게 한다 — 숫자를 앞에 두면 오른쪽 끝이 작은 라벨로
    끝나 시선이 흐려진다 */
-.ovrHeroMain{display:flex;align-items:baseline;gap:8px;min-width:0}
+.ovrHeroMain{display:flex;align-items:center;gap:8px;min-width:0}
 .ohValue{font-family:var(--font-display);font-size:44px;font-weight:800;line-height:.95;color:var(--sh-on);letter-spacing:-.03em}
-.ohLabel{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--sh-on-dim)}
+.ohLabel{display:inline-flex;align-items:center;gap:4px;background:none;border:none;padding:0;
+  font-family:inherit;font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--sh-on-dim);cursor:pointer}
+/* 시트는 밝은 표면이라 카드의 흰 테두리 아이콘이 안 보인다 — 같은 모양, 표면에 맞는 색 */
+.sheet .ovrInfoIcon{border-color:var(--sh-on-dim);color:var(--sh-on-dim)}
 /* 등급 뱃지 — 검정 대신 등급별 컬러. 어느 등급인지가 색으로 먼저 읽혀야 한다 */
 .ohGrade{flex:none;font-size:11px;font-weight:800;letter-spacing:.06em;padding:5px 12px;border-radius:100px;
   background:var(--sh-bg2);color:var(--sh-on)}
@@ -831,7 +836,7 @@ button{font-family:var(--font)}
       <div class="ovrHero">
         <span class="ohGrade" id="sGrade" data-g="gold">GOLD</span>
         <div class="ovrHeroMain">
-          <span class="ohLabel">OVR</span>
+          <button type="button" class="ohLabel ovrInfoBtn" id="ovrInfoBtnSheet" aria-label="OVR 계산 방식 안내">OVR<span class="ovrInfoIcon" aria-hidden="true">?</span></button>
           <span class="ovrTrendSlot" id="sOvrTrend"></span><span class="ohValue" id="sOvr">88</span>
         </div>
       </div>
@@ -1469,6 +1474,11 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
   // 드래그/스와이프 — 핸들이나 헤드를 누른 채 위아래로 끌면 시트가 실시간으로 따라 움직이고, 놓으면 50% 기준으로 스냅된다
   var dragStartY = null, dragStartH = 0, dragMoved = false;
   var DRAG_MOVE_EPS = 4;
+  /* 확 내리면 닫힌다. 위치만 보면 '천천히 조금 내린 것'과 '확 던진 것'을 구별할 수 없어서,
+     마지막 움직임의 속도를 함께 본다. 0.6px/ms(≈600px/s)는 손목으로 튕기는 동작과
+     끌어서 맞추는 동작이 갈리는 지점이다 — 그보다 느리면 평소대로 위치로 판정한다. */
+  var FLICK_V = 0.6;
+  var lastMoveY = 0, lastMoveT = 0, flickV = 0;
   dragTargets.forEach(function(el){
     el.addEventListener('pointerdown', function(e){
       /* 닫기 버튼은 드래그 손잡이가 아니다. X가 헤드 안에 있어서 pointerdown이 헤드에 먼저 잡히는데,
@@ -1480,6 +1490,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       dragStartY = e.clientY;
       dragStartH = currentH();      // 여기서 딱 한 번만 잰다 — 드래그 중에는 다시 재지 않는다
       dragMoved = false;
+      lastMoveY = e.clientY; lastMoveT = e.timeStamp || performance.now(); flickV = 0;
       stopNudge();
       beginDrag(dragStartH);
       // 포인터 캡처는 실패할 수 있다(이미 놓인 포인터, 일부 브라우저). 여기서 예외가 나면
@@ -1490,6 +1501,9 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       if(dragStartY === null) return;
       var dy = dragStartY - e.clientY; // 양수 = 위로 드래그
       if(Math.abs(dy) > DRAG_MOVE_EPS) dragMoved = true;
+      var now = e.timeStamp || performance.now(), dt = now - lastMoveT;
+      if(dt > 0){ flickV = (e.clientY - lastMoveY) / dt; }  // 양수 = 아래로 던지는 중
+      lastMoveY = e.clientY; lastMoveT = now;
       setLiveHeight(dragStartH + dy);
     });
     el.addEventListener('pointerup', function(){
@@ -1500,7 +1514,8 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
         /* endDrag()를 여기서 부르면 안 된다. transform이 지워지는 순간 시트가 드래그 전
            위치로 되돌아가고, 스냅은 거기서부터 시작된다 — 손을 뗄 때 튕겨 보이던 정체다.
            드래그 상태를 유지한 채 넘기면 goSheet가 지금 위치(dragH)를 출발점으로 삼는다. */
-        settleFromHeight(h);
+        if(flickV > FLICK_V) goSheet('collapsed');   // 아래로 확 던졌다 = 닫기
+        else settleFromHeight(h);
         suppressClick = true;
       } else {
         // 끌지 않고 뗀 경우(=탭)만 정리한다. 이어질 click 핸들러가 같은 자리에서 다시 계산한다.
@@ -1733,9 +1748,12 @@ document.getElementById('btnSaveImg').addEventListener('click', function(){
 });
 
 /* ---- OVR 계산 방식 안내 팝업 ---- */
-document.getElementById('ovrInfoBtn').addEventListener('click', function(e){
-  e.stopPropagation();
-  document.getElementById('ovrInfoModal').classList.add('open');
+[document.getElementById('ovrInfoBtn'), document.getElementById('ovrInfoBtnSheet')].forEach(function(btn){
+  if(!btn) return;
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();   // 카드는 탭하면 뒤집히고 시트 헤드는 단계가 바뀐다 — 둘 다 막는다
+    document.getElementById('ovrInfoModal').classList.add('open');
+  });
 });
 document.getElementById('ovrInfoClose').addEventListener('click', function(){
   document.getElementById('ovrInfoModal').classList.remove('open');
