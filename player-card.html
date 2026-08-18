@@ -234,20 +234,20 @@ button{font-family:var(--font)}
 .sheetTitle{display:flex;align-items:center;gap:6px;margin-bottom:16px;min-width:0}
 /* 펼친 상태(=스티키가 의미 있어지는 상태)에서만 노출되는 닫기 버튼 — 누르면 접힌 상태(첫 화면과 같은 모습)로 되돌아감 */
 .sheetCloseBtn{display:none;flex:none;width:28px;height:28px;border-radius:50%;border:1px solid var(--sh-border);
-  background:var(--sh-bg2);color:var(--sh-on-dim);align-items:center;justify-content:center;font-size:17px;line-height:1;
+  background:var(--sh-bg2);color:var(--sh-on-dim);align-items:center;justify-content:center;font-size:16px;line-height:1;
   cursor:pointer;margin-top:1px}
 .sheetCloseBtn:hover{background:var(--sh-border);color:var(--sh-on)}
 .sheet.sheet-open .sheetCloseBtn{display:flex}
-.sheetTitle .stName{font-size:19px;font-weight:800;color:var(--sh-on);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.sheetTitle .stName{font-size:20px;font-weight:800;color:var(--sh-on);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .sheetTitle .stTeam{font-size:13px;font-weight:600;color:var(--sh-on-dim);flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96px}
 .sheetTitle .stNumDot{color:var(--sh-on-dim);flex:none}
-.sheetTitle .stNum{font-size:15px;font-weight:700;color:var(--sh-on-dim);flex:none}
+.sheetTitle .stNum{font-size:16px;font-weight:700;color:var(--sh-on-dim);flex:none}
 .sheetTitle .stVerified{flex:none;width:18px;height:18px;color:#0284c7;margin-left:2px;display:flex}
 .sheetTitle .stVerified svg{width:100%;height:100%}
 
 /* ---------------- 공통 컴포넌트: 버튼·칩 (index.html의 .btn/.chip과 동일 구조, 다크 배경용 색만 재정의) ---------------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:var(--h-md);padding:0 24px;border:none;
-  border-radius:var(--r-btn);font-family:var(--font);font-weight:600;font-size:14px;cursor:pointer;transition:.15s;
+  border-radius:var(--r-btn);font-family:var(--font);font-weight:600;font-size:13px;cursor:pointer;transition:.15s;
   white-space:nowrap;text-decoration:none}
 .btn-sm{height:var(--h-sm);padding:0 18px;font-size:13px}
 .btn-primary{background:var(--brand);color:var(--on-brand)}
@@ -260,7 +260,7 @@ button{font-family:var(--font)}
 /* 비중을 낮춘 텍스트 버튼 — 배경/테두리 없이 텍스트+아이콘만 */
 .btn-text{display:inline-flex;align-items:center;gap:6px;background:transparent;border:none;color:var(--on-dark-dim);height:auto;padding:6px 4px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font)}
 .btn-text:hover{color:var(--on-dark)}
-.chip{display:inline-flex;align-items:center;font-size:12px;font-weight:600;padding:5px 11px;border-radius:var(--r-chip);white-space:nowrap}
+.chip{display:inline-flex;align-items:center;font-size:13px;font-weight:600;padding:5px 11px;border-radius:var(--r-chip);white-space:nowrap}
 
 /* ---------------- 헤더 — 카드보다 시각적으로 약해야 함 ---------------- */
 .pcHeader{display:flex;align-items:center;gap:10px;padding:14px 16px;width:100%}
@@ -447,10 +447,10 @@ button{font-family:var(--font)}
 .ovrInfoModal.open .ovrInfoCard{transform:scale(1)}
 .ovrInfoCard h4{margin:0 0 10px;font-size:16px;font-weight:800;color:var(--on-dark)}
 .ovrInfoCard p{margin:0 0 8px;font-size:13px;line-height:1.55;color:var(--on-dark-dim)}
-.ovrInfoNote{font-size:12px;color:rgba(154,155,163,.7)}
+.ovrInfoNote{font-size:13px;color:rgba(154,155,163,.7)}
 .ovrInfoClose{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,.2);
   background:rgba(255,255,255,.06);color:var(--on-dark);display:flex;align-items:center;justify-content:center;cursor:pointer;
-  font-size:15px;line-height:1;padding:0}
+  font-size:16px;line-height:1;padding:0}
 .ovrInfoClose:hover{background:rgba(255,255,255,.14)}
 
 /* 하단 딤드 — 팀 컬러 대신 카드 등급 톤(--g-c, 등급별 다크 언더톤)을 투명하게. 위는 거의 안 보이다가 아래로 갈수록 짙어짐 */
@@ -462,7 +462,7 @@ button{font-family:var(--font)}
 .cfTop{min-width:0}
 .cfPos{background:rgba(0,0,0,.4);color:#fff;border:1px solid rgba(255,255,255,.25);margin-bottom:9px;font-size:11px}
 .cf-name{font-size:34px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
-.cf-nameEn{font-size:14px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
+.cf-nameEn{font-size:13px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
 /* 구분선 — 다른 텍스트와 동일하게 좌우 패딩 안쪽에서 끝남(꽉 채우면 답답해 보여서 되돌림) */
 .cfDivider{height:1px;background:rgba(255,255,255,.28)}
 .cfBottomRow{display:flex;align-items:center;gap:8px;padding-right:68px}
@@ -494,7 +494,7 @@ button{font-family:var(--font)}
    '허공에서 나타난다'가 된다. */
 @keyframes levelSlideOut{from{transform:translateY(-46px)}to{transform:translateY(0)}}
 @media (prefers-reduced-motion:reduce){ .levelRow{animation:none} }
-.levelRow .lv{font-size:12px;font-weight:800;color:var(--g-text);white-space:nowrap}
+.levelRow .lv{font-size:13px;font-weight:800;color:var(--g-text);white-space:nowrap}
 .expBar{flex:1;height:5px;border-radius:100px;background:rgba(255,255,255,.14);overflow:hidden}
 /* 채움은 width가 아니라 translateX로 민다 — width를 늘리면 매 프레임 레이아웃이 다시 잡히고,
    그라디언트도 함께 늘어나 색 끝점이 진행률에 따라 달라진다. 폭을 100%로 고정해 두고 왼쪽으로
@@ -577,7 +577,7 @@ button{font-family:var(--font)}
 .ovrHero .ovrTrendSlot{display:inline-flex;align-self:center;margin-right:1px}   /* 숫자와 한 덩어리 */
 
 /* 조작 안내 — 최초 1회만 */
-.hint{max-width:280px;margin:10px auto 0;text-align:center;font-size:12px;color:var(--on-dark-dim);
+.hint{max-width:280px;margin:10px auto 0;text-align:center;font-size:13px;color:var(--on-dark-dim);
   background:#15171d;border:1px solid #2a2d36;border-radius:14px;padding:9px 14px;transition:opacity .3s}
 .hint.hide{opacity:0;pointer-events:none}
 
@@ -601,7 +601,7 @@ button{font-family:var(--font)}
    끝나 시선이 흐려진다 */
 .ovrHeroMain{display:flex;align-items:center;gap:0;min-width:0}
 .ovrHeroMain .ohLabel{margin-right:8px}
-.ohValue{font-family:var(--font-display);font-size:44px;font-weight:800;line-height:.95;color:var(--sh-on);letter-spacing:-.03em}
+.ohValue{font-family:var(--font-display);font-size:43px;font-weight:800;line-height:.95;color:var(--sh-on);letter-spacing:-.03em}
 .ohLabel{display:inline-flex;align-items:center;gap:4px;background:none;border:none;padding:0;
   font-family:inherit;font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--sh-on-dim);cursor:pointer}
 /* 시트는 밝은 표면이라 카드의 흰 테두리 아이콘이 안 보인다 — 같은 모양, 표면에 맞는 색 */
@@ -618,7 +618,7 @@ button{font-family:var(--font)}
 .avgIt{text-align:center;padding:14px 4px;background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:14px}
 /* font-variant-numeric:tabular-nums를 뺐다 — 자간을 건드린 게 아니라 이 속성이 '1'처럼 좁은 숫자에도
    같은 칸을 줘서 '21.4'가 벌어져 보였다. 표처럼 자릿수를 맞출 필요가 없는 자리라 비례 숫자가 맞다. */
-.avgIt b{font-family:var(--font-display);display:block;font-size:19px;font-weight:800;color:var(--sh-on);line-height:1.1;letter-spacing:-.01em}
+.avgIt b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:var(--sh-on);line-height:1.1;letter-spacing:-.01em}
 .avgIt span{display:block;margin-top:4px;font-size:11px;color:var(--sh-on-dim)}
 .section h3{display:flex;align-items:baseline;gap:8px;font-size:13px;font-weight:800;color:var(--sh-on-dim);margin:0 0 10px;letter-spacing:.02em}
 /* 갱신 날짜 — 제목 줄 오른쪽 끝에. 평균이 언제 기준인지는 알아야 하지만, 평균 자체보다
@@ -626,7 +626,7 @@ button{font-family:var(--font)}
 .upAt{margin-left:auto;font-size:11px;font-weight:500;letter-spacing:0;color:var(--sh-on-dim);opacity:.7}
 /* .recRow는 카드 뒷면(다크)에도 쓰이는 공용 클래스라 기본값은 그대로 두고, 시트 안에서만 화이트로 덮어씀 */
 .recRow{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);
-  border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:12px;
+  border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:13px;
   color:inherit;text-decoration:none;cursor:pointer;transition:background .12s}
 .recRow:last-child{margin-bottom:0}
 /* 경기 상세로 가는 줄 — 오른쪽 끝의 작은 > 하나로 "들어갈 수 있다"를 알린다.
@@ -711,7 +711,7 @@ button{font-family:var(--font)}
 .sheet .btn-white{background:#fff;color:var(--sh-on);border:1px solid var(--sh-border)}
 .sheet .btn-white:hover{background:var(--sh-bg2)}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1c1f27;color:#fff;
-  font-size:12px;padding:10px 16px;border-radius:100px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:70}
+  font-size:13px;padding:10px 16px;border-radius:100px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:70}
 .toast.show{opacity:1}
 
 /* ---------------- 하단 브랜드 푸터 ---------------- */

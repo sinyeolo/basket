@@ -70,7 +70,7 @@ button{font-family:inherit;border:none;background:none;color:inherit;cursor:poin
 
 .gh-score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:10px 14px 14px}
 .gh-team{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
-.gh-nm{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:700;max-width:100%;
+.gh-nm{display:flex;align-items:center;gap:6px;font-size:16px;font-weight:700;max-width:100%;
   overflow:hidden;white-space:nowrap}
 /* 말줄임은 팀명에만 건다. 이름 전체(마크+이름+승 태그)에 걸면 이름이 길 때 태그부터 잘려 나가는데,
    정작 잘리면 안 되는 게 결과다 — 이름은 줄여 읽어도 되지만 승패는 줄일 수 없다. */
@@ -114,12 +114,12 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .card h3 .sub .lg{width:8px;height:8px;border-radius:50%;display:inline-block}
 /* 정렬 선택 — 네이티브 select라 모바일에서 OS 피커가 뜬다. 커스텀 드롭다운보다 손에 익다 */
 .sortSel{appearance:none;-webkit-appearance:none;border:none;background:var(--surface-variant);
-  color:var(--on-surface);font-family:var(--font);font-size:12px;font-weight:700;
+  color:var(--on-surface);font-family:var(--font);font-size:13px;font-weight:700;
   height:30px;padding:0 26px 0 11px;border-radius:100px;cursor:pointer;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6a72' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 8px center;background-size:12px}
 .sortDir{display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 11px 0 9px;border-radius:100px;
-  background:var(--surface-variant);color:var(--on-surface);font-family:var(--font);font-size:12px;
+  background:var(--surface-variant);color:var(--on-surface);font-family:var(--font);font-size:13px;
   font-weight:700;white-space:nowrap}
 /* 글리프(▾▴)는 폰트마다 크기·기준선이 달라 방향을 바꿀 때마다 들쭉날쭉해진다 — 같은 SVG를 뒤집는다 */
 .sortDir svg{width:13px;height:13px;flex:none;transition:transform .15s}
@@ -213,7 +213,7 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .lw.r{transform:scaleX(-1)}
 .laurel{width:26px;height:43px}
 .res-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
-.res-win{font-size:17px;font-weight:800}
+.res-win{font-size:16px;font-weight:800}
 .res-gap{font-size:13px;font-weight:700;color:var(--on-surface-variant)}
 .res-meta{font-size:11px;color:var(--on-surface-variant)}
 
@@ -231,7 +231,7 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
   color:var(--on-surface);text-align:left;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 .qf-tot{font-weight:800;color:var(--on-surface)}
-.qf-row.win .qf-tot{font-size:15px}
+.qf-row.win .qf-tot{font-size:16px}
 .mvp-hint{font-size:11px;color:var(--on-surface-variant);opacity:.8}
 
 /* ---- 요약: 팀 기록 비교 ----
@@ -268,7 +268,7 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .pbp-mid{display:flex;flex-direction:column;align-items:center;gap:1px;flex:none}
 .pbp-t{font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--on-surface-variant)}
 .pbp-sc{font-family:var(--font-display);font-size:13px;font-weight:800;letter-spacing:-.02em}
-.pbp-sys{grid-column:1 / -1;text-align:center;font-size:12px;font-weight:600;
+.pbp-sys{grid-column:1 / -1;text-align:center;font-size:13px;font-weight:600;
   color:var(--on-surface-variant);padding:2px 0}
 /* 득점이 난 줄은 점수가 바뀐 지점이라 살짝 세운다 */
 .pbp-row.goal .pbp-sc{color:var(--on-surface)}
