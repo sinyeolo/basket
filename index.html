@@ -1061,17 +1061,20 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 
 /* ---- 경기 상태별 시각 구분 ----
    목록을 훑을 때 '아직 안 한 경기 / 지금 하는 경기 / 끝난 경기'가 한눈에 갈려야 한다.
-   좌측 3px 스트라이프를 신호로 쓴다: 진행 중=브랜드 주황, 확정=초록(상태 뱃지 색 규칙 그대로).
-   검수 대기는 스트라이프를 주지 않는다 — 별도의 '검수 대기' 섹션이 그 역할을 하고,
-   스트라이프가 셋이 되면 신호가 흔해져서 아무것도 눈에 안 띈다. */
+   좌측 3px 스트라이프를 신호로 쓴다: 진행 중=브랜드 주황, 검수 대기=빨강(상태 뱃지 색 규칙 그대로).
+
+   확정에는 주지 않는다. 스트라이프는 '눈길을 끄는' 표시인데, 확정은 이미 끝나서 할 일이 없는
+   경기다. 끝난 일에 신호를 달면 정작 처리해야 할 검수 대기가 그 사이에 묻힌다.
+   확정 여부는 '확정' 태그로 이미 읽힌다 — 같은 사실을 두 번 말할 이유가 없다.
+   스트라이프는 둘까지다. 셋이 되면 신호가 흔해져 아무것도 눈에 안 띈다. */
 /* 예정 — 아직 치르지 않았으니 팀명을 굵게 쓰지 않는다(볼드는 '결과가 나온 팀'의 표시다).
    전체를 한 톤 낮춰서 끝난 경기와 확실히 갈리게 한다. */
 .grow.is-soon .gside .gt-nm{font-weight:500;color:var(--on-surface-variant)}
 .grow.is-soon .gside .gt-sc{color:var(--outline);font-weight:700}
 .grow.is-soon .gstat .gs-t{color:var(--on-surface-variant);font-weight:600}
 .grow.is-soon .dot{opacity:.55}
-/* 확정 — 결과가 확정된 경기 */
-.grow.is-fix{box-shadow:inset 3px 0 0 var(--green)}
+/* 검수 대기 — 목록에서 유일하게 '내가 지금 해야 할 일'이다. 상태 뱃지와 같은 빨강을 쓴다. */
+.grow.is-end{box-shadow:inset 3px 0 0 var(--red)}
 /* 쿼터별 점수 — 좁은 화면에선 접힌다(아래 미디어쿼리) */
 .gq{display:flex;gap:10px}
 .gq-col{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:22px}
@@ -1198,7 +1201,10 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    모서리에 떨어져서 밝은 좌측·하단 사이에 검은 얼룩처럼 보였다. 어두운 끝을 빼고 밝은 두 톤만
    왕복시켜 네 모서리 모두 같은 금속 톤을 유지한다. (player-card.html의 .cardFace와 동일) */
 .pdFace{position:absolute;inset:0;border-radius:20px;overflow:hidden;backface-visibility:hidden;padding:2px;
-  box-shadow:0 26px 50px rgba(0,0,0,.5),0 5px 8px rgba(0,0,0,.32);
+  /* 그림자를 아래로 더 내리고 옅게. 콘솔은 밝은 표면이라 선수 카드(어두운 무대)와 같은 농도를 쓰면
+     그림자가 검은 얼룩으로 읽힌다. 멀리·넓게·옅게 깔아야 카드가 눌린 게 아니라 떠 있어 보인다.
+     두 번째 그림자는 접지 그림자다 — 이것까지 멀어지면 카드가 어디에 놓였는지 알 수 없어진다. */
+  box-shadow:0 38px 64px rgba(0,0,0,.26),0 10px 18px rgba(0,0,0,.14);
   background:linear-gradient(155deg,var(--g-b,#ccc),var(--g-a,#888) 42%,var(--g-b,#ccc) 70%,var(--g-a,#888))}
 /* 테두리를 도는 빛 — 카드보다 큰 원뿔 그라디언트를 회전시키고, 가운데는 .in이 덮어
    3px 프레임에서만 빛줄기가 흐르는 것처럼 보이게 한다. 밝기는 등급별 --shine-op를 따라간다.
@@ -1344,7 +1350,13 @@ table.dt tbody tr.me{background:var(--mono-fill)}
     color-mix(in srgb, var(--g-c,#000) 92%, transparent) 100%);
   display:flex;flex-direction:column;gap:10px}
 .pdIdBlock{min-width:0}
-.pdPos{background:rgba(0,0,0,.4);color:#fff;border:1px solid rgba(255,255,255,.25);margin-bottom:9px;font-size:11px}
+.pdPosRow{display:flex;align-items:center;gap:6px;margin-bottom:9px}
+.pdPos{background:rgba(0,0,0,.4);color:#fff;border:1px solid rgba(255,255,255,.25);font-size:11px}
+/* 주장 — 명단의 .tag-captain과 같은 원형·같은 글자. 다만 카드는 어두운 표면이라
+   명단의 주황 배경/검정 글자를 그대로 쓰면 카드에서 혼자 튄다. 등급색 테두리로 얹는다. */
+.pdCaptain{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;
+  border-radius:50%;flex:none;font-size:11px;font-weight:800;line-height:1;
+  background:rgba(0,0,0,.4);color:var(--g-text,#fff);border:1px solid color-mix(in srgb,var(--g-b,#fff) 55%,transparent)}
 .pdNameKr{font-size:34px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
 .pdNameEn{font-size:13px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
 .pdDivider{height:1px;background:rgba(255,255,255,.28)}
@@ -3025,7 +3037,10 @@ var PLAYER_GAMELOG = {
     { date:'2026.07.09', opp:'용산 스톰',     win:true,  min:28, pts:27, reb:7, ast:3, stl:2, blk:1, pf:2 }
   ],
   p2:[
-    { date:'2026.07.23', opp:'인천 파이터스', win:true,  min:31, pts:14, reb:4, ast:8, stl:3, blk:0, pf:1 },
+    /* 목업: 추세 화살표의 하락 쪽을 화면에서 확인할 수 있게 일부러 부진한 날로 뒀다.
+       팀은 이겼지만 본인은 조용했던 경기 — 시즌 평균(12.6점 6.8어시)보다 아래라 OVR이 내려간다.
+       ovrBeforeLastGame이 이 한 경기를 되빼서 직전 값을 만들고, 그 차이가 ▼로 읽힌다. */
+    { date:'2026.07.23', opp:'인천 파이터스', win:true,  min:26, pts:6,  reb:2, ast:3, stl:0, blk:0, pf:3 },
     { date:'2026.07.20', opp:'송파 이글스',   win:true,  min:28, pts:9,  reb:3, ast:6, stl:2, blk:0, pf:2 },
     { date:'2026.07.16', opp:'마포 레이커스', win:true,  min:30, pts:12, reb:4, ast:7, stl:1, blk:1, pf:2 }
   ],
@@ -3039,7 +3054,10 @@ var PLAYER_GAMELOG = {
 var PLAYER_RECORDS = {
   p1:{ g:8, min:31.2, pts:21.4, reb:7.1, ast:3.2, stl:1.6, blk:0.8, fg:52.1, tp:38.4, ft:81.2 },
   p2:{ g:8, min:29.8, pts:12.6, reb:3.4, ast:6.8, stl:2.1, blk:0.2, fg:44.6, tp:36.1, ft:78.4 },
-  p3:{ g:8, min:27.4, pts:11.2, reb:9.6, ast:1.4, stl:0.7, blk:2.4, fg:56.8, tp:0.0,  ft:62.1 },
+  /* 목업: 스타터 등급을 화면에서 확인할 수 있게 1경기만 뛴 상태로 뒀다.
+     등급은 OVR이 아니라 '표본이 없다'는 사실로 정해진다(gradeFor: g<=1이면 스타터) —
+     한 경기로는 어떤 수치가 나와도 그 선수를 대표하지 못하기 때문이다. */
+  p3:{ g:1, min:27.4, pts:11.2, reb:9.6, ast:1.4, stl:0.7, blk:2.4, fg:56.8, tp:0.0,  ft:62.1 },
   p4:{ g:8, min:24.1, pts:10.8, reb:3.1, ast:2.2, stl:1.2, blk:0.3, fg:43.2, tp:37.9, ft:80.0 },
   p5:{ g:7, min:22.6, pts:8.4,  reb:6.2, ast:1.1, stl:0.9, blk:1.1, fg:49.4, tp:24.0, ft:66.7 },
   p6:{ g:8, min:30.4, pts:18.2, reb:4.8, ast:3.9, stl:1.8, blk:0.4, fg:47.6, tp:35.2, ft:76.9 },
@@ -3050,6 +3068,39 @@ var PLAYER_RECORDS = {
   p11:{ g:8, min:27.6, pts:11.8, reb:3.2, ast:5.6, stl:2.0, blk:0.2, fg:43.8, tp:34.4, ft:79.1 },
   p12:{ g:6, min:21.4, pts:7.6,  reb:3.8, ast:1.9, stl:0.9, blk:0.4, fg:41.2, tp:30.0, ft:72.2 }
 };
+
+/* 시즌 기록은 있는데 경기 로그가 비어 있던 선수들 — 8경기를 뛴 선수의 '최근 경기'가 비어 있는 건
+   데이터가 어긋난 것이다(PO 지적). 평균에서 최근 경기를 되만들어 채운다.
+   실 서버가 붙으면 이 블록을 지우면 된다 — 진짜 로그가 들어올 자리다.
+
+   무작위로 만들지 않고 선수 id를 해시해 고정한다. 새로고침마다 지난 경기 기록이 바뀌면
+   그건 기록이 아니다. 같은 이유로 상대 팀도 자기 팀을 뺀 목록에서 순서대로 돌린다.
+
+   최근 5경기만 만든다 — 시즌 평균은 전체(g경기)의 값이므로 이 목록이 평균과 정확히 맞아떨어질
+   필요는 없다(직접 쓴 p1도 8경기 중 5경기만 적혀 있다). */
+(function fillMissingGameLogs(){
+  var DATES = ['2026.07.23','2026.07.20','2026.07.16','2026.07.13','2026.07.09'];
+  function hash(str){ var h = 0; for(var i=0;i<str.length;i++){ h = (h*31 + str.charCodeAt(i)) >>> 0; } return h; }
+  Object.keys(PLAYER_RECORDS).forEach(function(pid){
+    if(PLAYER_GAMELOG[pid] && PLAYER_GAMELOG[pid].length) return;   // 직접 쓴 로그는 건드리지 않는다
+    var s = PLAYER_RECORDS[pid];
+    if(!s || !s.g) return;   // 뛴 경기가 없으면 만들 것도 없다(1경기 선수도 그 1경기는 있어야 한다)
+    var p = PLAYERS.find(function(x){ return x.id === pid; });
+    var opps = TEAMS.filter(function(t){ return !p || t.id !== p.teamId; }).map(function(t){ return t.name; });
+    var h = hash(pid), n = Math.min(DATES.length, s.g), out = [];
+    for(var i=0;i<n;i++){
+      /* 경기마다 평균의 0.6~1.4배 사이에서 흔들린다 — 한 경기는 평균이 아니다.
+         해시를 자리마다 다르게 굴려 선수끼리도, 경기끼리도 같은 값이 반복되지 않게 한다. */
+      var f = 0.6 + (((h >>> (i*3)) % 81) / 100);
+      var r = function(v){ return Math.max(0, Math.round(v * f)); };
+      out.push({ date:DATES[i], opp:opps[(h + i) % opps.length], win:(((h >>> i) & 3) !== 0),
+        min:Math.max(8, Math.round(s.min * (0.8 + (((h >>> (i*2)) % 41) / 100)))),
+        pts:r(s.pts), reb:r(s.reb), ast:r(s.ast), stl:r(s.stl), blk:r(s.blk),
+        pf:((h >>> (i*4)) % 4) + 1 });
+    }
+    PLAYER_GAMELOG[pid] = out;
+  });
+})();
 
 /* ================================================================
  * RENDER LAYER — 각 함수는 향후 React 컴포넌트 1개에 대응합니다.
@@ -4620,6 +4671,7 @@ function renderPlayerDetail(){
   editTop.onclick = function(){ openPlayerModal(p.id, this); };
 
   // ① 프로필 카드 — 화면 중앙에 크게, 클릭하면 뒷면(시즌 평균 상세)으로 플립
+  var isCaptainPd = !!(t && t.captainId === p.id);
   var ovrScore = ovrFor(s);
   var ovrPrev = ovrBeforeLastGame(s, log);
   var ovrTrend = (ovrScore != null && ovrPrev != null) ? ovrScore - ovrPrev : 0;
@@ -4634,6 +4686,7 @@ function renderPlayerDetail(){
     pos: p.pos1||'', season: '2026 여름 3×3 리그', grade: grade
   });
   if(p.no != null) cardParams.set('no', p.no);
+  if(isCaptainPd) cardParams.set('captain', '1');
   if(s && grade !== 'starter'){ cardParams.set('pts', s.pts.toFixed(1)); cardParams.set('reb', s.reb.toFixed(1)); cardParams.set('ast', s.ast.toFixed(1)); cardParams.set('ovr', ovrScore); }
   cardLinkTop.href = 'player-card.html?' + cardParams.toString();
   var posLabel = p.pos1||'';
@@ -4689,7 +4742,10 @@ function renderPlayerDetail(){
           '<div class="infoBlur infoBlur3" aria-hidden="true"></div>'+
           '<div class="pdInfo">'+
             '<div class="pdIdBlock">'+
-              (posLabel ? '<span class="chip pdPos">'+posLabel+'</span>' : '')+
+              '<div class="pdPosRow">'+
+                (posLabel ? '<span class="chip pdPos">'+posLabel+'</span>' : '')+
+                (isCaptainPd ? '<span class="pdCaptain" title="팀 주장" aria-label="팀 주장">C</span>' : '')+
+              '</div>'+
               '<div class="pdNameKr">'+p.name+(p.owner?'<span class="tag-owner">오너</span>':'')+'</div>'+
               (p.en ? '<div class="pdNameEn">'+p.en+'</div>' : '')+
             '</div>'+

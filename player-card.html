@@ -460,7 +460,13 @@ button{font-family:var(--font)}
     color-mix(in srgb, var(--g-c,#000) 92%, transparent) 100%);
   display:flex;flex-direction:column;gap:10px}
 .cfTop{min-width:0}
-.cfPos{background:rgba(0,0,0,.4);color:#fff;border:1px solid rgba(255,255,255,.25);margin-bottom:9px;font-size:11px}
+.cfPosRow{display:flex;align-items:center;gap:6px;margin-bottom:9px}
+.cfPos{background:rgba(0,0,0,.4);color:#fff;border:1px solid rgba(255,255,255,.25);font-size:11px}
+/* 주장 — 운영 콘솔 명단(.tag-captain)과 같은 원형·같은 글자. 카드는 어두운 표면이라
+   명단의 주황 배경/검정 글자 대신 등급색 테두리로 얹는다(운영 콘솔 카드 .pdCaptain과 같은 값). */
+.cfCaptain{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;
+  border-radius:50%;flex:none;font-size:11px;font-weight:800;line-height:1;
+  background:rgba(0,0,0,.4);color:var(--g-text);border:1px solid color-mix(in srgb,var(--g-b) 55%,transparent)}
 .cf-name{font-size:34px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
 .cf-nameEn{font-size:13px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
 /* 구분선 — 다른 텍스트와 동일하게 좌우 패딩 안쪽에서 끝남(꽉 채우면 답답해 보여서 되돌림) */
@@ -652,6 +658,16 @@ button{font-family:var(--font)}
   border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:13px;
   color:inherit;text-decoration:none;cursor:pointer;transition:background .12s}
 .recRow:last-child{margin-bottom:0}
+/* 더보기·접기 — 목록의 일부지 독립된 동작이 아니다. 그래서 버튼처럼 세우지 않고
+   목록 끝에 이어지는 한 줄로 둔다. 남은 개수를 적어 누르기 전에 알 수 있게 한다. */
+.recMore{display:flex;align-items:center;justify-content:center;gap:4px;width:100%;
+  margin-top:10px;padding:11px 12px;border:none;border-radius:12px;cursor:pointer;
+  background:var(--sh-bg2);color:var(--sh-on-dim);
+  font-family:inherit;font-size:13px;font-weight:700;transition:background .12s}
+.recMore:hover{background:color-mix(in srgb,var(--sh-bg2) 82%, var(--sh-on))}
+.recMoreIc{width:16px;height:16px;flex:none;transition:transform .2s ease}
+.recMoreIc.up{transform:rotate(180deg)}
+@media (prefers-reduced-motion:reduce){ .recMoreIc{transition:none} }
 /* 경기 상세로 가는 줄 — 오른쪽 끝의 작은 > 하나로 "들어갈 수 있다"를 알린다.
    currentColor라 카드 뒷면(라이트)과 시트(다크) 양쪽에서 저절로 맞는다. */
 .recRow::after{content:"";flex:none;width:6px;height:6px;margin-left:8px;opacity:.45;
@@ -664,7 +680,15 @@ button{font-family:var(--font)}
 .recRow b{font-weight:600}
 /* 카드 뒷면에서는 부모(.cardFace.back .inner)의 flex gap이 간격을 잡으므로 행 자체 마진을 없앤다.
    두 값이 겹치면 14+10=24px로 벌어진다. 시트 안 .recRow는 flex가 아니라 마진이 필요해 그대로 둔다. */
-.cardFace.back .recRow{margin-bottom:0;backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+/* 뒷면 행은 시트보다 조밀하다 — 카드 한 장 안에 5경기가 들어가야 하기 때문이다.
+   시트와 같은 여백을 쓰면 5행이 카드 밖으로 400px 넘게 흘러나간다.
+   글자는 11px(기능 텍스트 하한)까지만 줄이고 나머지는 여백으로 줄인다. */
+.cardFace.back .recRow{margin-bottom:5px;padding:7px 10px;font-size:11px;border-radius:9px;
+  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px)}
+.cardFace.back .recRow:last-child{margin-bottom:0}
+.cardFace.back .recRow .op{gap:5px}
+.cardFace.back .wl{width:18px;height:15px;border-radius:4px}
+.cardFace.back .inner{gap:10px}
 .sheet .recRow{background:var(--sh-bg2);border-color:var(--sh-border);color:var(--sh-on)}
 .recRow .op{display:flex;align-items:center;gap:6px}
 .recRow .newDot{margin-left:0}
@@ -811,7 +835,7 @@ button{font-family:var(--font)}
               <div class="infoBlur infoBlur3" aria-hidden="true"></div>
               <div class="cardFront-info">
                 <div class="cfTop">
-                  <span class="chip cfPos" id="fPos">SF</span>
+                  <div class="cfPosRow"><span class="chip cfPos" id="fPos">SF</span><span class="cfCaptain" id="fCaptain" hidden>C</span></div>
                   <div class="cf-name" id="fName">김민수</div>
                   <div class="cf-nameEn" id="fNameEn">KIM MIN SU</div>
                 </div>
@@ -841,7 +865,7 @@ button{font-family:var(--font)}
               <div class="backTitle hasRec">시즌 평균 기록</div>
               <div class="backGrid hasRec" id="backGrid"></div>
               <div class="backTitle hasRec">최근 경기</div>
-              <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span>07.23</span><span class="wl w">W</span><span class="opFlex">vs 인천 파이터스</span></span><b>24점</b></a>
+              <div class="hasRec" id="backGames"></div>
               <div class="recEmpty noRec">아직 뛴 경기가 없어요<br>첫 경기를 마치면 기록이 채워집니다</div>
               <div class="backNote" id="backUpdated">update 2026.07.23 13:20</div>
             </div>
@@ -915,8 +939,8 @@ button{font-family:var(--font)}
       <div class="section">
         <h3>최근 대회 기록</h3>
         <div class="recEmpty noRec">참가한 대회가 아직 없어요</div>
-        <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span class="recNew" id="recNew1"></span><span class="opFlex">2026 여름 3×3 리그 · 8강</span><span class="wl w">W</span></span><b>24점 8리바 4어시</b></a>
-        <a class="recRow hasRec" href="game.html?id=g12"><span class="op"><span class="opFlex">2026 여름 3×3 리그 · 예선</span><span class="wl l">L</span></span><b>18점 6리바 3어시</b></a>
+        <div class="hasRec" id="sheetGames"></div>
+        <button type="button" class="recMore hasRec" id="recMoreBtn" hidden></button>
       </div>
       <div class="section">
         <h3>획득 배지</h3>
@@ -998,6 +1022,26 @@ var PLAYER = {
      여기서는 프로토타입이라 목업으로 둔다: 지난번보다 OVR 2 오르고, 평균 득점이 늘고, 경기 1건이 추가된 상태. */
   seen:{ ovr:88, stats:{ pts:20.6, reb:7.1, ast:3.0 }, games:41 },
   statsUpdatedAt:'2026-08-16',   // 시즌 평균이 마지막으로 갱신된 날(= 마지막 확정 경기일)
+  gameCount:42,                  // 시즌 총 경기 수(시트 요약의 '경기 수') — 아래 목록은 그중 최근 몇 경기다
+  /* 최근 경기 — 최신순. 카드 뒷면은 이 중 5경기만, 시트는 전부(처음엔 10경기 + 더보기) 보여준다.
+     이름을 games로 두면 위 gameCount와 뜻이 겹친다 — 하나는 개수, 하나는 목록이다.
+     실 서버 연동 전까지의 임시 데이터다. */
+  recentGames:[
+    { id:'g12', date:'07.23', opp:'인천 파이터스', stage:'2026 여름 3×3 리그 · 8강',   win:true,  pts:24, reb:8, ast:4 },
+    { id:'g12', date:'07.20', opp:'송파 이글스',   stage:'2026 여름 3×3 리그 · 8강',   win:true,  pts:18, reb:6, ast:3 },
+    { id:'g12', date:'07.16', opp:'마포 레이커스', stage:'2026 여름 3×3 리그 · 예선',  win:true,  pts:22, reb:9, ast:2 },
+    { id:'g12', date:'07.13', opp:'강남 불꽃',     stage:'2026 여름 3×3 리그 · 예선',  win:false, pts:16, reb:5, ast:4 },
+    { id:'g12', date:'07.09', opp:'용산 스톰',     stage:'2026 여름 3×3 리그 · 예선',  win:true,  pts:27, reb:7, ast:3 },
+    { id:'g12', date:'07.06', opp:'인천 파이터스', stage:'2026 봄 리그 · 결승',        win:false, pts:14, reb:4, ast:5 },
+    { id:'g12', date:'07.02', opp:'송파 이글스',   stage:'2026 봄 리그 · 4강',         win:true,  pts:20, reb:6, ast:2 },
+    { id:'g12', date:'06.28', opp:'마포 레이커스', stage:'2026 봄 리그 · 8강',         win:true,  pts:19, reb:5, ast:6 },
+    { id:'g12', date:'06.24', opp:'강남 불꽃',     stage:'2026 봄 리그 · 예선',        win:true,  pts:25, reb:8, ast:3 },
+    { id:'g12', date:'06.21', opp:'용산 스톰',     stage:'2026 봄 리그 · 예선',        win:false, pts:11, reb:3, ast:2 },
+    { id:'g12', date:'06.17', opp:'인천 파이터스', stage:'2026 봄 리그 · 예선',        win:true,  pts:23, reb:7, ast:4 },
+    { id:'g12', date:'06.14', opp:'송파 이글스',   stage:'2026 봄 리그 · 예선',        win:true,  pts:17, reb:6, ast:5 },
+    { id:'g12', date:'06.10', opp:'마포 레이커스', stage:'2026 봄 리그 · 예선',        win:false, pts:13, reb:4, ast:1 },
+    { id:'g12', date:'06.07', opp:'강남 불꽃',     stage:'2026 봄 리그 · 예선',        win:true,  pts:21, reb:9, ast:3 }
+  ],
   photo:'https://images.pexels.com/photos/20615486/pexels-photo-20615486.jpeg?cs=srgb&dl=pexels-hanuman-photo-studio-564865561-20615486.jpg&fm=jpg',
   badges:['첫 대회 참가','10회 출전','팀 로열티']
 };
@@ -1021,6 +1065,7 @@ var LINKED_PLAYER = false;
   if(q.get('reb')) PLAYER.stats.reb = Number(q.get('reb'));
   if(q.get('ast')) PLAYER.stats.ast = Number(q.get('ast'));
   PLAYER.hasRecord = !!(q.get('pts') || q.get('reb') || q.get('ast'));
+  PLAYER.captain = q.get('captain') === '1';
   PLAYER._grade = q.get('grade');
   PLAYER._ovr = q.get('ovr') ? Number(q.get('ovr')) : null;
   /* 이 선수의 '지난번 본 값'은 우리에게 없다 — 목업의 기준(김민수의 것)을 그대로 두면
@@ -1108,7 +1153,7 @@ function changeSet(){
   if(!seen) return { any:false };
   var old = seen.stats || {};
   var avgChanged = ['pts','reb','ast'].some(function(k){ return now[k] != null && old[k] != null && now[k] !== old[k]; });
-  var games = PLAYER.games != null ? PLAYER.games : 42;   // 시트 '경기 수'와 같은 소스
+  var games = PLAYER.gameCount != null ? PLAYER.gameCount : 42;   // 시트 '경기 수'와 같은 소스
   var out = {
     ovrDelta: (shownOvr != null && seen.ovr != null) ? shownOvr - seen.ovr : 0,
     avg: avgChanged,
@@ -1127,6 +1172,52 @@ function ovrTrendHtml(delta){
   '</span>';
 }
 function dot(){ return '<span class="newDot" aria-label="새로 바뀜"></span>'; }
+
+/* ---- 최근 경기 목록 ----
+   카드 뒷면은 5경기까지만. 카드는 손에 쥐는 물건이고, 그 크기 안에서 읽히는 만큼만 담아야 한다.
+   시트는 전부 볼 수 있는 자리다 — 처음엔 10경기만 세우고 나머지는 접어 둔다.
+   한 번에 다 쏟아 놓으면 아래 블록(획득 배지·카드 앨범)이 저 밑으로 밀려 있는 줄도 모른다. */
+var BACK_MAX = 5, SHEET_MAX = 10;
+var sheetGamesExpanded = false;
+
+function gameRow(g, opts){
+  var o = opts || {};
+  var lead = o.back
+    ? '<span>'+g.date+'</span><span class="wl '+(g.win?'w':'l')+'">'+(g.win?'W':'L')+'</span>'+
+      '<span class="opFlex">vs '+g.opp+'</span>'
+    : (o.newDot ? dot() : '')+'<span class="opFlex">'+g.stage+'</span>'+
+      '<span class="wl '+(g.win?'w':'l')+'">'+(g.win?'W':'L')+'</span>';
+  var stat = o.back ? g.pts+'점' : g.pts+'점 '+g.reb+'리바 '+g.ast+'어시';
+  return '<a class="recRow" href="game.html?id='+g.id+'"><span class="op">'+lead+'</span><b>'+stat+'</b></a>';
+}
+
+function renderGameLists(){
+  var games = PLAYER.recentGames || [];
+  var back = document.getElementById('backGames');
+  if(back) back.innerHTML = games.slice(0, BACK_MAX).map(function(g){ return gameRow(g, {back:true}); }).join('');
+
+  var host = document.getElementById('sheetGames'), btn = document.getElementById('recMoreBtn');
+  if(!host || !btn) return;
+  var c = changeSet();
+  var shown = sheetGamesExpanded ? games.length : Math.min(SHEET_MAX, games.length);
+  host.innerHTML = games.slice(0, shown).map(function(g, i){
+    return gameRow(g, { newDot: i === 0 && c.games });
+  }).join('');
+
+  var hidden = games.length - SHEET_MAX;
+  if(hidden <= 0){ btn.hidden = true; return; }
+  btn.hidden = false;
+  /* 남은 개수를 버튼에 적는다 — '더보기'만 있으면 누를지 말지를 감으로 정해야 한다.
+     몇 경기가 더 있는지 알면 누를지 여기서 결정할 수 있다. */
+  btn.innerHTML = sheetGamesExpanded
+    ? '접기'+chevron(true)
+    : '경기 '+hidden+'개 더보기'+chevron(false);
+  btn.setAttribute('aria-expanded', sheetGamesExpanded ? 'true' : 'false');
+}
+function chevron(up){
+  return '<svg class="recMoreIc'+(up?' up':'')+'" viewBox="0 0 16 16" aria-hidden="true">'+
+    '<path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
 // 2026-08-16 → 8.16 — 연도는 시즌 안에서 늘 같으므로 뺀다
 function fmtUpAt(iso){
   var p = String(iso).split('-');
@@ -1150,7 +1241,7 @@ function applyGrade(key){
   document.getElementById('sLevel').textContent = g.level;
   var blank = (key === 'starter');
   document.getElementById('sTour').textContent  = blank ? 0 : 6;
-  document.getElementById('sGames').textContent = blank ? 0 : 42;
+  document.getElementById('sGames').textContent = blank ? 0 : (PLAYER.gameCount != null ? PLAYER.gameCount : 42);
   document.getElementById('sBadge').textContent = blank ? 0 : PLAYER.badges.length;
   // 시트 상단 OVR·등급 — 카드 앞면과 같은 값을 쓴다(등급을 바꾸면 둘 다 함께 바뀐다)
   document.getElementById('sOvr').textContent = ovrVal != null ? pad2(ovrVal) : '?';
@@ -1171,9 +1262,9 @@ function paintChanges(){
      바뀔 때마다 점을 찍으면 늘 켜져 있는 표시가 되고, 그러면 아무 뜻도 없어진다. */
   var upAt = document.getElementById('avgUpAt');
   if(upAt) upAt.textContent = PLAYER.statsUpdatedAt ? fmtUpAt(PLAYER.statsUpdatedAt) + ' 기준' : '';
-  /* 새 기록은 목록 제목이 아니라 그 경기 앞에 찍는다 — 어느 경기가 새것인지 알아야 의미가 있다. */
-  var rn = document.getElementById('recNew1');
-  if(rn) rn.innerHTML = c.games ? dot() : '';
+  /* 새 기록 점은 목록을 그릴 때 첫 경기 앞에 함께 찍는다(renderGameLists) —
+     어느 경기가 새것인지 알아야 의미가 있다. */
+  renderGameLists();
   /* 카드 앞면에서 새 기록은 뒷면에 있다 — 뒤집을 이유를 버튼에 붙인다. */
   var flipBtn = document.getElementById('btnFlip');
   if(flipBtn){
@@ -1211,6 +1302,12 @@ document.getElementById('stNum').textContent = PLAYER.no;
 document.getElementById('stVerified').innerHTML = icon('verified');
 document.getElementById('btnShareTop').innerHTML = icon('share');
 document.getElementById('btnFlip').innerHTML = icon('flip','ic ic-sm')+'카드 뒤집기';
+document.getElementById('recMoreBtn').addEventListener('click', function(){
+  sheetGamesExpanded = !sheetGamesExpanded;
+  renderGameLists();
+  /* 접을 때는 목록 맨 위로 되돌린다 — 접고 나면 방금 읽던 자리가 사라져 화면이 갑자기 뛴다. */
+  if(!sheetGamesExpanded) this.previousElementSibling.scrollIntoView({ block:'nearest', behavior:'smooth' });
+});
 document.getElementById('btnShare').innerHTML = icon('share','ic ic-sm')+'링크 공유';
 document.getElementById('btnSaveImg').innerHTML = icon('download','ic ic-sm')+'이미지 저장';
 if(PLAYER.photo){
@@ -1238,6 +1335,7 @@ document.getElementById('fSealLogo').textContent = PLAYER.team.charAt(0);
 document.getElementById('fSealLogo').style.background = PLAYER.teamColor;
 document.getElementById('sealTextMain').textContent = sealLabel().repeat(3);
 document.getElementById('fPos').textContent = PLAYER.pos;
+document.getElementById('fCaptain').hidden = !PLAYER.captain;
 document.getElementById('fNameEn').textContent = PLAYER.en || '';
 document.getElementById('fNo').textContent = PLAYER.no;
 // 시즌 평균 — 카드 뒷면과 같은 PLAYER.stats를 쓴다(운영 콘솔이 URL로 넘긴 실측값)
