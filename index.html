@@ -1391,7 +1391,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .wl{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:18px;
   font-size:11px;font-weight:800;letter-spacing:.02em;
   padding:2px 5px;border-radius:5px;line-height:1.4}
-.wl.w{background:rgba(34,197,94,.30);color:#ffffff}
+/* 승 뱃지 — 밝은 초록에 흰 글자(PO 확정). 공유 카드(player-card.html .wl.w)와 같은 값이다.
+   예전엔 여기만 반투명 30%로 남아 있어 같은 뱃지가 두 화면에서 다른 초록으로 보였다. */
+.wl.w{background:var(--win);color:var(--on-win)}
 .wl.l{background:rgba(255,255,255,.13);color:rgba(255,255,255,.55)}
 .pdBackNote{margin-top:auto;text-align:center;font-size:11px;color:rgba(255,255,255,.4)}
 .pdBackEmptyNote{font-size:11px;color:rgba(255,255,255,.6);text-align:center;line-height:1.5;
