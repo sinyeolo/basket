@@ -294,7 +294,7 @@ button{font-family:var(--font)}
 /* 카드+레벨행+힌트+뒤집기 버튼을 한 덩어리로 묶어, 카드 하단 1/4만 화면에 걸쳐 보이는 상태에서 시작해
    위로 슬라이드하며 전체가 드러나게 한다. 187px ≈ 헤더+카드무대 상단 여백(82px) + 카드 높이의 1/4(105px) */
 .heroContent{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;
-  animation:heroRiseIn 1.1s cubic-bezier(.16,.8,.24,1) both}
+  animation:heroRiseIn 1.2s cubic-bezier(.16,.8,.24,1) both}
 /* 더 아래(화면 밖)에서 올라온다 — 카드가 '들어온다'는 느낌은 이동 거리에서 나온다 */
 @keyframes heroRiseIn{from{transform:translateY(calc(100vh + 60px))}to{transform:translateY(0)}}
 .cardInner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.2,.9,.25,1.1)}
@@ -486,7 +486,14 @@ button{font-family:var(--font)}
    z-index는 반드시 .heroContent에 걸어야 한다. 카드는 .heroContent > .cardStage > .cardWrap 안에 있고,
    .heroContent는 애니메이션 transform 때문에 이미 쌓임 맥락이다 — 그 안쪽에 z-index를 아무리 올려도
    바깥의 이 줄과는 겨루지 못한다. 형제끼리 비교되는 건 .heroContent(z:1)와 이 줄(z:0)이다. */
-.levelRow{position:relative;z-index:0;width:100%;max-width:var(--card-w);margin:14px auto 0;display:flex;align-items:center;gap:10px}
+.levelRow{position:relative;z-index:0;width:100%;max-width:var(--card-w);margin:14px auto 0;display:flex;align-items:center;gap:10px;
+  animation:levelSlideOut .52s cubic-bezier(.16,.8,.24,1) .95s both}
+/* 카드 밑단 뒤(-46px)에서 시작해 제자리로 내려온다. 투명도를 건드리지 않는 게 핵심이다 —
+   카드가 이 줄보다 위에 그려지므로(.heroContent z:1 / 여기 z:0) 올려 두면 그냥 안 보이고,
+   내려오는 동안 카드 밑단에서 밀려 나오는 것처럼 읽힌다. 페이드를 섞으면 '뒤에서 나온다'가 아니라
+   '허공에서 나타난다'가 된다. */
+@keyframes levelSlideOut{from{transform:translateY(-46px)}to{transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){ .levelRow{animation:none} }
 .levelRow .lv{font-size:12px;font-weight:800;color:var(--g-text);white-space:nowrap}
 .expBar{flex:1;height:5px;border-radius:100px;background:rgba(255,255,255,.14);overflow:hidden}
 /* 채움은 width가 아니라 translateX로 민다 — width를 늘리면 매 프레임 레이아웃이 다시 잡히고,
@@ -507,7 +514,7 @@ button{font-family:var(--font)}
   -webkit-mask-size:92px auto;mask-size:92px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat;
   transform:rotate(-35deg);
-  animation:backPatDrift 9s linear infinite}
+  animation:backPatDrift 7s linear infinite}
 /* 패턴이 제 방향으로 천천히 흐른다. rotate 뒤에 translateX를 걸면 회전된 축(=타일이 늘어선 방향)을
    따라가므로 사선 그대로 미끄러진다. 이동량은 타일 한 칸(92px) — 딱 한 주기라 이음매가 안 보인다.
    transform이라 합성 단계에서만 처리된다(mask-position을 움직이면 매 프레임 다시 칠한다).
@@ -1050,6 +1057,12 @@ function ovrFor(key){
   return Math.min(99, base+bonus);
 }
 function pad2(n){ return n < 10 ? '0'+n : ''+n; }
+/* 등장 연출이 끝났는지 — OVR 카운트업·경험치 채움처럼 '도착한 뒤에 시작해야 하는' 것들의 기준점 */
+var heroEntered = false;
+function animateExpBar(){
+  var exp = document.getElementById('fExpBar');
+  if(exp && exp.dataset.target) exp.style.transform = exp.dataset.target;
+}
 
 /* ---- 무엇이 새로운가 ----
    카드를 열었을 때 "지난번과 뭐가 달라졌는지"가 안 보이면, 기록이 쌓여도 다시 볼 이유가 없다.
@@ -1095,7 +1108,10 @@ function applyGrade(key){
   ovrEl.dataset.target = ovrVal != null ? ovrVal : '';
   ovrEl.textContent = ovrVal != null ? pad2(ovrVal) : '?';
   document.getElementById('fLevel').textContent = 'Lv.'+g.level;
-  document.getElementById('fExpBar').style.transform = 'translateX(-'+(100 - g.exp)+'%)';
+  var exp = document.getElementById('fExpBar');
+  exp.dataset.target = 'translateX(-'+(100 - g.exp)+'%)';
+  // 등장이 끝난 뒤라면(등급 미리보기 전환 등) 곧바로 반영, 아니면 enterOnce가 때를 맞춘다
+  if(heroEntered) exp.style.transform = exp.dataset.target;
   document.getElementById('sLevel').textContent = g.level;
   var blank = (key === 'starter');
   document.getElementById('sTour').textContent  = blank ? 0 : 6;
@@ -1256,8 +1272,12 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
   function enterOnce(){
     if(entered) return;
     entered = true;
+    heroEntered = true;
     enterSheet();
     animateOvrCountUp();
+    /* 경험치는 레벨 행이 카드 뒤에서 다 빠져나온 뒤에 찬다(.95s 지연 + .52s 이동).
+       숨어 있는 동안 차오르면 아무도 못 본 채로 끝난다. */
+    if(reduced) animateExpBar(); else setTimeout(animateExpBar, 320);
   }
   if(reduced){
     enterOnce();
