@@ -19,7 +19,7 @@
   --font-display:'Tektur',var(--font);
   --stage-bg:#0a0b0f; --stage-bg2:#14161c;
   --on-dark:#f4f4f6; --on-dark-dim:#9a9ba3;
-  --card-w:300px; --card-h:420px; --card-thick:16px;
+  --card-w:270px; --card-h:378px;   /* 300×420에서 10% 축소 */ --card-thick:16px;
   /* 공통 컴포넌트 토큰 — prototype/index.html과 동일 값 사용(라운드·높이 스케일 통일) */
   --r-btn:100px; --r-card:20px; --r-chip:8px; --h-sm:40px; --h-md:44px;
   /* BASKET 메인(브랜드 포인트) 컬러 — index.html의 --primary/--on-primary와 동일 값 */
@@ -390,29 +390,11 @@ button{font-family:var(--font)}
    screen .20이면 어두운 배경 위로 무지갯빛 결이 뜨면서 사진의 밝은 부분은 거의 건드리지 않는다.
    overlay는 어두운 카드에서 대비만 키워 오히려 더 어두워지고, soft-light는 아무리 올려도 결이 안 산다.
    기울이면 --holo-tx/--holo-ty로 이 레이어가 함께 밀려서 빛을 따라 결이 흐른다. */
-/* 앞면은 두 겹으로 나눠 만든다 — 한 겹으로는 "선명함"과 "홀로그램"이 서로를 잡아먹는다.
-   블렌드를 전부 같은 카드로 찍어 비교한 결과:
-   · screen 진하게: 포일 사진의 중간 회색이 검은 부분까지 들어 올려 우유를 부은 것처럼 뿌옇다.
-   · overlay: 대비는 살지만 색이 빛번짐처럼 새어 번진다.
-   · multiply: 가장 선명하되 포일이 사라져 그냥 사진 카드가 된다.
-   · color-dodge: 카드가 통째로 무지개 깃발이 된다.
-   ① 질감은 포일 사진을 screen으로 아주 옅게(.18) — 결만 얹고 밝기는 건드리지 않는다.
-   ② 무지갯빛은 mix-blend-mode:color로 따로 얹는다. 색(색상·채도)은 이 층에서, 밝기는 밑그림에서
-      가져오는 블렌드라 검은 곳은 검게 남고 밝은 곳만 물든다 — 실제 포일이 빛을 받는 방식 그대로다.
-      그래서 사진 디테일이 하나도 죽지 않는다. */
-.cardFace.front .holoFoil{mix-blend-mode:screen;opacity:.18;filter:none}
-/* 회절격자 — 촘촘한 무지개 띠. 기울기(--holo-tx/ty)를 7배로 증폭해 밀어서,
-   카드를 기울이면 스펙트럼이 표면을 훑고 지나간다. 정지 사진 한 장으로는 낼 수 없는 단서다.
-   대각 띠로 마스크해 카드 전체가 아니라 "빛이 스치는 자리"에만 뜨게 한다. */
-.holoSpectrum{position:absolute;inset:-30%;z-index:4;pointer-events:none;mix-blend-mode:color;opacity:.16;
-  background:repeating-linear-gradient(74deg,
-    hsl(350 85% 55%) 0px, hsl(45 90% 55%) 16px, hsl(150 80% 50%) 32px,
-    hsl(195 90% 52%) 48px, hsl(265 85% 55%) 64px, hsl(350 85% 55%) 80px);
-  transform:translate(calc(var(--holo-tx,0px) * 7), calc(var(--holo-ty,0px) * 7));
-  -webkit-mask-image:linear-gradient(74deg, transparent 8%, #000 34%, #000 60%, transparent 88%);
-          mask-image:linear-gradient(74deg, transparent 8%, #000 34%, #000 60%, transparent 88%)}
-/* 뒷면은 사진이 없어 색을 물들일 밑그림이 없다 — 스펙트럼은 앞면에만 둔다 */
-.cardFace.back .holoSpectrum{display:none}
+/* 앞면 포일 — 실제 홀로그램 사진을 screen으로 아주 옅게 얹는다.
+   CSS 회절격자(holoSpectrum)를 얹어 봤지만 무지개 띠가 인공적으로 읽혀서 걷어냈다 —
+   사진 한 장이 주는 결이 더 자연스럽다. 대신 세기를 더 낮춰 뒤 인물이 잘 보이게 한다.
+   screen은 빛을 더하는 블렌드라 옅게 쓰지 않으면 검은 부분까지 들어 올려 뿌예진다(.18에서 .12로). */
+.cardFace.front .holoFoil{mix-blend-mode:screen;opacity:.12;filter:none}
 /* 그레인·오라도 같은 이유로 옅게 — 셋이 겹치면 각각은 미미해도 합이 안개가 된다 */
 .card-photo .holoGrain{opacity:.05}
 .card-photo .pdAura{opacity:.10}
@@ -724,7 +706,6 @@ button{font-family:var(--font)}
               <div class="cardPhotoBg" id="fPhotoBg"></div>
               <div class="pdAura" aria-hidden="true"></div>
               <div class="holoFoil" aria-hidden="true"></div>
-              <div class="holoSpectrum" aria-hidden="true"></div>
               <div class="holoGrain" aria-hidden="true"></div>
               <div class="topRow">
                 <div class="brandCol"><span class="brandLogo logoMark" role="img" aria-label="BASKET"></span><span class="gradeBadge" id="fGradeChip">GOLD</span></div>
@@ -1260,9 +1241,26 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
   }
 
   // 닫기 버튼 — 펼친(=스티키가 의미 있는) 상태에서만 보이고, 누르면 시트가 다시 접혀 처음 카드가 보이던 화면으로 돌아간다
+  /* 닫기 — 있던 자리에서 아래로 흘러내려야지 순간이동하면 안 된다.
+     최상단에 못박힌 채로 페이지가 굴러가 있으면 unpinSheet()의 scrollTo(0,0)가 즉시 튀고
+     곧바로 접혀서, 사용자에겐 '시트가 옮겨졌다'로 보였다.
+     먼저 페이지를 부드럽게 맨 위로 올리고, 그 움직임이 끝난 뒤에 시트를 내린다.
+     scrollend를 못 쓰는 브라우저가 있어 시간 상한을 함께 둔다 — 둘 중 먼저 오는 쪽으로 이어간다. */
+  function closeSheet(){
+    // 움직임을 줄여 달라고 한 사용자에겐 부드러운 스크롤이 오히려 방해다 — 곧바로 접는다
+    if(!reduced && sheet.classList.contains('sheet-pinned') && window.scrollY > 0){
+      var done = false;
+      var finish = function(){ if(done) return; done = true; setSheet('collapsed'); };
+      var t = setTimeout(finish, 650);
+      window.addEventListener('scrollend', function(){ clearTimeout(t); finish(); }, { once:true });
+      window.scrollTo({ top:0, behavior:'smooth' });
+      return;
+    }
+    setSheet('collapsed');
+  }
   sheetCloseBtn.addEventListener('click', function(e){
     e.stopPropagation(); // sheetHead 자체의 토글 클릭으로 번지지 않게 막음
-    setSheet('collapsed');
+    closeSheet();
   });
 
   // 클릭 — 접힘/펼침 토글. 단, 드래그 제스처가 이미 상태를 바꿨다면 클릭의 토글은 무시(드래그 직후 발생하는 합성 클릭 방지)
@@ -1485,7 +1483,6 @@ function lbCardFrontHTML(grade){
     '<div class="cardPhotoBg">'+(PLAYER.photo ? '<img class="avatarPhotoFull" src="'+PLAYER.photo+'" alt="">' : '')+'</div>'+
     '<div class="pdAura" aria-hidden="true"></div>'+
     '<div class="holoFoil '+holo+'" aria-hidden="true"></div>'+
-    '<div class="holoSpectrum" aria-hidden="true"></div>'+
     '<div class="holoGrain" aria-hidden="true"></div>'+
     '<div class="topRow">'+
       '<div class="brandCol"><span class="brandLogo logoMark" role="img" aria-label="BASKET"></span><span class="gradeBadge">'+g.label+'</span></div>'+

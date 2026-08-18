@@ -1189,7 +1189,8 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdInfoArea{animation:pdRiseIn .9s cubic-bezier(.16,.84,.24,1) both}
 @keyframes pdRiseIn{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
 .pdStage{display:flex;justify-content:center;padding:8px 0 4px;perspective:1400px}
-.pdCard{width:300px;height:420px;position:relative;transform-style:preserve-3d;cursor:pointer;
+/* 크기는 공유 카드(player-card.html --card-w/--card-h)와 같은 값이어야 한다 — 300×420에서 10% 축소 */
+.pdCard{width:270px;height:378px;position:relative;transform-style:preserve-3d;cursor:pointer;
   transform:rotateX(var(--ry,0)) rotateY(var(--rx,0))}
 .pdCardInner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.2,.9,.25,1.1)}
 .pdCardInner.flipped{transform:rotateY(180deg)}
@@ -1304,7 +1305,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    screen .20이면 어두운 배경 위로 무지갯빛 결이 뜨면서 사진의 밝은 부분은 거의 건드리지 않는다.
    overlay는 어두운 카드에서 대비만 키워 오히려 더 어두워지고, soft-light는 아무리 올려도 결이 안 산다.
    기울이면 --holo-tx/--holo-ty로 이 레이어가 함께 밀려서 빛을 따라 결이 흐른다. */
-.card-photo .holoFoil{opacity:.20;mix-blend-mode:screen}
+/* 앞면 포일 — 공유 카드와 같은 값(.12). 뒤 인물이 잘 보이도록 세기를 낮춘 상태다.
+   CSS 회절격자를 얹어 봤다가 인공적으로 읽혀서 사진 한 장만 남겼다(player-card.html과 동일 판단). */
+.card-photo .holoFoil{opacity:.12;mix-blend-mode:screen}
 .card-photo .holoGrain{opacity:.08}
 .card-photo .pdAura{opacity:.18}
 
