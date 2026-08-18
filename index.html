@@ -1271,6 +1271,32 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* OVR 라벨 전체(텍스트+아이콘)를 하나의 버튼으로 묶어 탭 영역을 넓힘. 아이콘 자체는 배경 없이 테두리만 */
 .pdOvrInfoBtn{background:none;border:none;padding:0;font:inherit;cursor:pointer}
 .pdOvrInfoBtn:hover{color:rgba(255,255,255,.8)}
+.pdOvrVal{display:flex;align-items:center;justify-content:flex-end;gap:1px}
+/* 추세 화살표 — 선수 카드와 같은 값. 카드 앞면은 상승·하락 색을 쓰지 않는다(등급색과 홀로그램이
+   이미 도는 표면에 초록·빨강을 더하면 카드가 대시보드가 된다). 등급 숫자와 같은 색으로 맞춘다. */
+.pdOvrTrend{display:inline-flex;align-items:center;flex:none;color:var(--g-text,#fff);
+  animation:pdTrendPop 2.4s cubic-bezier(.3,0,.2,1) infinite}
+.pdOvrTrend svg{width:14px;height:14px;display:block}
+.pdOvrTrend.down{animation-name:pdTrendPopDown}
+/* 두 번 튀고 멈춰 선다 — 계속 흔들면 잔소리가 되고, 한 번만 튀면 못 보고 지나친다.
+   두 번째가 더 작은 건 튕김이 힘을 잃는 방식이라 물리로 읽힌다. */
+@keyframes pdTrendPop{
+  0%  {transform:translateY(0);    animation-timing-function:cubic-bezier(.2,.7,.3,1)}
+  8%  {transform:translateY(-5px); animation-timing-function:cubic-bezier(.5,0,.75,.9)}
+  18% {transform:translateY(0);    animation-timing-function:cubic-bezier(.2,.7,.3,1)}
+  25% {transform:translateY(-3px); animation-timing-function:cubic-bezier(.5,0,.75,.9)}
+  33% {transform:translateY(0)}
+  100%{transform:translateY(0)}
+}
+@keyframes pdTrendPopDown{
+  0%  {transform:translateY(0);    animation-timing-function:cubic-bezier(.2,.7,.3,1)}
+  8%  {transform:translateY(5px);  animation-timing-function:cubic-bezier(.5,0,.75,.9)}
+  18% {transform:translateY(0);    animation-timing-function:cubic-bezier(.2,.7,.3,1)}
+  25% {transform:translateY(3px);  animation-timing-function:cubic-bezier(.5,0,.75,.9)}
+  33% {transform:translateY(0)}
+  100%{transform:translateY(0)}
+}
+@media (prefers-reduced-motion:reduce){ .pdOvrTrend{animation:none} }
 .pdOvrInfoIcon{width:15px;height:15px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);flex:none;letter-spacing:0;
   color:inherit;font-size:11px;font-weight:800;line-height:1;display:inline-flex;align-items:center;justify-content:center}
 
@@ -4481,6 +4507,32 @@ function ovrFor(s){
      기준점을 실제 생산력에 맞춰 다시 잡는다 — raw 45(주전 에이스)≈90, 38(주전)≈75, 31(로테이션)≈60. */
   return Math.max(30, Math.min(99, Math.round(-6 + raw*2.14)));
 }
+/* 최근 경기 직전의 OVR — 시즌 평균에서 가장 최근 경기 한 건을 빼고 다시 계산한다.
+   관리자 화면에는 '지난번 본 값' 같은 기준이 없다(그건 선수 본인의 카드 이야기다).
+   대신 이 화면에서 의미가 서는 질문은 "이번 경기로 올랐나 내렸나"이고, 그건 데이터로 답할 수 있다.
+
+   슛 성공률(fg/tp/ft)은 경기 로그에 없어 그대로 둔다 — 빼낼 수가 없다. 델타는 분당 생산력이
+   좌우하므로 방향을 읽는 데는 충분하고, 이 표시는 어차피 방향만 말하고 크기는 말하지 않는다.
+   두 경기 미만이면 기준이 없으므로 아무것도 표시하지 않는다(등급도 스타터로 묶이는 구간이다). */
+function ovrBeforeLastGame(s, log){
+  if(!s || !log || !log.length || !s.g || s.g < 2) return null;
+  var last = log[0], n = s.g, m = n - 1;
+  function back(avg, val){ return (avg * n - val) / m; }   // 평균에서 한 경기를 되빼기
+  var prev = { g:m, min:back(s.min,last.min), pts:back(s.pts,last.pts), reb:back(s.reb,last.reb),
+    ast:back(s.ast,last.ast), stl:back(s.stl,last.stl), blk:back(s.blk,last.blk),
+    fg:s.fg, tp:s.tp, ft:s.ft };
+  if(!(prev.min > 0)) return null;
+  return ovrFor(prev);
+}
+/* 추세 화살표 — 선수 카드(player-card.html ovrTrendHtml)와 같은 모양·같은 규칙.
+   방향만 말하고 크기는 말하지 않는다. 몇 점 올랐는지는 카드가 아니라 기록에서 볼 일이다. */
+function pdOvrTrendHtml(delta){
+  if(!delta) return '';
+  var up = delta > 0;
+  return '<span class="pdOvrTrend '+(up?'up':'down')+'" aria-label="최근 경기 전보다 '+Math.abs(delta)+' '+(up?'상승':'하락')+'">'+
+    '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="'+(up?'M6 2.5l4 5H2z':'M6 9.5l-4-5h8z')+'" fill="currentColor"/></svg>'+
+  '</span>';
+}
 /* 등급 — 스타터만 OVR이 아니라 '표본이 없다'는 사실로 정한다. 한 경기 이하면 어떤 수치가
    나와도 그 선수를 대표하지 못하므로 등급을 매기지 않고 시작 등급에 둔다. 두 경기부터 구간으로 나눈다.
    기록이 아예 없는 선수도 여기로 떨어진다 — 예전엔 브론즈로 발급돼 "못하는 선수"처럼 보였다. */
@@ -4569,6 +4621,8 @@ function renderPlayerDetail(){
 
   // ① 프로필 카드 — 화면 중앙에 크게, 클릭하면 뒷면(시즌 평균 상세)으로 플립
   var ovrScore = ovrFor(s);
+  var ovrPrev = ovrBeforeLastGame(s, log);
+  var ovrTrend = (ovrScore != null && ovrPrev != null) ? ovrScore - ovrPrev : 0;
   var grade = gradeFor(s);
   var gradeLabel = { starter:'STARTER', bronze:'BRONZE', silver:'SILVER', gold:'GOLD' }[grade];
   var teamColor = t ? t.color : '#6b6a72';   // 카드 링크 파라미터·팀 씰 배지에만 쓰인다(페이지 배경 틴트는 제거됨)
@@ -4626,7 +4680,8 @@ function renderPlayerDetail(){
           '<div class="holoGrain" aria-hidden="true"></div>'+
           '<div class="pdTopRow">'+
             '<div class="pdBrand"><span class="pdLogo logoMark" role="img" aria-label="BASKET"></span><span class="pdGradeBadge">'+gradeLabel+'</span></div>'+
-            '<div class="pdOvr"><button type="button" class="lb pdOvrInfoBtn" id="pdOvrInfoBtn" aria-label="OVR 계산 방식 안내">OVR<span class="pdOvrInfoIcon" aria-hidden="true">?</span></button><div class="vl">'+ovr+'</div></div>'+
+            '<div class="pdOvr"><button type="button" class="lb pdOvrInfoBtn" id="pdOvrInfoBtn" aria-label="OVR 계산 방식 안내">OVR<span class="pdOvrInfoIcon" aria-hidden="true">?</span></button>'+
+              '<div class="pdOvrVal">'+pdOvrTrendHtml(ovrTrend)+'<div class="vl">'+ovr+'</div></div></div>'+
           '</div>'+
           '<div class="pdPhoto"'+(p.photo ? ' style="display:none"' : '')+'><div class="pdAvatar">'+(p.photo ? '' : playerSilhouetteSvg(p.id))+'</div></div>'+
           '<div class="infoBlur infoBlur1" aria-hidden="true"></div>'+
