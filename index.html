@@ -1264,14 +1264,14 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdGradeBadge{border-radius:100px;background:rgba(0,0,0,.4);color:var(--g-text,#fff);
   border:1px solid color-mix(in srgb,var(--g-b,#fff) 55%,transparent);
   padding:3px 10px;font-size:11px;font-weight:800;letter-spacing:.05em}
-.pdOvr{text-align:right;color:#fff}
-.pdOvr .lb{font-size:13px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);
+.pdOvr{display:flex;flex-direction:column;align-items:flex-end;color:#fff}
+.pdOvr .lb{font-size:14px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);
   display:flex;align-items:center;justify-content:flex-end;gap:4px}
 .pdOvr .vl{font-family:var(--font-display);font-size:43px;font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--g-text,#fff)}
 /* OVR 라벨 전체(텍스트+아이콘)를 하나의 버튼으로 묶어 탭 영역을 넓힘. 아이콘 자체는 배경 없이 테두리만 */
 .pdOvrInfoBtn{background:none;border:none;padding:0;font:inherit;cursor:pointer}
 .pdOvrInfoBtn:hover{color:rgba(255,255,255,.8)}
-.pdOvrInfoIcon{width:15px;height:15px;border-radius:50%;border:1px solid rgba(255,255,255,.5);flex:none;
+.pdOvrInfoIcon{width:15px;height:15px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);flex:none;letter-spacing:0;
   color:inherit;font-size:11px;font-weight:800;line-height:1;display:inline-flex;align-items:center;justify-content:center}
 
 .pdPhoto{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;z-index:1;
@@ -1354,12 +1354,21 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    앞면은 사진·오라가 덮고 있어 그대로 두고 뒷면에만 적용한다. (player-card.html과 동일) */
 /* 뒷면 대각 로고 패턴 — 등급 톤 10%. 공유 카드(player-card.html)와 동일 규칙.
    패턴은 positioned라 그냥 두면 static인 본문을 덮는다 — 본문에 z-index를 올려 뒤로 보낸다. */
-.pdBackLogoPat{position:absolute;inset:-40%;z-index:1;pointer-events:none;opacity:.07;
+.pdBackLogoPat{position:absolute;inset:-80%;z-index:1;pointer-events:none;opacity:.07;
   background-color:var(--g-b,#ccc);
   -webkit-mask-image:url(assets/logo-pat.svg);mask-image:url(assets/logo-pat.svg);
   -webkit-mask-size:92px auto;mask-size:92px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat;
-  transform:rotate(-35deg)}
+  transform:rotate(-35deg);
+  animation:pdBackPatDrift 7s linear infinite}
+/* 선수 카드(player-card.html .backLogoPat)와 같은 값·같은 이유.
+   rotate 뒤에 translateX를 걸면 회전된 축(=타일이 늘어선 방향)을 따라가므로 사선 그대로 미끄러지고,
+   이동량이 타일 한 칸(92px)이라 이음매가 안 보인다.
+   inset이 -80%인 이유: 레이어를 -35도 돌리면 카드 네 귀퉁이가 안쪽 219px까지 들어오고 여기에
+   흐르는 거리 92px이 더해진다. -40%(반폭 243px)로는 모자라 흐르는 동안 뒤쪽 가장자리가 카드
+   안으로 들어와 그 띠에서 패턴이 사라졌다가 한 바퀴 돌면 갑자기 나타난다. */
+@keyframes pdBackPatDrift{from{transform:rotate(-35deg) translateX(0)}to{transform:rotate(-35deg) translateX(-92px)}}
+@media (prefers-reduced-motion:reduce){ .pdBackLogoPat{animation:none} }
 .pdFace.pdBack .in > .pdBackTitle,
 .pdFace.pdBack .in > .pdBackGrid,
 .pdFace.pdBack .in > .pdBackGames,
@@ -1386,6 +1395,10 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdBackGames{display:flex;flex-direction:column;gap:6px}
 .pdBackGameRow b{color:#fff;font-weight:800}
 .pdBackGameRow .gr-l{display:flex;align-items:center;gap:7px;min-width:0}
+.pdBackGameRow .gr-l > span{flex:none}
+/* 폭이 모자라면 이 칸만 줄어든다 — 날짜와 승패 뱃지는 끝까지 온전해야 읽을 수 있다.
+   줄일 칸을 위치(:first-child)로 정하면 날짜가 잘린다(선수 카드에서 실제로 그랬다). */
+.pdBackGameRow .gr-l .opFlex{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 /* 카드 위 승패 뱃지 — 좁은 뒷면에 맞춰 W/L 한 글자로. 운영 화면이 Win/Lose를 쓰므로 같은 말의 축약이다.
    승은 운영 화면과 같은 브랜드 컬러, 패는 회색. */
 .wl{display:inline-flex;align-items:center;justify-content:center;flex:none;min-width:18px;
@@ -4596,7 +4609,7 @@ function renderPlayerDetail(){
           return '<div class="pdBackGameRow"><span class="gr-l">'+
             '<span>'+g.date.slice(5)+'</span>'+
             '<span class="wl '+(g.win?'w':'l')+'">'+(g.win?'W':'L')+'</span>'+
-            '<span>vs '+g.opp+'</span></span><b>'+g.pts+'점</b></div>';
+            '<span class="opFlex">vs '+g.opp+'</span></span><b>'+g.pts+'점</b></div>';
         }).join('')+'</div>'
       : '<div class="pdBackEmptyNote">아직 기록된 경기가 없어요</div>')+
     '<div class="pdBackNote">'+(log[0] ? 'update '+log[0].date.replace(/-/g,'.') : '')+'</div>';
