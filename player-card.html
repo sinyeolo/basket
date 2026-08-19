@@ -72,10 +72,12 @@ button{font-family:var(--font)}
 .stageRays{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;
   animation:raysIn 2.4s ease both}
 .stageRays i{position:absolute;display:block;border-radius:50%;
+  /* 은은하게 — 30/12%에서 낮췄다. 배경은 카드 뒤에 공기를 만드는 자리지 눈이 갈 자리가 아니다.
+     중간 정지점을 앞으로 당겨(34 → 28%) 가장자리로 더 일찍 흩어지게도 했다. */
   background:radial-gradient(circle,
-    color-mix(in srgb,var(--sg) 30%,transparent) 0%,
-    color-mix(in srgb,var(--sg) 12%,transparent) 34%,
-    transparent 66%)}
+    color-mix(in srgb,var(--sg) 18%,transparent) 0%,
+    color-mix(in srgb,var(--sg) 7%,transparent) 28%,
+    transparent 62%)}
 .stageRays i:nth-child(1){--sg:var(--g-b);width:120vw;aspect-ratio:1;left:-30vw;top:-62vw;
   animation:driftA 12s ease-in-out infinite alternate}
 .stageRays i:nth-child(2){--sg:var(--g-a);width:96vw;aspect-ratio:1;right:-32vw;top:-14vw;
