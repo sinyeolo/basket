@@ -497,7 +497,7 @@ button{font-family:var(--font)}
 /* 레벨·경험치는 카드 바깥 아래에 노출 — 운영단 선수 상세(index.html .pdLevelRow)와 동일 위치 */
 /* 레벨은 시트 안에 있다 — 카드 밖 한 줄로 떠 있을 땐 카드에도 시트에도 속하지 않아 보였다.
    요약 지표(레벨·참가 대회·경기 수·배지) 바로 위에 두면 같은 '이 선수의 현황' 묶음으로 읽힌다. */
-.levelRow{width:100%;max-width:520px;margin:14px auto 0;display:flex;align-items:center;gap:10px}
+.levelRow{width:100%;margin:16px 0 0;display:flex;align-items:center;gap:10px}
 .levelRow .lv{font-size:13px;font-weight:800;color:var(--sh-on);white-space:nowrap}
 .expBar{flex:1;height:5px;border-radius:100px;background:var(--sh-bg2);overflow:hidden}
 /* 카드 앞면 최하단의 작은 레벨 — 카드만 보고도 지금 어디쯤인지 알 수 있어야 한다.
@@ -639,7 +639,7 @@ button{font-family:var(--font)}
 /* 핵심 요약 스트립 — 시트 안에서만 쓰여서 화이트 테마로 바로 정의 */
 /* 요약 스트립만 반전 — 시트 전체가 흰 면이라 네 수치가 다른 카드들과 같은 무게로 흩어졌다.
    여기 하나만 검게 깔면 "이 선수를 한 줄로 요약한 값"이라는 게 먼저 읽힌다. */
-.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:520px;margin:22px auto 0;
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:520px;margin:14px auto 0;
   background:#16171b;border:1px solid #16171b;border-radius:16px;padding:16px 6px}
 .summary .it{text-align:center;padding:0 4px}
 .summary .it b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:#ffffff}
@@ -650,7 +650,16 @@ button{font-family:var(--font)}
 .section{max-width:520px;margin:34px auto 0;padding:0}
 /* OVR 히어로 — 박스 없이. 회색 박스로 감싸면 아래 4지표 카드와 무게가 비슷해져 '가장 중요한 수치'로
    안 읽힌다. 등급 뱃지를 위에 올리고 그 아래 큰 숫자를 놓아 위에서 아래로 읽히게 했다. */
-.ovrHero{max-width:520px;margin:24px auto 0;padding:0;display:flex;flex-direction:row;
+/* 시트 머리 블록 — 등급·OVR·레벨을 한 판에 담는다. 이 셋은 '이 선수가 지금 어디쯤인가'라는
+   한 가지 이야기라서 각각 떠 있으면 세 개의 사실로 읽힌다.
+   바탕에 등급색을 아주 옅게 깔아 카드와 시트가 같은 선수의 것임을 색으로 잇는다 —
+   진하게 깔면 아래 흰 블록들과 싸우므로 12%까지만. */
+.sheetHero{max-width:520px;margin:18px auto 0;padding:18px 18px 16px;border-radius:20px;
+  background:
+    radial-gradient(120% 120% at 0% 0%, color-mix(in srgb,var(--g-b) 22%,transparent), transparent 72%),
+    color-mix(in srgb,var(--g-b) 12%, var(--sh-bg2));
+  border:1px solid color-mix(in srgb,var(--g-b) 24%, transparent)}
+.ovrHero{margin:0;padding:0;display:flex;flex-direction:row;
   align-items:center;justify-content:space-between;gap:12px}
 /* 라벨을 숫자 앞에 둬서 큰 숫자가 오른쪽 끝을 붙잡게 한다 — 숫자를 앞에 두면 오른쪽 끝이 작은 라벨로
    끝나 시선이 흐려진다 */
@@ -946,6 +955,7 @@ button{font-family:var(--font)}
     <div class="sheetBody">
       <!-- OVR — 카드 앞면의 핵심 수치를 시트 맨 위에도 크게 세운다. 시트만 보고도 이 선수가
            어느 수준인지 바로 잡히게 하려는 것(예전엔 레벨·경기 수 같은 부가 지표만 있었다) -->
+      <div class="sheetHero">
       <div class="ovrHero">
         <span class="ohGrade" id="sGrade" data-g="gold">GOLD</span>
         <div class="ovrHeroMain">
@@ -957,6 +967,7 @@ button{font-family:var(--font)}
       <div class="levelRow" id="levelRow">
         <span class="lv" id="fLevel">Lv.15</span>
         <div class="expBar"><i id="fExpBar"></i></div>
+      </div>
       </div>
 
       <div class="summary">
