@@ -1935,7 +1935,7 @@ if(LINKED_PLAYER){
 function createCardController(wrapEl, opts){
   opts = opts || {};
   var inner = wrapEl.querySelector('.cardInner');
-  var MAX_TILT = 10, DRAG_THRESHOLD = 8;
+  var MAX_TILT = 12.5, DRAG_THRESHOLD = 8;   // 10에서 25% 키웠다(PO) — 포인터는 이 값의 2배까지 기운다
   var flipped = false;
   var target = { rx:0, ry:0 };
   var current = { rx:0, ry:0 };
