@@ -489,7 +489,9 @@ button{font-family:var(--font)}
   border-radius:50%;font-size:11px;font-weight:800;line-height:1;
   background:rgba(0,0,0,.4);color:var(--g-text);border:1px solid color-mix(in srgb,var(--g-b) 55%,transparent)}
 .cf-name{font-size:26px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
-.cf-nameEn{font-size:13px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
+/* 영문 이름 — 전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다.
+   첫 글자만 대문자로 두고 한 단 얇게 해서 한글 이름 아래 조용히 받치게 한다. */
+.cf-nameEn{font-size:13px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
 /* 구분선 — 다른 텍스트와 동일하게 좌우 패딩 안쪽에서 끝남(꽉 채우면 답답해 보여서 되돌림) */
 .cfBottomRow{display:flex;align-items:center;gap:8px;padding-right:68px}
 .cfTeamMini{display:flex;align-items:center;gap:7px;min-width:0}
@@ -896,7 +898,7 @@ button{font-family:var(--font)}
               <div class="infoBlur infoBlur3" aria-hidden="true"></div>
               <div class="cardFront-info">
                 <div class="cfTop">
-                  <div class="cfPosRow"><span class="cfCaptain" id="fCaptain" hidden>C</span><span class="chip cfPos" id="fPos">SF</span></div>
+                  <div class="cfPosRow"><span class="chip cfPos" id="fPos">SF</span><span class="cfCaptain" id="fCaptain" hidden>C</span></div>
                   <div class="cf-name" id="fName">김민수</div>
                   <div class="cf-nameEn" id="fNameEn">KIM MIN SU</div>
                 </div>
@@ -1229,6 +1231,11 @@ function ovrFor(key){
   return Math.min(99, base+bonus);
 }
 function pad2(n){ return n < 10 ? '0'+n : ''+n; }
+/* KIM MIN SU → Kim Min Su. 데이터가 전부 대문자로 들어오므로(운영 콘솔도 같다) 화면에서 맞춘다 —
+   CSS의 text-transform은 이미 대문자인 글자를 되돌리지 못한다. */
+function titleCase(str){
+  return String(str || '').toLowerCase().replace(/(^|[\s'-])([a-z])/g, function(m, sep, ch){ return sep + ch.toUpperCase(); });
+}
 /* 등장 연출이 끝났는지 — OVR 카운트업·경험치 채움처럼 '도착한 뒤에 시작해야 하는' 것들의 기준점 */
 var heroEntered = false;
 /* 지금 화면에 세운 OVR. PLAYER._ovr과 반드시 구분해야 한다 — 그쪽은 운영 콘솔 링크(?ovr=)로
@@ -1463,7 +1470,7 @@ document.getElementById('fSealLogo').style.background = PLAYER.teamColor;
 document.getElementById('sealTextMain').textContent = sealLabel().repeat(3);
 document.getElementById('fPos').textContent = PLAYER.pos;
 document.getElementById('fCaptain').hidden = !PLAYER.captain;
-document.getElementById('fNameEn').textContent = PLAYER.en || '';
+document.getElementById('fNameEn').textContent = titleCase(PLAYER.en);
 document.getElementById('fNo').textContent = PLAYER.no;
 // 시즌 평균 — 카드 뒷면과 같은 PLAYER.stats를 쓴다(운영 콘솔이 URL로 넘긴 실측값)
 document.getElementById('sAvgPts').textContent = PLAYER.stats.pts;
@@ -2057,7 +2064,7 @@ function lbCardFrontHTML(grade){
       '<div class="cfTop">'+
         '<span class="chip cfPos">'+PLAYER.pos+'</span>'+
         '<div class="cf-name">'+PLAYER.name+'</div>'+
-        '<div class="cf-nameEn">'+(PLAYER.en||'')+'</div>'+
+        '<div class="cf-nameEn">'+titleCase(PLAYER.en)+'</div>'+
       '</div>'+
       '<div class="cfBottomRow">'+
         '<div class="cfTeamMini">'+

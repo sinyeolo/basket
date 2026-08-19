@@ -1376,7 +1376,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   border-radius:50%;flex:none;font-size:11px;font-weight:800;line-height:1;
   background:rgba(0,0,0,.4);color:var(--g-text,#fff);border:1px solid color-mix(in srgb,var(--g-b,#fff) 55%,transparent)}
 .pdNameKr{font-size:34px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
-.pdNameEn{font-size:13px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
+/* 영문 이름 — 첫 글자만 대문자, 한 단 얇게(선수 카드 .cf-nameEn과 같은 값).
+   전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다. */
+.pdNameEn{font-size:13px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
 .pdBottomRow{display:flex;align-items:center;gap:8px;padding-right:68px}
 .pdTeamMini{display:flex;align-items:center;gap:7px;min-width:0}
 .pdTeamMini span{font-size:13px;color:rgba(255,255,255,.7);font-weight:600}
@@ -4616,6 +4618,11 @@ function ovrBeforeLastGame(s, log){
 }
 /* 추세 화살표 — 선수 카드(player-card.html ovrTrendHtml)와 같은 모양·같은 규칙.
    방향만 말하고 크기는 말하지 않는다. 몇 점 올랐는지는 카드가 아니라 기록에서 볼 일이다. */
+/* KIM MIN SU → Kim Min Su. 데이터가 전부 대문자라 화면에서 맞춘다 —
+   CSS의 text-transform은 이미 대문자인 글자를 되돌리지 못한다(선수 카드 titleCase와 같은 규칙). */
+function titleCaseEn(str){
+  return String(str || '').toLowerCase().replace(/(^|[\s'-])([a-z])/g, function(m, sep, ch){ return sep + ch.toUpperCase(); });
+}
 function pdOvrTrendHtml(delta){
   if(!delta) return '';
   var up = delta > 0;
@@ -4787,11 +4794,11 @@ function renderPlayerDetail(){
           '<div class="pdInfo">'+
             '<div class="pdIdBlock">'+
               '<div class="pdPosRow">'+
-                (isCaptainPd ? '<span class="pdCaptain" title="팀 주장" aria-label="팀 주장">C</span>' : '')+
                 (posLabel ? '<span class="chip pdPos">'+posLabel+'</span>' : '')+
+                (isCaptainPd ? '<span class="pdCaptain" title="팀 주장" aria-label="팀 주장">C</span>' : '')+
               '</div>'+
               '<div class="pdNameKr">'+p.name+(p.owner?'<span class="tag-owner">오너</span>':'')+'</div>'+
-              (p.en ? '<div class="pdNameEn">'+p.en+'</div>' : '')+
+              (p.en ? '<div class="pdNameEn">'+titleCaseEn(p.en)+'</div>' : '')+
             '</div>'+
             '<div class="pdBottomRow">'+
               // 팀명 앞 로고 서클은 제거 — 카드 우하단 팀 씰(.teamSeal)에 같은 이니셜이 이미 크게 들어가 중복이었다
