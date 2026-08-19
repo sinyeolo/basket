@@ -48,6 +48,16 @@ button{font-family:var(--font)}
 [data-grade="gold"]{   --g-a:#9c7415; --g-b:#f4d16a; --g-c:#4a3608; --g-text:#fbedc4; --shine-op:.55; --holo-op:.18; }
 
 .stage{min-height:100vh}
+/* 데스크톱에서는 폰 화면 하나를 가운데 세운다.
+   무대(.heroFixed)와 시트는 둘 다 position:fixed에 left/right:0이라 창이 넓어지면 그만큼 늘어나는데,
+   안쪽 내용은 520px에서 멈춘다 — 헤더만 끝까지 가고 시트 내용은 가운데 뭉쳐 어긋나 보였다.
+   폭을 고정하고 margin:auto로 가운데 둔다. transform은 쓰지 않는다: 시트의 드래그가 transform을
+   쓰고 있어 여기서 겹치면 끌 때마다 자리가 튄다. */
+@media (min-width:560px){
+  .heroFixed,.sheet{max-width:520px;margin-left:auto;margin-right:auto}
+  /* 폰 화면 바깥은 무대와 같은 어둠으로 — 흰 여백이 남으면 창이 잘린 것처럼 보인다 */
+  body{background:var(--stage-bg)}
+}
 
 /* ---------------- 카드 위로 정보 시트가 떠서 올라오는 구조 ----------------
    heroFixed(헤더+카드)는 화면에 고정. sheet도 이제 화면 하단에 고정된 별도 레이어로,
@@ -1544,9 +1554,21 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
   (function watchHeroName(){
     var target = document.querySelector('.heroName');
     if(!target || typeof IntersectionObserver === 'undefined') return;
-    new IntersectionObserver(function(entries){
-      sheet.classList.toggle('title-shown', !entries[0].isIntersecting);
-    }, { rootMargin: '-56px 0px 0px 0px', threshold: 0 }).observe(target);
+    var io = null;
+    /* 경계는 헤더의 실제 높이다. 56px로 박아 뒀더니 헤더가 그보다 낮은 화면(데스크톱의 짧은 창)에서
+       머리 블록의 이름이 아직 잘 보이는데도 '가려졌다'로 판정돼 헤더와 이름이 함께 나왔다.
+       재서 쓰고, 창 크기가 바뀌면 다시 잰다. */
+    function attach(){
+      if(io) io.disconnect();
+      var h = Math.round(sheetHead.getBoundingClientRect().height) || 56;
+      io = new IntersectionObserver(function(entries){
+        sheet.classList.toggle('title-shown', !entries[0].isIntersecting);
+      }, { rootMargin: (-h) + 'px 0px 0px 0px', threshold: 0 });
+      io.observe(target);
+    }
+    attach();
+    var t = null;
+    window.addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(attach, 200); });
   })();
   var sheetCloseBtn = document.getElementById('sheetCloseBtn');
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
