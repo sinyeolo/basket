@@ -446,43 +446,55 @@ button{font-family:var(--font)}
 .sheet .ovrInfoBtn:hover .ovrInfoIcon{border-color:var(--sh-on);color:var(--sh-on)}
 .ovrInfoIcon{width:15px;height:15px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);flex:none;letter-spacing:0;
   color:inherit;font-size:11px;font-weight:800;line-height:1;display:inline-flex;align-items:center;justify-content:center}
-.ovrInfoModal{position:fixed;inset:0;background:rgba(6,7,10,.72);z-index:70;display:flex;align-items:center;justify-content:center;
+/* 팝업 — 운영 콘솔과 같은 흰 판이다. 어두운 카드 위에서 열리더라도 팝업까지 어두우면
+   같은 제품의 창으로 안 읽힌다. 시트가 쓰는 흰 표면 토큰을 그대로 쓴다 —
+   한 제품 안에 흰 판이 두 종류일 이유가 없다. */
+.ovrInfoModal{position:fixed;inset:0;background:rgba(0,0,0,.32);z-index:70;display:flex;align-items:center;justify-content:center;
   opacity:0;pointer-events:none;transition:opacity .18s ease;padding:24px}
 .ovrInfoModal.open{opacity:1;pointer-events:auto}
-.ovrInfoCard{position:relative;max-width:300px;width:100%;background:var(--stage-bg2);border:1px solid rgba(255,255,255,.1);
-  border-radius:16px;padding:22px 20px;transform:scale(.94);transition:transform .18s cubic-bezier(.2,.9,.25,1.1)}
+/* overflow:hidden — 스크롤한 내용이 둥근 모서리 밖으로 삐져나오지 않게 한다.
+   높이도 화면 안으로 묶고(max-height) 목록만 늘고 줄게 해서, 창이 화면을 넘어가는 일이 없다. */
+.ovrInfoCard{--sh-bg:#ffffff; --sh-bg2:#f4f5f7; --sh-border:#e7e8ec; --sh-on:#16171b; --sh-on-dim:#6d6f78;
+  position:relative;max-width:300px;width:100%;max-height:100%;
+  display:flex;flex-direction:column;overflow:hidden;
+  background:var(--sh-bg);border:1px solid var(--sh-border);
+  box-shadow:0 4px 10px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);
+  border-radius:20px;padding:22px 20px;transform:scale(.94);transition:transform .18s cubic-bezier(.2,.9,.25,1.1)}
 .ovrInfoModal.open .ovrInfoCard{transform:scale(1)}
-.ovrInfoCard h4{margin:0 0 10px;font-size:16px;font-weight:800;color:var(--on-dark)}
-.ovrInfoCard p{margin:0 0 8px;font-size:13px;line-height:1.55;color:var(--on-dark-dim)}
-.ovrInfoNote{font-size:13px;color:rgba(154,155,163,.7)}
-.ovrInfoClose{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,.2);
-  background:rgba(255,255,255,.06);color:var(--on-dark);display:flex;align-items:center;justify-content:center;cursor:pointer;
+.ovrInfoCard h4{margin:0 0 10px;font-size:16px;font-weight:800;color:var(--sh-on)}
+.ovrInfoCard p{margin:0 0 8px;font-size:13px;line-height:1.55;color:var(--sh-on-dim)}
+.ovrInfoNote{font-size:13px;color:var(--sh-on-dim)}
+.ovrInfoClose{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:1px solid var(--sh-border);
+  background:var(--sh-bg2);color:var(--sh-on);display:flex;align-items:center;justify-content:center;cursor:pointer;
   font-size:16px;line-height:1;padding:0}
-.ovrInfoClose:hover{background:rgba(255,255,255,.14)}
+.ovrInfoClose:hover{background:var(--sh-border)}
 /* OVR 변동 내역 — 안내 모달과 같은 껍데기(.ovrInfoCard)를 쓴다. 같은 자리에서 열리는 창이
    서로 다른 모양이면 같은 제품으로 안 읽힌다. 목록만 얹는다. */
 .ovrLogCard{max-width:340px}
-.ovrLogLead{margin:0 0 14px !important}
-.ovrLogList{display:flex;flex-direction:column;gap:6px;max-height:46vh;overflow-y:auto;margin:0 -4px;padding:0 4px}
-.ovrLogRow{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:12px;
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09)}
+.ovrLogLead{margin:0 0 14px !important;flex:none}
+.ovrLogList{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:6px;max-height:46vh;overflow-y:auto;margin:0 -4px;padding:0 4px}
+.ovrLogRow{flex:none;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:12px;
+  background:var(--sh-bg2);border:1px solid var(--sh-border)}
 .ovrLogTop{display:flex;align-items:center;gap:10px}
-.ovrLogDate{font-size:13px;color:var(--on-dark-dim);flex:none;font-variant-numeric:tabular-nums}
+.ovrLogDate{font-size:13px;color:var(--sh-on-dim);flex:none;font-variant-numeric:tabular-nums}
 /* 델타 — 시트의 추세 화살표와 같은 규칙(상승 빨강·하락 파랑). 한 제품 안에서 같은 뜻은 같은 색이다. */
 .ovrLogDelta{font-family:var(--font-display);font-size:13px;font-weight:800;flex:none;
   font-variant-numeric:tabular-nums}
 .ovrLogDelta.up{color:#e5484d}
 .ovrLogDelta.down{color:#3b82f6}
 .ovrLogOvr{margin-left:auto;font-family:var(--font-display);font-size:16px;font-weight:800;
-  color:var(--g-text);font-variant-numeric:tabular-nums;flex:none}
+  color:var(--sh-on);font-variant-numeric:tabular-nums;flex:none}
 /* 그 경기에 무엇을 했는지 — 접혀 있다가 '자세히 보기'에서 함께 펼쳐진다.
    숫자만 있으면 왜 올랐는지 모르고, 늘 펼쳐 두면 목록을 훑을 수가 없다. */
-.ovrLogWhy{display:none;font-size:11px;line-height:1.5;color:var(--on-dark-dim)}
+.ovrLogWhy{display:none;font-size:11px;line-height:1.5;color:var(--sh-on-dim)}
 .ovrLogList.detail .ovrLogWhy{display:block}
-.ovrLogMore{width:100%;margin-top:12px;padding:11px 12px;border:none;border-radius:12px;cursor:pointer;
-  background:rgba(255,255,255,.07);color:var(--on-dark);
+.ovrLogMore{flex:none;width:100%;margin-top:12px;padding:11px 12px;border:none;border-radius:12px;cursor:pointer;
+  background:var(--sh-bg2);color:var(--sh-on);
   font-family:inherit;font-size:13px;font-weight:700;transition:background .12s}
-.ovrLogMore:hover{background:rgba(255,255,255,.13)}
+.ovrLogMore:hover{background:var(--sh-border)}
+/* 목록이 잘려 있을 때만 경계에 그림자를 둔다 — 다 보이는데도 그림자가 있으면
+   '아래에 더 있다'는 거짓말이 된다. */
+.ovrLogCard.hasScroll .ovrLogMore{box-shadow:0 -10px 18px -10px rgba(0,0,0,.18)}
 
 /* 하단 딤드 — 팀 컬러 대신 카드 등급 톤(--g-c, 등급별 다크 언더톤)을 투명하게. 위는 거의 안 보이다가 아래로 갈수록 짙어짐 */
 .cardFront-info{position:absolute;left:0;right:0;bottom:0;padding:16px 18px 18px;z-index:2;
@@ -2233,6 +2245,16 @@ function renderOvrLog(){
     ? first.date + ' 이후 ' + log.length + '경기 동안 ' + first.ovr + ' → ' + last.ovr
     : '아직 변동 내역이 없어요';
   document.getElementById('ovrLogMore').textContent = ovrLogDetail ? '간단히 보기' : '자세히 보기';
+  syncLogScroll();
+}
+/* 목록이 실제로 잘려 있을 때만 버튼 경계에 그림자를 세운다.
+   레이아웃이 잡힌 뒤에 재야 해서 다음 프레임에 확인한다 — 방금 그린 직후에는 아직 0이다. */
+function syncLogScroll(){
+  requestAnimationFrame(function(){
+    var l = document.getElementById('ovrLogList');
+    var card = document.querySelector('.ovrLogCard');
+    if(l && card) card.classList.toggle('hasScroll', l.scrollHeight > l.clientHeight + 1);
+  });
 }
 function ovrLogTopHtml(r){
   var up = r.delta > 0;

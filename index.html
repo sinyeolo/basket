@@ -995,8 +995,12 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    액션 줄을 시트 하단에 고정해 항상 닿게 한다. 위 520px 규칙의 세로 쌓기는 되돌려
    가로 한 줄로 두는데, 세로로 쌓으면 고정 바가 화면의 1/8을 잡아먹기 때문이다. */
 @media (max-width:640px){
+  /* 시트 밖으로 새는 걸 막는다 — 고정 바 뒤로 흘러간 내용이 둥근 모서리 밖에서 비쳐 보였다. */
+  .modal .sheet{overflow:hidden}
   .modal .acts-row{position:sticky;bottom:0;z-index:1;margin:18px -20px -20px;padding:12px 20px 20px;
-    background:var(--surface);border-radius:0 0 20px 20px;box-shadow:0 -10px 18px -10px rgba(0,0,0,.14)}
+    background:var(--surface);border-radius:0 0 20px 20px}
+  /* 그림자는 실제로 스크롤이 생길 때만 — 다 보이는데도 그림자가 있으면 '아래에 더 있다'는 거짓말이 된다 */
+  .modal.has-scroll .acts-row{box-shadow:0 -10px 18px -10px rgba(0,0,0,.14)}
   .modal .acts-row.m3{flex-direction:row}
   .modal .acts-row.m3 .btn{flex:1;width:auto;min-width:0}
 }
@@ -6724,6 +6728,25 @@ renderGamesPage();
 renderRecentEvents(); // 다이얼로그 초기화 이후에 렌더 (렌더 시 이벤트 바인딩이 함께 일어남)
 bindPlayerList('homeList');
 bindPlayerList('awayList');
+
+/* ---- 모달 하단 고정 바의 그림자 ----
+   폰에서 액션 줄이 시트 바닥에 고정되는데, 그림자를 늘 켜 두면 스크롤할 게 없을 때도
+   '아래에 더 있다'고 말하게 된다. 실제로 넘칠 때만 켠다.
+   모달이 열리는 곳이 여남은 군데라 각각을 고치는 대신 클래스가 붙는 순간을 한자리에서 본다. */
+(function(){
+  function sync(m){
+    m.classList.toggle('has-scroll', m.scrollHeight > m.clientHeight + 1);
+  }
+  new MutationObserver(function(muts){
+    muts.forEach(function(mu){
+      var m = mu.target;
+      if(m.classList && m.classList.contains('modal') && m.classList.contains('open')) requestAnimationFrame(function(){ sync(m); });
+    });
+  }).observe(document.body, { subtree:true, attributes:true, attributeFilter:['class'] });
+  window.addEventListener('resize', function(){
+    document.querySelectorAll('.modal.open').forEach(sync);
+  });
+})();
 
 window.addEventListener('hashchange', routeFromHash);
 routeFromHash();
