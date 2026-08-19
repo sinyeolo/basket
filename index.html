@@ -1395,7 +1395,16 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   box-shadow:0 0 0 .5px rgba(255,255,255,.5),0 2px 6px rgba(0,0,0,.4)}
 
 /* 레벨·경험치는 카드 바깥 아래에 노출 — PC·태블릿·모바일 공통 */
-.pdLevelRow{width:100%;max-width:300px;margin:16px auto 0;display:flex;align-items:center;gap:10px}
+.pdLevelRow{width:100%;margin:0;display:flex;align-items:center;gap:10px}
+/* 카드 앞면 최하단의 작은 레벨 — 카드만 보고도 지금 어디쯤인지 알 수 있어야 한다.
+   정보 영역의 것보다 한 단 작고 옅다: 카드의 주인공은 이름과 OVR이지 진행도가 아니다.
+   (선수 카드 .cfLevel과 같은 값) */
+.pdCfLevel{display:flex;align-items:center;gap:7px;margin-bottom:7px;padding-right:68px}
+.pdCfLv{font-size:11px;font-weight:800;color:var(--g-text,#fff);opacity:.8;white-space:nowrap}
+.pdCfExp{flex:1;height:3px;border-radius:100px;background:rgba(255,255,255,.16);overflow:hidden}
+.pdCfExp i{display:block;width:0;height:100%;border-radius:100px;
+  background:linear-gradient(90deg,var(--g-a,#888),var(--g-b,#ccc));
+  transition:width 1s cubic-bezier(.2,.8,.2,1)}
 /* 카드 밖 페이지는 밝은 배경이라 카드용 밝은 텍스트 톤(--g-text) 대신, 같은 등급의 어두운 언더톤(--g-c)을 써서
    대비는 지키면서도 등급 컬러라는 컨셉은 공유 카드(player-card.html)와 동일하게 맞춘다 */
 .pdLevelRow .lv{font-size:13px;font-weight:800;color:var(--g-c,#333);white-space:nowrap}
@@ -1436,7 +1445,10 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 뒷면 홀로그램은 앞면보다 옅게 — 뒷면은 바탕의 등급색이 읽혀야 하는데, 앞면과 같은 농도로 얹으면
    파스텔 사진이 등급색을 덮어 브론즈·실버·골드가 전부 비슷한 보랏빛으로 보인다 */
 .pdFace.pdBack .holoFoil{opacity:.22}
-.pdBackTitle{font-size:13px;font-weight:800;color:var(--g-text,#fff)}
+.pdBackTitle{display:flex;align-items:baseline;gap:8px;font-size:13px;font-weight:800;color:var(--g-text,#fff)}
+/* 24/8/4가 무슨 숫자인지 제목 줄 끝에 한 번만 적는다 — 매 줄에 붙이면 빽빽해진다
+   (선수 카드 .recLegend와 같은 값) */
+.pdRecLegend{margin-left:auto;font-size:10px;font-weight:600;letter-spacing:0;color:var(--on-dark-dim,#9a9ba3);white-space:nowrap}
 .pdBackGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 /* 아래 최근 경기 행(.pdBackGameRow)과 같은 배경·라인·라운드 — 뒷면의 두 블록이 한 벌로 읽히게 */
 .pdBackStat{backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);text-align:center;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:10px 4px}
@@ -4733,7 +4745,7 @@ function renderPlayerDetail(){
     '<div class="pdBackGrid">'+
       backStat(s?s.pts.toFixed(1):'-','득점')+backStat(s?s.reb.toFixed(1):'-','리바운드')+backStat(s?s.ast.toFixed(1):'-','어시스트')+
     '</div>'+
-    '<div class="pdBackTitle">최근 경기</div>'+
+    '<div class="pdBackTitle">최근 경기<span class="pdRecLegend">득점/리바운드/어시스트</span></div>'+
     (log.length
       ? '<div class="pdBackGames">'+log.slice(0,2).map(function(g){
           // 뱃지는 날짜 뒤 — 날짜가 먼저 읽히고 승패가 그 결과로 따라붙는 순서가 자연스럽다
@@ -4742,7 +4754,8 @@ function renderPlayerDetail(){
              '언제·이겼나·얼마나 했나'까지다. */
           return '<div class="pdBackGameRow"><span class="gr-l">'+
             '<span>'+g.date.slice(5)+'</span>'+
-            '<span class="wl '+(g.win?'w':'l')+'">'+(g.win?'W':'L')+'</span></span>'+
+            '<span class="wl '+(g.win?'w':'l')+'">'+(g.win?'W':'L')+'</span>'+
+            '<span class="opFlex">vs '+g.opp+'</span></span>'+
             '<b class="pdRecLine">'+g.pts+'<i>/</i>'+g.reb+'<i>/</i>'+g.ast+'</b></div>';
         }).join('')+'</div>'
       : '<div class="pdBackEmptyNote">아직 기록된 경기가 없어요</div>')+
@@ -4777,6 +4790,10 @@ function renderPlayerDetail(){
               (p.en ? '<div class="pdNameEn">'+p.en+'</div>' : '')+
             '</div>'+
             '<div class="pdDivider"></div>'+
+            '<div class="pdCfLevel" aria-hidden="true">'+
+              '<span class="pdCfLv">Lv.'+level+'</span>'+
+              '<span class="pdCfExp"><i id="pdExpBarMini" data-target="'+expPct+'"></i></span>'+
+            '</div>'+
             '<div class="pdBottomRow">'+
               // 팀명 앞 로고 서클은 제거 — 카드 우하단 팀 씰(.teamSeal)에 같은 이니셜이 이미 크게 들어가 중복이었다
               '<div class="pdTeamMini">'+
@@ -4805,7 +4822,6 @@ function renderPlayerDetail(){
         }).join('')+
       '</div>'+
     '</div></div>'+
-    '<div class="pdLevelRow"><span class="lv">Lv.'+level+'</span><div class="pdExpBar"><i id="pdExpBar" data-target="'+expPct+'"></i></div></div>'+
     '</div>';
 
   // ①-보조 시즌 평균 — 카드 뒷면과 별개로 화면 크기와 무관하게 항상 노출(일관된 구성)
@@ -4867,7 +4883,12 @@ function renderPlayerDetail(){
   var danger = '<div class="danger-zone">'+
     '<button type="button" class="btn btn-danger btn-sm" id="pdDelete">'+icon('trash','ic ic-sm')+'선수 삭제</button></div>';
 
-  root.innerHTML = card + '<div class="pdInfoArea" data-grade="'+grade+'">' + avgPanel + games + badgeSection + danger + '</div>';
+  /* 레벨은 카드 밑에 한 줄로 떠 있었다 — 카드에도 정보 영역에도 속하지 않아 보였다.
+     정보 영역 첫머리로 옮겨 시즌 평균·경기별 기록과 같은 '이 선수의 현황' 묶음으로 읽히게 한다
+     (선수 카드에서 시트 안으로 옮긴 것과 같은 뜻). */
+  var levelRow = '<div class="pdLevelRow"><span class="lv">Lv.'+level+'</span>'+
+    '<div class="pdExpBar"><i id="pdExpBar" data-target="'+expPct+'"></i></div></div>';
+  root.innerHTML = card + '<div class="pdInfoArea" data-grade="'+grade+'">' + levelRow + avgPanel + games + badgeSection + danger + '</div>';
 
   // 경기별 기록 한 줄을 누르면 해당 경기 상세(진행 중이면 기록 콘솔, 종료·확정이면 전체 기록)로 이동
   root.querySelectorAll('.glog tr[data-goto]').forEach(function(row){
@@ -4902,15 +4923,20 @@ function renderPlayerDetail(){
 
   // 레벨 프로그레스바 — 카드+정보 영역이 다 올라온 뒤(pdRiseIn 종료) 0%에서 목표치까지 채워진다
   (function(){
-    var bar = document.getElementById('pdExpBar');
+    // 정보 영역의 막대와 카드 앞면의 작은 막대 — 같은 값을 같은 때에 채운다
+    var bars = ['pdExpBar','pdExpBarMini'].map(function(id){ return document.getElementById(id); }).filter(Boolean);
+    if(!bars.length) return;
     var cardArea = document.querySelector('.pdCardArea');
-    var target = bar.getAttribute('data-target') + '%';
-    bar.style.transition = 'none';
-    bar.style.width = '0%';
-    void bar.offsetWidth;
-    bar.style.transition = '';
+    bars.forEach(function(b){
+      b.style.transition = 'none';
+      b.style.width = '0%';
+      void b.offsetWidth;
+      b.style.transition = '';
+    });
     function fill(){
-      requestAnimationFrame(function(){ requestAnimationFrame(function(){ bar.style.width = target; }); });
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){
+        bars.forEach(function(b){ b.style.width = b.getAttribute('data-target') + '%'; });
+      }); });
     }
     cardArea.addEventListener('animationend', function onEnd(e){
       if(e.target !== cardArea || e.animationName !== 'pdRiseIn') return;
