@@ -1376,7 +1376,6 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   background:rgba(0,0,0,.4);color:var(--g-text,#fff);border:1px solid color-mix(in srgb,var(--g-b,#fff) 55%,transparent)}
 .pdNameKr{font-size:34px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
 .pdNameEn{font-size:13px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
-.pdDivider{height:1px;background:rgba(255,255,255,.28)}
 .pdBottomRow{display:flex;align-items:center;gap:8px;padding-right:68px}
 .pdTeamMini{display:flex;align-items:center;gap:7px;min-width:0}
 .pdTeamMini span{font-size:13px;color:rgba(255,255,255,.7);font-weight:600}
@@ -1399,7 +1398,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 카드 앞면 최하단의 작은 레벨 — 카드만 보고도 지금 어디쯤인지 알 수 있어야 한다.
    정보 영역의 것보다 한 단 작고 옅다: 카드의 주인공은 이름과 OVR이지 진행도가 아니다.
    (선수 카드 .cfLevel과 같은 값) */
-.pdCfLevel{display:flex;align-items:center;gap:7px;margin-bottom:7px;padding-right:68px}
+.pdCfLevel{display:flex;align-items:center;gap:7px;margin-top:8px;padding-right:68px}
 .pdCfLv{font-size:11px;font-weight:800;color:var(--g-text,#fff);opacity:.8;white-space:nowrap}
 .pdCfExp{flex:1;height:3px;border-radius:100px;background:rgba(255,255,255,.16);overflow:hidden}
 .pdCfExp i{display:block;width:0;height:100%;border-radius:100px;
@@ -4789,17 +4788,16 @@ function renderPlayerDetail(){
               '<div class="pdNameKr">'+p.name+(p.owner?'<span class="tag-owner">오너</span>':'')+'</div>'+
               (p.en ? '<div class="pdNameEn">'+p.en+'</div>' : '')+
             '</div>'+
-            '<div class="pdDivider"></div>'+
-            '<div class="pdCfLevel" aria-hidden="true">'+
-              '<span class="pdCfLv">Lv.'+level+'</span>'+
-              '<span class="pdCfExp"><i id="pdExpBarMini" data-target="'+expPct+'"></i></span>'+
-            '</div>'+
             '<div class="pdBottomRow">'+
               // 팀명 앞 로고 서클은 제거 — 카드 우하단 팀 씰(.teamSeal)에 같은 이니셜이 이미 크게 들어가 중복이었다
               '<div class="pdTeamMini">'+
                 '<span class="pdTeamName">'+(t?t.name:'미배정')+'</span>'+
                 (p.no!=null ? '<span class="pdNumDot">·</span><span class="pdNumInline">'+p.no+'</span>' : '')+
               '</div>'+
+            '</div>'+
+            '<div class="pdCfLevel" aria-hidden="true">'+
+              '<span class="pdCfLv">Lv.'+level+'</span>'+
+              '<span class="pdCfExp"><i id="pdExpBarMini" data-target="'+expPct+'"></i></span>'+
             '</div>'+
           '</div>'+
           '<div class="teamSeal">'+
