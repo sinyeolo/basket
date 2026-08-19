@@ -431,6 +431,30 @@ button{font-family:var(--font)}
   background:rgba(255,255,255,.06);color:var(--on-dark);display:flex;align-items:center;justify-content:center;cursor:pointer;
   font-size:16px;line-height:1;padding:0}
 .ovrInfoClose:hover{background:rgba(255,255,255,.14)}
+/* OVR 변동 내역 — 안내 모달과 같은 껍데기(.ovrInfoCard)를 쓴다. 같은 자리에서 열리는 창이
+   서로 다른 모양이면 같은 제품으로 안 읽힌다. 목록만 얹는다. */
+.ovrLogCard{max-width:340px}
+.ovrLogLead{margin:0 0 14px !important}
+.ovrLogList{display:flex;flex-direction:column;gap:6px;max-height:46vh;overflow-y:auto;margin:0 -4px;padding:0 4px}
+.ovrLogRow{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:12px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09)}
+.ovrLogTop{display:flex;align-items:center;gap:10px}
+.ovrLogDate{font-size:13px;color:var(--on-dark-dim);flex:none;font-variant-numeric:tabular-nums}
+/* 델타 — 시트의 추세 화살표와 같은 규칙(상승 빨강·하락 파랑). 한 제품 안에서 같은 뜻은 같은 색이다. */
+.ovrLogDelta{font-family:var(--font-display);font-size:13px;font-weight:800;flex:none;
+  font-variant-numeric:tabular-nums}
+.ovrLogDelta.up{color:#e5484d}
+.ovrLogDelta.down{color:#3b82f6}
+.ovrLogOvr{margin-left:auto;font-family:var(--font-display);font-size:16px;font-weight:800;
+  color:var(--g-text);font-variant-numeric:tabular-nums;flex:none}
+/* 그 경기에 무엇을 했는지 — 접혀 있다가 '자세히 보기'에서 함께 펼쳐진다.
+   숫자만 있으면 왜 올랐는지 모르고, 늘 펼쳐 두면 목록을 훑을 수가 없다. */
+.ovrLogWhy{display:none;font-size:11px;line-height:1.5;color:var(--on-dark-dim)}
+.ovrLogList.detail .ovrLogWhy{display:block}
+.ovrLogMore{width:100%;margin-top:12px;padding:11px 12px;border:none;border-radius:12px;cursor:pointer;
+  background:rgba(255,255,255,.07);color:var(--on-dark);
+  font-family:inherit;font-size:13px;font-weight:700;transition:background .12s}
+.ovrLogMore:hover{background:rgba(255,255,255,.13)}
 
 /* 하단 딤드 — 팀 컬러 대신 카드 등급 톤(--g-c, 등급별 다크 언더톤)을 투명하게. 위는 거의 안 보이다가 아래로 갈수록 짙어짐 */
 .cardFront-info{position:absolute;left:0;right:0;bottom:0;padding:16px 18px 18px;z-index:2;
@@ -1005,6 +1029,16 @@ button{font-family:var(--font)}
   </div>
 </div>
 
+<div class="ovrInfoModal" id="ovrLogModal">
+  <div class="ovrInfoCard ovrLogCard">
+    <button type="button" class="ovrInfoClose" id="ovrLogClose" aria-label="닫기">×</button>
+    <h4>OVR 변동 내역</h4>
+    <p class="ovrLogLead" id="ovrLogLead"></p>
+    <div class="ovrLogList" id="ovrLogList"></div>
+    <button type="button" class="ovrLogMore" id="ovrLogMore"></button>
+  </div>
+</div>
+
 <script>
 /* 공통 아이콘 — index.html의 ICONS 구성 방식(24 viewBox, stroke-width 2, currentColor)과 동일 규칙으로 이 파일에도 최소 세트 유지 */
 var ICONS = {
@@ -1044,6 +1078,18 @@ var PLAYER = {
   /* 최근 경기 — 최신순. 카드 뒷면은 이 중 5경기만, 시트는 전부(처음엔 10경기 + 더보기) 보여준다.
      이름을 games로 두면 위 gameCount와 뜻이 겹친다 — 하나는 개수, 하나는 목록이다.
      실 서버 연동 전까지의 임시 데이터다. */
+  /* OVR 변동 내역 — 경기가 확정될 때마다 한 줄씩 쌓인다. delta는 그 경기로 움직인 값,
+     ovr은 그 경기 직후의 값이다. 최신순.
+     실 서버 연동 전까지의 임시 데이터 — recentGames의 같은 경기(id)와 짝을 이룬다. */
+  ovrLog:[
+    { id:'g12', date:'07.23', ovr:90, delta:+2 },
+    { id:'g12', date:'07.20', ovr:88, delta:+1 },
+    { id:'g12', date:'07.16', ovr:87, delta:+3 },
+    { id:'g12', date:'07.13', ovr:84, delta:-2 },
+    { id:'g12', date:'07.09', ovr:86, delta:+4 },
+    { id:'g12', date:'07.06', ovr:82, delta:-1 },
+    { id:'g12', date:'07.02', ovr:83, delta:+2 }
+  ],
   recentGames:[
     { id:'g12', date:'07.23', opp:'인천 파이터스', stage:'2026 여름 3×3 리그 · 8강',   win:true,  pts:24, reb:8, ast:4 },
     { id:'g12', date:'07.20', opp:'송파 이글스',   stage:'2026 여름 3×3 리그 · 8강',   win:true,  pts:18, reb:6, ast:3 },
@@ -2071,6 +2117,64 @@ document.getElementById('btnSaveImg').addEventListener('click', function(){
 });
 
 /* ---- OVR 계산 방식 안내 팝업 ---- */
+/* ---- OVR 변동 내역 ----
+   숫자를 누르면 그 숫자가 어떻게 여기까지 왔는지 보여 준다. 목록은 '언제 · 얼마 움직였나 · 그래서 몇'
+   세 가지만 세우고, 왜 그렇게 움직였는지(그 경기 성적)는 '자세히 보기'에서 함께 펼친다 —
+   늘 펼쳐 두면 목록을 훑을 수가 없고, 아예 없으면 숫자만 있고 이유가 없다. */
+var ovrLogDetail = false;
+function renderOvrLog(){
+  var log = PLAYER.ovrLog || [], host = document.getElementById('ovrLogList');
+  var byDate = {};
+  (PLAYER.recentGames || []).forEach(function(g){ byDate[g.date] = g; });
+  host.classList.toggle('detail', ovrLogDetail);
+  host.innerHTML = log.map(function(r){
+    var g = byDate[r.date];
+    var why = g
+      ? 'vs ' + g.opp + ' · ' + g.pts + '점 ' + g.reb + '리바 ' + g.ast + '어시 · ' + (g.win ? '승' : '패')
+      : '경기 기록 연동 전';
+    return '<div class="ovrLogRow">'+ ovrLogTopHtml(r) +
+      '<span class="ovrLogWhy">'+why+'</span></div>';
+  }).join('');
+  var lead = document.getElementById('ovrLogLead');
+  var first = log[log.length-1], last = log[0];
+  lead.textContent = (log.length && first && last)
+    ? first.date + ' 이후 ' + log.length + '경기 동안 ' + first.ovr + ' → ' + last.ovr
+    : '아직 변동 내역이 없어요';
+  document.getElementById('ovrLogMore').textContent = ovrLogDetail ? '간단히 보기' : '자세히 보기';
+}
+function ovrLogTopHtml(r){
+  var up = r.delta > 0;
+  return '<div class="ovrLogTop">'+
+    '<span class="ovrLogDate">'+r.date+'</span>'+
+    '<span class="ovrLogDelta '+(up?'up':'down')+'">'+(up?'+':'')+r.delta+'</span>'+
+    '<span class="ovrLogOvr">'+pad2(r.ovr)+'</span></div>';
+}
+function openOvrLog(){
+  renderOvrLog();
+  document.getElementById('ovrLogModal').classList.add('open');
+}
+document.getElementById('ovrLogClose').addEventListener('click', function(){
+  document.getElementById('ovrLogModal').classList.remove('open');
+});
+document.getElementById('ovrLogModal').addEventListener('click', function(e){
+  if(e.target === this) this.classList.remove('open');
+});
+document.getElementById('ovrLogMore').addEventListener('click', function(){
+  ovrLogDetail = !ovrLogDetail; renderOvrLog();
+});
+/* 숫자 자체를 누르는 자리로 만든다 — 카드에서는 탭이 뒤집기라 전파를 막아야 한다. */
+[document.getElementById('fOvr'), document.getElementById('sOvr')].forEach(function(el){
+  if(!el) return;
+  el.style.cursor = 'pointer';
+  el.setAttribute('role', 'button');
+  el.setAttribute('tabindex', '0');
+  el.setAttribute('aria-label', 'OVR 변동 내역 보기');
+  el.addEventListener('click', function(e){ e.stopPropagation(); openOvrLog(); });
+  el.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); e.stopPropagation(); openOvrLog(); }
+  });
+});
+
 [document.getElementById('ovrInfoBtn'), document.getElementById('ovrInfoBtnSheet')].forEach(function(btn){
   if(!btn) return;
   btn.addEventListener('click', function(e){
