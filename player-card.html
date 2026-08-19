@@ -239,11 +239,10 @@ button{font-family:var(--font)}
    카드 위에 얹힌다. z-index만 줬을 땐 카드 뒤로 들어가 윗머리만 보였다. */
 .updateBadge{position:absolute;top:-10px;left:16px;z-index:5;pointer-events:none;
   transform:translateZ(22px);
-  padding:4px 10px;border-radius:100px;background:var(--brand);color:var(--on-brand);
-  font-size:11px;font-weight:800;letter-spacing:.06em;line-height:1;
-  /* 그림자는 색을 쓰지 않는다 — 어두운 배경 위 유색 글로우는 '떠 있다'가 아니라 '빛난다'가 되고,
-     그건 이 뱃지가 할 말(새 게 있다)보다 큰 소리다. 중립 그림자로 높이만 준다. */
-  box-shadow:0 4px 10px rgba(0,0,0,.45)}
+  /* 그림자 없이 — 채운 주황만으로 충분히 앞에 선다. 그림자를 얹으면 카드에 붙은 표시가 아니라
+     떠 있는 다른 물건처럼 보인다. */
+  padding:6px 10px;border-radius:100px;background:var(--brand);color:var(--on-brand);
+  font-size:11px;font-weight:800;letter-spacing:.06em;line-height:1}
 .cardWrap{width:var(--card-w);height:var(--card-h);position:relative;transform-style:preserve-3d;
   transform:rotateX(var(--ry,0)) rotateY(var(--rx,0))}
 /* 카드 뒤 등급 컬러 오라 — 카드보다 크게 깔고 흐리게 번지게 해서 주변으로 은은하게 새어나온다.
