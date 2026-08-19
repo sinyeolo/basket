@@ -842,10 +842,12 @@ button{font-family:var(--font)}
 /* ---------------- 하단 브랜드 푸터 ---------------- */
 /* 브랜드 푸터 앞 굵은 구분선 — 위쪽 안내문까지가 '내용'이고 여기부터는 서비스 표기라 성격이 다르다.
    얇은 선으론 섹션 사이 구분선과 헷갈려서 8px 블록으로 확실히 끊는다. */
-.footDivider{height:8px;background:var(--sh-bg2);margin:40px -20px 0}
+/* 아래 셋은 카드 밖, 검정 바탕 위에 직접 놓인다 — 흰 카드용 --sh-on-dim(#6d6f78)을 그대로 쓰면
+   대비가 2.2:1까지 떨어진다. 어두운 표면용 색으로 바꾼다. */
+.footDivider{height:1px;background:rgba(255,255,255,.1);margin:40px 0 0}
 .brandFoot{display:flex;align-items:center;justify-content:center;margin:24px auto 0}
-.brandFootName{width:88px;height:30px;color:var(--sh-on-dim, var(--on-dark-dim))}
-.copyright{text-align:center;font-size:11px;color:var(--sh-on-dim, #4a4c53);margin:8px auto 0}
+.brandFootName{width:88px;height:30px;color:rgba(255,255,255,.45)}
+.copyright{text-align:center;font-size:11px;color:rgba(255,255,255,.5);margin:8px auto 0}
 
 /* 검토 전용 미리보기 바 — 실제 서비스 화면 아님. 헤더 바로 아래 고정, 하단 탭바와 겹치지 않게 분리 */
 .previewBar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:8px 12px;
@@ -855,7 +857,7 @@ button{font-family:var(--font)}
   background:#15171d;color:var(--on-dark);cursor:pointer}
 .previewBar button.on{background:#fff;color:#0a0b0f;border-color:#fff}
 
-.footNote{max-width:520px;margin:28px auto 0;text-align:center;font-size:11px;color:var(--sh-on-dim, #565962);line-height:1.6}
+.footNote{max-width:520px;margin:28px auto 0;text-align:center;font-size:11px;color:rgba(255,255,255,.55);line-height:1.6;padding:0 16px}
 
 @media (prefers-reduced-motion:reduce){
   .heroContent{animation:none;transform:none}
