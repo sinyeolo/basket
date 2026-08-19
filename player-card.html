@@ -180,7 +180,9 @@ button{font-family:var(--font)}
   display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 /* 경계선 대신 아래로 갈수록 옅어지는 블러로 지나가는 내용과의 경계를 만든다 — 선 하나로 자르는 것보다
    내용이 헤더 밑으로 흘러 들어가는 느낌이 자연스럽다. 두 단 모두 내용이 헤드 밑을 지나가므로 공통. */
-.sheet.sheet-open .sheetHead{padding-bottom:10px}
+/* 아래 모서리를 섹션과 같은 값으로 둥글린다. 직선으로 끊기면 스크롤할 때 화면이 잘린 것처럼
+   보이는데, 둥글면 '위에 얹힌 판'으로 읽혀 아래 카드들과 같은 말투가 된다. */
+.sheet.sheet-open .sheetHead{padding-bottom:12px;border-radius:0 0 24px 24px}
 /* 위 여백은 최상단에서만 준다 — 거기서만 핸들이 사라져 이름이 화면 맨 위에 딱 붙기 때문이다.
    노치까지 덮으므로 safe-area를 더한다.
    여백이 순간에 생기면 제목이 '툭' 내려앉는다. 그렇다고 padding을 전환하면 안 된다 —
@@ -188,15 +190,9 @@ button{font-family:var(--font)}
    잃는다). 여백 자체는 즉시 바꾸고, 제목만 transform으로 제자리에 미끄러져 들어오게 한다.
    합성 단계에서만 처리되므로 공짜에 가깝고, 눈에 보이는 결과는 같다. */
 .sheet.sheet-expanded .sheetHead{padding-top:calc(16px + env(safe-area-inset-top))}
-/* 이름은 한 곳에서만 말한다.
-   · 접힘 — 헤더가 유일하게 보이는 곳이니 헤더가 말한다
-   · 펼침, 머리 블록이 보임 — 머리 블록이 말하고 헤더는 비운다
-   · 펼침, 스크롤해서 머리 블록이 지나감 — 헤더가 이어받는다(누구 카드인지 놓치지 않게)
-   세 번째 상태는 .title-shown이 켜 준다(머리 블록의 이름을 IntersectionObserver로 지켜본다). */
-.sheet.sheet-expanded .sheetTitle{opacity:0;transform:translateY(-6px);pointer-events:none}
-.sheet.sheet-expanded.title-shown .sheetTitle{opacity:1;transform:none;pointer-events:auto}
-.sheetTitle{transition:opacity .28s ease, transform .28s cubic-bezier(.22,.61,.36,1)}
-@media (prefers-reduced-motion:reduce){ .sheetTitle{transition:none} }
+/* 이름은 헤더 한 곳에만 있다. 머리 블록에도 두고 상태에 따라 감추는 방식을 썼는데,
+   화면 높이·헤더 높이에 따라 판정이 어긋나 두 곳에 함께 나오는 경우가 남았다.
+   자리를 하나만 두면 그런 경우가 생길 수가 없다 — 헤더는 스티키라 늘 보인다. */
 @media (prefers-reduced-motion:reduce){ .sheet.sheet-expanded .sheetTitle{animation:none} }
 /* 헤드 아래 페이드는 뺐다. 헤더가 첫 섹션과 같은 틴트의 불투명한 면이 된 뒤로는
    흐릿하게 흘려보낼 경계 자체가 없다 — 내용은 그 면 아래로 지나간다. */
@@ -691,14 +687,10 @@ button{font-family:var(--font)}
    한 가지 이야기라서 각각 떠 있으면 세 개의 사실로 읽힌다.
    바탕에 등급색을 아주 옅게 깔아 카드와 시트가 같은 선수의 것임을 색으로 잇는다 —
    진하게 깔면 아래 흰 블록들과 싸우므로 12%까지만. */
-.heroName{display:flex;align-items:baseline;gap:8px;margin-bottom:14px;min-width:0}
-.hnName{font-size:20px;font-weight:800;color:var(--sh-on);letter-spacing:-.02em;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hnMeta{display:flex;align-items:baseline;gap:5px;flex:none;font-size:13px;font-weight:600;color:var(--sh-on-dim)}
-.hnDot{opacity:.6}
-/* 위쪽 모서리를 세운다 — 헤더와 맞닿는 면이라 둥글면 그 사이에 검정이 비친다.
-   아래쪽만 둥글려 '헤더에서 시작해 여기서 끝나는 한 덩어리'로 읽히게 한다. */
-.sheetHero{max-width:520px;margin:0 auto;padding:4px 18px 18px;border-radius:0 0 24px 24px;
+/* 헤더도 하나의 모듈이 됐으므로(아래 모서리를 둥글렸다) 머리 블록도 네 모서리를 둥글리고
+   다른 섹션과 같은 간격을 둔다. 억지로 붙여 두면 헤더의 둥근 모서리 사이로 검정이 비친다 —
+   차라리 같은 규칙의 판 두 개로 두는 편이 읽기에도 낫다. */
+.sheetHero{max-width:520px;margin:4px auto 0;padding:16px 18px 18px;border-radius:24px;
   background:var(--hero-tint)}
 .ovrHero{margin:0;padding:0;display:flex;flex-direction:row;
   align-items:center;justify-content:space-between;gap:12px}
@@ -1006,10 +998,6 @@ button{font-family:var(--font)}
       <!-- OVR — 카드 앞면의 핵심 수치를 시트 맨 위에도 크게 세운다. 시트만 보고도 이 선수가
            어느 수준인지 바로 잡히게 하려는 것(예전엔 레벨·경기 수 같은 부가 지표만 있었다) -->
       <div class="sheetHero">
-      <div class="heroName">
-        <span class="hnName" id="hnName"></span>
-        <span class="hnMeta"><span id="hnTeam"></span><span class="hnDot">·</span><span id="hnNum"></span></span>
-      </div>
       <div class="ovrHero">
         <span class="ohGrade" id="sGrade" data-g="gold">GOLD</span>
         <div class="ovrHeroMain">
@@ -1462,9 +1450,6 @@ function setGrade(key){
 
 document.getElementById('fName').textContent = PLAYER.name;
 document.getElementById('stName').textContent = PLAYER.name;
-document.getElementById('hnName').textContent = PLAYER.name;
-document.getElementById('hnTeam').textContent = PLAYER.team;
-document.getElementById('hnNum').textContent = PLAYER.no;
 document.getElementById('stTeam').textContent = PLAYER.team;
 document.getElementById('stNum').textContent = PLAYER.no;
 document.getElementById('stVerified').innerHTML = icon('verified');
@@ -1547,29 +1532,6 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
   var sheetHandle = document.getElementById('sheetHandle');
   var sheetHead = document.getElementById('sheetHead');
 
-  /* 머리 블록의 이름이 헤더 밑으로 지나가면 헤더가 이름을 이어받는다.
-     스크롤 이벤트로 매번 위치를 재는 대신 IntersectionObserver에 맡긴다 — 브라우저가 알아서
-     교차 시점에만 알려 주므로 스크롤 중에 계산이 돌지 않는다.
-     rootMargin의 -56px은 헤더 높이다: 헤더에 가려지기 시작하는 순간을 경계로 삼는다. */
-  (function watchHeroName(){
-    var target = document.querySelector('.heroName');
-    if(!target || typeof IntersectionObserver === 'undefined') return;
-    var io = null;
-    /* 경계는 헤더의 실제 높이다. 56px로 박아 뒀더니 헤더가 그보다 낮은 화면(데스크톱의 짧은 창)에서
-       머리 블록의 이름이 아직 잘 보이는데도 '가려졌다'로 판정돼 헤더와 이름이 함께 나왔다.
-       재서 쓰고, 창 크기가 바뀌면 다시 잰다. */
-    function attach(){
-      if(io) io.disconnect();
-      var h = Math.round(sheetHead.getBoundingClientRect().height) || 56;
-      io = new IntersectionObserver(function(entries){
-        sheet.classList.toggle('title-shown', !entries[0].isIntersecting);
-      }, { rootMargin: (-h) + 'px 0px 0px 0px', threshold: 0 });
-      io.observe(target);
-    }
-    attach();
-    var t = null;
-    window.addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(attach, 200); });
-  })();
   var sheetCloseBtn = document.getElementById('sheetCloseBtn');
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
