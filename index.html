@@ -1371,8 +1371,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdPos{background:rgba(0,0,0,.4);color:#fff;border:1px solid rgba(255,255,255,.25);font-size:11px}
 /* 주장 — 명단의 .tag-captain과 같은 원형·같은 글자. 다만 카드는 어두운 표면이라
    명단의 주황 배경/검정 글자를 그대로 쓰면 카드에서 혼자 튄다. 등급색 테두리로 얹는다. */
-.pdCaptain{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;
-  border-radius:50%;flex:none;font-size:11px;font-weight:800;line-height:1;
+/* 주장 — 포지션 칩과 같은 크기의 원(선수 카드 .cfCaptain과 같은 값) */
+.pdCaptain{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;
+  border-radius:50%;flex:none;font-size:13px;font-weight:800;line-height:1;
   background:rgba(0,0,0,.4);color:var(--g-text,#fff);border:1px solid color-mix(in srgb,var(--g-b,#fff) 55%,transparent)}
 .pdNameKr{font-size:34px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
 .pdNameEn{font-size:13px;font-weight:600;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
@@ -4784,8 +4785,8 @@ function renderPlayerDetail(){
           '<div class="pdInfo">'+
             '<div class="pdIdBlock">'+
               '<div class="pdPosRow">'+
-                (posLabel ? '<span class="chip pdPos">'+posLabel+'</span>' : '')+
                 (isCaptainPd ? '<span class="pdCaptain" title="팀 주장" aria-label="팀 주장">C</span>' : '')+
+                (posLabel ? '<span class="chip pdPos">'+posLabel+'</span>' : '')+
               '</div>'+
               '<div class="pdNameKr">'+p.name+(p.owner?'<span class="tag-owner">오너</span>':'')+'</div>'+
               (p.en ? '<div class="pdNameEn">'+p.en+'</div>' : '')+
