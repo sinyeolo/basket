@@ -660,7 +660,7 @@ button{font-family:var(--font)}
 /* 요약 지표도 같은 흰 카드로. 검은 판이던 시절엔 시트 안에 처리가 셋(등급색·검정·흰색)이라
    무엇이 강조인지 흐려졌다 — 레퍼런스처럼 '강조 블록 하나 + 나머지는 같은 카드'로 맞춘다. */
 .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:520px;margin:12px auto 0;
-  background:var(--sh-bg);border:1px solid var(--sh-border);border-radius:20px;padding:16px 6px}
+  background:var(--sh-bg);border:1px solid var(--sh-border);border-radius:24px;padding:16px 6px}
 .summary .it{text-align:center;padding:0 4px}
 .summary .it b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:var(--sh-on)}
 .summary .it span{font-size:11px;color:var(--sh-on-dim);margin-top:3px;display:block}
@@ -670,15 +670,15 @@ button{font-family:var(--font)}
 /* 섹션마다 제 카드를 갖는다 — 레퍼런스처럼 '한 덩어리 = 한 판'으로 끊는다.
    예전엔 제목과 내용이 시트 바탕 위에 그냥 얹혀 있어서 어디까지가 한 묶음인지 간격으로만
    구분됐고, 스크롤하면 그 간격이 사라져 하나의 긴 목록으로 읽혔다. */
-.section{max-width:520px;margin:12px auto 0;padding:16px 16px 18px;
-  background:var(--sh-bg);border:1px solid var(--sh-border);border-radius:20px}
+.section{max-width:520px;margin:14px auto 0;padding:16px 16px 18px;
+  background:var(--sh-bg);border:1px solid var(--sh-border);border-radius:24px}
 /* OVR 히어로 — 박스 없이. 회색 박스로 감싸면 아래 4지표 카드와 무게가 비슷해져 '가장 중요한 수치'로
    안 읽힌다. 등급 뱃지를 위에 올리고 그 아래 큰 숫자를 놓아 위에서 아래로 읽히게 했다. */
 /* 시트 머리 블록 — 등급·OVR·레벨을 한 판에 담는다. 이 셋은 '이 선수가 지금 어디쯤인가'라는
    한 가지 이야기라서 각각 떠 있으면 세 개의 사실로 읽힌다.
    바탕에 등급색을 아주 옅게 깔아 카드와 시트가 같은 선수의 것임을 색으로 잇는다 —
    진하게 깔면 아래 흰 블록들과 싸우므로 12%까지만. */
-.sheetHero{max-width:520px;margin:18px auto 0;padding:18px 18px 16px;border-radius:20px;
+.sheetHero{max-width:520px;margin:18px auto 0;padding:18px 18px 16px;border-radius:24px;
   background:
     radial-gradient(120% 120% at 0% 0%, color-mix(in srgb,var(--g-b) 22%,transparent), transparent 72%),
     color-mix(in srgb,var(--g-b) 12%, var(--sh-bg2));
@@ -702,13 +702,19 @@ button{font-family:var(--font)}
 .ohGrade[data-g="bronze"]{background:#e0a874;color:#4a2a12}
 .ohGrade[data-g="starter"]{background:#d7dade;color:#3a3d42}
 /* 시즌 평균 3스탯 */
-.avgRow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.avgIt{text-align:center;padding:14px 4px;background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:14px}
+/* 카드 안에 또 박스를 넣지 않는다 — 레퍼런스들이 공통으로 지키는 것이다.
+   회색 박스 세 개를 걷어내고 얇은 세로선으로만 칸을 나눈다. 겹이 하나 줄면 숫자가 앞으로 나온다. */
+.avgRow{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+.avgIt{text-align:center;padding:6px 4px;position:relative}
+.avgIt + .avgIt::before{content:"";position:absolute;left:0;top:12%;bottom:12%;width:1px;background:var(--sh-border)}
 /* font-variant-numeric:tabular-nums를 뺐다 — 자간을 건드린 게 아니라 이 속성이 '1'처럼 좁은 숫자에도
    같은 칸을 줘서 '21.4'가 벌어져 보였다. 표처럼 자릿수를 맞출 필요가 없는 자리라 비례 숫자가 맞다. */
 .avgIt b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:var(--sh-on);line-height:1.1;letter-spacing:-.01em}
-.avgIt span{display:block;margin-top:4px;font-size:11px;color:var(--sh-on-dim)}
-.section h3{display:flex;align-items:baseline;gap:8px;font-size:13px;font-weight:800;color:var(--sh-on-dim);margin:0 0 10px;letter-spacing:.02em}
+.avgIt span{display:block;margin-top:5px;font-size:11px;color:var(--sh-on-dim)}
+/* 제목은 내용을 안내할 뿐 앞서지 않는다 — 레퍼런스들은 하나같이 작고 조용한 라벨을 쓴다.
+   굵기를 낮추고 자간을 벌려 '라벨'로 읽히게 한다(굵은 13px은 그 자체로 내용처럼 보였다). */
+.section h3{display:flex;align-items:baseline;gap:8px;font-size:11px;font-weight:700;color:var(--sh-on-dim);
+  margin:0 0 12px;letter-spacing:.06em}
 /* 갱신 날짜 — 제목 줄 오른쪽 끝에. 평균이 언제 기준인지는 알아야 하지만, 평균 자체보다
    중요할 일은 없다. 그래서 가장 약한 무게로 끝에 붙인다. */
 .upAt{margin-left:auto;font-size:11px;font-weight:500;letter-spacing:0;color:var(--sh-on-dim);opacity:.7}
