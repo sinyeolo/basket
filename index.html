@@ -1997,8 +1997,8 @@ body.modal-open{overflow:hidden}
     <!-- 정지 안내 — 비네팅은 상태를 알릴 뿐이라, 무엇을 할 수 있고 어떻게 빠져나오는지는 여기서 말한다 -->
     <div class="pauseCard" id="pauseCard" role="status" aria-live="polite">
       <div class="pcIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></svg></div>
-      <h2>기록이 멈춰 있습니다</h2>
-      <p>이 동안 새 기록은 입력되지 않습니다. 지난 기록을 수정하거나 삭제하는 것은 그대로 할 수 있습니다.</p>
+      <h2>기록이 멈춰 있어요</h2>
+      <p>이 동안 새 기록은 들어가지 않아요. 지난 기록을 고치거나 지우는 건 그대로 할 수 있어요.</p>
       <button type="button" class="btn btn-main" id="pauseResume">
         <svg class="ic ic-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4l14 8-14 8z"/></svg>기록 재개
       </button>
@@ -2111,9 +2111,9 @@ body.modal-open{overflow:hidden}
 
     <div class="tabs" id="statsTabs"></div>
 
-    <div class="tabpane show" id="pane-rank"><div class="tablewrap"><table class="dt" id="tblRank"></table><div class="tnote">승률 동률 시 상대 전적 → 득실 마진 순으로 정렬됩니다.</div></div></div>
-    <div class="tabpane" id="pane-trec"><div class="tablewrap"><table class="dt" id="tblTeamRec"></table><div class="tnote">모든 수치는 경기당 평균입니다. 헤더를 눌러 정렬할 수 있습니다.</div></div></div>
-    <div class="tabpane" id="pane-prec"><div class="tablewrap"><table class="dt" id="tblPlayerRec"></table><div class="tnote">모든 수치는 경기당 평균입니다. 헤더를 눌러 정렬할 수 있습니다.</div></div></div>
+    <div class="tabpane show" id="pane-rank"><div class="tablewrap"><table class="dt" id="tblRank"></table><div class="tnote">승률이 같으면 상대 전적 → 득실 마진 순으로 정렬돼요.</div></div></div>
+    <div class="tabpane" id="pane-trec"><div class="tablewrap"><table class="dt" id="tblTeamRec"></table><div class="tnote">모든 수치는 경기당 평균이에요. 헤더를 누르면 정렬돼요.</div></div></div>
+    <div class="tabpane" id="pane-prec"><div class="tablewrap"><table class="dt" id="tblPlayerRec"></table><div class="tnote">모든 수치는 경기당 평균이에요. 헤더를 누르면 정렬돼요.</div></div></div>
   </main>
 
   <!-- ============ PAGE: 대회 상세 — 향후 <TournamentDetailPage/> ============
@@ -2140,7 +2140,7 @@ body.modal-open{overflow:hidden}
     </div>
     <div class="tabpane" id="tpane-groups">
       <div class="sec-title" style="margin-bottom:8px">조 편성</div>
-      <div class="sub" style="margin-bottom:16px">참가 팀을 조에 배정하면 조별리그 순위에 바로 반영됩니다.</div>
+      <div class="sub" style="margin-bottom:16px">참가 팀을 조에 배정하면 조별리그 순위에 바로 반영돼요.</div>
       <div id="groupAssignList" class="gaList"></div>
     </div>
     <div class="tabpane" id="tpane-ko">
@@ -2161,7 +2161,7 @@ body.modal-open{overflow:hidden}
     </div>
     <div id="reviewQueueList"></div>
     <div class="section" id="reviewFixedWrap" hidden style="margin-top:8px">
-      <div class="sec-title">확정된 경기 <span class="n">필요 시 검수로 되돌릴 수 있습니다</span></div>
+      <div class="sec-title">확정된 경기 <span class="n">필요하면 검수로 되돌릴 수 있어요</span></div>
       <div class="card">
         <div class="card-body glist" id="reviewFixedList"></div>
       </div>
@@ -2177,7 +2177,7 @@ body.modal-open{overflow:hidden}
     <div class="page-head">
       <div>
         <h1 id="tsTitle">대회 관리</h1>
-        <div class="sub">대회 정보·참가 설정·경기 규칙·운영진 권한·공개 설정을 관리합니다</div>
+        <div class="sub">대회 정보·참가 설정·경기 규칙·운영진 권한·공개 설정을 관리해요</div>
       </div>
       <button type="button" class="btn btn-main" id="tsSaveBtn">변경사항 저장</button>
     </div>
@@ -2367,7 +2367,7 @@ body.modal-open{overflow:hidden}
       <button type="button" class="check-row" id="pCaptain" role="checkbox" aria-checked="false">
         <span class="m3check" aria-hidden="true"></span><span>이 팀의 주장으로 지정</span>
       </button>
-      <div class="sub" id="pCaptainSub">팀별로 한 명만 지정할 수 있어요 — 다른 선수가 이미 주장이면 이 선수로 교체됩니다.</div>
+      <div class="sub" id="pCaptainSub">팀별로 한 명만 지정할 수 있어요 — 다른 선수가 이미 주장이면 이 선수로 바뀌어요.</div>
     </div>
     <div class="acts-row m3">
       <button type="button" class="btn btn-outline" id="playerCancel">취소</button>
@@ -3207,7 +3207,7 @@ function renderReviewQueue(){
   var pending = allGameItemsWithDate().filter(function(g){ return g.status==='end'; });
   document.getElementById('reviewCount').textContent = pending.length;
   if(!pending.length){
-    document.getElementById('reviewList').innerHTML = emptyRow('검수를 기다리는 경기가 없습니다.');
+    document.getElementById('reviewList').innerHTML = emptyRow('검수를 기다리는 경기가 없어요');
     return;
   }
   document.getElementById('reviewList').innerHTML = pending.map(gameRowHtml).join('');
@@ -3226,7 +3226,7 @@ function renderSchedule(){
   var root = document.getElementById('scheduleList');
   document.getElementById('scheduleCount').textContent = items.length;
   if(!items.length){
-    root.innerHTML = emptyRow('오늘 예정된 경기가 없습니다.');
+    root.innerHTML = emptyRow('오늘 예정된 경기가 없어요');
     return;
   }
   root.innerHTML = items.map(gameRowHtml).join('');
@@ -3301,11 +3301,11 @@ function onQuarterTimeUp(){
   var tied = MATCH.home.score === MATCH.away.score;
   openConfirm({
     icon: tied ? 'alert' : 'ask',
-    title: tied ? MATCH.qTotal + '쿼터 종료 · 동점입니다' : MATCH.qTotal + '쿼터 종료',
+    title: tied ? MATCH.qTotal + '쿼터 종료 · 동점이에요' : MATCH.qTotal + '쿼터 종료',
     desc: MATCH.home.name + ' ' + MATCH.home.score + ' : ' + MATCH.away.score + ' ' + MATCH.away.name,
     foot: tied
       ? '연장을 진행하려면 취소를 누르고 대회 규정(' + (TOURNAMENT_SETTINGS.overtime || '연장') + ')에 따라 이어서 기록하세요.'
-      : '남은 기록이 없으면 경기를 종료하고 검수로 넘깁니다.',
+      : '남은 기록이 없으면 경기를 끝내고 검수로 넘겨요.',
     ok: tied ? '그래도 종료' : '경기 종료',
     onOk: function(){ document.getElementById('btnFinish').click(); }
   });
@@ -3441,7 +3441,7 @@ function checkFoulOut(teamId, no){
     title: lim + '파울 퇴장',
     desc: p.no + ' ' + p.name + ' · ' + TEAM_NAME[teamId],
     foot: bench.length
-      ? '교체로 코트를 채워야 경기를 재개할 수 있습니다.'
+      ? '교체로 코트를 채워야 경기를 다시 시작할 수 있어요.'
       : '교체할 벤치 선수가 없습니다. 대회 규정에 따라 진행하세요.',
     ok: bench.length ? '교체하기' : '확인',
     onOk: function(){ if(bench.length) openSubsDialog(MATCH[teamId], null); }
@@ -3591,7 +3591,7 @@ function renderSubsLists(){
   var out = subsRoster.filter(function(p){ return !p.bench; });
   var inn = subsRoster.filter(function(p){ return p.bench; });
   function tpl(list, selNo, side){
-    if(!list.length) return '<div class="subs-empty">'+(side==='out'?'코트 위 선수가 없습니다.':'교체 가능한 벤치 선수가 없습니다.')+'</div>';
+    if(!list.length) return '<div class="subs-empty">'+(side==='out'?'코트 위에 선수가 없어요':'교체할 수 있는 벤치 선수가 없어요')+'</div>';
     return list.map(function(p){
       // 코트 쪽은 방금 들어온 선수를, 벤치 쪽은 방금 나간 선수를 잠근다
       var fresh = (side==='out' && justIn[subsTeam.id].indexOf(p.no) > -1)
@@ -3599,7 +3599,7 @@ function renderSubsLists(){
                || (side==='in'  && p.fouledOut);   // 퇴장 선수는 다시 들어올 수 없다
       return '<button type="button" class="subs-item'+(p.no===selNo?' on':'')+'" role="option"'+
         ' aria-selected="'+(p.no===selNo)+'" data-side="'+side+'" data-no="'+p.no+'"'+
-        (fresh?' disabled title="같은 데드볼에서는 되돌릴 수 없습니다 · 기록이 하나 입력되면 풀립니다"':'')+'>'+
+        (fresh?' disabled title="같은 데드볼에서는 되돌릴 수 없어요 · 기록이 하나 들어가면 풀려요"':'')+'>'+
         '<span class="no">'+p.no+'</span><span>'+p.name+'</span>'+
         (p.no===selNo
           ? '<span class="subs-tag '+side+'">'+(side==='out'?'OUT':'IN')+'</span>'
@@ -3847,7 +3847,7 @@ function renderUndoTarget(){
   var last = RECENT_EVENTS.find(function(e){ return !e.deleted && !e.sys; });
   var btn = document.getElementById('undoBtn');
   // 취소 대상은 바로 옆 첫 번째 태그가 보여준다 — 버튼에 다시 적으면 같은 말이 두 번 나온다
-  btn.title = last ? '되돌리기 · ' + eventDesc(last) : '되돌릴 기록이 없습니다';
+  btn.title = last ? '되돌리기 · ' + eventDesc(last) : '되돌릴 기록이 없어요';
   btn.disabled = !last;
 }
 
@@ -3883,7 +3883,7 @@ function renderTeamList(){
   var root = document.getElementById('teamList');
   if(!TEAMS.length){
     root.className = 'empty-box';
-    root.innerHTML = '<b>등록된 팀이 없습니다</b><div style="margin-bottom:16px">먼저 팀을 만들고 선수를 배정하세요.</div>'+
+    root.innerHTML = '<b>등록된 팀이 없어요</b><div style="margin-bottom:16px">먼저 팀을 만들고 선수를 배정하세요.</div>'+
       '<button type="button" class="btn btn-primary" onclick="document.getElementById(\'btnAdd\').click()">팀 만들기</button>';
     return;
   }
@@ -3949,13 +3949,13 @@ function renderPlayerRoster(){
   var list = filteredPlayers();
   if(!PLAYERS.length){
     root.className = 'empty-box';
-    root.innerHTML = '<b>등록된 선수가 없습니다</b><div style="margin-bottom:16px">엑셀 양식으로 한 번에 등록하거나 직접 추가하세요.</div>'+
+    root.innerHTML = '<b>등록된 선수가 없어요</b><div style="margin-bottom:16px">엑셀 양식으로 한 번에 등록하거나 직접 추가하세요.</div>'+
       '<button type="button" class="btn btn-primary" onclick="document.getElementById(\'btnBulk\').click()">여러 명 등록</button>';
     return;
   }
   if(!list.length){
     root.className = 'empty-box';
-    root.innerHTML = '<b>조건에 맞는 선수가 없습니다</b>검색어나 팀 필터를 바꿔보세요.';
+    root.innerHTML = '<b>조건에 맞는 선수가 없어요</b>검색어나 팀 필터를 바꿔보세요.';
     return;
   }
   root.className = 'list';
@@ -4018,7 +4018,7 @@ function bindRosterActions(){
       var t = teamById(b.dataset.delTeam); if(!t) return;
       var n = playersOf(t.id).length;
       openConfirm({ icon:'danger', title:'팀 삭제', trigger:b,
-        desc: t.name + ' 팀을 삭제합니다.' + (n ? ' 소속 선수 '+n+'명은 미배정 상태가 됩니다.' : ''),
+        desc: t.name + ' 팀을 삭제해요.' + (n ? ' 소속 선수 '+n+'명은 미배정으로 바뀌어요.' : ''),
         ok:'삭제', onOk:function(){
           PLAYERS.forEach(function(p){ if(p.teamId===t.id) p.teamId = null; });
           TEAMS = TEAMS.filter(function(x){ return x.id!==t.id; });
@@ -4032,7 +4032,7 @@ function bindRosterActions(){
   document.querySelectorAll('[data-del-player]').forEach(function(b){
     b.addEventListener('click', function(){
       var p = PLAYERS.find(function(x){ return x.id===b.dataset.delPlayer; }); if(!p) return;
-      openConfirm({ icon:'danger', title:'선수 삭제', desc:p.name+' 선수를 명단에서 삭제합니다.', ok:'삭제', trigger:b,
+      openConfirm({ icon:'danger', title:'선수 삭제', desc:p.name+' 선수를 명단에서 삭제해요.', ok:'삭제', trigger:b,
         onOk:function(){ PLAYERS = PLAYERS.filter(function(x){ return x.id!==p.id; }); renderRosterPage(); renderStatsPage(); }});
     });
   });
@@ -4222,7 +4222,7 @@ function updateCaptainNote(){
   var captain = team && team.captainId ? PLAYERS.find(function(x){ return x.id===team.captainId; }) : null;
   sub.textContent = (captain && captain.id !== editingPlayerId)
     ? '팀별로 한 명만 지정할 수 있어요 — 현재 주장: '+captain.name+' (체크하면 이 선수로 교체돼요)'
-    : '팀별로 한 명만 지정할 수 있어요 — 다른 선수가 이미 주장이면 이 선수로 교체됩니다.';
+    : '팀별로 한 명만 지정할 수 있어요 — 다른 선수가 이미 주장이면 이 선수로 바뀌어요.';
 }
 function closePlayerModal(){
   playerModal.classList.remove('open'); playerModal.setAttribute('aria-hidden','true');
@@ -4318,7 +4318,7 @@ function renderBulk(){
 }
 function openBulkModal(){
   bulkRows = [{},{},{}];
-  document.getElementById('bulkSub').textContent = '엑셀 양식을 내려받아 채운 뒤 업로드하거나, 아래에서 직접 입력하세요. 이름만 필수입니다.';
+  document.getElementById('bulkSub').textContent = '엑셀 양식을 내려받아 채운 뒤 업로드하거나, 아래에서 직접 입력하세요. 이름만 있으면 돼요.';
   renderBulk();
   bulkModal.classList.add('open'); bulkModal.setAttribute('aria-hidden','false');
 }
@@ -4513,7 +4513,7 @@ function renderGameList(){
     }).join('');
     html += '</div>';
   });
-  root.innerHTML = html || '<div class="empty-box"><b>조건에 맞는 경기가 없습니다</b>다른 상태 탭을 선택해 보세요.</div>';
+  root.innerHTML = html || '<div class="empty-box"><b>조건에 맞는 경기가 없어요</b>다른 상태 탭을 선택해 보세요.</div>';
   root.querySelectorAll('[data-goto]').forEach(function(b){
     b.addEventListener('click', function(){ openGameFromList(b.dataset.goto); });
   });
@@ -4679,7 +4679,7 @@ function renderPlayerDetail(){
   var p = PLAYERS.find(function(x){ return x.id === currentPlayerId; });
   var editTop = document.getElementById('pdEditTop'), cardLinkTop = document.getElementById('pdCardLinkTop');
   if(!p){
-    root.innerHTML = '<div class="empty-box"><b>선수를 찾을 수 없습니다</b>목록에서 다시 선택해 주세요.</div>';
+    root.innerHTML = '<div class="empty-box"><b>선수를 찾을 수 없어요</b>목록에서 다시 선택해 주세요.</div>';
     editTop.hidden = true; cardLinkTop.hidden = true;
     return;
   }
@@ -4828,9 +4828,9 @@ function renderPlayerDetail(){
      바로 아래 경기 한 줄과 화면이 서로 어긋난다. 없는 것은 기록이 아니라 '평균'이다. */
   var avgPanel = '<div class="pdSeasonAvg">'+(
     (!s || !s.g)
-      ? '<div class="empty-box"><b>아직 기록된 스탯이 없어요</b>경기 기록이 입력되면 여기에 누적됩니다.</div>'
+      ? '<div class="empty-box"><b>아직 기록된 스탯이 없어요</b>경기 기록이 들어오면 여기에 쌓여요</div>'
     : (grade === 'starter')
-      ? '<div class="empty-box"><b>아직 시즌 평균을 낼 수 없어요</b>2경기부터 평균과 등급·OVR이 산출됩니다.</div>'
+      ? '<div class="empty-box"><b>아직 시즌 평균을 낼 수 없어요</b>2경기부터 평균과 등급·OVR이 나와요.</div>'
       : '<div class="sec-title">시즌 평균 <span class="n">'+s.g+'경기 · 경기당</span></div>'+statTiles
   )+'</div>';
 
@@ -4878,7 +4878,7 @@ function renderPlayerDetail(){
   });
 
   document.getElementById('pdDelete').addEventListener('click', function(){
-    openConfirm({ icon:'danger', title:'선수 삭제', desc:p.name+' 선수를 명단에서 삭제합니다.', ok:'삭제', trigger:this,
+    openConfirm({ icon:'danger', title:'선수 삭제', desc:p.name+' 선수를 명단에서 삭제해요.', ok:'삭제', trigger:this,
       onOk:function(){
         PLAYERS = PLAYERS.filter(function(x){ return x.id!==p.id; });
         currentPlayerId = null; location.hash = '#team'; renderRosterPage(); renderStatsPage();
@@ -4985,7 +4985,7 @@ function renderRankTable(targetId){
       '<td>'+(r.mg>0?'+':'')+r.mg.toFixed(1)+'</td>'+
       '<td class="c">'+r.t.streak+'</td></tr>';
   }).join('');
-  document.getElementById(targetId||'tblRank').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="11" class="c">등록된 팀이 없습니다.</td></tr>') + '</tbody>';
+  document.getElementById(targetId||'tblRank').innerHTML = head + '<tbody>' + (body || '<tr><td colspan="11" class="c">등록된 팀이 없어요</td></tr>') + '</tbody>';
 }
 
 // 정렬 가능한 기록표 공통 렌더러
@@ -5005,7 +5005,7 @@ function renderSortableTable(tableId, which, cols, rows, nameCell){
         return '<td'+(c.k===key?' class="hi"':'')+'>'+txt+'</td>';
       }).join('') + '</tr>';
   }).join('');
-  document.getElementById(tableId).innerHTML = head + '<tbody>' + (body || '<tr><td colspan="12" class="c">데이터가 없습니다.</td></tr>') + '</tbody>';
+  document.getElementById(tableId).innerHTML = head + '<tbody>' + (body || '<tr><td colspan="12" class="c">데이터가 없어요</td></tr>') + '</tbody>';
   document.querySelectorAll('#'+tableId+' th.sortable').forEach(function(th){
     th.addEventListener('click', function(){
       var w = th.dataset.w, k = th.dataset.sort;
@@ -5130,7 +5130,7 @@ function renderTourSchedule(){
     }).join('');
     html += '</div>';
   });
-  root.innerHTML = html || '<div class="empty-box"><b>예선 일정이 없습니다</b></div>';
+  root.innerHTML = html || '<div class="empty-box"><b>예선 일정이 없어요</b></div>';
   root.querySelectorAll('[data-goto]').forEach(function(b){
     b.addEventListener('click', function(){ openGameFromList(b.dataset.goto); });
   });
@@ -5342,7 +5342,7 @@ function deleteTournament(id, trigger, onDone){
   if(TOURNAMENTS.length <= 1) return; // 최소 1개는 남겨둔다
   var t = TOURNAMENTS.find(function(x){ return x.id===id; });
   if(!t) return;
-  openConfirm({ icon:'danger', title:'대회 삭제', desc:'"'+t.name+'" 대회를 삭제합니다. 이 작업은 되돌릴 수 없습니다.', ok:'삭제', trigger:trigger,
+  openConfirm({ icon:'danger', title:'대회 삭제', desc:'"'+t.name+'" 대회를 삭제해요. 되돌릴 수 없어요.', ok:'삭제', trigger:trigger,
     onOk:function(){
       TOURNAMENTS = TOURNAMENTS.filter(function(x){ return x.id!==id; });
       delete TOURNAMENT_SETTINGS_MAP[id];
@@ -5478,8 +5478,8 @@ function validateNewTournament(v){
   if(!v.name) errs.push('대회 이름을 입력해 주세요');
   else if(TOURNAMENTS.some(function(t){ return t.name === v.name; })) errs.push('같은 이름의 대회가 이미 있어요');
   if(!v.start || !v.end) errs.push('대회 기간을 지정해 주세요');
-  else if(v.start > v.end) errs.push('종료일이 시작일보다 빠릅니다');
-  if(!(v.cap >= 2)) errs.push('참가 팀은 2팀 이상이어야 대진이 나옵니다');
+  else if(v.start > v.end) errs.push('종료일이 시작일보다 빨라요');
+  if(!(v.cap >= 2)) errs.push('참가 팀이 2팀 이상이어야 대진이 나와요');
   return errs;
 }
 function createTournament(){
@@ -5508,13 +5508,13 @@ function createTournament(){
   };
   closeNewTournament();
   switchTournament(id);
-  showToast('"'+v.name+'" 대회를 만들었어요 · 팀 모집이 열렸습니다');
+  showToast('"'+v.name+'" 대회를 만들었어요 · 팀 모집이 열렸어요');
 }
 function renderTourListPage(){
   document.getElementById('tourListSub').textContent = '전체 '+TOURNAMENTS.length+'개';
   var wrap = document.getElementById('tourListBody');
   if(!TOURNAMENTS.length){
-    wrap.innerHTML = '<div class="tm-empty">등록된 대회가 없어요.</div>';
+    wrap.innerHTML = '<div class="tm-empty">등록된 대회가 없어요</div>';
     return;
   }
   // 대회별로 카드 하나씩 분리 — 한 카드에 다 묶여 있으면 대회 사이 구분이 잘 안 보여서.
@@ -5629,11 +5629,11 @@ function renderReviewPage(){
     .sort(function(a,b){ return b.fixedAtMs - a.fixedAtMs; });
 
   document.getElementById('reviewSub').textContent =
-    pending.length ? '검수 대기 '+pending.length+'건 · 확정해야 순위·기록에 정식 반영됩니다' : '검수 대기 중인 경기가 없습니다';
+    pending.length ? '검수 대기 '+pending.length+'건 · 확정해야 순위·기록에 반영돼요' : '검수 대기 중인 경기가 없어요';
 
   var root = document.getElementById('reviewQueueList');
   if(!pending.length){
-    root.innerHTML = emptyRow('검수를 기다리는 경기가 없습니다.');
+    root.innerHTML = emptyRow('검수를 기다리는 경기가 없어요');
   } else {
     // 경기 페이지와 같은 날짜·경기장 헤더로 묶는다 — 같은 목록 컴포넌트인데 검수만 평평하면 낯설다
     var byDate = {};
@@ -5694,16 +5694,16 @@ function askConfirmReview(gameId, trigger){
      열리고 순위가 움직인다. 무슨 일이 일어나는지 먼저 알려 주고, 그 다음에 점검 사항을 보인다 —
      되돌릴 수는 있지만, 이미 본 사람을 되돌릴 수는 없다. */
   var effects = [
-    { lv:'info', t:'선수·관중에게 경기 기록이 공개됩니다' },
-    { lv:'info', t:'순위표에 승패와 득실이 반영됩니다' }
+    { lv:'info', t:'선수·관중에게 경기 기록이 공개돼요' },
+    { lv:'info', t:'순위표에 승패와 득실이 반영돼요' }
   ];
   openConfirm({
     icon: checks.length ? 'alert' : 'ok',
-    title: checks.length ? '확인할 항목이 있습니다' : '이 결과를 공개할까요?',
+    title: checks.length ? '확인할 항목이 있어요' : '이 결과를 공개할까요?',
     desc: g.home.name + ' ' + g.home.score + ' : ' + g.away.score + ' ' + g.away.name
         + (g.rec ? ' · ' + reviewSummary(g) : ''),
     items: effects.concat(checks),
-    foot: '확정 후에도 되돌릴 수 있지만, 그 사이 결과를 본 사람에게는 이미 공개된 뒤입니다.',
+    foot: '확정한 뒤에도 되돌릴 수 있지만, 그 사이 결과를 본 사람에게는 이미 공개된 뒤예요.',
     ok: '확정하고 공개',
     trigger: trigger,
     onOk: function(){ confirmReviewGame(gameId); }
@@ -6305,7 +6305,7 @@ function renderPbp(){
     '</div>';
   });
   var el = document.getElementById('pbpList');
-  el.innerHTML = shown ? rows : '<div class="pbp-empty">해당 쿼터에 기록된 내용이 없습니다.</div>';
+  el.innerHTML = shown ? rows : '<div class="pbp-empty">이 쿼터에 기록된 내용이 없어요</div>';
   el.querySelectorAll('.pbp-evt').forEach(function(b){
     b.addEventListener('click', function(){ openEventDialog(Number(b.dataset.evt), b); });
   });
@@ -6334,7 +6334,7 @@ function renderReviewBar(){
         icon: 'alert',
         title: '결과 확정',
         desc: summary,
-        foot: '확정하면 선수·관중에게 공식 결과로 공개되며 되돌릴 수 없습니다.',
+        foot: '확정하면 선수·관중에게 공식 결과로 공개되고, 되돌릴 수 없어요.',
         ok: '확정',
         trigger: this,
         onOk: function(){ /* 실제 구현: POST /api/games/:id/confirm → status end→fix */
@@ -6546,7 +6546,7 @@ function initClockControls(){
         icon:'ask',
         title: MATCH.qNow + '쿼터를 종료할까요?',
         desc: MATCH.home.name + ' ' + MATCH.home.score + ' : ' + MATCH.away.score + ' ' + MATCH.away.name,
-        foot: '다음 쿼터가 ' + Math.floor(quarterSeconds()/60) + '분으로 시작되고, 팀 파울이 초기화됩니다.',
+        foot: '다음 쿼터가 ' + Math.floor(quarterSeconds()/60) + '분으로 시작하고, 팀 파울이 초기화돼요.',
         ok: '쿼터 종료', trigger: b,
         onOk: function(){
           // 팀 파울은 쿼터마다 리셋된다 — 보너스 판정이 쿼터 단위이므로
@@ -6667,7 +6667,7 @@ document.getElementById('btnFinish').addEventListener('click', function(){
     title: '경기 종료',
     desc: MATCH.home.name + ' ' + MATCH.home.score + ' : ' + MATCH.away.score + ' ' + MATCH.away.name +
           ' · 기록 ' + valid + '건' + (deleted ? ' (삭제 ' + deleted + '건)' : ''),
-    foot: '제출하면 검수 대기 상태가 되며 기록을 더 이상 입력할 수 없습니다.',
+    foot: '제출하면 검수 대기가 되고, 기록을 더 이상 입력할 수 없어요.',
     ok: '제출',
     trigger: this,
     onOk: function(){ /* 실제 구현: POST /api/games/:id/submit */

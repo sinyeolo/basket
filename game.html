@@ -614,7 +614,7 @@ function viewPbp(){
   if(!PBP.length){
     return '<div class="card"><div class="empty">'+
       '<span class="empty-art" aria-hidden="true">'+EMPTY_ART.end+'</span>'+
-      '이 경기는 중계 기록이 없어요<br>최종 기록은 <b>기록</b> 탭에서 볼 수 있습니다</div></div>';
+      '이 경기는 중계 기록이 없어요<br>최종 기록은 <b>기록</b> 탭에서 볼 수 있어요</div></div>';
   }
   var qs = [];
   PBP.forEach(function(e){ if(qs.indexOf(e.q) < 0) qs.push(e.q); });
@@ -645,7 +645,7 @@ function viewPbp(){
       (e.team==='away' ? ev : '<span></span>')+
     '</div>';
   });
-  if(!list.length) out = '<div class="empty">이 쿼터에 기록이 없습니다.</div>';
+  if(!list.length) out = '<div class="empty">이 쿼터에 기록이 없어요</div>';
 
   return '<div class="card"><h3>경기 중계 <span class="sub">최신순</span></h3>'+
     tabs + '<div class="pbp">'+out+'</div></div>';
@@ -747,7 +747,7 @@ function viewBox(){
     // 표를 읽는 규칙은 카드 밖으로 뺀다 — 카드 안에 있으면 데이터의 일부처럼 보이고,
     // 한 문장에 몰아넣으면 세 가지 다른 이야기가 붙어 하나도 눈에 안 들어온다
     '<ul class="notes">'+
-      '<li>열 이름을 누르면 정렬 기준이 바뀝니다</li>'+
+      '<li>열 이름을 누르면 정렬 기준이 바뀌어요</li>'+
       '<li>취소선은 5파울 퇴장</li>'+
       '<li>야투는 3점을 포함한 전체 필드골</li>'+
     '</ul>';
@@ -764,10 +764,10 @@ var EMPTY_ART = {
   none:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8.2v.1M11 11v2.2"/></svg>'
 };
 function viewNoRecord(){
-  var msg = { soon:'아직 시작하지 않은 경기예요<br>경기가 끝나면 기록이 올라옵니다',
+  var msg = { soon:'아직 시작하지 않은 경기예요<br>경기가 끝나면 기록이 올라와요',
               none:'이 경기를 찾을 수 없어요<br>주소를 다시 확인해 주세요',
-              live:'지금 진행 중인 경기예요<br>기록은 경기가 끝난 뒤 공개됩니다',
-              end :'기록 검수 중이에요<br>확정되면 여기에 공개됩니다' }[G.status]
+              live:'지금 진행 중인 경기예요<br>기록은 경기가 끝난 뒤 공개돼요',
+              end :'기록 검수 중이에요<br>확정되면 여기에 공개돼요' }[G.status]
           || '이 경기의 기록을 찾을 수 없어요';
   var art = EMPTY_ART[G.status] || EMPTY_ART.none;
   return '<div class="card"><div class="empty">'+
@@ -781,7 +781,7 @@ function render(){
   if(tab === 'summary') v.innerHTML = viewSummary();
   else if(tab === 'pbp') v.innerHTML = viewPbp();
   else if(tab === 'box') v.innerHTML = viewBox();
-  else v.innerHTML = '<div class="card"><div class="empty">준비 중입니다.</div></div>';
+  else v.innerHTML = '<div class="card"><div class="empty">준비 중이에요</div></div>';
 }
 
 document.addEventListener('click', function(e){

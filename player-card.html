@@ -876,7 +876,7 @@ button{font-family:var(--font)}
               <div class="backGrid hasRec" id="backGrid"></div>
               <div class="backTitle hasRec">최근 경기</div>
               <div class="hasRec" id="backGames"></div>
-              <div class="recEmpty noRec">아직 뛴 경기가 없어요<br>첫 경기를 마치면 기록이 채워집니다</div>
+              <div class="recEmpty noRec">아직 뛴 경기가 없어요<br>첫 경기를 마치면 기록이 채워져요</div>
               <div class="backNote" id="backUpdated">update 2026.07.23 13:20</div>
             </div>
           </div>
@@ -1927,7 +1927,7 @@ function lbCardBackHTML(entry){
       '<div class="backStat"><b>'+PLAYER.stats.ast+'</b><span>어시스트</span></div>'+
     '</div>'+
     '<div class="backTitle">'+entry.season+'</div>'+
-    '<div class="backNote">앨범 보관용 스냅샷 · 시즌별 실제 기록 연동 전입니다</div>'+
+    '<div class="backNote">앨범 보관용 스냅샷 · 시즌별 실제 기록 연동 전이에요</div>'+
   '</div>';
 }
 var lightboxController = null;
@@ -1975,12 +1975,12 @@ function doShare(){
   var shareData = { title:'BASKET · '+PLAYER.name+' 선수 카드', text:PLAYER.team+' · '+PLAYER.pos, url: location.href };
   if(navigator.share){ navigator.share(shareData).catch(function(){}); }
   else if(navigator.clipboard){ navigator.clipboard.writeText(location.href); showToast('링크가 복사됐습니다 (프로토타입 · 실제 공개 링크 아님)'); }
-  else { showToast('이 브라우저에서는 공유가 지원되지 않습니다'); }
+  else { showToast('이 브라우저에서는 공유를 쓸 수 없어요'); }
 }
 document.getElementById('btnShare').addEventListener('click', doShare);
 document.getElementById('btnShareTop').addEventListener('click', doShare);
 document.getElementById('btnSaveImg').addEventListener('click', function(){
-  showToast('이미지 저장은 실제 구현 단계에서 서버 생성 방식으로 연결됩니다');
+  showToast('이미지 저장은 실제 구현 단계에서 서버 생성 방식으로 연결돼요');
 });
 
 /* ---- OVR 계산 방식 안내 팝업 ---- */
