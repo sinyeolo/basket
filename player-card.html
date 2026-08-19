@@ -94,7 +94,11 @@ button{font-family:var(--font)}
    등장 시엔 화면 밖(자기 높이의 110%)에서 위로 슬라이드해 접힌 상태로 자리잡고,
    접힌 동안엔 눌러보라는 뜻으로 살짝 두 번 튕기는 넛지 모션을 주기적으로 반복하다가, 펼치면 멈춘다 */
 /* 시트 전용 라이트 테마 토큰 — 어두운 카드 배경 위에 얹히는 시트라 색이 겹쳐 보이지 않도록 화이트 테마로 분리 */
-.sheet{--sh-bg:#ffffff; --sh-bg2:#f4f5f7; --sh-border:#e7e8ec; --sh-on:#16171b; --sh-on-dim:#6d6f78;
+/* 머리 면의 색 — 손잡이·헤더·첫 섹션이 모두 이 값을 쓴다. 셋이 한 면으로 이어져야 하므로
+   색을 세 군데에 적지 않고 여기 한 곳에서 정한다. 등급색을 흰색에 섞어 크림 톤을 만든다:
+   밝은 회색(--sh-bg2)에 섞으면 14%로도 거의 흰색이 되어 등급이 읽히지 않았다. */
+.sheet{--hero-tint:color-mix(in srgb, var(--g-b) 26%, #ffffff);
+  --sh-bg:#ffffff; --sh-bg2:#f4f5f7; --sh-border:#e7e8ec; --sh-on:#16171b; --sh-on-dim:#6d6f78;
   /* 카드 바깥 바탕은 검정 80% — 흰 카드가 회색 위에 있을 때보다 경계가 분명해지고,
      무대(어두운 배경)와 시트가 같은 공기를 쓰게 된다. */
   position:fixed;left:0;right:0;bottom:0;z-index:3;background:rgba(0,0,0,.8);color:var(--sh-on);border-radius:26px 26px 0 0;
@@ -156,14 +160,17 @@ button{font-family:var(--font)}
    보이는 막대는 ::before로 그리고, 위 18px·아래 12px 여백까지 포함한 띠 전체가 손잡이 역할을 한다
    (여백을 margin이 아니라 padding으로 준 이유 — margin은 요소 바깥이라 이벤트가 닿지 않는다). */
 .sheetHandle{width:100%;padding:18px 0 12px;margin:0;display:flex;align-items:center;justify-content:center;
+  background:var(--hero-tint);border-radius:26px 26px 0 0;
   touch-action:none;cursor:pointer}
-.sheetHandle::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.3)}
+.sheetHandle::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:rgba(0,0,0,.18)}
 .sheet.sheet-expanded .sheetHandle{display:none}
-.sheetHead{position:sticky;top:0;z-index:1;background:transparent;padding:0 16px 4px;cursor:pointer;touch-action:none;
+/* 접힌 상태에서 보이는 건 이 헤더뿐이다 — 검정이면 시트가 아니라 검은 띠로 보인다.
+   첫 섹션과 같은 틴트를 써서 헤더부터 머리 블록까지 한 면으로 이어지게 한다. */
+.sheetHead{position:sticky;top:0;z-index:1;background:var(--hero-tint);padding:0 16px 4px;cursor:pointer;touch-action:none;
   display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 /* 경계선 대신 아래로 갈수록 옅어지는 블러로 지나가는 내용과의 경계를 만든다 — 선 하나로 자르는 것보다
    내용이 헤더 밑으로 흘러 들어가는 느낌이 자연스럽다. 두 단 모두 내용이 헤드 밑을 지나가므로 공통. */
-.sheet.sheet-open .sheetHead{padding-bottom:16px;background:transparent}
+.sheet.sheet-open .sheetHead{padding-bottom:10px}
 /* 위 여백은 최상단에서만 준다 — 거기서만 핸들이 사라져 이름이 화면 맨 위에 딱 붙기 때문이다.
    노치까지 덮으므로 safe-area를 더한다.
    여백이 순간에 생기면 제목이 '툭' 내려앉는다. 그렇다고 padding을 전환하면 안 된다 —
@@ -177,18 +184,8 @@ button{font-family:var(--font)}
 .sheetTitle{transition:opacity .28s ease, transform .28s cubic-bezier(.22,.61,.36,1)}
 @media (prefers-reduced-motion:reduce){ .sheetTitle{transition:none} }
 @media (prefers-reduced-motion:reduce){ .sheet.sheet-expanded .sheetTitle{animation:none} }
-/* 점진 블러 — 배경 레이어를 헤더보다 아래로 더 길게(-24px) 빼고 mask로 아래쪽을 지운다.
-   위쪽은 불투명 + 블러가 꽉 차 있고, 아래로 내려갈수록 블러와 불투명도가 함께 사라진다.
-   (backdrop-filter는 세기를 그라디언트로 못 주므로, 레이어 자체를 mask로 페이드시켜 같은 효과를 낸다) */
-.sheet.sheet-open .sheetHead::before{
-  content:"";position:absolute;left:0;right:0;top:0;bottom:-14px;z-index:-1;pointer-events:none;
-  backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);
-  background:linear-gradient(to bottom,
-    rgba(0,0,0,.8) 0%,
-    rgba(0,0,0,.5) 58%,
-    transparent 100%);
-  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 46%,rgba(0,0,0,.55) 74%,transparent 100%);
-          mask-image:linear-gradient(to bottom,#000 0%,#000 46%,rgba(0,0,0,.55) 74%,transparent 100%)}
+/* 헤드 아래 페이드는 뺐다. 헤더가 첫 섹션과 같은 틴트의 불투명한 면이 된 뒤로는
+   흐릿하게 흘려보낼 경계 자체가 없다 — 내용은 그 면 아래로 지나간다. */
 /* 좌우 16px — 글자가 화면 끝에서 16px 떨어지게 맞춘다(공개 경기 상세와 같은 기준).
    예전엔 여기 20 + .section 4 = 24였다. */
 /* 좌우 여백을 없애 카드가 시트 폭을 다 쓴다. 카드 안쪽 여백이 16px이라 글자는 헤더 제목과
@@ -198,19 +195,19 @@ button{font-family:var(--font)}
 /* 펼친 상태(=스티키가 의미 있어지는 상태)에서만 노출되는 닫기 버튼 — 누르면 접힌 상태(첫 화면과 같은 모습)로 되돌아감 */
 /* display:none ↔ flex는 '딱' 나타난다. 자리는 늘 잡아 두고 투명도로만 녹인다 —
    나타나는 순간이 보이지 않아야 시트가 올라오는 하나의 동작으로 읽힌다. */
-.sheetCloseBtn{display:flex;flex:none;width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
-  background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);align-items:center;justify-content:center;font-size:16px;line-height:1;
+.sheetCloseBtn{display:flex;flex:none;width:28px;height:28px;border-radius:50%;border:1px solid rgba(0,0,0,.1);
+  background:rgba(0,0,0,.06);color:var(--sh-on-dim);align-items:center;justify-content:center;font-size:16px;line-height:1;
   cursor:pointer;margin-top:1px;
   opacity:0;visibility:hidden;transform:scale(.86);
   transition:opacity .28s ease, transform .28s cubic-bezier(.22,.61,.36,1), visibility 0s linear .28s}
-.sheetCloseBtn:hover{background:rgba(255,255,255,.2);color:#fff}
+.sheetCloseBtn:hover{background:rgba(0,0,0,.12);color:var(--sh-on)}
 .sheet.sheet-open .sheetCloseBtn{opacity:1;visibility:visible;transform:scale(1);
   transition:opacity .28s ease .1s, transform .28s cubic-bezier(.22,.61,.36,1) .1s, visibility 0s}
 @media (prefers-reduced-motion:reduce){ .sheetCloseBtn{transition:none} }
-.sheetTitle .stName{font-size:20px;font-weight:800;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
-.sheetTitle .stTeam{font-size:13px;font-weight:600;color:rgba(255,255,255,.7);flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96px}
-.sheetTitle .stNumDot{color:rgba(255,255,255,.45);flex:none}
-.sheetTitle .stNum{font-size:16px;font-weight:700;color:rgba(255,255,255,.7);flex:none}
+.sheetTitle .stName{font-size:20px;font-weight:800;color:var(--sh-on);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.sheetTitle .stTeam{font-size:13px;font-weight:600;color:var(--sh-on-dim);flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96px}
+.sheetTitle .stNumDot{color:var(--sh-on-dim);flex:none}
+.sheetTitle .stNum{font-size:16px;font-weight:700;color:var(--sh-on-dim);flex:none}
 .sheetTitle .stVerified{flex:none;width:18px;height:18px;color:#0284c7;margin-left:2px;display:flex}
 .sheetTitle .stVerified svg{width:100%;height:100%}
 
@@ -685,11 +682,10 @@ button{font-family:var(--font)}
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hnMeta{display:flex;align-items:baseline;gap:5px;flex:none;font-size:13px;font-weight:600;color:var(--sh-on-dim)}
 .hnDot{opacity:.6}
-.sheetHero{max-width:520px;margin:8px auto 0;padding:18px 18px 16px;border-radius:24px;
-  background:
-    radial-gradient(120% 120% at 0% 0%, color-mix(in srgb,var(--g-b) 22%,transparent), transparent 72%),
-    color-mix(in srgb,var(--g-b) 12%, var(--sh-bg2));
-}
+/* 위쪽 모서리를 세운다 — 헤더와 맞닿는 면이라 둥글면 그 사이에 검정이 비친다.
+   아래쪽만 둥글려 '헤더에서 시작해 여기서 끝나는 한 덩어리'로 읽히게 한다. */
+.sheetHero{max-width:520px;margin:0 auto;padding:4px 18px 18px;border-radius:0 0 24px 24px;
+  background:var(--hero-tint)}
 .ovrHero{margin:0;padding:0;display:flex;flex-direction:row;
   align-items:center;justify-content:space-between;gap:12px}
 /* 라벨을 숫자 앞에 둬서 큰 숫자가 오른쪽 끝을 붙잡게 한다 — 숫자를 앞에 두면 오른쪽 끝이 작은 라벨로
