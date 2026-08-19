@@ -217,10 +217,14 @@ button{font-family:var(--font)}
 .sheet.sheet-open .sheetHead{padding-bottom:16px;background:transparent}
 /* 위 여백은 최상단에서만 준다 — 거기서만 핸들이 사라져 이름이 화면 맨 위에 딱 붙기 때문이다.
    노치까지 덮으므로 safe-area를 더한다.
-   여백이 순간에 생기면 제목이 '툭' 내려앉는다 — 시트가 올라오는 시간과 같은 결로 늘린다. */
-.sheetHead{transition:padding-top .3s cubic-bezier(.22,.61,.36,1)}
+   여백이 순간에 생기면 제목이 '툭' 내려앉는다. 그렇다고 padding을 전환하면 안 된다 —
+   시트가 올라오는 가장 바쁜 순간에 매 프레임 레이아웃을 다시 잡게 된다(폰에서 그만큼 프레임을
+   잃는다). 여백 자체는 즉시 바꾸고, 제목만 transform으로 제자리에 미끄러져 들어오게 한다.
+   합성 단계에서만 처리되므로 공짜에 가깝고, 눈에 보이는 결과는 같다. */
 .sheet.sheet-expanded .sheetHead{padding-top:calc(16px + env(safe-area-inset-top))}
-@media (prefers-reduced-motion:reduce){ .sheetHead{transition:none} }
+.sheet.sheet-expanded .sheetTitle{animation:headSettle .3s cubic-bezier(.22,.61,.36,1) both}
+@keyframes headSettle{from{transform:translateY(-9px)}to{transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){ .sheet.sheet-expanded .sheetTitle{animation:none} }
 /* 점진 블러 — 배경 레이어를 헤더보다 아래로 더 길게(-24px) 빼고 mask로 아래쪽을 지운다.
    위쪽은 불투명 + 블러가 꽉 차 있고, 아래로 내려갈수록 블러와 불투명도가 함께 사라진다.
    (backdrop-filter는 세기를 그라디언트로 못 주므로, 레이어 자체를 mask로 페이드시켜 같은 효과를 낸다) */
