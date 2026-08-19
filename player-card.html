@@ -104,14 +104,10 @@ button{font-family:var(--font)}
    등장 시엔 화면 밖(자기 높이의 110%)에서 위로 슬라이드해 접힌 상태로 자리잡고,
    접힌 동안엔 눌러보라는 뜻으로 살짝 두 번 튕기는 넛지 모션을 주기적으로 반복하다가, 펼치면 멈춘다 */
 /* 시트 전용 라이트 테마 토큰 — 어두운 카드 배경 위에 얹히는 시트라 색이 겹쳐 보이지 않도록 화이트 테마로 분리 */
-/* 머리 면의 색 — 손잡이·헤더·첫 섹션이 모두 이 값을 쓴다. 셋이 한 면으로 이어져야 하므로
-   색을 세 군데에 적지 않고 여기 한 곳에서 정한다. 등급색을 흰색에 섞어 크림 톤을 만든다:
-   밝은 회색(--sh-bg2)에 섞으면 14%로도 거의 흰색이 되어 등급이 읽히지 않았다. */
-.sheet{--hero-tint:color-mix(in srgb, var(--g-b) 26%, #ffffff);
-  --sh-bg:#ffffff; --sh-bg2:#f4f5f7; --sh-border:#e7e8ec; --sh-on:#16171b; --sh-on-dim:#6d6f78;
+.sheet{--sh-bg:#ffffff; --sh-bg2:#f4f5f7; --sh-border:#e7e8ec; --sh-on:#16171b; --sh-on-dim:#6d6f78;
   /* 카드 바깥 바탕은 밝은 회색(PO 판단으로 되돌림). 흰 카드가 그 위에 얹혀 모듈로 읽히되
      시트 전체는 밝은 표면으로 남는다 — 검정으로 두면 시트가 무대의 연장처럼 보였다. */
-  position:fixed;left:0;right:0;bottom:0;z-index:3;background:var(--sh-bg2);color:var(--sh-on);border-radius:var(--sheet-r,26px) var(--sheet-r,26px) 0 0;
+  position:fixed;left:0;right:0;bottom:0;z-index:3;background:var(--sh-bg);color:var(--sh-on);border-radius:var(--sheet-r,26px) var(--sheet-r,26px) 0 0;
   box-shadow:0 -14px 32px rgba(0,0,0,.28);height:74px;overflow:hidden;
   transform:translateY(110%);
   /* height는 더 이상 애니메이션하지 않는다 — 단계 이동은 전부 transform이 맡는다(goSheet).
@@ -170,19 +166,16 @@ button{font-family:var(--font)}
    보이는 막대는 ::before로 그리고, 위 18px·아래 12px 여백까지 포함한 띠 전체가 손잡이 역할을 한다
    (여백을 margin이 아니라 padding으로 준 이유 — margin은 요소 바깥이라 이벤트가 닿지 않는다). */
 .sheetHandle{width:100%;padding:18px 0 12px;margin:0;display:flex;align-items:center;justify-content:center;
-  background:var(--hero-tint);border-radius:var(--sheet-r,26px) var(--sheet-r,26px) 0 0;
   touch-action:none;cursor:pointer}
 .sheetHandle::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:rgba(0,0,0,.18)}
 .sheet.sheet-expanded .sheetHandle{display:none}
 /* 접힌 상태에서 보이는 건 이 헤더뿐이다 — 검정이면 시트가 아니라 검은 띠로 보인다.
    첫 섹션과 같은 틴트를 써서 헤더부터 머리 블록까지 한 면으로 이어지게 한다. */
-.sheetHead{position:sticky;top:0;z-index:1;background:var(--hero-tint);padding:0 16px 4px;cursor:pointer;touch-action:none;
+.sheetHead{position:sticky;top:0;z-index:1;background:var(--sh-bg);padding:0 16px 4px;cursor:pointer;touch-action:none;
   display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 /* 경계선 대신 아래로 갈수록 옅어지는 블러로 지나가는 내용과의 경계를 만든다 — 선 하나로 자르는 것보다
    내용이 헤더 밑으로 흘러 들어가는 느낌이 자연스럽다. 두 단 모두 내용이 헤드 밑을 지나가므로 공통. */
-/* 아래 모서리를 섹션과 같은 값으로 둥글린다. 직선으로 끊기면 스크롤할 때 화면이 잘린 것처럼
-   보이는데, 둥글면 '위에 얹힌 판'으로 읽혀 아래 카드들과 같은 말투가 된다. */
-.sheet.sheet-open .sheetHead{padding-bottom:12px;border-radius:0 0 24px 24px}
+.sheet.sheet-open .sheetHead{padding-bottom:16px;background:transparent}
 /* 위 여백은 최상단에서만 준다 — 거기서만 핸들이 사라져 이름이 화면 맨 위에 딱 붙기 때문이다.
    노치까지 덮으므로 safe-area를 더한다.
    여백이 순간에 생기면 제목이 '툭' 내려앉는다. 그렇다고 padding을 전환하면 안 된다 —
@@ -194,13 +187,23 @@ button{font-family:var(--font)}
    화면 높이·헤더 높이에 따라 판정이 어긋나 두 곳에 함께 나오는 경우가 남았다.
    자리를 하나만 두면 그런 경우가 생길 수가 없다 — 헤더는 스티키라 늘 보인다. */
 @media (prefers-reduced-motion:reduce){ .sheet.sheet-expanded .sheetTitle{animation:none} }
-/* 헤드 아래 페이드는 뺐다. 헤더가 첫 섹션과 같은 틴트의 불투명한 면이 된 뒤로는
-   흐릿하게 흘려보낼 경계 자체가 없다 — 내용은 그 면 아래로 지나간다. */
+/* 점진 블러 — 배경 레이어를 헤더보다 아래로 더 길게(-24px) 빼고 mask로 아래쪽을 지운다.
+   위쪽은 불투명 + 블러가 꽉 차 있고, 아래로 내려갈수록 블러와 불투명도가 함께 사라진다.
+   (backdrop-filter는 세기를 그라디언트로 못 주므로, 레이어 자체를 mask로 페이드시켜 같은 효과를 낸다) */
+.sheet.sheet-open .sheetHead::before{
+  content:"";position:absolute;left:0;right:0;top:0;bottom:-14px;z-index:-1;pointer-events:none;
+  backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);
+  background:linear-gradient(to bottom,
+    var(--sh-bg) 0%,
+    color-mix(in srgb,var(--sh-bg) 82%, transparent) 58%,
+    transparent 100%);
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 46%,rgba(0,0,0,.55) 74%,transparent 100%);
+          mask-image:linear-gradient(to bottom,#000 0%,#000 46%,rgba(0,0,0,.55) 74%,transparent 100%)}
 /* 좌우 16px — 글자가 화면 끝에서 16px 떨어지게 맞춘다(공개 경기 상세와 같은 기준).
    예전엔 여기 20 + .section 4 = 24였다. */
 /* 좌우 여백을 없애 카드가 시트 폭을 다 쓴다. 카드 안쪽 여백이 16px이라 글자는 헤더 제목과
    같은 자리(화면 끝에서 16px)에 선다 — 바깥 여백이 사라져도 글의 기준선은 그대로다. */
-.sheetBody{padding:0 0 48px}
+.sheetBody{padding:0 16px 48px}
 .sheetTitle{display:flex;align-items:center;gap:6px;margin-bottom:16px;min-width:0}
 /* 펼친 상태(=스티키가 의미 있어지는 상태)에서만 노출되는 닫기 버튼 — 누르면 접힌 상태(첫 화면과 같은 모습)로 되돌아감 */
 /* display:none ↔ flex는 '딱' 나타난다. 자리는 늘 잡아 두고 투명도로만 녹인다 —
@@ -524,7 +527,7 @@ button{font-family:var(--font)}
 /* 레벨·경험치는 카드 바깥 아래에 노출 — 운영단 선수 상세(index.html .pdLevelRow)와 동일 위치 */
 /* 레벨은 시트 안에 있다 — 카드 밖 한 줄로 떠 있을 땐 카드에도 시트에도 속하지 않아 보였다.
    요약 지표(레벨·참가 대회·경기 수·배지) 바로 위에 두면 같은 '이 선수의 현황' 묶음으로 읽힌다. */
-.levelRow{width:100%;margin:16px 0 0;display:flex;align-items:center;gap:10px}
+.levelRow{width:100%;max-width:520px;margin:14px auto 0;display:flex;align-items:center;gap:10px}
 .levelRow .lv{font-size:13px;font-weight:800;color:var(--sh-on);white-space:nowrap}
 .expBar{flex:1;height:5px;border-radius:100px;background:var(--sh-bg2);overflow:hidden}
 /* 카드 앞면 최하단의 작은 레벨 — 카드만 보고도 지금 어디쯤인지 알 수 있어야 한다.
@@ -668,31 +671,21 @@ button{font-family:var(--font)}
    여기 하나만 검게 깔면 "이 선수를 한 줄로 요약한 값"이라는 게 먼저 읽힌다. */
 /* 요약 지표도 같은 흰 카드로. 검은 판이던 시절엔 시트 안에 처리가 셋(등급색·검정·흰색)이라
    무엇이 강조인지 흐려졌다 — 레퍼런스처럼 '강조 블록 하나 + 나머지는 같은 카드'로 맞춘다. */
-.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:520px;margin:4px auto 0;
-  background:var(--sh-bg);border-radius:24px;padding:16px 6px}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:520px;margin:22px auto 0;
+  background:#16171b;border:1px solid #16171b;border-radius:16px;padding:16px 6px}
 .summary .it{text-align:center;padding:0 4px}
-.summary .it b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:var(--sh-on)}
-.summary .it span{font-size:11px;color:var(--sh-on-dim);margin-top:3px;display:block}
+.summary .it b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:#ffffff}
+.summary .it span{font-size:11px;color:rgba(255,255,255,.66);margin-top:3px;display:block}
 
 /* 섹션 간격 — 36px에서 키웠다. 카드 앨범·배지·기록이 붙어 있으면 하나의 긴 목록처럼 읽혀서
    어디서 주제가 바뀌는지가 안 잡힌다. */
 /* 섹션마다 제 카드를 갖는다 — 레퍼런스처럼 '한 덩어리 = 한 판'으로 끊는다.
    예전엔 제목과 내용이 시트 바탕 위에 그냥 얹혀 있어서 어디까지가 한 묶음인지 간격으로만
    구분됐고, 스크롤하면 그 간격이 사라져 하나의 긴 목록으로 읽혔다. */
-.section{max-width:520px;margin:4px auto 0;padding:16px 16px 18px;
-  background:var(--sh-bg);border-radius:24px}
+.section{max-width:520px;margin:34px auto 0;padding:0}
 /* OVR 히어로 — 박스 없이. 회색 박스로 감싸면 아래 4지표 카드와 무게가 비슷해져 '가장 중요한 수치'로
    안 읽힌다. 등급 뱃지를 위에 올리고 그 아래 큰 숫자를 놓아 위에서 아래로 읽히게 했다. */
-/* 시트 머리 블록 — 등급·OVR·레벨을 한 판에 담는다. 이 셋은 '이 선수가 지금 어디쯤인가'라는
-   한 가지 이야기라서 각각 떠 있으면 세 개의 사실로 읽힌다.
-   바탕에 등급색을 아주 옅게 깔아 카드와 시트가 같은 선수의 것임을 색으로 잇는다 —
-   진하게 깔면 아래 흰 블록들과 싸우므로 12%까지만. */
-/* 헤더도 하나의 모듈이 됐으므로(아래 모서리를 둥글렸다) 머리 블록도 네 모서리를 둥글리고
-   다른 섹션과 같은 간격을 둔다. 억지로 붙여 두면 헤더의 둥근 모서리 사이로 검정이 비친다 —
-   차라리 같은 규칙의 판 두 개로 두는 편이 읽기에도 낫다. */
-.sheetHero{max-width:520px;margin:4px auto 0;padding:16px 18px 18px;border-radius:24px;
-  background:var(--hero-tint)}
-.ovrHero{margin:0;padding:0;display:flex;flex-direction:row;
+.ovrHero{max-width:520px;margin:24px auto 0;padding:0;display:flex;flex-direction:row;
   align-items:center;justify-content:space-between;gap:12px}
 /* 라벨을 숫자 앞에 둬서 큰 숫자가 오른쪽 끝을 붙잡게 한다 — 숫자를 앞에 두면 오른쪽 끝이 작은 라벨로
    끝나 시선이 흐려진다 */
@@ -713,17 +706,16 @@ button{font-family:var(--font)}
 /* 시즌 평균 3스탯 */
 /* 카드 안에 또 박스를 넣지 않는다 — 레퍼런스들이 공통으로 지키는 것이다.
    회색 박스 세 개를 걷어내고 얇은 세로선으로만 칸을 나눈다. 겹이 하나 줄면 숫자가 앞으로 나온다. */
-.avgRow{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
-.avgIt{text-align:center;padding:6px 4px;position:relative}
+.avgRow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.avgIt{text-align:center;padding:14px 4px;background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:14px}
 .avgIt + .avgIt::before{content:"";position:absolute;left:0;top:12%;bottom:12%;width:1px;background:var(--sh-border)}
 /* font-variant-numeric:tabular-nums를 뺐다 — 자간을 건드린 게 아니라 이 속성이 '1'처럼 좁은 숫자에도
    같은 칸을 줘서 '21.4'가 벌어져 보였다. 표처럼 자릿수를 맞출 필요가 없는 자리라 비례 숫자가 맞다. */
 .avgIt b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:var(--sh-on);line-height:1.1;letter-spacing:-.01em}
-.avgIt span{display:block;margin-top:5px;font-size:11px;color:var(--sh-on-dim)}
+.avgIt span{display:block;margin-top:4px;font-size:11px;color:var(--sh-on-dim)}
 /* 제목은 내용을 안내할 뿐 앞서지 않는다 — 레퍼런스들은 하나같이 작고 조용한 라벨을 쓴다.
    굵기를 낮추고 자간을 벌려 '라벨'로 읽히게 한다(굵은 13px은 그 자체로 내용처럼 보였다). */
-.section h3{display:flex;align-items:baseline;gap:8px;font-size:11px;font-weight:700;color:var(--sh-on-dim);
-  margin:0 0 12px;letter-spacing:.06em}
+.section h3{display:flex;align-items:baseline;gap:8px;font-size:13px;font-weight:800;color:var(--sh-on-dim);margin:0 0 10px;letter-spacing:.02em}
 /* 갱신 날짜 — 제목 줄 오른쪽 끝에. 평균이 언제 기준인지는 알아야 하지만, 평균 자체보다
    중요할 일은 없다. 그래서 가장 약한 무게로 끝에 붙인다. */
 .upAt{margin-left:auto;font-size:11px;font-weight:500;letter-spacing:0;color:var(--sh-on-dim);opacity:.7}
@@ -997,7 +989,6 @@ button{font-family:var(--font)}
     <div class="sheetBody">
       <!-- OVR — 카드 앞면의 핵심 수치를 시트 맨 위에도 크게 세운다. 시트만 보고도 이 선수가
            어느 수준인지 바로 잡히게 하려는 것(예전엔 레벨·경기 수 같은 부가 지표만 있었다) -->
-      <div class="sheetHero">
       <div class="ovrHero">
         <span class="ohGrade" id="sGrade" data-g="gold">GOLD</span>
         <div class="ovrHeroMain">
@@ -1009,7 +1000,6 @@ button{font-family:var(--font)}
       <div class="levelRow" id="levelRow">
         <span class="lv" id="fLevel">Lv.15</span>
         <div class="expBar"><i id="fExpBar"></i></div>
-      </div>
       </div>
 
       <div class="summary">
