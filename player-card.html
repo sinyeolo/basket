@@ -77,11 +77,11 @@ button{font-family:var(--font)}
     color-mix(in srgb,var(--sg) 12%,transparent) 34%,
     transparent 66%)}
 .stageRays i:nth-child(1){--sg:var(--g-b);width:120vw;aspect-ratio:1;left:-30vw;top:-62vw;
-  animation:driftA 26s ease-in-out infinite alternate}
+  animation:driftA 12s ease-in-out infinite alternate}
 .stageRays i:nth-child(2){--sg:var(--g-a);width:96vw;aspect-ratio:1;right:-32vw;top:-14vw;
-  animation:driftB 34s ease-in-out infinite alternate}
+  animation:driftB 16s ease-in-out infinite alternate}
 .stageRays i:nth-child(3){--sg:var(--g-b);width:76vw;aspect-ratio:1;left:4vw;top:24vh;
-  animation:driftC 30s ease-in-out infinite alternate}
+  animation:driftC 14s ease-in-out infinite alternate}
 @keyframes driftA{ to{transform:translate(14vw,10vh) scale(1.14)} }
 @keyframes driftB{ to{transform:translate(-12vw,14vh) scale(.9)} }
 @keyframes driftC{ to{transform:translate(10vw,-12vh) scale(1.2)} }
@@ -93,7 +93,7 @@ button{font-family:var(--font)}
    접힌 동안엔 눌러보라는 뜻으로 살짝 두 번 튕기는 넛지 모션을 주기적으로 반복하다가, 펼치면 멈춘다 */
 /* 시트 전용 라이트 테마 토큰 — 어두운 카드 배경 위에 얹히는 시트라 색이 겹쳐 보이지 않도록 화이트 테마로 분리 */
 .sheet{--sh-bg:#ffffff; --sh-bg2:#f4f5f7; --sh-border:#e7e8ec; --sh-on:#16171b; --sh-on-dim:#6d6f78;
-  position:fixed;left:0;right:0;bottom:0;z-index:3;background:var(--sh-bg);color:var(--sh-on);border-radius:26px 26px 0 0;
+  position:fixed;left:0;right:0;bottom:0;z-index:3;background:var(--sh-bg2);color:var(--sh-on);border-radius:26px 26px 0 0;
   box-shadow:0 -14px 32px rgba(0,0,0,.28);height:74px;overflow:hidden;
   transform:translateY(110%);
   /* height는 더 이상 애니메이션하지 않는다 — 단계 이동은 전부 transform이 맡는다(goSheet).
@@ -155,7 +155,7 @@ button{font-family:var(--font)}
   touch-action:none;cursor:pointer}
 .sheetHandle::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:rgba(0,0,0,.14)}
 .sheet.sheet-expanded .sheetHandle{display:none}
-.sheetHead{position:sticky;top:0;z-index:1;background:var(--sh-bg);padding:0 16px 4px;cursor:pointer;touch-action:none;
+.sheetHead{position:sticky;top:0;z-index:1;background:var(--sh-bg2);padding:0 16px 4px;cursor:pointer;touch-action:none;
   display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 /* 경계선 대신 아래로 갈수록 옅어지는 블러로 지나가는 내용과의 경계를 만든다 — 선 하나로 자르는 것보다
    내용이 헤더 밑으로 흘러 들어가는 느낌이 자연스럽다. 두 단 모두 내용이 헤드 밑을 지나가므로 공통. */
@@ -180,13 +180,15 @@ button{font-family:var(--font)}
   content:"";position:absolute;left:0;right:0;top:0;bottom:-14px;z-index:-1;pointer-events:none;
   backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);
   background:linear-gradient(to bottom,
-    var(--sh-bg) 0%,
-    color-mix(in srgb,var(--sh-bg) 82%, transparent) 58%,
+    var(--sh-bg2) 0%,
+    color-mix(in srgb,var(--sh-bg2) 82%, transparent) 58%,
     transparent 100%);
   -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 46%,rgba(0,0,0,.55) 74%,transparent 100%);
           mask-image:linear-gradient(to bottom,#000 0%,#000 46%,rgba(0,0,0,.55) 74%,transparent 100%)}
 /* 좌우 16px — 글자가 화면 끝에서 16px 떨어지게 맞춘다(공개 경기 상세와 같은 기준).
    예전엔 여기 20 + .section 4 = 24였다. */
+/* 카드들이 얹힐 바탕이라 한 톤 낮춘다 — 흰 카드가 흰 바탕에 놓이면 테두리로만 구분돼
+   모듈로 안 읽힌다. */
 .sheetBody{padding:0 16px 48px}
 .sheetTitle{display:flex;align-items:center;gap:6px;margin-bottom:16px;min-width:0}
 /* 펼친 상태(=스티키가 의미 있어지는 상태)에서만 노출되는 닫기 버튼 — 누르면 접힌 상태(첫 화면과 같은 모습)로 되돌아감 */
@@ -229,6 +231,17 @@ button{font-family:var(--font)}
 .cardStage{position:relative;display:flex;justify-content:center;padding:18px 20px 8px;perspective:1200px;
   transform:scale(calc(1 - var(--recede,0) * .14));opacity:calc(1 - var(--recede,0) * .45);
   transition:transform .2s ease-out, opacity .2s ease-out}
+/* 새 기록 표시 — 카드 윗변에 올라탄다. 카드 안에 넣으면 정보들 사이에 섞여 또 하나의 항목이 되고,
+   멀리 떨어뜨리면 이 카드 얘기인지 모른다. 걸쳐 있어야 '이 카드에 새 게 있다'로 읽힌다.
+   .cardInner 밖이라 뒤집어도 그대로 있고, .cardWrap 안이라 기울기는 카드와 함께 받는다. */
+/* transform:translateZ — 3D 컨텍스트(preserve-3d) 안에서는 z-index가 아니라 Z축 위치가
+   앞뒤를 정한다. 앞면이 카드 두께의 절반(8px)만큼 앞에 있으므로 그보다 더 앞으로 세워야
+   카드 위에 얹힌다. z-index만 줬을 땐 카드 뒤로 들어가 윗머리만 보였다. */
+.updateBadge{position:absolute;top:-10px;right:16px;z-index:5;pointer-events:none;
+  transform:translateZ(22px);
+  padding:4px 10px;border-radius:100px;background:var(--brand);color:var(--on-brand);
+  font-size:11px;font-weight:800;letter-spacing:.06em;line-height:1;
+  box-shadow:0 4px 12px color-mix(in srgb,var(--brand) 45%,transparent)}
 .cardWrap{width:var(--card-w);height:var(--card-h);position:relative;transform-style:preserve-3d;
   transform:rotateX(var(--ry,0)) rotateY(var(--rx,0))}
 /* 카드 뒤 등급 컬러 오라 — 카드보다 크게 깔고 흐리게 번지게 해서 주변으로 은은하게 새어나온다.
@@ -639,15 +652,21 @@ button{font-family:var(--font)}
 /* 핵심 요약 스트립 — 시트 안에서만 쓰여서 화이트 테마로 바로 정의 */
 /* 요약 스트립만 반전 — 시트 전체가 흰 면이라 네 수치가 다른 카드들과 같은 무게로 흩어졌다.
    여기 하나만 검게 깔면 "이 선수를 한 줄로 요약한 값"이라는 게 먼저 읽힌다. */
-.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:520px;margin:14px auto 0;
-  background:#16171b;border:1px solid #16171b;border-radius:16px;padding:16px 6px}
+/* 요약 지표도 같은 흰 카드로. 검은 판이던 시절엔 시트 안에 처리가 셋(등급색·검정·흰색)이라
+   무엇이 강조인지 흐려졌다 — 레퍼런스처럼 '강조 블록 하나 + 나머지는 같은 카드'로 맞춘다. */
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:520px;margin:12px auto 0;
+  background:var(--sh-bg);border:1px solid var(--sh-border);border-radius:20px;padding:16px 6px}
 .summary .it{text-align:center;padding:0 4px}
-.summary .it b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:#ffffff}
-.summary .it span{font-size:11px;color:rgba(255,255,255,.66);margin-top:3px;display:block}
+.summary .it b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:var(--sh-on)}
+.summary .it span{font-size:11px;color:var(--sh-on-dim);margin-top:3px;display:block}
 
 /* 섹션 간격 — 36px에서 키웠다. 카드 앨범·배지·기록이 붙어 있으면 하나의 긴 목록처럼 읽혀서
    어디서 주제가 바뀌는지가 안 잡힌다. */
-.section{max-width:520px;margin:34px auto 0;padding:0}
+/* 섹션마다 제 카드를 갖는다 — 레퍼런스처럼 '한 덩어리 = 한 판'으로 끊는다.
+   예전엔 제목과 내용이 시트 바탕 위에 그냥 얹혀 있어서 어디까지가 한 묶음인지 간격으로만
+   구분됐고, 스크롤하면 그 간격이 사라져 하나의 긴 목록으로 읽혔다. */
+.section{max-width:520px;margin:12px auto 0;padding:16px 16px 18px;
+  background:var(--sh-bg);border:1px solid var(--sh-border);border-radius:20px}
 /* OVR 히어로 — 박스 없이. 회색 박스로 감싸면 아래 4지표 카드와 무게가 비슷해져 '가장 중요한 수치'로
    안 읽힌다. 등급 뱃지를 위에 올리고 그 아래 큰 숫자를 놓아 위에서 아래로 읽히게 했다. */
 /* 시트 머리 블록 — 등급·OVR·레벨을 한 판에 담는다. 이 셋은 '이 선수가 지금 어디쯤인가'라는
@@ -857,6 +876,7 @@ button{font-family:var(--font)}
     <div class="cardStage">
       <div class="cardGlow" aria-hidden="true"></div>
       <div class="cardWrap" id="cardWrap">
+        <span class="updateBadge" id="updateBadge" hidden>UPDATE</span>
         <div class="cardInner" id="cardInner">
           <div class="cardFace front">
             <div class="cardEdgeGlow" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -1353,13 +1373,10 @@ function paintChanges(){
   /* 새 기록 점은 목록을 그릴 때 첫 경기 앞에 함께 찍는다(renderGameLists) —
      어느 경기가 새것인지 알아야 의미가 있다. */
   renderGameLists();
-  /* 카드 앞면에서 새 기록은 뒷면에 있다 — 뒤집을 이유를 버튼에 붙인다. */
-  var flipBtn = document.getElementById('btnFlip');
-  if(flipBtn){
-    var had = flipBtn.querySelector('.newDot');
-    if(c.games && !had) flipBtn.insertAdjacentHTML('beforeend', dot());
-    else if(!c.games && had) had.remove();
-  }
+  /* 새 기록은 카드 윗변의 UPDATE 뱃지가 알린다. 뒤집기 버튼의 점은 뺐다 —
+     같은 사실을 두 곳에서 말하면 어느 쪽을 봐야 하는지 흐려진다. */
+  var ub = document.getElementById('updateBadge');
+  if(ub) ub.hidden = !c.any;
 }
 // OVR 카운트업 — 카드가 화면에 등장한 직후 00에서 목표 수치까지 올라가며 표시(easeOutCubic)
 /* OVR 카운트업 — 두 걸음으로 나눈다.
