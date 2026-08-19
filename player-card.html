@@ -109,9 +109,9 @@ button{font-family:var(--font)}
    밝은 회색(--sh-bg2)에 섞으면 14%로도 거의 흰색이 되어 등급이 읽히지 않았다. */
 .sheet{--hero-tint:color-mix(in srgb, var(--g-b) 26%, #ffffff);
   --sh-bg:#ffffff; --sh-bg2:#f4f5f7; --sh-border:#e7e8ec; --sh-on:#16171b; --sh-on-dim:#6d6f78;
-  /* 카드 바깥 바탕은 검정 80% — 흰 카드가 회색 위에 있을 때보다 경계가 분명해지고,
-     무대(어두운 배경)와 시트가 같은 공기를 쓰게 된다. */
-  position:fixed;left:0;right:0;bottom:0;z-index:3;background:rgba(0,0,0,.8);color:var(--sh-on);border-radius:var(--sheet-r,26px) var(--sheet-r,26px) 0 0;
+  /* 카드 바깥 바탕은 밝은 회색(PO 판단으로 되돌림). 흰 카드가 그 위에 얹혀 모듈로 읽히되
+     시트 전체는 밝은 표면으로 남는다 — 검정으로 두면 시트가 무대의 연장처럼 보였다. */
+  position:fixed;left:0;right:0;bottom:0;z-index:3;background:var(--sh-bg2);color:var(--sh-on);border-radius:var(--sheet-r,26px) var(--sheet-r,26px) 0 0;
   box-shadow:0 -14px 32px rgba(0,0,0,.28);height:74px;overflow:hidden;
   transform:translateY(110%);
   /* height는 더 이상 애니메이션하지 않는다 — 단계 이동은 전부 transform이 맡는다(goSheet).
