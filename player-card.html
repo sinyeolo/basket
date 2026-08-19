@@ -712,6 +712,8 @@ button{font-family:var(--font)}
 /* font-variant-numeric:tabular-nums를 뺐다 — 자간을 건드린 게 아니라 이 속성이 '1'처럼 좁은 숫자에도
    같은 칸을 줘서 '21.4'가 벌어져 보였다. 표처럼 자릿수를 맞출 필요가 없는 자리라 비례 숫자가 맞다. */
 .avgIt b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:var(--sh-on);line-height:1.1;letter-spacing:-.01em}
+.avgIt b .ovrTrend{animation:none;margin-right:1px;vertical-align:2px}
+.avgIt b .ovrTrend svg{width:11px;height:11px}
 .avgIt span{display:block;margin-top:4px;font-size:11px;color:var(--sh-on-dim)}
 /* 제목은 내용을 안내할 뿐 앞서지 않는다 — 레퍼런스들은 하나같이 작고 조용한 라벨을 쓴다.
    굵기를 낮추고 자간을 벌려 '라벨'로 읽히게 한다(굵은 13px은 그 자체로 내용처럼 보였다). */
@@ -838,10 +840,10 @@ button{font-family:var(--font)}
    얇은 선으론 섹션 사이 구분선과 헷갈려서 8px 블록으로 확실히 끊는다. */
 /* 아래 셋은 카드 밖, 검정 바탕 위에 직접 놓인다 — 흰 카드용 --sh-on-dim(#6d6f78)을 그대로 쓰면
    대비가 2.2:1까지 떨어진다. 어두운 표면용 색으로 바꾼다. */
-.footDivider{height:1px;background:rgba(255,255,255,.1);margin:40px 0 0}
+.footDivider{height:8px;background:var(--sh-bg2);margin:40px -16px 0}
 .brandFoot{display:flex;align-items:center;justify-content:center;margin:24px auto 0}
-.brandFootName{width:88px;height:30px;color:rgba(255,255,255,.45)}
-.copyright{text-align:center;font-size:11px;color:rgba(255,255,255,.5);margin:8px auto 0}
+.brandFootName{width:88px;height:30px;color:var(--sh-on-dim, var(--on-dark-dim))}
+.copyright{text-align:center;font-size:11px;color:var(--sh-on-dim, #4a4c53);margin:8px auto 0}
 
 /* 검토 전용 미리보기 바 — 실제 서비스 화면 아님. 헤더 바로 아래 고정, 하단 탭바와 겹치지 않게 분리 */
 .previewBar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:8px 12px;
@@ -851,7 +853,7 @@ button{font-family:var(--font)}
   background:#15171d;color:var(--on-dark);cursor:pointer}
 .previewBar button.on{background:#fff;color:#0a0b0f;border-color:#fff}
 
-.footNote{max-width:520px;margin:28px auto 0;text-align:center;font-size:11px;color:rgba(255,255,255,.55);line-height:1.6;padding:0 16px}
+.footNote{max-width:520px;margin:28px auto 0;text-align:center;font-size:11px;color:var(--sh-on-dim, #565962);line-height:1.6;padding:0 16px}
 
 @media (prefers-reduced-motion:reduce){
   .heroContent{animation:none;transform:none}
@@ -1280,9 +1282,21 @@ function changeSet(){
 function ovrTrendHtml(delta){
   if(!delta) return '';
   var up = delta > 0;
-  return '<span class="ovrTrend '+(up?'up':'down')+'" aria-label="지난번보다 '+Math.abs(delta)+' '+(up?'상승':'하락')+'">'+
+  return '<span class="ovrTrend '+(up?'up':'down')+'" aria-label="지난번보다 '+(Math.round(Math.abs(delta)*10)/10)+' '+(up?'상승':'하락')+'">'+
     '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="'+(up?'M6 2.5l4 5H2z':'M6 9.5l-4-5h8z')+'" fill="currentColor"/></svg>'+
   '</span>';
+}
+/* 시즌 평균 세 칸의 변화 화살표 — 지난번에 본 평균과 비교한다.
+   OVR과 같은 규칙이다: 방향만 말하고 크기는 말하지 않는다. 다만 여기서는 튕기는 반복 모션을 뺐다 —
+   화면에 같은 모션이 네 개면 어느 것도 눈에 안 들어온다. 튀는 건 OVR 하나로 충분하다. */
+function paintAvgTrends(){
+  var seen = PLAYER.seen && PLAYER.seen.stats, now = PLAYER.stats || {};
+  [['sAvgPts','pts'],['sAvgReb','reb'],['sAvgAst','ast']].forEach(function(pair){
+    var el = document.getElementById(pair[0]); if(!el) return;
+    var v = now[pair[1]], o = seen ? seen[pair[1]] : null;
+    var d = (v != null && o != null) ? v - o : 0;
+    el.innerHTML = ovrTrendHtml(d) + (v != null ? v : '-');
+  });
 }
 function dot(){ return '<span class="newDot" aria-label="새로 바뀜"></span>'; }
 
@@ -1385,6 +1399,7 @@ function paintChanges(){
   if(sT) sT.innerHTML = trend;
   /* 시즌 평균은 점 대신 '언제 기준인지'를 적는다 — 평균은 매 경기 조금씩 움직이는 값이라
      바뀔 때마다 점을 찍으면 늘 켜져 있는 표시가 되고, 그러면 아무 뜻도 없어진다. */
+  paintAvgTrends();
   var upAt = document.getElementById('avgUpAt');
   if(upAt) upAt.textContent = PLAYER.statsUpdatedAt ? fmtUpAt(PLAYER.statsUpdatedAt) + ' 기준' : '';
   /* 새 기록 점은 목록을 그릴 때 첫 경기 앞에 함께 찍는다(renderGameLists) —
@@ -1778,25 +1793,48 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
      8px을 넘겨 내려야 끌기로 본다: 그 전에는 목록의 링크를 누른 것일 수 있다. */
   var pullY = null, pullH = 0, pullEndedAt = 0;
   var PULL_EPS = 8;
-  document.addEventListener('pointerdown', function(e){
+  function startPull(y, target){
     pullY = null;
     if(sheetState() !== 'full') return;
     if(window.scrollY > 0) return;                       // 아직 페이지에 스크롤할 게 남았다
-    if(!e.target.closest('.sheet')) return;              // 시트 밖은 상관없다
-    if(e.target.closest('.sheetHead, .sheetHandle')) return;  // 헤드·핸들은 기존 드래그가 맡는다
-    pullY = e.clientY; pullH = 0;
-  }, { passive:true });
-  document.addEventListener('pointermove', function(e){
-    if(pullY == null) return;
-    var dy = e.clientY - pullY;                          // 아래로 끌면 양수
-    if(dy <= PULL_EPS) return;                           // 위로 밀거나 아주 조금 흔든 건 그냥 둔다
+    if(!target.closest('.sheet')) return;                // 시트 밖은 상관없다
+    if(target.closest('.sheetHead, .sheetHandle')) return;  // 헤드·핸들은 기존 드래그가 맡는다
+    pullY = y; pullH = 0;
+  }
+  /* 끌기로 판정했으면 true를 돌려준다 — 부른 쪽이 그때 브라우저의 기본 스크롤을 막는다 */
+  function movePull(y){
+    if(pullY == null) return false;
+    var dy = y - pullY;                                  // 아래로 끌면 양수
+    if(dy <= PULL_EPS) return false;                     // 위로 밀거나 아주 조금 흔든 건 그냥 둔다
     if(!pullH){ unpinSheet(); pullH = currentH(); beginDrag(pullH); }
     setLiveHeight(pullH - (dy - PULL_EPS));
-  }, { passive:true });
+    return true;
+  }
   function endPull(){
     if(pullH){ settleFromHeight(dragH); pullEndedAt = Date.now(); }
     pullY = null; pullH = 0;
   }
+  /* 손가락은 touch로, 마우스는 pointer로 받는다. 터치를 pointer로만 받으면 실기기에서 안 먹었다 —
+     최상단에서 아래로 끄는 순간 브라우저가 그 제스처를 '페이지 넘김(고무줄)'으로 가져가면서
+     pointercancel을 보내 버리기 때문이다. touchmove를 passive:false로 듣고 끌기로 판정된 뒤에만
+     preventDefault를 불러 그 가로채기를 막는다. */
+  document.addEventListener('pointerdown', function(e){
+    if(e.pointerType === 'touch') return;
+    startPull(e.clientY, e.target);
+  }, { passive:true });
+  document.addEventListener('pointermove', function(e){
+    if(e.pointerType === 'touch') return;
+    movePull(e.clientY);
+  }, { passive:true });
+  document.addEventListener('touchstart', function(e){
+    if(e.touches.length !== 1) return;                   // 두 손가락은 확대·축소다
+    startPull(e.touches[0].clientY, e.target);
+  }, { passive:true });
+  document.addEventListener('touchmove', function(e){
+    if(movePull(e.touches[0].clientY)) e.preventDefault();
+  }, { passive:false });
+  document.addEventListener('touchend', endPull);
+  document.addEventListener('touchcancel', endPull);
   document.addEventListener('pointerup', endPull);
   document.addEventListener('pointercancel', endPull);
   /* 끌어내린 직후의 합성 클릭이 목록 링크를 열어 버리면 안 된다 — 캡처 단계에서 막는다.
