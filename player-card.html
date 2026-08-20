@@ -488,7 +488,7 @@ button{font-family:var(--font)}
    서로 다른 모양이면 같은 제품으로 안 읽힌다. 목록만 얹는다. */
 .ovrLogCard{max-width:340px}
 .ovrLogLead{margin:0 0 14px !important;flex:none}
-.ovrLogList{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:6px;max-height:46vh;overflow-y:auto;margin:0 -4px;padding:0 4px;
+.ovrLogList{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:6px;max-height:46vh;overflow-y:auto;overscroll-behavior:contain;margin:0 -4px;padding:0 4px;
   scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.16) transparent}
 .ovrLogList::-webkit-scrollbar{width:4px}
 .ovrLogList::-webkit-scrollbar-track{background:transparent}
@@ -508,10 +508,11 @@ button{font-family:var(--font)}
    숫자만 있으면 왜 올랐는지 모르고, 늘 펼쳐 두면 목록을 훑을 수가 없다. */
 .ovrLogWhy{display:none;font-size:11px;line-height:1.5;color:var(--sh-on-dim)}
 .ovrLogList.detail .ovrLogWhy{display:block}
-.ovrLogMore{flex:none;width:100%;margin-top:12px;padding:11px 12px;border:none;border-radius:12px;cursor:pointer;
+/* 팝업 하단 버튼 — 우상단 X만으로는 한 손으로 닫기 어렵다. 엄지가 닿는 자리에 같은 일을 하는 버튼을 둔다. */
+.ovrFootBtn{flex:none;width:100%;margin-top:12px;padding:11px 12px;border:none;border-radius:12px;cursor:pointer;
   background:var(--sh-bg2);color:var(--sh-on);
   font-family:inherit;font-size:13px;font-weight:500;transition:background .12s}
-.ovrLogMore:hover{background:var(--sh-border)}
+.ovrFootBtn:hover{background:var(--sh-border)}
 /* 경계 그림자는 두지 않는다(PO) — 잘렸다는 건 얇은 스크롤바가 이미 말해 준다. */
 
 /* 하단 딤드 — 팀 컬러 대신 카드 등급 톤(--g-c, 등급별 다크 언더톤)을 투명하게. 위는 거의 안 보이다가 아래로 갈수록 짙어짐 */
@@ -532,19 +533,21 @@ button{font-family:var(--font)}
    흰 테두리는 뺐다(PO) — 어두운 카드 위에서 테두리가 스티커보다 먼저 눈에 들어왔다. 살짝 기울여 붙여야 '인쇄된 것'이 아니라 '붙인 것'으로 읽힌다.
    자리는 팀 씰의 우측 상단 — 씰 위에 겹쳐 붙은 모양이다. */
 /* 자리 — 팀 씰이 right:12px, bottom:34px, 65×65다. 그 우측 상단에 2px 겹치면
-   카드 기준 right:14px, bottom:69px가 된다. 씰 안에 두지 않은 건 깊이 때문이다:
-   카드 앞면은 잘라내기(overflow+mask) 탓에 3D가 평평해져 그 안에서는 띄울 수가 없다.
-   UPDATE 뱃지와 같은 자리(.cardWrap)에 두고 translateZ로 카드보다 조금 앞에 세운다. */
-.cfCaptain{position:absolute;right:14px;bottom:69px;z-index:5;pointer-events:none;
+   카드 기준 right:14px, bottom:69px가 된다.
+
+   씰 안이 아니라 .cardInner 바로 아래에 둔다. 두 가지를 한꺼번에 얻기 위해서다:
+   ① 카드와 같은 3D 공간에 있으니 카드가 돌면 스티커도 함께 돈다.
+   ② 앞면보다 6px 앞에 세울 수 있다 — 앞면 안에서는 잘라내기(overflow+mask) 탓에
+      3D가 평평해져 띄울 수가 없다.
+   뒷면에는 붙을 자리가 없으므로 뒤집히면 backface-visibility가 알아서 감춘다. */
+.cfCaptain{position:absolute;right:14px;bottom:69px;pointer-events:none;
   display:inline-flex;align-items:center;justify-content:center;
   width:28px;height:28px;flex:none;
   border-radius:50%;font-size:12px;font-weight:800;line-height:1;
   background:var(--g-b);color:var(--g-c);
   box-shadow:0 2px 5px rgba(0,0,0,.45);
-  transform:translateZ(14px) rotate(-20deg);
-  transition:opacity .18s}
-/* 뒷면에는 팀 씰이 없다 — 뒤집으면 붙을 자리가 없으므로 함께 사라진다 */
-.cardInner.flipped ~ .cfCaptain{opacity:0}
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  transform:translateZ(calc(var(--card-thick) / 2 + 6px)) rotate(-20deg)}
 .cfCaptain[hidden]{display:none}   /* display:inline-flex가 hidden 기본값을 덮는다 */
 .cf-name{font-size:26px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
 /* 영문 이름 — 전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다.
@@ -1007,9 +1010,9 @@ button{font-family:var(--font)}
           <div class="cardEdge" aria-hidden="true" style="transform:translateZ(3px)"></div>
           <div class="cardEdge" aria-hidden="true" style="transform:translateZ(5px)"></div>
           <div class="cardEdge" aria-hidden="true" style="transform:translateZ(7px)"></div>
+          <span class="cfCaptain" id="fCaptain" title="팀 주장" aria-label="팀 주장" hidden>C</span>
         </div>
         <span class="updateBadge" id="updateBadge" hidden>UPDATE</span>
-        <span class="cfCaptain" id="fCaptain" title="팀 주장" aria-label="팀 주장" hidden>C</span>
       </div>
     </div>
     </div>
@@ -1123,6 +1126,7 @@ button{font-family:var(--font)}
     <h4>OVR은 어떻게 정해지나요?</h4>
     <p>경기당 득점·리바운드·어시스트·스틸·블록 생산력과 슈팅 성공률(2점·3점·자유투)을 함께 반영해 계산돼요. 생산력과 효율이 높을수록 점수가 올라가고, 최대 99까지 올라가요. 선수 등급(브론즈·실버·골드)은 이렇게 산출된 OVR 구간에 따라 자동으로 매겨져요.</p>
     <p class="ovrInfoNote">* 정식 랭킹 로직이 확정되기 전까지 사용하는 임시 산출 방식이에요.</p>
+    <button type="button" class="ovrFootBtn" id="ovrInfoDone">닫기</button>
   </div>
 </div>
 
@@ -1132,7 +1136,7 @@ button{font-family:var(--font)}
     <h4>OVR 변동 내역</h4>
     <p class="ovrLogLead" id="ovrLogLead"></p>
     <div class="ovrLogList" id="ovrLogList"></div>
-    <button type="button" class="ovrLogMore" id="ovrLogMore"></button>
+    <button type="button" class="ovrFootBtn" id="ovrLogDone">닫기</button>
   </div>
 </div>
 
@@ -2228,7 +2232,6 @@ function openLightbox(entry){
       '</div>'+
     '</div>';
   lb.classList.add('open');
-  document.body.style.overflow = 'hidden';
   lightboxController = createCardController(document.getElementById('lbCardWrap'));
   document.getElementById('lbCloseBtn').addEventListener('click', closeLightbox);
   lb.addEventListener('click', function backdropClick(e){ if(e.target === lb) closeLightbox(); });
@@ -2237,7 +2240,6 @@ function closeLightbox(){
   var lb = document.getElementById('cardLightbox');
   if(!lb.classList.contains('open')) return;
   lb.classList.remove('open');
-  document.body.style.overflow = '';
   if(lightboxController){ lightboxController.destroy(); lightboxController = null; }
   setTimeout(function(){ lb.innerHTML = ''; }, 240);
 }
@@ -2266,8 +2268,8 @@ document.getElementById('btnSaveImg').addEventListener('click', function(){
    숫자를 누르면 그 숫자가 어떻게 여기까지 왔는지 보여 준다. 목록은 '언제 · 얼마 움직였나 · 그래서 몇'
    세 가지만 세우고, 왜 그렇게 움직였는지(그 경기 성적)는 '자세히 보기'에서 함께 펼친다 —
    늘 펼쳐 두면 목록을 훑을 수가 없고, 아예 없으면 숫자만 있고 이유가 없다. */
-/* 자세히 보기가 기본이다(PO) — 날짜와 숫자만 있으면 왜 움직였는지가 없어서, 대부분 한 번 더 눌러야 했다. */
-var ovrLogDetail = true;
+/* 늘 자세히 본다(PO) — 날짜와 숫자만 있으면 왜 움직였는지가 없어서 대부분 한 번 더 눌러야 했다.
+   최근 한 달·10건까지만 세우니 접어 둘 이유도 없어졌다. 하단 자리는 닫기 버튼이 쓴다. */
 /* 최근 한 달, 최대 10건까지만 세운다. 다 쌓아 두면 팝업이 한없이 길어지고,
    한 달을 넘긴 변동은 지금의 등급을 설명하지 못한다.
    기준일은 '가장 최근 변동일'이다 — 프로토타입 데이터가 07월에 멈춰 있어 실제 오늘로 재면
@@ -2289,7 +2291,7 @@ function renderOvrLog(){
   var log = recentOvrLog(), host = document.getElementById('ovrLogList');
   var byDate = {};
   (PLAYER.recentGames || []).forEach(function(g){ byDate[g.date] = g; });
-  host.classList.toggle('detail', ovrLogDetail);
+  host.classList.add('detail');
   host.innerHTML = log.map(function(r){
     var g = byDate[r.date];
     var why = g
@@ -2303,7 +2305,6 @@ function renderOvrLog(){
   lead.textContent = (log.length && first && last)
     ? first.date + ' 이후 ' + log.length + '경기 동안 ' + first.ovr + ' → ' + last.ovr
     : '아직 변동 내역이 없어요';
-  document.getElementById('ovrLogMore').textContent = ovrLogDetail ? '간단히 보기' : '자세히 보기';
 }
 function ovrLogTopHtml(r){
   var up = r.delta > 0;
@@ -2316,14 +2317,31 @@ function openOvrLog(){
   renderOvrLog();
   document.getElementById('ovrLogModal').classList.add('open');
 }
+/* ---- 팝업이 열려 있는 동안 뒤는 움직이지 않는다 ----
+   팝업 위에서 스크롤하면 뒤의 시트가 함께 올라왔다. 팝업은 그 자리에 서 있는 창이지
+   페이지의 일부가 아니다 — 열려 있는 동안은 팝업 안 목록만 스크롤한다.
+
+   두 겹으로 막는다. body의 overflow는 데스크톱 휠과 대부분의 경우를 잡고,
+   touchmove는 아이폰을 잡는다 — iOS는 body를 잠가도 손가락은 그대로 페이지를 끈다. */
+(function(){
+  function anyOpen(){ return document.querySelector('.ovrInfoModal.open, .cardLightbox.open'); }
+  new MutationObserver(function(){
+    document.body.style.overflow = anyOpen() ? 'hidden' : '';
+  }).observe(document.body, { subtree:true, attributes:true, attributeFilter:['class'] });
+  document.addEventListener('touchmove', function(e){
+    if(!anyOpen()) return;
+    if(e.target.closest('.ovrLogList')) return;   // 팝업 안 목록은 제 몫대로 스크롤한다
+    e.preventDefault();
+  }, { passive:false });
+})();
 document.getElementById('ovrLogClose').addEventListener('click', function(){
   document.getElementById('ovrLogModal').classList.remove('open');
 });
 document.getElementById('ovrLogModal').addEventListener('click', function(e){
   if(e.target === this) this.classList.remove('open');
 });
-document.getElementById('ovrLogMore').addEventListener('click', function(){
-  ovrLogDetail = !ovrLogDetail; renderOvrLog();
+document.getElementById('ovrLogDone').addEventListener('click', function(){
+  document.getElementById('ovrLogModal').classList.remove('open');
 });
 /* 숫자 자체를 누르는 자리로 만든다 — 카드에서는 탭이 뒤집기라 전파를 막아야 한다. */
 [document.getElementById('fOvr'), document.getElementById('sOvr')].forEach(function(el){
@@ -2345,8 +2363,9 @@ document.getElementById('ovrLogMore').addEventListener('click', function(){
     document.getElementById('ovrInfoModal').classList.add('open');
   });
 });
-document.getElementById('ovrInfoClose').addEventListener('click', function(){
-  document.getElementById('ovrInfoModal').classList.remove('open');
+[document.getElementById('ovrInfoClose'), document.getElementById('ovrInfoDone')].forEach(function(b){
+  if(!b) return;
+  b.addEventListener('click', function(){ document.getElementById('ovrInfoModal').classList.remove('open'); });
 });
 document.getElementById('ovrInfoModal').addEventListener('click', function(e){
   if(e.target === this) this.classList.remove('open');
