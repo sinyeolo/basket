@@ -326,9 +326,8 @@ button{font-family:var(--font)}
   -webkit-mask:linear-gradient(#000,#000) content-box,linear-gradient(#000,#000);
           mask:linear-gradient(#000,#000) content-box,linear-gradient(#000,#000);
   -webkit-mask-composite:xor;mask-composite:exclude;
-  /* 빛은 흰색 하나로 두고 오버레이로 얹는다(PO) — 등급색 빛을 등급색 테두리 위에 올리면
-     빛이 설 자리가 없다. 흰빛을 섞어 올리면 지나가는 자리마다 테두리가 밝아진다. */
-  mix-blend-mode:overlay;
+  /* 빛은 흰색 하나로 그대로 올린다(PO) — 등급색 빛을 등급색 테두리에 올리면 빛이 설 자리가 없고,
+     오버레이로 섞으면 밝아지기만 할 뿐 '지나간다'로 안 읽힌다. 흰빛을 덮어 그려야 지나가는 게 보인다. */
   opacity:calc(var(--shine-op,.4) * 1.6)}
 /* 빛덩이 하나가 곧 광원 하나다. blur를 쓰지 않는다 — 그라디언트가 이미 부드럽게 흩어지므로
    blur를 더하면 값만 비싸진다(이 카드에서 방금 걷어낸 비용이 바로 그것이다). */
@@ -577,9 +576,10 @@ button{font-family:var(--font)}
 /* 레벨·경험치는 카드 바깥 아래에 노출 — 운영단 선수 상세(index.html .pdLevelRow)와 동일 위치 */
 /* 레벨은 시트 안에 있다 — 카드 밖 한 줄로 떠 있을 땐 카드에도 시트에도 속하지 않아 보였다.
    요약 지표(레벨·참가 대회·경기 수·배지) 바로 위에 두면 같은 '이 선수의 현황' 묶음으로 읽힌다. */
-.levelRow{width:100%;max-width:520px;margin:14px auto 0;display:flex;align-items:center;gap:10px}
-.levelRow .lv{font-size:13px;font-weight:800;color:var(--sh-on);white-space:nowrap}
-.expBar{flex:1;height:5px;border-radius:100px;background:var(--sh-bg2);overflow:hidden}
+/* 레벨바는 요약 블록 안 맨 아래에 눕는다 — 레벨 숫자는 이미 요약의 첫 칸에 있으니
+   여기서는 막대만 둔다. 같은 말을 두 번 하지 않는다. */
+.expBar{grid-column:1 / -1;margin:16px 6px 0;height:5px;border-radius:100px;
+  background:rgba(255,255,255,.16);overflow:hidden}
 /* 카드 앞면 최하단의 작은 레벨 — 카드만 보고도 지금 어디쯤인지 알 수 있어야 한다.
    시트의 것보다 한 단 작고 옅다: 카드의 주인공은 이름과 OVR이지 진행도가 아니다. */
 /* 팀 씰이 위로 올라갔으므로 오른쪽 여백을 비워 두지 않는다 — 막대가 카드 폭을 다 쓴다 */
@@ -587,12 +587,14 @@ button{font-family:var(--font)}
 .cfLv{font-size:11px;font-weight:800;color:var(--g-text);opacity:.8;white-space:nowrap}
 .cfExp{flex:1;height:3px;border-radius:100px;background:rgba(255,255,255,.16);overflow:hidden}
 .cfExp i{display:block;width:100%;height:100%;border-radius:100px;
-  background:linear-gradient(90deg,var(--g-a),var(--g-b));
+  background:var(--brand);
   transform:translateX(-100%);transition:transform 1s cubic-bezier(.2,.8,.2,1)}
 /* 채움은 width가 아니라 translateX로 민다 — width를 늘리면 매 프레임 레이아웃이 다시 잡히고,
    그라디언트도 함께 늘어나 색 끝점이 진행률에 따라 달라진다. 폭을 100%로 고정해 두고 왼쪽으로
    밀어 두었다가 제자리로 오게 하면, 그라디언트는 그대로인 채 합성만으로 움직인다. */
-.expBar i{display:block;width:100%;height:100%;background:linear-gradient(90deg,var(--g-a),var(--g-b));border-radius:100px;
+/* 채움은 등급과 무관하게 브랜드 색 하나로 둔다(PO) — 등급색으로 두면 같은 '진행도'가
+   카드마다 다른 색이 되어, 색이 진행도가 아니라 등급을 말하게 된다. */
+.expBar i{display:block;width:100%;height:100%;background:var(--brand);border-radius:100px;
   transform:translateX(-100%);transition:transform 1s cubic-bezier(.2,.8,.2,1)}
 
 /* 뒷면: 핵심 기록만 — 작은 글씨/스크롤 없음 */
@@ -722,7 +724,7 @@ button{font-family:var(--font)}
 /* 요약 지표도 같은 흰 카드로. 검은 판이던 시절엔 시트 안에 처리가 셋(등급색·검정·흰색)이라
    무엇이 강조인지 흐려졌다 — 레퍼런스처럼 '강조 블록 하나 + 나머지는 같은 카드'로 맞춘다. */
 .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:0;max-width:520px;margin:22px auto 0;
-  background:#16171b;border:1px solid #16171b;border-radius:16px;padding:16px 6px}
+  background:#16171b;border:1px solid #16171b;border-radius:16px;padding:22px 6px}
 .summary .it{text-align:center;padding:0 4px}
 .summary .it b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:#ffffff}
 .summary .it span{font-size:11px;color:rgba(255,255,255,.66);margin-top:3px;display:block}
@@ -757,7 +759,7 @@ button{font-family:var(--font)}
 /* 카드 안에 또 박스를 넣지 않는다 — 레퍼런스들이 공통으로 지키는 것이다.
    회색 박스 세 개를 걷어내고 얇은 세로선으로만 칸을 나눈다. 겹이 하나 줄면 숫자가 앞으로 나온다. */
 .avgRow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.avgIt{text-align:center;padding:14px 4px;background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:14px}
+.avgIt{text-align:center;padding:20px 4px;background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:14px}
 .avgIt + .avgIt::before{content:"";position:absolute;left:0;top:12%;bottom:12%;width:1px;background:var(--sh-border)}
 /* font-variant-numeric:tabular-nums를 뺐다 — 자간을 건드린 게 아니라 이 속성이 '1'처럼 좁은 숫자에도
    같은 칸을 줘서 '21.4'가 벌어져 보였다. 표처럼 자릿수를 맞출 필요가 없는 자리라 비례 숫자가 맞다. */
@@ -767,7 +769,7 @@ button{font-family:var(--font)}
 .avgIt > span{display:block;margin-top:4px;font-size:11px;color:var(--sh-on-dim)}   /* 자식만 — 수치 옆 화살표(span)까지 블록으로 떨어뜨리면 안 된다 */
 /* 제목은 내용을 안내할 뿐 앞서지 않는다 — 레퍼런스들은 하나같이 작고 조용한 라벨을 쓴다.
    굵기를 낮추고 자간을 벌려 '라벨'로 읽히게 한다(굵은 13px은 그 자체로 내용처럼 보였다). */
-.section h3{display:flex;align-items:baseline;gap:8px;font-size:13px;font-weight:800;color:var(--sh-on-dim);margin:0 0 10px;letter-spacing:.02em}
+.section h3{display:flex;align-items:baseline;gap:8px;font-size:13px;font-weight:700;color:var(--sh-on-dim);margin:0 0 10px;letter-spacing:.02em}
 /* 갱신 날짜 — 제목 줄 오른쪽 끝에. 평균이 언제 기준인지는 알아야 하지만, 평균 자체보다
    중요할 일은 없다. 그래서 가장 약한 무게로 끝에 붙인다. */
 .upAt{margin-left:auto;font-size:11px;font-weight:500;letter-spacing:0;color:var(--sh-on-dim);opacity:.7}
@@ -1060,10 +1062,6 @@ button{font-family:var(--font)}
         <div class="it"><b id="sTour">6</b><span>참가 대회</span></div>
         <div class="it"><b id="sGames">42</b><span>경기 수</span></div>
         <div class="it"><b id="sBadge">3</b><span>대표 배지</span></div>
-      </div>
-
-      <div class="levelRow" id="levelRow">
-        <span class="lv" id="fLevel">Lv.15</span>
         <div class="expBar"><i id="fExpBar"></i></div>
       </div>
 
@@ -1428,7 +1426,6 @@ function applyGrade(key){
   var ovrVal = (key === 'starter') ? 0 : (PLAYER.hasRecord ? ovrFor(key) : null);
   ovrEl.dataset.target = ovrVal != null ? ovrVal : '';
   ovrEl.textContent = ovrVal != null ? pad2(ovrVal) : '?';
-  document.getElementById('fLevel').textContent = 'Lv.'+g.level;
   document.getElementById('fLevelMini').textContent = 'Lv.'+g.level;
   var tf = 'translateX(-'+(100 - g.exp)+'%)';
   [document.getElementById('fExpBar'), document.getElementById('fExpBarMini')].forEach(function(exp){
