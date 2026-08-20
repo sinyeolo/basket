@@ -330,29 +330,35 @@ button{font-family:var(--font)}
   /* 빛은 흰색 하나로 그대로 올린다(PO) — 등급색 빛을 등급색 테두리에 올리면 빛이 설 자리가 없고,
      오버레이로 섞으면 밝아지기만 할 뿐 '지나간다'로 안 읽힌다. 흰빛을 덮어 그려야 지나가는 게 보인다. */
   opacity:calc(var(--shine-op,.4) * 1.6)}
-/* 빛덩이 하나가 곧 광원 하나다. blur를 쓰지 않는다 — 그라디언트가 이미 부드럽게 흩어지므로
-   blur를 더하면 값만 비싸진다(이 카드에서 방금 걷어낸 비용이 바로 그것이다). */
+/* 빛덩이 둘이 카드 둘레를 돌면서 서로 정반대 지점을 지킨다(PO, getlayers.ai 참고).
+   레퍼런스도 정확히 두 개다 — 하나면 '한 점이 지나간다'로 읽히고, 셋이 넘으면 테두리가
+   늘 밝아 움직임이 안 보인다. 둘이 마주보고 돌면 어느 순간에도 밝은 곳과 어두운 곳이
+   함께 있어 '빛이 돈다'가 된다.
+   blur는 쓰지 않는다 — 그라디언트가 이미 부드럽게 흩어지므로 값만 비싸진다.
+   번짐 정도는 레퍼런스의 정지점을 그대로 옮겼다(5% 불투명 → 16% .7 → 34% .22 → 58% 소멸). */
 .cardEdgeGlow i{position:absolute;display:block;border-radius:50%;
-  background:radial-gradient(circle,var(--eg) 0%,var(--eg) 6%,
-    color-mix(in srgb,var(--eg) 55%,transparent) 20%,
-    color-mix(in srgb,var(--eg) 16%,transparent) 38%, transparent 60%)}
-/* 셋이 서로 다른 주기로 돌아 어느 순간에도 테두리 여러 곳이 살아 있다.
-   하나만 돌면 '한 점이 지나간다'로, 여럿이면 '빛이 머문다'로 읽힌다. */
-.cardEdgeGlow i:nth-child(1){--eg:#ffffff;width:150%;aspect-ratio:1;left:-25%;top:-60%;
-  animation:edgeOrbitA 7s linear infinite}
-.cardEdgeGlow i:nth-child(2){--eg:#ffffff;width:88%;aspect-ratio:1;left:6%;top:-18%;
-  animation:edgeOrbitB 11s linear infinite}
-.cardEdgeGlow i:nth-child(3){--eg:#ffffff;width:120%;aspect-ratio:1;left:-10%;top:8%;
-  animation:edgeOrbitC 9s linear infinite}
-@keyframes edgeOrbitA{
-  0%{transform:translate(0,0)} 25%{transform:translate(28%,78%)}
-  50%{transform:translate(0,150%)} 75%{transform:translate(-28%,78%)} 100%{transform:translate(0,0)} }
-@keyframes edgeOrbitB{
-  0%{transform:translate(0,125%)} 25%{transform:translate(-34%,62%)}
-  50%{transform:translate(0,0)} 75%{transform:translate(34%,62%)} 100%{transform:translate(0,125%)} }
-@keyframes edgeOrbitC{
-  0%{transform:translate(-20%,58%)} 33%{transform:translate(40%,-18%)}
-  66%{transform:translate(20%,112%)} 100%{transform:translate(-20%,58%)} }
+  --eg:#ffffff;
+  /* 카드 폭의 115%. 레퍼런스는 195%인데 그쪽 카드가 훨씬 홀쭉해서(240×754) 둘레 대비
+     밝은 구간의 비율을 맞추면 우리 카드(270×378)에서는 이 값이 된다. */
+  width:115%;aspect-ratio:1;
+  /* 중심을 카드 좌상단 모서리에 둔다 — margin의 %는 세로도 부모의 '폭' 기준이라 둘 다 -57.5%다 */
+  left:0;top:0;margin-left:-57.5%;margin-top:-57.5%;
+  background:radial-gradient(circle,var(--eg) 0%,var(--eg) 5%,
+    color-mix(in srgb,var(--eg) 70%,transparent) 16%,
+    color-mix(in srgb,var(--eg) 22%,transparent) 34%, transparent 58%);
+  animation:edgeOrbit 7s linear infinite}
+/* 반 바퀴 앞선 자리에서 출발한다 — 둘이 항상 둘레의 정반대에 선다 */
+.cardEdgeGlow i:nth-child(2){animation-delay:-3.5s}
+/* 네 변을 따라 도는 궤도. 마디 시각은 변의 길이 비율(270:378:270:378)로 나눠 두었다 —
+   똑같이 4등분하면 짧은 변에서 빛이 느려지고 긴 변에서 빨라진다.
+   이동값의 %는 빛덩이 자신의 크기 기준이라, 카드 폭·높이를 그 크기로 나눈 값이다. */
+@keyframes edgeOrbit{
+  0%     {transform:translate(0,0)}                 /* 좌상 */
+  20.83% {transform:translate(86.96%,0)}            /* 우상 */
+  50%    {transform:translate(86.96%,121.74%)}      /* 우하 */
+  70.83% {transform:translate(0,121.74%)}           /* 좌하 */
+  100%   {transform:translate(0,0)}
+}
 @media (prefers-reduced-motion:reduce){ .cardEdgeGlow i{animation:none} }
 .cardFace .inner{position:relative;width:100%;height:100%;border-radius:calc(var(--r-card) - 3px);overflow:hidden;
   background:linear-gradient(175deg,#191b22,#0d0e12 70%)}
@@ -972,7 +978,7 @@ button{font-family:var(--font)}
       <div class="cardWrap" id="cardWrap">
         <div class="cardInner" id="cardInner">
           <div class="cardFace front">
-            <div class="cardEdgeGlow" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="cardEdgeGlow" aria-hidden="true"><i></i><i></i></div>
             <div class="inner" id="frontInner">
               <div class="cardPhotoBg" id="fPhotoBg"></div>
               <div class="pdAura" aria-hidden="true"></div>
@@ -1014,7 +1020,7 @@ button{font-family:var(--font)}
             </div>
           </div>
           <div class="cardFace back">
-            <div class="cardEdgeGlow" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="cardEdgeGlow" aria-hidden="true"><i></i><i></i></div>
             <div class="inner">
               <div class="backLogoPat" aria-hidden="true"></div>
               <div class="holoFoil" aria-hidden="true"></div>
