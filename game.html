@@ -112,7 +112,9 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
    가로값을 바꾸면 아래 .pbp / .bs-scroll의 음수 마진도 같이 바꿔야 한다 — 그 둘은
    카드 벽까지 꽉 채우려고 이 값을 되돌리는 자리다. */
 .card{background:var(--surface);border-radius:var(--r-card);padding:16px}
-.card h3{font-size:13px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+/* 제목과 내용 사이는 카드 여백과 같은 16px이다 — 12px일 때는 팀 기록 비교처럼 첫 줄이
+   글자로 시작하는 섹션에서 제목에 붙어 보였다(표나 카드가 오는 섹션은 제 여백이 있어 티가 안 났다). */
+.card h3{font-size:13px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:7px}
 .card h3 .sub{margin-left:auto;display:inline-flex;align-items:center;gap:5px;
   font-size:11px;font-weight:600;color:var(--on-surface-variant)}
 .card h3 .sub .lg{width:8px;height:8px;border-radius:50%;display:inline-block}
