@@ -215,7 +215,9 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .mvp-line b{font-family:var(--font-display);font-size:20px;font-weight:800;line-height:1}
 .mvp-line span{font-size:11px;color:var(--on-surface-variant)}
 /* ---- 요약: 결과 ---- */
-.resCard{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;padding:18px 14px 16px}
+/* 승리팀 판은 요약의 첫 얼굴이다 — 상하 여백만 카드 기준의 두 배(32px)로 둬서
+   아래 섹션들과 같은 크기의 판으로 읽히지 않게 한다. 좌우는 다른 카드와 같은 16px. */
+.resCard{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;padding:32px 16px}
 .res-crown{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px}
 .lw{display:flex;align-items:center;color:#e0a92e;flex:none}
 .lw.r{transform:scaleX(-1)}
