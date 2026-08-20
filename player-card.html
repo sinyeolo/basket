@@ -586,12 +586,15 @@ button{font-family:var(--font)}
 /* 레벨바는 요약 블록 안 맨 아래에 눕는다 — 레벨 숫자는 이미 요약의 첫 칸에 있으니
    여기서는 막대와 경험치 숫자만 둔다. 같은 말을 두 번 하지 않는다.
    폭은 블록의 80%다 — 끝까지 늘리면 네 칸을 가르는 줄처럼 보여서, 안쪽에 놓인 한 덩어리로 읽히게 좁혔다. */
-.expWrap{grid-column:1 / -1;width:80%;margin:16px auto 0;
-  display:flex;flex-direction:column;align-items:center;gap:7px}
-.expBar{width:100%;height:9px;border-radius:100px;
+.expWrap{grid-column:1 / -1;width:80%;margin:16px auto 0}
+/* 경험치 숫자는 막대 안에 눕는다(PO) — 막대 밖에 두면 한 줄이 더 생기고, 숫자와 막대가
+   같은 것을 말하는데도 따로 읽힌다. 글자가 들어갈 만큼 막대를 키웠다(9 → 24px). */
+.expBar{position:relative;width:100%;height:24px;border-radius:100px;
   background:rgba(255,255,255,.16);overflow:hidden}
-.expText{font-size:11px;font-weight:500;color:rgba(255,255,255,.6);
-  letter-spacing:.02em;font-variant-numeric:tabular-nums}
+/* 글자는 채워진 쪽과 빈 쪽을 함께 지나간다 — 어느 쪽에서도 읽히도록 흰 글자에 옅은 그림자를 깐다 */
+.expText{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#ffffff;letter-spacing:.02em;
+  font-variant-numeric:tabular-nums;text-shadow:0 1px 2px rgba(0,0,0,.45)}
 /* 카드 앞면 최하단의 작은 레벨 — 카드만 보고도 지금 어디쯤인지 알 수 있어야 한다.
    시트의 것보다 한 단 작고 옅다: 카드의 주인공은 이름과 OVR이지 진행도가 아니다. */
 /* 팀 씰이 위로 올라갔으므로 오른쪽 여백을 비워 두지 않는다 — 막대가 카드 폭을 다 쓴다 */
@@ -599,7 +602,7 @@ button{font-family:var(--font)}
 .cfLv{font-size:11px;font-weight:800;color:var(--g-text);opacity:.8;white-space:nowrap}
 /* 카드 안에서는 흰색 하나로 정리한다(PO) — 채움은 흰빛, 바탕은 같은 흰색의 투명도.
    카드는 이미 등급색이 가득한 면이라, 막대까지 색을 가지면 하나가 더 늘어난다. */
-.cfExp{flex:1;height:3px;border-radius:100px;background:rgba(255,255,255,.18);overflow:hidden}
+.cfExp{flex:1;height:7px;border-radius:100px;background:rgba(255,255,255,.18);overflow:hidden}
 .cfExp i{display:block;width:100%;height:100%;border-radius:100px;
   background:rgba(255,255,255,.92);
   transform:translateX(-100%);transition:transform 1s cubic-bezier(.2,.8,.2,1)}
@@ -1078,8 +1081,7 @@ button{font-family:var(--font)}
         <div class="it"><b id="sGames">42</b><span>경기 수</span></div>
         <div class="it"><b id="sBadge">3</b><span>대표 배지</span></div>
         <div class="expWrap">
-          <span class="expText" id="fExpText"></span>
-          <div class="expBar"><i id="fExpBar"></i></div>
+          <div class="expBar"><i id="fExpBar"></i><span class="expText" id="fExpText"></span></div>
         </div>
       </div>
 
