@@ -194,9 +194,11 @@ button{font-family:var(--font)}
 .sheet.sheet-open .sheetHead::before{
   content:"";position:absolute;left:0;right:0;top:0;bottom:-14px;z-index:-1;pointer-events:none;
   backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);
+  /* 헤더 맨 위부터 아래까지 한 번에 옅어진다(PO). 예전엔 위쪽 절반이 불투명해서 그라데이션이
+     제목 아래에서야 시작하는 것처럼 보였다. 가장 진한 곳도 50%까지만 — 읽히는 건 블러가 맡는다. */
   background:linear-gradient(to bottom,
-    var(--sh-bg) 0%,
-    color-mix(in srgb,var(--sh-bg) 82%, transparent) 58%,
+    color-mix(in srgb,var(--sh-bg) 50%, transparent) 0%,
+    color-mix(in srgb,var(--sh-bg) 28%, transparent) 55%,
     transparent 100%);
   -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 46%,rgba(0,0,0,.55) 74%,transparent 100%);
           mask-image:linear-gradient(to bottom,#000 0%,#000 46%,rgba(0,0,0,.55) 74%,transparent 100%)}
@@ -209,8 +211,9 @@ button{font-family:var(--font)}
 /* 펼친 상태(=스티키가 의미 있어지는 상태)에서만 노출되는 닫기 버튼 — 누르면 접힌 상태(첫 화면과 같은 모습)로 되돌아감 */
 /* display:none ↔ flex는 '딱' 나타난다. 자리는 늘 잡아 두고 투명도로만 녹인다 —
    나타나는 순간이 보이지 않아야 시트가 올라오는 하나의 동작으로 읽힌다. */
-.sheetCloseBtn{display:flex;flex:none;width:28px;height:28px;border-radius:50%;border:1px solid rgba(0,0,0,.1);
-  background:rgba(0,0,0,.06);color:var(--sh-on-dim);align-items:center;justify-content:center;font-size:16px;line-height:1;
+/* 닫기 버튼은 선 없이 면으로만(PO). 선을 뺀 만큼 면을 조금 올려 형태를 지킨다. */
+.sheetCloseBtn{display:flex;flex:none;width:28px;height:28px;border-radius:50%;border:none;
+  background:rgba(0,0,0,.09);color:var(--sh-on-dim);align-items:center;justify-content:center;font-size:16px;line-height:1;
   cursor:pointer;margin-top:1px;
   opacity:0;visibility:hidden;transform:scale(.86);
   transition:opacity .28s ease, transform .28s cubic-bezier(.22,.61,.36,1), visibility 0s linear .28s}
@@ -681,7 +684,8 @@ button{font-family:var(--font)}
    카드를 뒤집은 동안에만 든다. */
 .backStat,
 .cardFace.back .recRow{backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.backStat{text-align:center;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:10px 4px}
+/* 선 없이 면으로만(PO) — 어두운 면 위에서도 규칙은 같다. 선을 뺀 만큼 면을 조금 올려 형태를 지킨다. */
+.backStat{text-align:center;background:rgba(255,255,255,.13);border-radius:12px;padding:10px 4px}
 .backStat b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800}
 .backStat span{font-size:11px;color:var(--on-dark-dim)}
 .backNote{margin-top:auto;font-size:11px;color:var(--on-dark-dim);text-align:center}
@@ -815,7 +819,7 @@ button{font-family:var(--font)}
    중요할 일은 없다. 그래서 가장 약한 무게로 끝에 붙인다. */
 .upAt{margin-left:auto;font-size:11px;font-weight:500;letter-spacing:0;color:var(--sh-on-dim);opacity:.7}
 /* .recRow는 카드 뒷면(다크)에도 쓰이는 공용 클래스라 기본값은 그대로 두고, 시트 안에서만 화이트로 덮어씀 */
-.recRow{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);
+.recRow{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.10);border:none;
   border-radius:12px;padding:12px 14px;margin-bottom:10px;font-size:13px;
   color:inherit;text-decoration:none;cursor:pointer;transition:background .12s}
 .recRow:last-child{margin-bottom:0}
@@ -856,7 +860,7 @@ button{font-family:var(--font)}
 .recLine i{font-style:normal;opacity:.45;margin:0 1px}
 .cardFace.back .wl{width:18px;height:15px;border-radius:4px}
 .cardFace.back .inner{gap:10px}
-.sheet .recRow{background:var(--sh-bg2);border-color:transparent;color:var(--sh-on)}
+.sheet .recRow{background:var(--sh-bg2);color:var(--sh-on)}
 .recRow .newDot{margin-left:0}
 .sheet .recRow .op{color:var(--sh-on-dim)}
 /* 승패 뱃지 — 좁은 카드 뒷면에 맞춰 W/L 한 글자로. 운영 화면이 Win/Lose를 쓰므로 같은 말의 축약이다.

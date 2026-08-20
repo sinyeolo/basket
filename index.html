@@ -1469,10 +1469,11 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdRecLegend{margin-left:auto;font-size:11px;font-weight:600;letter-spacing:0;color:var(--on-dark-dim,#9a9ba3);white-space:nowrap}
 .pdBackGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 /* 아래 최근 경기 행(.pdBackGameRow)과 같은 배경·라인·라운드 — 뒷면의 두 블록이 한 벌로 읽히게 */
-.pdBackStat{backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);text-align:center;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:10px 4px}
+/* 선 없이 면으로만(PO, 선수 카드와 같은 규칙) */
+.pdBackStat{backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);text-align:center;background:rgba(255,255,255,.10);border-radius:12px;padding:10px 4px}
 .pdBackStat b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800}
 .pdBackStat span{font-size:11px;color:rgba(255,255,255,.5)}
-.pdBackGameRow{backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);
+.pdBackGameRow{backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.10);border:none;
   border-radius:12px;padding:11px 14px;font-size:13px;color:rgba(255,255,255,.65)}
 /* 최근 경기 행 묶음 — 예전엔 행에 margin-top:8px을 줬는데, 부모(.in)가 flex gap:14px이라
    14+8=22px로 벌어졌다. 행들을 자체 컨테이너로 묶어 그 안에서만 6px로 붙인다
