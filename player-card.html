@@ -591,12 +591,11 @@ button{font-family:var(--font)}
   background:rgba(255,255,255,.16);overflow:hidden}
 /* 경험치 숫자는 막대 안에 눕는다(PO) — 막대 밖에 한 줄을 더 두면 숫자와 막대가 같은 것을
    말하는데도 따로 읽힌다. 다만 9px 막대에 11px 글자는 들어갈 수 없어 막대 위에 얹는다.
-   바탕을 블록 색으로 덮으면 하필 채움이 끝나는 지점(62%)이 숫자 뒤에 숨어 진행도가 안 보인다.
-   그래서 덮지 않고 '어둡게'만 한다 — 채운 쪽은 짙은 주황, 빈 쪽은 짙은 회색으로 비쳐
-   경계가 글자 아래로 그대로 지나가고, 흰 글자는 양쪽 모두에서 읽힌다. */
+   바탕을 깔면 하필 채움이 끝나는 지점(62%)이 숫자 뒤에 숨어 진행도가 안 보인다.
+   그래서 바탕 없이 글자만 얹고, 글자에 얇은 그림자를 둘러 채운 쪽·빈 쪽 어디에서도 읽히게 한다. */
 .expText{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  padding:1px 8px;border-radius:100px;background:rgba(0,0,0,.45);
   font-size:11px;font-weight:700;color:#ffffff;letter-spacing:.02em;
+  text-shadow:0 1px 2px rgba(0,0,0,.55);
   font-variant-numeric:tabular-nums;white-space:nowrap}
 /* 카드 앞면 최하단의 작은 레벨 — 카드만 보고도 지금 어디쯤인지 알 수 있어야 한다.
    시트의 것보다 한 단 작고 옅다: 카드의 주인공은 이름과 OVR이지 진행도가 아니다. */
