@@ -326,6 +326,9 @@ button{font-family:var(--font)}
   -webkit-mask:linear-gradient(#000,#000) content-box,linear-gradient(#000,#000);
           mask:linear-gradient(#000,#000) content-box,linear-gradient(#000,#000);
   -webkit-mask-composite:xor;mask-composite:exclude;
+  /* 빛은 흰색 하나로 두고 오버레이로 얹는다(PO) — 등급색 빛을 등급색 테두리 위에 올리면
+     빛이 설 자리가 없다. 흰빛을 섞어 올리면 지나가는 자리마다 테두리가 밝아진다. */
+  mix-blend-mode:overlay;
   opacity:calc(var(--shine-op,.4) * 1.6)}
 /* 빛덩이 하나가 곧 광원 하나다. blur를 쓰지 않는다 — 그라디언트가 이미 부드럽게 흩어지므로
    blur를 더하면 값만 비싸진다(이 카드에서 방금 걷어낸 비용이 바로 그것이다). */
@@ -335,11 +338,11 @@ button{font-family:var(--font)}
     color-mix(in srgb,var(--eg) 16%,transparent) 38%, transparent 60%)}
 /* 셋이 서로 다른 주기로 돌아 어느 순간에도 테두리 여러 곳이 살아 있다.
    하나만 돌면 '한 점이 지나간다'로, 여럿이면 '빛이 머문다'로 읽힌다. */
-.cardEdgeGlow i:nth-child(1){--eg:var(--g-b);width:150%;aspect-ratio:1;left:-25%;top:-60%;
+.cardEdgeGlow i:nth-child(1){--eg:#ffffff;width:150%;aspect-ratio:1;left:-25%;top:-60%;
   animation:edgeOrbitA 7s linear infinite}
 .cardEdgeGlow i:nth-child(2){--eg:#ffffff;width:88%;aspect-ratio:1;left:6%;top:-18%;
   animation:edgeOrbitB 11s linear infinite}
-.cardEdgeGlow i:nth-child(3){--eg:var(--g-a);width:120%;aspect-ratio:1;left:-10%;top:8%;
+.cardEdgeGlow i:nth-child(3){--eg:#ffffff;width:120%;aspect-ratio:1;left:-10%;top:8%;
   animation:edgeOrbitC 9s linear infinite}
 @keyframes edgeOrbitA{
   0%{transform:translate(0,0)} 25%{transform:translate(28%,78%)}
