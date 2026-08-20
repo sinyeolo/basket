@@ -252,12 +252,27 @@ button{font-family:var(--font)}
 /* transform:translateZ — 3D 컨텍스트(preserve-3d) 안에서는 z-index가 아니라 Z축 위치가
    앞뒤를 정한다. 앞면이 카드 두께의 절반(8px)만큼 앞에 있으므로 그보다 더 앞으로 세워야
    카드 위에 얹힌다. z-index만 줬을 땐 카드 뒤로 들어가 윗머리만 보였다. */
+/* 카드가 다 올라온 뒤에 카드 위쪽 테두리 뒤에서 밀려 나온다 — 카드와 함께 떠오르면
+   무엇이 새로 생겼다는 표시인지 묻히고, 먼저 나오면 카드를 가린다.
+   밀려 나오는 동안에는 카드 윗변 아래가 잘려 있다(clip-path) — 그래야 '뒤에서' 나온 걸로 읽힌다.
+   clip-path는 3D를 평평하게 만들어 translateZ의 앞뒤 순서를 무시하게 한다 — 그래서 마크업에서도
+   카드 뒤(문서 순서상 나중)에 둔다. 그러지 않으면 뱃지가 카드 아래로 사라진다(실제로 그랬다). */
 .updateBadge{position:absolute;top:-10px;left:16px;z-index:5;pointer-events:none;
-  transform:translateZ(22px);
+  transform:translateZ(22px) translateY(22px);clip-path:inset(0 0 100% 0);
   /* 그림자 없이 — 채운 주황만으로 충분히 앞에 선다. 그림자를 얹으면 카드에 붙은 표시가 아니라
      떠 있는 다른 물건처럼 보인다. */
   padding:6px 10px;border-radius:100px;background:var(--brand);color:var(--on-brand);
   font-size:11px;font-weight:800;letter-spacing:.06em;line-height:1}
+.updateBadge.is-in{animation:badgeRise .52s cubic-bezier(.16,.8,.24,1) both}
+@keyframes badgeRise{
+  0%  {transform:translateZ(22px) translateY(22px);clip-path:inset(0 0 100% 0)}
+  62% {transform:translateZ(22px) translateY(0);   clip-path:inset(0 0 10px 0)}
+  100%{transform:translateZ(22px) translateY(0);   clip-path:inset(0 0 0 0)}
+}
+@media (prefers-reduced-motion:reduce){
+  .updateBadge{transform:translateZ(22px);clip-path:none}
+  .updateBadge.is-in{animation:none}
+}
 .cardWrap{width:var(--card-w);height:var(--card-h);position:relative;transform-style:preserve-3d;
   transform:rotateX(var(--ry,0)) rotateY(var(--rx,0))}
 /* 카드 뒤 등급 컬러 오라 — 카드보다 크게 깔고 흐리게 번지게 해서 주변으로 은은하게 새어나온다.
@@ -516,13 +531,20 @@ button{font-family:var(--font)}
 /* 주장 뱃지 — 카드에 붙인 스티커다. 속을 등급색으로 채우고 그림자로 카드 표면에서 살짝 띄운다.
    흰 테두리는 뺐다(PO) — 어두운 카드 위에서 테두리가 스티커보다 먼저 눈에 들어왔다. 살짝 기울여 붙여야 '인쇄된 것'이 아니라 '붙인 것'으로 읽힌다.
    자리는 팀 씰의 우측 상단 — 씰 위에 겹쳐 붙은 모양이다. */
-.cfCaptain{position:absolute;top:2px;right:2px;z-index:1;
+/* 자리 — 팀 씰이 right:12px, bottom:34px, 65×65다. 그 우측 상단에 2px 겹치면
+   카드 기준 right:14px, bottom:69px가 된다. 씰 안에 두지 않은 건 깊이 때문이다:
+   카드 앞면은 잘라내기(overflow+mask) 탓에 3D가 평평해져 그 안에서는 띄울 수가 없다.
+   UPDATE 뱃지와 같은 자리(.cardWrap)에 두고 translateZ로 카드보다 조금 앞에 세운다. */
+.cfCaptain{position:absolute;right:14px;bottom:69px;z-index:5;pointer-events:none;
   display:inline-flex;align-items:center;justify-content:center;
   width:28px;height:28px;flex:none;
   border-radius:50%;font-size:12px;font-weight:800;line-height:1;
   background:var(--g-b);color:var(--g-c);
   box-shadow:0 2px 5px rgba(0,0,0,.45);
-  transform:rotate(-20deg)}
+  transform:translateZ(14px) rotate(-20deg);
+  transition:opacity .18s}
+/* 뒷면에는 팀 씰이 없다 — 뒤집으면 붙을 자리가 없으므로 함께 사라진다 */
+.cardInner.flipped ~ .cfCaptain{opacity:0}
 .cfCaptain[hidden]{display:none}   /* display:inline-flex가 hidden 기본값을 덮는다 */
 .cf-name{font-size:26px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
 /* 영문 이름 — 전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다.
@@ -919,7 +941,6 @@ button{font-family:var(--font)}
     <div class="cardStage">
       <div class="cardGlow" aria-hidden="true"></div>
       <div class="cardWrap" id="cardWrap">
-        <span class="updateBadge" id="updateBadge" hidden>UPDATE</span>
         <div class="cardInner" id="cardInner">
           <div class="cardFace front">
             <div class="cardEdgeGlow" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -960,7 +981,6 @@ button{font-family:var(--font)}
                   <text class="sealText"><textPath href="#sealPathMain" id="sealTextMain"></textPath></text>
                 </svg>
                 <div class="sealLogo" id="fSealLogo">서</div>
-                <span class="cfCaptain" id="fCaptain" title="팀 주장" aria-label="팀 주장" hidden>C</span>
               </div>
             </div>
           </div>
@@ -988,6 +1008,8 @@ button{font-family:var(--font)}
           <div class="cardEdge" aria-hidden="true" style="transform:translateZ(5px)"></div>
           <div class="cardEdge" aria-hidden="true" style="transform:translateZ(7px)"></div>
         </div>
+        <span class="updateBadge" id="updateBadge" hidden>UPDATE</span>
+        <span class="cfCaptain" id="fCaptain" title="팀 주장" aria-label="팀 주장" hidden>C</span>
       </div>
     </div>
     </div>
@@ -1601,6 +1623,9 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     /* 경험치는 레벨 행이 카드 뒤에서 다 빠져나온 뒤에 찬다(.95s 지연 + .52s 이동).
        숨어 있는 동안 차오르면 아무도 못 본 채로 끝난다. */
     if(reduced) animateExpBar(); else setTimeout(animateExpBar, 320);
+    // UPDATE 뱃지는 경험치보다 한 박자 뒤에 — 두 움직임이 겹치면 둘 다 눈에 안 들어온다
+    var ub = document.getElementById('updateBadge');
+    if(ub){ if(reduced) ub.classList.add('is-in'); else setTimeout(function(){ ub.classList.add('is-in'); }, 460); }
   }
   if(reduced){
     enterOnce();
