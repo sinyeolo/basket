@@ -473,7 +473,11 @@ button{font-family:var(--font)}
    서로 다른 모양이면 같은 제품으로 안 읽힌다. 목록만 얹는다. */
 .ovrLogCard{max-width:340px}
 .ovrLogLead{margin:0 0 14px !important;flex:none}
-.ovrLogList{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:6px;max-height:46vh;overflow-y:auto;margin:0 -4px;padding:0 4px}
+.ovrLogList{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:6px;max-height:46vh;overflow-y:auto;margin:0 -4px;padding:0 4px;
+  scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.16) transparent}
+.ovrLogList::-webkit-scrollbar{width:4px}
+.ovrLogList::-webkit-scrollbar-track{background:transparent}
+.ovrLogList::-webkit-scrollbar-thumb{background:rgba(0,0,0,.16);border-radius:100px}
 .ovrLogRow{flex:none;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:12px;
   background:var(--sh-bg2);border:1px solid var(--sh-border)}
 .ovrLogTop{display:flex;align-items:center;gap:10px}
@@ -493,11 +497,7 @@ button{font-family:var(--font)}
   background:var(--sh-bg2);color:var(--sh-on);
   font-family:inherit;font-size:13px;font-weight:500;transition:background .12s}
 .ovrLogMore:hover{background:var(--sh-border)}
-/* 목록이 잘려 있을 때만 경계에 그림자를 둔다 — 다 보이는데도 그림자가 있으면
-   '아래에 더 있다'는 거짓말이 된다.
-   그림자는 하단 버튼 영역이 위로 드리운다(PO). 목록 아래 끝에 붙여도 봤는데,
-   그쪽은 잘린 줄에 바짝 붙어 줄이 흐려 보였다. */
-.ovrLogCard.hasScroll .ovrLogMore{box-shadow:0 -10px 18px -10px rgba(0,0,0,.18)}
+/* 경계 그림자는 두지 않는다(PO) — 잘렸다는 건 얇은 스크롤바가 이미 말해 준다. */
 
 /* 하단 딤드 — 팀 컬러 대신 카드 등급 톤(--g-c, 등급별 다크 언더톤)을 투명하게. 위는 거의 안 보이다가 아래로 갈수록 짙어짐 */
 .cardFront-info{position:absolute;left:0;right:0;bottom:0;padding:16px 18px 18px;z-index:2;
@@ -2279,16 +2279,6 @@ function renderOvrLog(){
     ? first.date + ' 이후 ' + log.length + '경기 동안 ' + first.ovr + ' → ' + last.ovr
     : '아직 변동 내역이 없어요';
   document.getElementById('ovrLogMore').textContent = ovrLogDetail ? '간단히 보기' : '자세히 보기';
-  syncLogScroll();
-}
-/* 목록이 실제로 잘려 있을 때만 버튼 경계에 그림자를 세운다.
-   레이아웃이 잡힌 뒤에 재야 해서 다음 프레임에 확인한다 — 방금 그린 직후에는 아직 0이다. */
-function syncLogScroll(){
-  requestAnimationFrame(function(){
-    var l = document.getElementById('ovrLogList');
-    var card = document.querySelector('.ovrLogCard');
-    if(l && card) card.classList.toggle('hasScroll', l.scrollHeight > l.clientHeight + 1);
-  });
 }
 function ovrLogTopHtml(r){
   var up = r.delta > 0;
