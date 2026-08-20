@@ -577,9 +577,14 @@ button{font-family:var(--font)}
 /* 레벨은 시트 안에 있다 — 카드 밖 한 줄로 떠 있을 땐 카드에도 시트에도 속하지 않아 보였다.
    요약 지표(레벨·참가 대회·경기 수·배지) 바로 위에 두면 같은 '이 선수의 현황' 묶음으로 읽힌다. */
 /* 레벨바는 요약 블록 안 맨 아래에 눕는다 — 레벨 숫자는 이미 요약의 첫 칸에 있으니
-   여기서는 막대만 둔다. 같은 말을 두 번 하지 않는다. */
-.expBar{grid-column:1 / -1;margin:16px 16px 0;height:5px;border-radius:100px;
+   여기서는 막대와 경험치 숫자만 둔다. 같은 말을 두 번 하지 않는다.
+   폭은 블록의 80%다 — 끝까지 늘리면 네 칸을 가르는 줄처럼 보여서, 안쪽에 놓인 한 덩어리로 읽히게 좁혔다. */
+.expWrap{grid-column:1 / -1;width:80%;margin:16px auto 0;
+  display:flex;flex-direction:column;align-items:center;gap:7px}
+.expBar{width:100%;height:9px;border-radius:100px;
   background:rgba(255,255,255,.16);overflow:hidden}
+.expText{font-size:11px;font-weight:500;color:rgba(255,255,255,.6);
+  letter-spacing:.02em;font-variant-numeric:tabular-nums}
 /* 카드 앞면 최하단의 작은 레벨 — 카드만 보고도 지금 어디쯤인지 알 수 있어야 한다.
    시트의 것보다 한 단 작고 옅다: 카드의 주인공은 이름과 OVR이지 진행도가 아니다. */
 /* 팀 씰이 위로 올라갔으므로 오른쪽 여백을 비워 두지 않는다 — 막대가 카드 폭을 다 쓴다 */
@@ -761,8 +766,9 @@ button{font-family:var(--font)}
 /* 카드 안에 또 박스를 넣지 않는다 — 레퍼런스들이 공통으로 지키는 것이다.
    회색 박스 세 개를 걷어내고 얇은 세로선으로만 칸을 나눈다. 겹이 하나 줄면 숫자가 앞으로 나온다. */
 .avgRow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.avgIt{text-align:center;padding:20px 4px;background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:14px}
-.avgIt + .avgIt::before{content:"";position:absolute;left:0;top:12%;bottom:12%;width:1px;background:var(--sh-border)}
+/* 테두리 없이 면으로만 구분한다(PO) — 흰 시트 위에 옅은 회색 면이면 경계는 이미 충분하고,
+   선까지 두르면 세 칸이 각각 상자로 읽혀 한 줄의 지표로 안 묶인다. */
+.avgIt{text-align:center;padding:20px 4px;background:var(--sh-bg2);border-radius:14px}
 /* font-variant-numeric:tabular-nums를 뺐다 — 자간을 건드린 게 아니라 이 속성이 '1'처럼 좁은 숫자에도
    같은 칸을 줘서 '21.4'가 벌어져 보였다. 표처럼 자릿수를 맞출 필요가 없는 자리라 비례 숫자가 맞다. */
 .avgIt b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800;color:var(--sh-on);line-height:1.1;letter-spacing:-.01em}
@@ -817,7 +823,7 @@ button{font-family:var(--font)}
 .recLine i{font-style:normal;opacity:.45;margin:0 1px}
 .cardFace.back .wl{width:18px;height:15px;border-radius:4px}
 .cardFace.back .inner{gap:10px}
-.sheet .recRow{background:var(--sh-bg2);border-color:var(--sh-border);color:var(--sh-on)}
+.sheet .recRow{background:var(--sh-bg2);border-color:transparent;color:var(--sh-on)}
 .recRow .newDot{margin-left:0}
 .sheet .recRow .op{color:var(--sh-on-dim)}
 /* 승패 뱃지 — 좁은 카드 뒷면에 맞춰 W/L 한 글자로. 운영 화면이 Win/Lose를 쓰므로 같은 말의 축약이다.
@@ -1064,7 +1070,10 @@ button{font-family:var(--font)}
         <div class="it"><b id="sTour">6</b><span>참가 대회</span></div>
         <div class="it"><b id="sGames">42</b><span>경기 수</span></div>
         <div class="it"><b id="sBadge">3</b><span>대표 배지</span></div>
-        <div class="expBar"><i id="fExpBar"></i></div>
+        <div class="expWrap">
+          <div class="expBar"><i id="fExpBar"></i></div>
+          <span class="expText" id="fExpText"></span>
+        </div>
       </div>
 
       <!-- ============ 시즌 평균 ============ -->
@@ -1162,10 +1171,12 @@ var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 var GRADES = {
   // 첫 카드 — 아직 기록이 없거나 이제 막 시작한 선수. 무광 회색이라 위의 세 등급과 섞이지 않는다
-  starter: { label:'STARTER', level:1,  exp:8,  albumTint:['#9aa0a8','#4a4d53'] },
-  bronze:  { label:'BRONZE',   level:3,  exp:20, albumTint:['#e0a874','#6b4120'] },
-  silver:  { label:'SILVER',   level:8,  exp:40, albumTint:['#f2f5f8','#6a727c'] },
-  gold:    { label:'GOLD',     level:15, exp:62, albumTint:['#ffdf85','#836013'] }
+  /* exp는 다음 레벨까지의 진행률(%)이고, expMax는 그 레벨의 목표 경험치다.
+     지금 경험치는 둘에서 계산한다 — 값을 따로 적어 두면 막대와 숫자가 어긋난다. */
+  starter: { label:'STARTER', level:1,  exp:8,  expMax:200,  albumTint:['#9aa0a8','#4a4d53'] },
+  bronze:  { label:'BRONZE',   level:3,  exp:20, expMax:400,  albumTint:['#e0a874','#6b4120'] },
+  silver:  { label:'SILVER',   level:8,  exp:40, expMax:900,  albumTint:['#f2f5f8','#6a727c'] },
+  gold:    { label:'GOLD',     level:15, exp:62, expMax:2000, albumTint:['#ffdf85','#836013'] }
 };
 
 // photo: 선수가 사진을 업로드한 경우의 미리보기용 — 실제 서비스에선 업로드된 인물 사진(배경 제거본)이 들어갑니다.
@@ -1430,6 +1441,12 @@ function applyGrade(key){
   ovrEl.textContent = ovrVal != null ? pad2(ovrVal) : '?';
   document.getElementById('fLevelMini').textContent = 'Lv.'+g.level;
   var tf = 'translateX(-'+(100 - g.exp)+'%)';
+  /* 경험치 숫자 — 막대와 같은 값에서 뽑는다. 천 단위는 끊어 읽기 쉽게 쉼표를 넣는다. */
+  var expText = document.getElementById('fExpText');
+  if(expText){
+    var comma = function(n){ return n.toLocaleString('ko-KR'); };
+    expText.textContent = comma(Math.round(g.expMax * g.exp / 100)) + ' / ' + comma(g.expMax) + ' XP';
+  }
   [document.getElementById('fExpBar'), document.getElementById('fExpBarMini')].forEach(function(exp){
     if(!exp) return;
     exp.dataset.target = tf;
