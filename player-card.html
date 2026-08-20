@@ -824,14 +824,27 @@ button{font-family:var(--font)}
 .albumCard .in span{font-size:11px;color:var(--on-dark-dim)}
 
 /* 앨범 카드를 누르면 배경이 딤드되며 실제 카드(같은 인터랙션)가 확대되어 나타나는 라이트박스 */
-.cardLightbox{position:fixed;inset:0;background:rgba(6,7,10,.82);z-index:60;
+/* 라이트박스도 공통 팝업 껍데기를 쓴다(PO) — 카드를 크게 보는 자리라고 창까지 다르면
+   같은 제품의 창으로 안 읽힌다. 다만 여기서는 잘라내지 않는다: 카드가 기울 때
+   모서리가 판 밖으로 조금 나가는데, 잘릴 '내용'은 없고 잘리면 기울기만 어색해진다. */
+.cardLightbox{position:fixed;inset:0;background:rgba(0,0,0,.32);z-index:60;padding:24px;
   display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s}
 .cardLightbox.open{opacity:1;pointer-events:auto}
-.cardLightbox .lbInner{position:relative;transform:scale(.9);transition:transform .22s cubic-bezier(.2,.9,.25,1.1)}
+.cardLightbox .lbInner{--sh-bg:#ffffff; --sh-bg2:#f4f5f7; --sh-border:#e7e8ec; --sh-on:#16171b; --sh-on-dim:#6d6f78;
+  position:relative;display:flex;flex-direction:column;max-height:100%;
+  background:var(--sh-bg);border:1px solid var(--sh-border);
+  box-shadow:0 4px 10px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);
+  border-radius:20px;padding:22px 20px;
+  transform:scale(.9);transition:transform .22s cubic-bezier(.2,.9,.25,1.1)}
 .cardLightbox.open .lbInner{transform:scale(1)}
-.lbClose{position:absolute;top:-46px;right:0;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.2);
-  background:rgba(255,255,255,.08);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.lbLabel{position:absolute;top:-46px;left:0;font-size:13px;font-weight:700;color:var(--on-dark-dim);white-space:nowrap}
+/* 등급 후광은 흰 판 위에서 판 전체를 물들인다 — 어두운 무대에서나 어울리던 표현이라 여기선 뺀다 */
+.cardLightbox .cardGlow{display:none}
+.lbClose{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:1px solid var(--sh-border);
+  background:var(--sh-bg2);color:var(--sh-on);display:flex;align-items:center;justify-content:center;cursor:pointer;
+  font-size:16px;line-height:1;padding:0}
+.lbClose:hover{background:var(--sh-border)}
+/* 라벨은 팝업 제목 자리로 — 다른 팝업의 h4와 같은 무게로 세운다 */
+.lbLabel{margin:0 0 12px;padding-right:36px;font-size:16px;font-weight:800;color:var(--sh-on);line-height:1.3}
 
 /* 1단 배치 — 두 버튼을 나란히 두면 각각 폭이 좁아 라벨이 답답하고, 무게(검정 vs 화이트)가
    좌우로 갈려 뭘 먼저 눌러야 할지가 흐려진다. 세로로 쌓아 주 액션(링크 공유)을 위에 둔다. */
@@ -2225,9 +2238,27 @@ document.getElementById('btnSaveImg').addEventListener('click', function(){
    숫자를 누르면 그 숫자가 어떻게 여기까지 왔는지 보여 준다. 목록은 '언제 · 얼마 움직였나 · 그래서 몇'
    세 가지만 세우고, 왜 그렇게 움직였는지(그 경기 성적)는 '자세히 보기'에서 함께 펼친다 —
    늘 펼쳐 두면 목록을 훑을 수가 없고, 아예 없으면 숫자만 있고 이유가 없다. */
-var ovrLogDetail = false;
+/* 자세히 보기가 기본이다(PO) — 날짜와 숫자만 있으면 왜 움직였는지가 없어서, 대부분 한 번 더 눌러야 했다. */
+var ovrLogDetail = true;
+/* 최근 한 달, 최대 10건까지만 세운다. 다 쌓아 두면 팝업이 한없이 길어지고,
+   한 달을 넘긴 변동은 지금의 등급을 설명하지 못한다.
+   기준일은 '가장 최근 변동일'이다 — 프로토타입 데이터가 07월에 멈춰 있어 실제 오늘로 재면
+   목록이 통째로 비어 버린다. 실 데이터에서는 최신 변동이 곧 최근이라 결과가 같다.
+   실서버 연동 때 오늘 기준으로 바꾸려면 newest 자리를 Date.now()로 두면 된다. */
+var LOG_MAX = 10, LOG_DAYS = 31;
+function logDateMs(r){
+  var p = String(r.date).split('.');   // 'MM.DD' — 해는 시즌 갱신일에서 가져온다(로그에 연도가 없다)
+  var y = +String(PLAYER.statsUpdatedAt || '2026-01-01').slice(0, 4);
+  return new Date(y, (+p[0]) - 1, +p[1]).getTime();
+}
+function recentOvrLog(){
+  var log = PLAYER.ovrLog || [];
+  if(!log.length) return [];
+  var from = logDateMs(log[0]) - LOG_DAYS * 864e5;
+  return log.filter(function(r){ return logDateMs(r) >= from; }).slice(0, LOG_MAX);
+}
 function renderOvrLog(){
-  var log = PLAYER.ovrLog || [], host = document.getElementById('ovrLogList');
+  var log = recentOvrLog(), host = document.getElementById('ovrLogList');
   var byDate = {};
   (PLAYER.recentGames || []).forEach(function(g){ byDate[g.date] = g; });
   host.classList.toggle('detail', ovrLogDetail);
