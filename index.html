@@ -1267,7 +1267,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    뒷면 텍스트를 먹었다. 지금은 실제 홀로그램 사진 4장(assets/holo/h1~h4.jpg)을 screen으로 얹는다.
    screen은 '빛을 더하되 날리지 않는' 블렌드라 밑그림(사진·텍스트)이 그대로 살아 있다.
    무늬는 카드마다 하나가 걸린다 — holoSkin() 참고. 사진을 바꾸려면 파일만 교체하면 된다. */
-.holoFoil{position:absolute;inset:-25%;z-index:4;pointer-events:none;mix-blend-mode:screen;opacity:.34;
+.holoFoil{position:absolute;inset:-25%;z-index:4;pointer-events:none;mix-blend-mode:screen;opacity:.17;
   background-size:cover;background-position:center;background-repeat:no-repeat;
   transform:translate(var(--holo-tx,0px), var(--holo-ty,0px));
   transition:transform .05s linear}
@@ -1275,7 +1275,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .holoFoil.h2{background-image:url("assets/holo/h2.jpg")}
 .holoFoil.h3{background-image:url("assets/holo/h3.jpg")}
 .holoFoil.h4{background-image:url("assets/holo/h4.jpg")}
-.holoGrain{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:.15;mix-blend-mode:overlay;
+.holoGrain{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:.08;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size:140px 140px}
 @keyframes pdAuraDrift{
@@ -1360,8 +1360,8 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    기울이면 --holo-tx/--holo-ty로 이 레이어가 함께 밀려서 빛을 따라 결이 흐른다. */
 /* 앞면 포일 — 공유 카드와 같은 값(.12). 뒤 인물이 잘 보이도록 세기를 낮춘 상태다.
    CSS 회절격자를 얹어 봤다가 인공적으로 읽혀서 사진 한 장만 남겼다(player-card.html과 동일 판단). */
-.card-photo .holoFoil{opacity:.12;mix-blend-mode:screen}
-.card-photo .holoGrain{opacity:.08}
+.card-photo .holoFoil{opacity:.06;mix-blend-mode:screen}
+.card-photo .holoGrain{opacity:.04}
 .card-photo .pdAura{opacity:.18}
 
 /* 하단 딤드 — 팀 컬러 대신 카드 등급 톤(--g-c, 등급별 다크 언더톤)을 투명하게 */
@@ -1461,7 +1461,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
     linear-gradient(175deg, color-mix(in srgb,var(--g-c,#20232b) 92%, #0b0c10), #0a0b0e 82%)}
 /* 뒷면 홀로그램은 앞면보다 옅게 — 뒷면은 바탕의 등급색이 읽혀야 하는데, 앞면과 같은 농도로 얹으면
    파스텔 사진이 등급색을 덮어 브론즈·실버·골드가 전부 비슷한 보랏빛으로 보인다 */
-.pdFace.pdBack .holoFoil{opacity:.22}
+.pdFace.pdBack .holoFoil{opacity:.11}
 .pdBackTitle{display:flex;align-items:baseline;gap:8px;font-size:13px;font-weight:800;color:var(--g-text,#fff)}
 /* 24/8/4가 무슨 숫자인지 제목 줄 끝에 한 번만 적는다 — 매 줄에 붙이면 빽빽해진다
    (선수 카드 .recLegend와 같은 값) */
