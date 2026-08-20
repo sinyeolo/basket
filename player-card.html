@@ -493,7 +493,7 @@ button{font-family:var(--font)}
 .ovrInfoCard h4{margin:0 0 10px;font-size:16px;font-weight:800;color:var(--sh-on)}
 .ovrInfoCard p{margin:0 0 8px;font-size:13px;line-height:1.55;color:var(--sh-on-dim)}
 .ovrInfoNote{font-size:13px;color:var(--sh-on-dim)}
-.ovrInfoClose{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:1px solid var(--sh-border);
+.ovrInfoClose{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:50%;border:none;
   background:var(--sh-bg2);color:var(--sh-on);display:flex;align-items:center;justify-content:center;cursor:pointer;
   font-size:16px;line-height:1;padding:0}
 .ovrInfoClose:hover{background:var(--sh-border)}
@@ -513,8 +513,10 @@ button{font-family:var(--font)}
 .ovrLogList::-webkit-scrollbar{width:4px}
 .ovrLogList::-webkit-scrollbar-track{background:transparent}
 .ovrLogList::-webkit-scrollbar-thumb{background:rgba(0,0,0,.16);border-radius:100px}
+/* 연한 회색 면에는 선을 두르지 않는다(PO) — 흰 바탕 위에서 면만으로 경계가 이미 서고,
+   선까지 두르면 줄 하나하나가 상자로 읽혀 목록으로 안 묶인다. */
 .ovrLogRow{flex:none;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:12px;
-  background:var(--sh-bg2);border:1px solid var(--sh-border)}
+  background:var(--sh-bg2)}
 .ovrLogTop{display:flex;align-items:center;gap:10px}
 .ovrLogDate{font-size:13px;color:var(--sh-on-dim);flex:none;font-variant-numeric:tabular-nums}
 /* 델타 — 시트의 추세 화살표와 같은 규칙(상승 빨강·하락 파랑). 한 제품 안에서 같은 뜻은 같은 색이다. */
@@ -691,7 +693,7 @@ button{font-family:var(--font)}
 /* 뒷면에서는 위아래 auto 마진이 .backNote의 것과 남은 공간을 나눠 가져 자연스레 가운데 선다 */
 .cardFace.back .recEmpty{margin-top:auto}
 .recEmpty{font-size:11px;color:var(--sh-on-dim);text-align:center;padding:18px 8px;
-  background:var(--sh-bg2);border:1px solid var(--sh-border);border-radius:12px;line-height:1.6}
+  background:var(--sh-bg2);border-radius:12px;line-height:1.6}
 .cardFace.back .recEmpty{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.13);color:var(--on-dark-dim)}
 
 /* 조작 줄 — 카드와 같은 폭으로 잡고 양 끝에 하나씩 둔다. 가운데 몰아 두면 두 기능이
@@ -879,11 +881,13 @@ button{font-family:var(--font)}
    흰 글자라 대비가 충분하므로 그대로 둔다. */
 .sheet /* 승 뱃지 — 밝은 초록에 흰 글자(PO 확정). 운영 콘솔과 같은 값 */
 .wl.w{background:#22c55e;color:#ffffff}
-.sheet .wl.l{background:var(--sh-bg2);color:var(--sh-on-dim);box-shadow:inset 0 0 0 1px var(--sh-border)}
+/* 패배 칩만 예외적으로 면을 한 톤 내렸다 — 줄 배경과 같은 --sh-bg2를 쓰던 터라
+   선을 빼면 형태가 통째로 사라진다. 선 대신 면으로 구분한다. */
+.sheet .wl.l{background:var(--sh-border);color:var(--sh-on-dim)}
 
 .badgeRow{display:flex;gap:14px;flex-wrap:wrap}
 .badge{display:flex;flex-direction:column;align-items:center;gap:7px;width:72px}
-.badge .badgeCircle{width:52px;height:52px;border-radius:50%;background:var(--sh-bg2);border:1px solid var(--sh-border);
+.badge .badgeCircle{width:52px;height:52px;border-radius:50%;background:var(--sh-bg2);
   display:flex;align-items:center;justify-content:center;flex:none}
 .badge .badgeCircle i{width:16px;height:16px;border-radius:50%;background:var(--g-b, #f4d16a)}
 .badge .badgeLabel{font-size:11px;font-weight:700;color:var(--sh-on);text-align:center;line-height:1.3}
@@ -912,8 +916,8 @@ button{font-family:var(--font)}
 .cardLightbox.open{opacity:1;pointer-events:auto}
 .cardLightbox .lbInner{position:relative;transform:scale(.9);transition:transform .22s cubic-bezier(.2,.9,.25,1.1)}
 .cardLightbox.open .lbInner{transform:scale(1)}
-.lbClose{position:absolute;top:-46px;right:0;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.2);
-  background:rgba(255,255,255,.08);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.lbClose{position:absolute;top:-46px;right:0;width:36px;height:36px;border-radius:50%;border:none;
+  background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .lbLabel{position:absolute;top:-46px;left:0;font-size:13px;font-weight:700;color:var(--on-dark-dim);white-space:nowrap}
 
 /* 1단 배치 — 두 버튼을 나란히 두면 각각 폭이 좁아 라벨이 답답하고, 무게(검정 vs 화이트)가
