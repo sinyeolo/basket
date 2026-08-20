@@ -1420,7 +1420,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 채움은 등급과 무관하게 브랜드 색 하나로 둔다(PO, 선수 카드와 같은 규칙) — 등급색으로 두면
    같은 '진행도'가 카드마다 다른 색이 되어, 색이 진행도가 아니라 등급을 말하게 된다. */
 .pdCfExp i{display:block;width:0;height:100%;border-radius:100px;
-  background:rgba(255,255,255,.92);
+  background:rgba(255,255,255,.72);   /* 20%쯤 비친다(PO) — 카드에서 진행도는 주인공이 아니다 */
   transition:width 1s cubic-bezier(.2,.8,.2,1)}
 /* 카드 밖 페이지는 밝은 배경이라 카드용 밝은 텍스트 톤(--g-text) 대신, 같은 등급의 어두운 언더톤(--g-c)을 써서
    대비는 지키면서도 등급 컬러라는 컨셉은 공유 카드(player-card.html)와 동일하게 맞춘다 */
