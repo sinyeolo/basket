@@ -274,7 +274,11 @@ button{font-family:var(--font)}
   .updateBadge{transform:translateZ(22px);clip-path:none}
   .updateBadge.is-in{animation:none}
 }
+/* touch-action:none — 카드는 제 제스처를 스스로 다룬다. 이게 없으면 손가락이 조금만 움직여도
+   브라우저가 그 제스처를 스크롤로 가져가면서 pointercancel을 보내, 누른 순간 한 번 기울고
+   그 뒤로는 끌어도 반응이 없었다(실제로 그랬다). 시트 헤드·핸들도 같은 이유로 none이다. */
 .cardWrap{width:var(--card-w);height:var(--card-h);position:relative;transform-style:preserve-3d;
+  touch-action:none;
   transform:rotateX(var(--ry,0)) rotateY(var(--rx,0))}
 /* 카드 뒤 등급 컬러 오라 — 카드보다 크게 깔고 흐리게 번지게 해서 주변으로 은은하게 새어나온다.
    숨쉬듯 밝기와 크기가 함께 오르내려 정지 화면에서도 살아있게 보인다.
@@ -664,9 +668,13 @@ button{font-family:var(--font)}
 .recLegend{margin-left:auto;font-size:11px;font-weight:600;letter-spacing:0;color:var(--on-dark-dim);white-space:nowrap}
 .backGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 /* 아래 최근 경기 행(.recRow)과 같은 배경·라인·라운드 — 뒷면의 두 블록이 한 벌로 읽히게 */
-/* backdrop-filter를 뺐다 — 3D로 뒤집히는 카드 안에서 뒤 배경을 흐리는 건 폰에서 비싸고,
-   뒷면에 이런 블록이 여덟(스탯 3 + 경기 5)이라 그 값이 곱해진다.
-   대신 배경을 조금 진하게 해 뒤 패턴이 비쳐 어지러워지는 것만 막는다. */
+/* 뒤 배경을 흐린다(PO). 한때 뺐던 표현인데(실기기 버벅임 정리), 뒷면 블록이 여덟이라
+   비용이 곱해지는 건 여전하다. 그래서 세기를 6px로 낮춰 되살린다 — 앞면 정보층이 2/5/11px을
+   쓰므로 그 사다리 안의 값이다.
+   뒷면은 backface-visibility:hidden으로 앞을 볼 때는 아예 그려지지 않으니, 이 비용은
+   카드를 뒤집은 동안에만 든다. */
+.backStat,
+.cardFace.back .recRow{backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .backStat{text-align:center;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:10px 4px}
 .backStat b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800}
 .backStat span{font-size:11px;color:var(--on-dark-dim)}
@@ -2089,6 +2097,11 @@ function createCardController(wrapEl, opts){
       tiltFromPointer(e.clientX, e.clientY);
     });
     wrapEl.addEventListener('pointerleave', resetTilt);
+    /* 손가락은 떼면 그 자리에 머무를 수 없다 — 마우스처럼 '커서가 아직 위에 있는' 상태가 없으므로
+       놓는 순간 제자리로 돌아온다. 마우스는 계속 올려둘 수 있으니 그대로 둔다. */
+    ['pointerup','pointercancel'].forEach(function(t){
+      wrapEl.addEventListener(t, function(e){ if(e.pointerType !== 'mouse') resetTilt(); });
+    });
   }
   wrapEl.addEventListener('click', function(e){
     if(e.target.closest('button, a')) return;   // 뒷면 최근 경기 줄은 경기 상세로 나간다
