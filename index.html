@@ -1376,9 +1376,14 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 주장 — 명단의 .tag-captain과 같은 원형·같은 글자. 다만 카드는 어두운 표면이라
    명단의 주황 배경/검정 글자를 그대로 쓰면 카드에서 혼자 튄다. 등급색 테두리로 얹는다. */
 /* 주장 — 포지션 칩과 같은 크기의 원(선수 카드 .cfCaptain과 같은 값) */
-.pdCaptain{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;
-  border-radius:50%;flex:none;font-size:11px;font-weight:800;line-height:1;
-  background:rgba(0,0,0,.4);color:var(--g-text,#fff);border:1px solid color-mix(in srgb,var(--g-b,#fff) 55%,transparent)}
+/* 주장 뱃지 — 선수 카드(.cfCaptain)와 같은 스티커다. 팀 씰 우측 상단에 겹쳐 붙는다. */
+.pdCaptain{position:absolute;top:-3px;right:-3px;z-index:1;
+  display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;
+  border-radius:50%;flex:none;font-size:12px;font-weight:800;line-height:1;
+  background:var(--g-b,#f4d16a);color:var(--g-c,#4a3608);
+  border:2px solid #fff;
+  box-shadow:0 2px 5px rgba(0,0,0,.45);
+  transform:rotate(-10deg)}
 .pdNameKr{font-size:34px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
 /* 영문 이름 — 첫 글자만 대문자, 한 단 얇게(선수 카드 .cf-nameEn과 같은 값).
    전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다. */
@@ -4799,7 +4804,7 @@ function renderPlayerDetail(){
             '<div class="pdIdBlock">'+
               '<div class="pdPosRow">'+
                 (posLabel ? '<span class="chip pdPos">'+posLabel+'</span>' : '')+
-                (isCaptainPd ? '<span class="pdCaptain" title="팀 주장" aria-label="팀 주장">C</span>' : '')+
+
               '</div>'+
               '<div class="pdNameKr">'+p.name+(p.owner?'<span class="tag-owner">오너</span>':'')+'</div>'+
               (p.en ? '<div class="pdNameEn">'+titleCaseEn(p.en)+'</div>' : '')+
@@ -4822,6 +4827,7 @@ function renderPlayerDetail(){
               '<text class="sealText"><textPath href="#sealPathPd">'+sealDate+'</textPath></text>'+
             '</svg>'+
             '<div class="sealLogo" style="background:'+teamColor+'">'+(t?t.name.charAt(0):'?')+'</div>'+
+            (isCaptainPd ? '<span class="pdCaptain" title="팀 주장" aria-label="팀 주장">C</span>' : '')+
           '</div>'+
         '</div></div>'+
         '<div class="pdFace pdBack"><div class="in">'+

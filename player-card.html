@@ -511,10 +511,18 @@ button{font-family:var(--font)}
 /* 주장 — 포지션 칩과 같은 크기의 원. 25px은 칩의 실측 높이다(글자 11px + 위아래 여백 5px + 테두리 1px).
    aspect-ratio만으로는 원이 되지 않는다: flex 행에서 폭은 내용이 정하고 aspect-ratio가 그걸 덮지 못해
    글자 폭 그대로인 세로 타원이 된다(실제로 그랬다). 칩의 값이 바뀌면 이 값도 함께 바꾼다. */
-.cfCaptain{display:inline-flex;align-items:center;justify-content:center;
-  width:25px;height:25px;flex:none;
-  border-radius:50%;font-size:11px;font-weight:800;line-height:1;
-  background:rgba(0,0,0,.4);color:var(--g-text);border:1px solid color-mix(in srgb,var(--g-b) 55%,transparent)}
+/* 주장 뱃지 — 카드에 붙인 스티커다. 속을 등급색으로 채우고 흰 테두리로 오려낸 자국을 만든 뒤,
+   그림자로 카드 표면에서 살짝 띄운다. 살짝 기울여 붙여야 '인쇄된 것'이 아니라 '붙인 것'으로 읽힌다.
+   자리는 팀 씰의 우측 상단 — 씰 위에 겹쳐 붙은 모양이다. */
+.cfCaptain{position:absolute;top:-3px;right:-3px;z-index:1;
+  display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:28px;flex:none;
+  border-radius:50%;font-size:12px;font-weight:800;line-height:1;
+  background:var(--g-b);color:var(--g-c);
+  border:2px solid #fff;
+  box-shadow:0 2px 5px rgba(0,0,0,.45);
+  transform:rotate(-10deg)}
+.cfCaptain[hidden]{display:none}   /* display:inline-flex가 hidden 기본값을 덮는다 */
 .cf-name{font-size:26px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
 /* 영문 이름 — 전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다.
    첫 글자만 대문자로 두고 한 단 얇게 해서 한글 이름 아래 조용히 받치게 한다. */
@@ -940,7 +948,7 @@ button{font-family:var(--font)}
               <div class="infoBlur infoBlur3" aria-hidden="true"></div>
               <div class="cardFront-info">
                 <div class="cfTop">
-                  <div class="cfPosRow"><span class="chip cfPos" id="fPos">SF</span><span class="cfCaptain" id="fCaptain" hidden>C</span></div>
+                  <div class="cfPosRow"><span class="chip cfPos" id="fPos">SF</span></div>
                   <div class="cf-name" id="fName">김민수</div>
                   <div class="cf-nameEn" id="fNameEn">KIM MIN SU</div>
                 </div>
@@ -962,6 +970,7 @@ button{font-family:var(--font)}
                   <text class="sealText"><textPath href="#sealPathMain" id="sealTextMain"></textPath></text>
                 </svg>
                 <div class="sealLogo" id="fSealLogo">서</div>
+                <span class="cfCaptain" id="fCaptain" title="팀 주장" aria-label="팀 주장" hidden>C</span>
               </div>
             </div>
           </div>
