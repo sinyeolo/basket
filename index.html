@@ -1240,6 +1240,25 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 앞/뒷면을 카드 두께 절반만큼 Z축으로 띄워 옆면(두께)이 들어갈 공간을 만듦 — player-card.html과 동일 규칙 */
 .pdFace.front{transform:translateZ(calc(var(--card-thick) / 2))}
 .pdFace.pdBack{transform:rotateY(180deg) translateZ(calc(var(--card-thick) / 2))}
+/* 사선으로 훑고 지나가는 빛 — 선수 카드(player-card.html .cardFace .inner::after)와 같은 값 */
+.pdFace .in::after{
+  content:"";position:absolute;top:-60%;bottom:-60%;left:-40%;right:-40%;
+  z-index:6;pointer-events:none;
+  background:linear-gradient(104deg,
+    transparent 42%,
+    color-mix(in srgb,var(--g-b,#888) 22%, transparent) 47%,
+    color-mix(in srgb,var(--g-b,#888) 52%, transparent) 50%,
+    color-mix(in srgb,var(--g-b,#888) 22%, transparent) 53%,
+    transparent 58%);
+  mix-blend-mode:screen;
+  transform:translateX(-70%);
+  animation:cardSweep 6.5s cubic-bezier(.4,0,.5,1) infinite}
+@keyframes cardSweep{
+  0%   {transform:translateX(-70%)}
+  22%  {transform:translateX(70%)}
+  100% {transform:translateX(70%)}
+}
+@media (prefers-reduced-motion:reduce){ .pdFace .in::after{animation:none;opacity:0} }
 .pdFace .in{position:relative;width:100%;height:100%;border-radius:17px;overflow:hidden;color:#fff;
   background:linear-gradient(175deg,#191b22,#0d0e12 70%)}
 
