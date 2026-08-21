@@ -263,9 +263,16 @@ button{font-family:var(--font)}
    카드 뒤(문서 순서상 나중)에 둔다. 그러지 않으면 뱃지가 카드 아래로 사라진다(실제로 그랬다). */
 .updateBadge{position:absolute;top:-10px;right:16px;z-index:5;pointer-events:none;
   transform:translateZ(22px) translateY(22px);clip-path:inset(0 0 100% 0);
-  /* 그림자 없이 — 채운 주황만으로 충분히 앞에 선다. 그림자를 얹으면 카드에 붙은 표시가 아니라
-     떠 있는 다른 물건처럼 보인다. */
-  padding:6px 10px;border-radius:100px;background:var(--brand);color:var(--on-brand);
+  /* 표면 하이라이트 — 캡틴 스티커와 같은 규칙 */
+  padding:6px 10px;border-radius:100px;color:var(--on-brand);
+  background-color:var(--brand);
+  background-image:radial-gradient(circle,
+    rgba(255,255,255,.42) 0%, rgba(255,255,255,.16) 32%, rgba(255,255,255,0) 62%);
+  background-size:150% 300%;
+  background-position:calc(50% + var(--lit-x,0px) * .2) calc(50% + var(--lit-y,0px) * .2);
+  box-shadow:0 0 0 1.5px rgba(255,255,255,.55),
+             0 1px 1px rgba(0,0,0,.5),
+             0 5px 10px rgba(0,0,0,.38);
   font-size:11px;font-weight:800;letter-spacing:.06em;line-height:1}
 .updateBadge.is-in{animation:badgeRise .52s cubic-bezier(.16,.8,.24,1) both}
 @keyframes badgeRise{
@@ -663,8 +670,22 @@ button{font-family:var(--font)}
   display:inline-flex;align-items:center;justify-content:center;
   width:28px;height:28px;flex:none;
   border-radius:50%;font-size:12px;font-weight:800;line-height:1;
-  background:var(--g-b);color:var(--g-c);
-  box-shadow:0 6px 12px rgba(0,0,0,.5), 0 2px 4px rgba(0,0,0,.35);
+  /* 표면 하이라이트 — 카드와 같은 --lit-x/--lit-y를 쓰되 스티커 크기에 맞게 줄여서 쓴다(0.2배).
+     28px 원에서 18px쯤 움직이므로 기울일 때 빛이 도는 게 보인다.
+     28×28 면 하나를 다시 칠하는 값이라 비용은 없다고 봐도 된다. */
+  background-color:var(--g-b);color:var(--g-c);
+  background-image:radial-gradient(circle,
+    rgba(255,255,255,.55) 0%, rgba(255,255,255,.22) 30%, rgba(255,255,255,0) 60%);
+  background-size:170% 170%;
+  background-position:calc(50% + var(--lit-x,0px) * .2) calc(50% + var(--lit-y,0px) * .2);
+  /* 스티커로 읽히게 하는 두 가지.
+     ① 오려낸 자국 — 흰 테두리다. 예전에 뺐다가 다시 넣되 얇고 옅게(1.5px·55%) 둔다.
+        솔리드 2px일 때는 테두리가 스티커보다 먼저 눈에 들어왔다.
+     ② 접촉 그림자 — 바로 아래 짧고 진한 것 하나, 그 뒤로 길고 옅은 것 하나.
+        길기만 한 그림자는 '떠 있는 물건'이고, 짧은 것이 함께 있어야 '붙어 있는 것'이 된다. */
+  box-shadow:0 0 0 1.5px rgba(255,255,255,.55),
+             0 1px 1px rgba(0,0,0,.55),
+             0 5px 10px rgba(0,0,0,.42);
   transform-style:preserve-3d;
   transform:translateZ(calc(var(--card-thick) / 2 + 14px)) rotate(-20deg);
   transition:opacity .26s ease-out}
