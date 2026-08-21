@@ -1244,6 +1244,20 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 앞/뒷면을 카드 두께 절반만큼 Z축으로 띄워 옆면(두께)이 들어갈 공간을 만듦 — player-card.html과 동일 규칙 */
 .pdFace.front{transform:translateZ(calc(var(--card-thick) / 2))}
 .pdFace.pdBack{transform:rotateY(180deg) translateZ(calc(var(--card-thick) / 2))}
+/* 기울이면 가까워지는 쪽이 밝아진다 — 선수 카드(.cardFace .inner::before)와 같은 규칙 */
+.pdFace .in::before{
+  content:"";position:absolute;top:-40%;bottom:-40%;left:-40%;right:-40%;
+  z-index:3;pointer-events:none;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(255,255,255,.20) 0%,
+    rgba(255,255,255,.10) 26%,
+    rgba(255,255,255,.03) 44%,
+    rgba(255,255,255,0)   62%);
+  opacity:var(--lit-op,0);
+  transform:translate(var(--lit-x,0px), var(--lit-y,0px));
+  transition:transform .05s linear}
+@media (prefers-reduced-motion:reduce){ .pdFace .in::before{opacity:0} }
+
 /* 사선으로 훑고 지나가는 빛 — 선수 카드(player-card.html .cardFace .inner::after)와 같은 값 */
 .pdFace .in::after{
   content:"";position:absolute;top:0;bottom:0;left:-40%;right:-40%;
@@ -4716,6 +4730,7 @@ function createCardController(wrapEl, opts){
      .holoFoil의 여유분(inset:-30% = 카드 폭의 30%)을 넘으면 무늬의 끝이 화면에 들어온다.
      15 × 2 × 2 = 60px, 여유분은 81px — 끝까지 기울여도 안 보인다. */
   var HOLO_SHIFT = 2;
+  var LIT_SHIFT = 3;   // 빛덩이가 기울기를 따라 옮겨가는 거리(도당 px)
   var flipped = false;
   var target = { rx:0, ry:0 };
   var current = { rx:0, ry:0 };
@@ -4727,6 +4742,11 @@ function createCardController(wrapEl, opts){
     wrapEl.style.setProperty('--ry', current.ry.toFixed(2)+'deg');
     wrapEl.style.setProperty('--holo-tx', (current.rx * HOLO_SHIFT).toFixed(1)+'px');
     wrapEl.style.setProperty('--holo-ty', (-current.ry * HOLO_SHIFT).toFixed(1)+'px');
+    // 빛덩이 — 기울인 쪽(화면에 가까워지는 쪽)으로 옮기고, 기울기의 크기만큼 밝힌다
+    wrapEl.style.setProperty('--lit-x', (-current.rx * LIT_SHIFT).toFixed(1)+'px');
+    wrapEl.style.setProperty('--lit-y', (current.ry * LIT_SHIFT).toFixed(1)+'px');
+    var lean = Math.min(1, Math.hypot(current.rx, current.ry) / (MAX_TILT * 2));
+    wrapEl.style.setProperty('--lit-op', lean.toFixed(3));
   }
   function loop(){
     current.rx += (target.rx - current.rx) * 0.14;

@@ -367,6 +367,25 @@ button{font-family:var(--font)}
   100%   {transform:translate(0,0)}
 }
 @media (prefers-reduced-motion:reduce){ .cardEdgeGlow i{animation:none} }
+/* ---- 기울이면 가까워지는 쪽이 밝아진다 ----
+   카드 위에 부드러운 빛덩이 하나를 얹고, 기울기에 따라 그 덩이를 옮긴다.
+   매 프레임 하는 일은 transform 하나뿐이라 다시 칠할 것이 없다 — 홀로그램 결(--holo-tx)과
+   같은 rAF에서 값을 쓰므로 프레임 비용이 늘지 않는다.
+   세기(--lit-op)는 기울기의 크기를 따른다: 카드가 반듯할 때는 0이라 아무 일도 없고,
+   기울일수록 밝아진다. 늘 켜 두면 빛이 아니라 얼룩이 된다. */
+.cardFace .inner::before{
+  content:"";position:absolute;top:-40%;bottom:-40%;left:-40%;right:-40%;
+  z-index:3;pointer-events:none;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(255,255,255,.20) 0%,
+    rgba(255,255,255,.10) 26%,
+    rgba(255,255,255,.03) 44%,
+    rgba(255,255,255,0)   62%);
+  opacity:var(--lit-op,0);
+  transform:translate(var(--lit-x,0px), var(--lit-y,0px));
+  transition:transform .05s linear}
+@media (prefers-reduced-motion:reduce){ .cardFace .inner::before{opacity:0} }
+
 /* ---- 사선으로 훑고 지나가는 빛 ----
    일정 간격으로 한 번씩 카드를 쓸고 지나간다. 색은 등급색(--g-b)이라 골드·실버·브론즈가
    저마다 다른 빛을 낸다.
@@ -2108,6 +2127,9 @@ function createCardController(wrapEl, opts){
      .holoFoil의 여유분(inset:-30% = 카드 폭의 30%)을 넘으면 무늬의 끝이 화면에 들어온다.
      15 × 2 × 2 = 60px, 여유분은 81px — 끝까지 기울여도 안 보인다. */
   var HOLO_SHIFT = 2;
+  /* 빛덩이가 기울기를 따라 옮겨가는 거리(도당 px). 최대 30도 × 3 = 90px으로,
+     레이어 여유분(카드 폭의 40% = 108px) 안에 든다. */
+  var LIT_SHIFT = 3;
   var flipped = false;
   var target = { rx:0, ry:0 };
   var current = { rx:0, ry:0 };
@@ -2123,6 +2145,12 @@ function createCardController(wrapEl, opts){
     // 홀로그램 얼룩 위치 — 기울기(현재 각도, 숫자값)에 비례해 좌우/상하로 흐르듯 이동
     wrapEl.style.setProperty('--holo-tx', (current.rx * HOLO_SHIFT).toFixed(1)+'px');
     wrapEl.style.setProperty('--holo-ty', (-current.ry * HOLO_SHIFT).toFixed(1)+'px');
+    /* 빛덩이 — 기울인 쪽(화면에 가까워지는 쪽)으로 옮기고, 기울기의 크기만큼 밝힌다.
+       홀로그램과 부호가 반대다: 결은 표면 아래에서 끌려가고, 빛은 다가오는 면에 맺힌다. */
+    wrapEl.style.setProperty('--lit-x', (-current.rx * LIT_SHIFT).toFixed(1)+'px');
+    wrapEl.style.setProperty('--lit-y', (current.ry * LIT_SHIFT).toFixed(1)+'px');
+    var lean = Math.min(1, Math.hypot(current.rx, current.ry) / (MAX_TILT * 2));
+    wrapEl.style.setProperty('--lit-op', lean.toFixed(3));
   }
   /* 목표에 닿으면 루프를 멈춘다. 예전엔 카드가 가만히 있어도 60fps로 계속 돌았다 —
      화면에 아무 변화가 없는데 매 프레임 스타일을 쓰는 셈이라 폰에서 그만큼 프레임을 잡아먹는다.
