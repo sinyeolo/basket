@@ -191,11 +191,14 @@ button{font-family:var(--font)}
 .sheet.sheet-expanded .sheetBody{opacity:1}
 /* 접힌 상태에서 보이는 건 이 헤더뿐이다 — 검정이면 시트가 아니라 검은 띠로 보인다.
    첫 섹션과 같은 틴트를 써서 헤더부터 머리 블록까지 한 면으로 이어지게 한다. */
-.sheetHead{position:sticky;top:0;z-index:1;background:var(--sh-bg);padding:0 16px 4px;cursor:pointer;touch-action:none;
+/* 배경은 두지 않는다 — 뒤에 깔린 시트 판이 흰색을 맡는다. 헤드가 제 배경을 갖고 있으면
+   끌어올리는 동안 그 부분만 흰 띠로 도드라진다(다른 자리는 글자만 비치는데 여기만 면이 차 있어서다).
+   최상단에서 스크롤할 때 필요한 가림막은 아래 ::before(블러 + 그라데이션)가 맡는다. */
+.sheetHead{position:sticky;top:0;z-index:1;padding:0 16px 4px;cursor:pointer;touch-action:none;
   display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 /* 경계선 대신 아래로 갈수록 옅어지는 블러로 지나가는 내용과의 경계를 만든다 — 선 하나로 자르는 것보다
    내용이 헤더 밑으로 흘러 들어가는 느낌이 자연스럽다. 두 단 모두 내용이 헤드 밑을 지나가므로 공통. */
-.sheet.sheet-open .sheetHead{padding-bottom:16px;background:transparent}
+.sheet.sheet-open .sheetHead{padding-bottom:16px}
 /* 위 여백은 최상단에서만 준다 — 거기서만 핸들이 사라져 이름이 화면 맨 위에 딱 붙기 때문이다.
    노치까지 덮으므로 safe-area를 더한다.
    여백이 순간에 생기면 제목이 '툭' 내려앉는다. 그렇다고 padding을 전환하면 안 된다 —
