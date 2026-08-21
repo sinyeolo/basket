@@ -260,8 +260,11 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .qf-nm{display:flex;align-items:center;gap:6px;font-family:var(--font);font-size:13px;font-weight:600;
   color:var(--on-surface);text-align:left;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-.qf-tot{font-weight:800;color:var(--on-surface)}
-.qf-row.win .qf-tot{font-size:16px}
+/* 합계 — 이긴 쪽만 진하게 둔다(쿼터 칸과 같은 규칙).
+   .qf-row span이 뒤에서 색·무게를 덮고 있어 같은 특이도로는 이 규칙이 지고 있었다.
+   그래서 합계가 볼드도 진한 색도 아니었다 — 부모를 함께 적어 특이도를 올린다. */
+.qf-row .qf-tot{font-size:16px}
+.qf-row.win .qf-tot{font-weight:800;color:var(--on-surface)}
 .mvp-hint{font-size:11px;color:var(--on-surface-variant);opacity:.8}
 
 /* ---- 요약: 팀 기록 비교 ----
