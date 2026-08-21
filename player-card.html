@@ -273,6 +273,17 @@ button{font-family:var(--font)}
   62% {transform:translateZ(22px) translateY(0);   clip-path:inset(0 0 10px 0)}
   100%{transform:translateZ(22px) translateY(0);   clip-path:inset(0 0 0 0)}
 }
+/* 등장이 끝나면 잘라내기를 푼다 — clip-path가 걸려 있는 동안에는 3D가 평평해져서
+   아래 두께 겹이 깊이를 못 갖는다. 등장에만 필요한 값이므로 끝나면 없앤다. */
+.updateBadge.is-set{clip-path:none;transform-style:preserve-3d;
+  transform:translateZ(22px);animation:none}
+/* 두께 — 같은 모양을 뒤로 1px씩 두 장(캡틴 스티커와 같은 방식).
+   옆면은 앞면보다 어둡다. */
+.updateBadge.is-set::before,
+.updateBadge.is-set::after{content:"";position:absolute;inset:0;border-radius:100px;
+  background:color-mix(in srgb,var(--brand) 62%, #000)}
+.updateBadge.is-set::before{transform:translateZ(-1px)}
+.updateBadge.is-set::after{transform:translateZ(-2px)}
 @media (prefers-reduced-motion:reduce){
   .updateBadge{transform:translateZ(22px);clip-path:none}
   .updateBadge.is-in{animation:none}
@@ -1774,7 +1785,15 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     if(reduced) animateExpBar(); else setTimeout(animateExpBar, 320);
     // UPDATE 뱃지는 경험치보다 한 박자 뒤에 — 두 움직임이 겹치면 둘 다 눈에 안 들어온다
     var ub = document.getElementById('updateBadge');
-    if(ub){ if(reduced) ub.classList.add('is-in'); else setTimeout(function(){ ub.classList.add('is-in'); }, 460); }
+    /* 등장이 끝나면 is-set으로 넘긴다 — 잘라내기를 풀어야 두께 겹이 깊이를 갖는다. */
+    if(ub){
+      var settle = function(){ ub.classList.add('is-set'); };
+      if(reduced){ ub.classList.add('is-in'); settle(); }
+      else setTimeout(function(){
+        ub.classList.add('is-in');
+        setTimeout(settle, 560);   // badgeRise .52s보다 조금 뒤
+      }, 460);
+    }
   }
   if(reduced){
     enterOnce();
