@@ -1242,21 +1242,25 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdFace.pdBack{transform:rotateY(180deg) translateZ(calc(var(--card-thick) / 2))}
 /* 사선으로 훑고 지나가는 빛 — 선수 카드(player-card.html .cardFace .inner::after)와 같은 값 */
 .pdFace .in::after{
-  content:"";position:absolute;top:-60%;bottom:-60%;left:-40%;right:-40%;
+  content:"";position:absolute;top:0;bottom:0;left:-40%;right:-40%;
   z-index:6;pointer-events:none;
   /* 사선 각도는 카드의 대각선과 같은 35도다(수직 기준). 카드가 270x378이라 대각선이 35.5도이고,
      그 각으로 두면 빛이 한 모서리로 들어와 반대 모서리로 빠져나가며 면 전체를 한 번에 훑는다.
      45도로 눕히면 세로로 긴 카드를 가로지르지 못하고 아래쪽에 고인 것처럼 보인다. */
+  /* 앞쪽(진행 방향)은 날이 서 있고 뒤로 길게 흐려진다(PO) — 실제로 표면을 스치는 빛이
+     그렇게 보인다. 좌우 대칭이면 '띠'가 되고, 한쪽이 날카로워야 '지나간다'가 된다.
+     빛은 오른쪽으로 움직이므로 높은 %쪽이 앞이다: 거기서 끊고 낮은 %쪽으로 꼬리를 끈다.
+     세로 여백은 뒀다가 없앴다 — 그라데이션은 요소 전체를 채우므로 위아래로 넘칠 이유가 없고,
+     그만큼 매 프레임 합성할 면적이 준다(카드 면적의 3.96배 → 1.8배). */
   background:linear-gradient(125deg,
-    transparent 34%,
-    color-mix(in srgb,var(--g-b,#888) 4%,  transparent) 41%,
-    color-mix(in srgb,var(--g-b,#888) 11%, transparent) 45%,
-    color-mix(in srgb,var(--g-b,#888) 19%, transparent) 48%,
-    color-mix(in srgb,var(--g-b,#888) 26%, transparent) 50%,
-    color-mix(in srgb,var(--g-b,#888) 19%, transparent) 52%,
-    color-mix(in srgb,var(--g-b,#888) 11%, transparent) 55%,
-    color-mix(in srgb,var(--g-b,#888) 4%,  transparent) 59%,
-    transparent 66%);
+    transparent 16%,
+    color-mix(in srgb,var(--g-b,#888) 3%,  transparent) 30%,
+    color-mix(in srgb,var(--g-b,#888) 7%,  transparent) 38%,
+    color-mix(in srgb,var(--g-b,#888) 13%, transparent) 44%,
+    color-mix(in srgb,var(--g-b,#888) 21%, transparent) 49%,
+    color-mix(in srgb,var(--g-b,#888) 30%, transparent) 52.5%,
+    color-mix(in srgb,var(--g-b,#888) 34%, transparent) 53.5%,
+    transparent 54.5%);
   mix-blend-mode:screen;
   transform:translateX(-70%);
   animation:cardSweep 6.5s cubic-bezier(.4,0,.5,1) infinite}

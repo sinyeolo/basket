@@ -374,7 +374,7 @@ button{font-family:var(--font)}
    6.5초 중 1.4초만 지나가고 나머지는 화면 밖에서 쉰다: 늘 움직이면 배경 무늬가 되고,
    가끔 지나가야 '빛이 스쳤다'로 읽힌다. */
 .cardFace .inner::after{
-  content:"";position:absolute;top:-60%;bottom:-60%;left:-40%;right:-40%;
+  content:"";position:absolute;top:0;bottom:0;left:-40%;right:-40%;
   z-index:6;pointer-events:none;
   /* 한 톤으로 된 띠가 아니라 여러 단으로 옅어지는 빛이다 — 가운데가 가장 밝고 양옆으로
      서서히 사라진다. 가장 밝은 곳도 26%까지만 둔다(예전 52%의 절반). 세 단으로 자르면
@@ -382,16 +382,20 @@ button{font-family:var(--font)}
   /* 사선 각도는 카드의 대각선과 같은 35도다(수직 기준). 카드가 270x378이라 대각선이 35.5도이고,
      그 각으로 두면 빛이 한 모서리로 들어와 반대 모서리로 빠져나가며 면 전체를 한 번에 훑는다.
      45도로 눕히면 세로로 긴 카드를 가로지르지 못하고 아래쪽에 고인 것처럼 보인다. */
+  /* 앞쪽(진행 방향)은 날이 서 있고 뒤로 길게 흐려진다(PO) — 실제로 표면을 스치는 빛이
+     그렇게 보인다. 좌우 대칭이면 '띠'가 되고, 한쪽이 날카로워야 '지나간다'가 된다.
+     빛은 오른쪽으로 움직이므로 높은 %쪽이 앞이다: 거기서 끊고 낮은 %쪽으로 꼬리를 끈다.
+     세로 여백은 뒀다가 없앴다 — 그라데이션은 요소 전체를 채우므로 위아래로 넘칠 이유가 없고,
+     그만큼 매 프레임 합성할 면적이 준다(카드 면적의 3.96배 → 1.8배). */
   background:linear-gradient(125deg,
-    transparent 34%,
-    color-mix(in srgb,var(--g-b) 4%,  transparent) 41%,
-    color-mix(in srgb,var(--g-b) 11%, transparent) 45%,
-    color-mix(in srgb,var(--g-b) 19%, transparent) 48%,
-    color-mix(in srgb,var(--g-b) 26%, transparent) 50%,
-    color-mix(in srgb,var(--g-b) 19%, transparent) 52%,
-    color-mix(in srgb,var(--g-b) 11%, transparent) 55%,
-    color-mix(in srgb,var(--g-b) 4%,  transparent) 59%,
-    transparent 66%);
+    transparent 16%,
+    color-mix(in srgb,var(--g-b) 3%,  transparent) 30%,
+    color-mix(in srgb,var(--g-b) 7%,  transparent) 38%,
+    color-mix(in srgb,var(--g-b) 13%, transparent) 44%,
+    color-mix(in srgb,var(--g-b) 21%, transparent) 49%,
+    color-mix(in srgb,var(--g-b) 30%, transparent) 52.5%,
+    color-mix(in srgb,var(--g-b) 34%, transparent) 53.5%,
+    transparent 54.5%);
   mix-blend-mode:screen;
   transform:translateX(-70%);
   animation:cardSweep 6.5s cubic-bezier(.4,0,.5,1) infinite}
