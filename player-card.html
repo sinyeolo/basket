@@ -64,11 +64,11 @@ button{font-family:var(--font)}
    heroFixed(헤더+카드)는 화면에 고정. sheet도 이제 화면 하단에 고정된 별도 레이어로,
    평소엔 헤드(핸들+이름)만 보이는 접힌 상태였다가, 헤드를 누르면 모바일 화면 전체를 채우며 펼쳐진다 */
 /* overflow:hidden — 빛줄기 레이어(.stageRays)가 화면보다 넓어서(220%) 그대로 두면 가로 스크롤이 생긴다 */
-/* 아래 끝을 화면 바닥까지 내리고, 시트 자리(74px)는 padding으로 비워 둔다.
+/* 아래 끝을 화면 바닥까지 내리고, 시트 자리(34px)는 padding으로 비워 둔다.
    예전엔 bottom:74px이라 그 선에서 overflow가 잘렸는데, 등장하는 동안에는 시트가 아직
    화면 밖에 있어서 '빈 공간 위의 선'에서 카드가 뚝 끊겨 보였다(실기기 영상에서 확인).
    padding으로 바꾸면 카드가 서는 자리는 그대로면서 잘리는 선만 기기 바닥으로 내려간다. */
-.heroFixed{position:fixed;top:0;left:0;right:0;bottom:0;padding-bottom:74px;z-index:1;overflow:hidden;display:flex;flex-direction:column;align-items:center;
+.heroFixed{position:fixed;top:0;left:0;right:0;bottom:0;padding-bottom:34px;z-index:1;overflow:hidden;display:flex;flex-direction:column;align-items:center;
   /* 배경 팀 컬러 틴트는 제거 — 카드 주변 등급 오라(.cardGlow)와 색이 겹쳐 서로 탁해졌다 */
   background:radial-gradient(circle at 50% -10%,var(--stage-bg2),var(--stage-bg) 60%)}
 
@@ -109,7 +109,7 @@ button{font-family:var(--font)}
   /* 카드 바깥 바탕은 밝은 회색(PO 판단으로 되돌림). 흰 카드가 그 위에 얹혀 모듈로 읽히되
      시트 전체는 밝은 표면으로 남는다 — 검정으로 두면 시트가 무대의 연장처럼 보였다. */
   position:fixed;left:0;right:0;bottom:0;z-index:3;background:var(--sh-bg);color:var(--sh-on);border-radius:var(--sheet-r,26px) var(--sheet-r,26px) 0 0;
-  box-shadow:0 -14px 32px rgba(0,0,0,.28);height:74px;overflow:hidden;
+  box-shadow:0 -14px 32px rgba(0,0,0,.28);height:34px;overflow:hidden;
   transform:translateY(110%);
   /* height는 더 이상 애니메이션하지 않는다 — 단계 이동은 전부 transform이 맡는다(goSheet).
      여기에 height가 남아 있으면 transform으로 다 옮겨 놓은 직후 클래스를 갈아 끼울 때
@@ -119,7 +119,7 @@ button{font-family:var(--font)}
 /* 100dvh — CSS가 100vh(툴바 숨김 기준 고정값)를 쓰면 JS의 window.innerHeight와 어긋나서,
    모바일에서 펼쳤을 때 시트가 화면보다 길어져 하단 내용에 닿지 못한다. dvh가 innerHeight와 일치한다.
    화면 전체를 덮는 상태라 위쪽 라운드도 없앤다 — 남겨두면 상단 스티키 헤더가 그 곡선에 잘려 보인다. */
-/* 시트는 3단이다: 접힘(74px) → 중간(50dvh) → 최상단(100dvh).
+/* 시트는 2단이다: 접힘(34px, 핸들만) → 최상단(100dvh).
    .sheet-open은 '접힘이 아닌' 두 단이 공유하는 성질(내용 스크롤·닫기 버튼·스티키 헤더)을 담고,
    높이와 라운드만 단계별로 다르다. */
 /* 시트는 어느 단계에서도 스크롤 컨테이너가 되지 않는다. 예전엔 여기가 auto라,
@@ -156,9 +156,9 @@ button{font-family:var(--font)}
    위쪽만 살짝 솟아오르는 것처럼 자연스럽게 보인다 */
 .sheet.sheet-nudge{animation:sheetNudge 5s cubic-bezier(.4,0,.2,1) infinite}
 @keyframes sheetNudge{
-  0%,20%,100%{height:74px}
-  5%,15%{height:86px}
-  10%{height:74px}
+  0%,20%,100%{height:34px}
+  5%,15%{height:46px}
+  10%{height:34px}
 }
 /* 핸들은 접힘·중간 단에서 보이고 최상단에서만 숨긴다.
    중간 단은 아직 더 올릴 수 있는 상태라 손잡이가 그 여지를 알려줘야 한다.
@@ -170,6 +170,14 @@ button{font-family:var(--font)}
   touch-action:none;cursor:pointer}
 .sheetHandle::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:rgba(0,0,0,.18)}
 .sheet.sheet-expanded .sheetHandle{display:none}
+/* 접힌 시트에서는 핸들만 보인다(PO, 레퍼런스: Sorare 스토리).
+   헤더와 본문은 끌어올린 만큼(--sheet-in) 드러난다 — 시트가 올라오는 동안 내용이 함께
+   차오르므로, 판이 먼저 서고 글자가 뒤늦게 나타나는 어색함이 없다.
+   opacity만 움직이므로 합성 단계에서 끝난다. */
+.sheetHead,
+.sheetBody{opacity:var(--sheet-in,0)}
+.sheet.sheet-expanded .sheetHead,
+.sheet.sheet-expanded .sheetBody{opacity:1}
 /* 접힌 상태에서 보이는 건 이 헤더뿐이다 — 검정이면 시트가 아니라 검은 띠로 보인다.
    첫 섹션과 같은 틴트를 써서 헤더부터 머리 블록까지 한 면으로 이어지게 한다. */
 .sheetHead{position:sticky;top:0;z-index:1;background:var(--sh-bg);padding:0 16px 4px;cursor:pointer;touch-action:none;
@@ -270,7 +278,7 @@ button{font-family:var(--font)}
     rgba(255,255,255,.42) 0%, rgba(255,255,255,.16) 32%, rgba(255,255,255,0) 62%);
   background-size:150% 300%;
   background-position:calc(50% + var(--lit-x,0px) * .2) calc(50% + var(--lit-y,0px) * .2);
-  box-shadow:0 0 0 1.5px rgba(255,255,255,.55),
+  box-shadow:0 0 0 1.5px rgba(255,255,255,.92),
              0 1px 1px rgba(0,0,0,.5),
              0 5px 10px rgba(0,0,0,.38);
   font-size:11px;font-weight:800;letter-spacing:.06em;line-height:1}
@@ -679,11 +687,11 @@ button{font-family:var(--font)}
   background-size:170% 170%;
   background-position:calc(50% + var(--lit-x,0px) * .2) calc(50% + var(--lit-y,0px) * .2);
   /* 스티커로 읽히게 하는 두 가지.
-     ① 오려낸 자국 — 흰 테두리다. 예전에 뺐다가 다시 넣되 얇고 옅게(1.5px·55%) 둔다.
+     ① 오려낸 자국 — 흰 테두리다. 예전에 뺐다가 다시 넣되 얇게(1.5px·92%) 둔다.
         솔리드 2px일 때는 테두리가 스티커보다 먼저 눈에 들어왔다.
      ② 접촉 그림자 — 바로 아래 짧고 진한 것 하나, 그 뒤로 길고 옅은 것 하나.
         길기만 한 그림자는 '떠 있는 물건'이고, 짧은 것이 함께 있어야 '붙어 있는 것'이 된다. */
-  box-shadow:0 0 0 1.5px rgba(255,255,255,.55),
+  box-shadow:0 0 0 1.5px rgba(255,255,255,.92),
              0 1px 1px rgba(0,0,0,.55),
              0 5px 10px rgba(0,0,0,.42);
   transform-style:preserve-3d;
@@ -1827,7 +1835,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     setTimeout(enterOnce, 1600);   // heroRiseIn보다 넉넉히 뒤 — 정상 경로에서는 이미 들어와 있다
   }
 
-  var COLLAPSED_H = 74; // .sheet 기본 height와 동일한 값
+  var COLLAPSED_H = 34; // 접힌 시트는 핸들만 보인다 — .sheet 기본 height와 같은 값
   function expandedH(){ return window.innerHeight; }
   function currentH(){ return sheet.getBoundingClientRect().height; }
 
@@ -1841,9 +1849,13 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
        드래그 중에는 클래스가 그대로라 각진 채로 내려오다가 손을 뗄 때 한 번에 둥글어졌다.
        끌리는 값에 그대로 매달아 두면 손가락을 따라 모서리가 자란다. */
     sheet.style.setProperty('--sheet-r', Math.round(SHEET_R * (1 - t)) + 'px');
+    /* 내용은 끌어올린 만큼 드러난다. 앞의 12%는 0으로 두고(핸들만 잡아 올리는 구간),
+       그 뒤로 차오르게 해서 손을 대자마자 글자가 번쩍이지 않게 한다. */
+    var vis = Math.min(1, Math.max(0, (t - 0.12) / 0.5));
+    sheet.style.setProperty('--sheet-in', vis.toFixed(3));
   }
 
-  /* 시트 2단 — 'collapsed'(74px) / 'full'(최상단). 중간 단은 없앴다(PO 판단) —
+  /* 시트 2단 — 'collapsed'(34px, 핸들만) / 'full'(최상단). 중간 단은 없앴다(PO 판단) —
      중간에서는 카드도 목록도 어중간해서 결국 한 번 더 올리게 되는 자리였다.
      높이는 클래스가 정하고(인라인 height는 지운다), 카드가 뒤로 빠지는 정도(--recede)만 여기서 맞춘다. */
   function stateH(st){ return st==='full' ? expandedH() : COLLAPSED_H; }
