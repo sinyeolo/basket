@@ -654,8 +654,19 @@ button{font-family:var(--font)}
   border-radius:50%;font-size:12px;font-weight:800;line-height:1;
   background:var(--g-b);color:var(--g-c);
   box-shadow:0 6px 12px rgba(0,0,0,.5), 0 2px 4px rgba(0,0,0,.35);
+  transform-style:preserve-3d;
   transform:translateZ(calc(var(--card-thick) / 2 + 14px)) rotate(-20deg);
   transition:opacity .26s ease-out}
+/* 스티커 두께 — 같은 원을 뒤로 1px씩 두 장 깔아 옆면을 만든다(카드 두께와 같은 방식).
+   28px 원에 2px면 종이 스티커의 두께로 읽힌다. 3px을 넘기면 붙인 스티커가 아니라
+   박아 넣은 단추처럼 보인다.
+   옆면은 앞면보다 어둡다 — 빛을 정면으로 받지 않는 면이니까.
+   면적이 28×28이라 카드 두께 겹 하나의 1.6%다. 무게로 칠 것이 못 된다. */
+.cfCaptain::before,
+.cfCaptain::after{content:"";position:absolute;inset:0;border-radius:50%;
+  background:color-mix(in srgb,var(--g-b) 66%, #000)}
+.cfCaptain::before{transform:translateZ(-1px)}
+.cfCaptain::after{transform:translateZ(-2px)}
 .cardInner.flipped .cfCaptain{opacity:0;transition:opacity .2s ease-in}
 .cfCaptain[hidden]{display:none}   /* display:inline-flex가 hidden 기본값을 덮는다 */
 .cf-name{font-size:26px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
