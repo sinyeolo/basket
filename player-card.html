@@ -108,14 +108,21 @@ button{font-family:var(--font)}
 .sheet{--sh-bg:#ffffff; --sh-bg2:#f4f5f7; --sh-border:#e7e8ec; --sh-on:#16171b; --sh-on-dim:#6d6f78;
   /* 카드 바깥 바탕은 밝은 회색(PO 판단으로 되돌림). 흰 카드가 그 위에 얹혀 모듈로 읽히되
      시트 전체는 밝은 표면으로 남는다 — 검정으로 두면 시트가 무대의 연장처럼 보였다. */
-  position:fixed;left:0;right:0;bottom:0;z-index:3;background:var(--sh-bg);color:var(--sh-on);border-radius:var(--sheet-r,26px) var(--sheet-r,26px) 0 0;
-  box-shadow:0 -14px 32px rgba(0,0,0,.28);height:34px;overflow:hidden;
+  position:fixed;left:0;right:0;bottom:0;z-index:3;color:var(--sh-on);border-radius:var(--sheet-r,26px) var(--sheet-r,26px) 0 0;
+  height:34px;overflow:hidden;
   transform:translateY(110%);
   /* height는 더 이상 애니메이션하지 않는다 — 단계 이동은 전부 transform이 맡는다(goSheet).
      여기에 height가 남아 있으면 transform으로 다 옮겨 놓은 직후 클래스를 갈아 끼울 때
      0.45초짜리 레이아웃 애니메이션이 한 번 더 돌아, 제스처 끝에서 다시 버벅인다. */
   transition:transform .8s cubic-bezier(.16,.8,.24,1), border-radius .3s ease}
 .sheet.sheet-visible{transform:translateY(0)}
+/* 흰 판은 끌어올린 만큼 나타난다(PO, 레퍼런스와 같은 방식) — 접혀 있을 때 무대 아래 흰 띠가
+   깔려 있으면 '아직 안 연 시트'가 아니라 '잘린 판'으로 보인다. 접힘 상태에서 보이는 건 핸들뿐이다.
+   판을 요소 자체의 background로 두면 투명도를 따로 못 주므로 뒤에 한 겹 깐다. */
+.sheet::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  background:var(--sh-bg);box-shadow:0 -14px 32px rgba(0,0,0,.28);
+  opacity:var(--sheet-in,0)}
+.sheet.sheet-expanded::before{opacity:1}
 /* 100dvh — CSS가 100vh(툴바 숨김 기준 고정값)를 쓰면 JS의 window.innerHeight와 어긋나서,
    모바일에서 펼쳤을 때 시트가 화면보다 길어져 하단 내용에 닿지 못한다. dvh가 innerHeight와 일치한다.
    화면 전체를 덮는 상태라 위쪽 라운드도 없앤다 — 남겨두면 상단 스티키 헤더가 그 곡선에 잘려 보인다. */
@@ -168,7 +175,10 @@ button{font-family:var(--font)}
    (여백을 margin이 아니라 padding으로 준 이유 — margin은 요소 바깥이라 이벤트가 닿지 않는다). */
 .sheetHandle{width:100%;padding:18px 0 12px;margin:0;display:flex;align-items:center;justify-content:center;
   touch-action:none;cursor:pointer}
-.sheetHandle::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:rgba(0,0,0,.18)}
+/* 핸들 막대는 바탕을 따라간다 — 접혀 있을 땐 어두운 무대 위라 흰색, 판이 올라오면 어두운 회색.
+   진행도(--sheet-in)로 두 색을 섞어 중간에 막대가 사라지는 구간이 없게 한다. */
+.sheetHandle::before{content:"";display:block;width:36px;height:4px;border-radius:2px;
+  background:color-mix(in srgb, rgba(0,0,0,.18) calc(var(--sheet-in,0) * 100%), rgba(255,255,255,.78))}
 .sheet.sheet-expanded .sheetHandle{display:none}
 /* 접힌 시트에서는 핸들만 보인다(PO, 레퍼런스: Sorare 스토리).
    헤더와 본문은 끌어올린 만큼(--sheet-in) 드러난다 — 시트가 올라오는 동안 내용이 함께
@@ -291,11 +301,12 @@ button{font-family:var(--font)}
 /* 등장이 끝나면 잘라내기를 푼다 — clip-path가 걸려 있는 동안에는 3D가 평평해져서
    아래 두께 겹이 깊이를 못 갖는다. 등장에만 필요한 값이므로 끝나면 없앤다. */
 .updateBadge.is-set{clip-path:none;transform-style:preserve-3d;
-  transform:translateZ(22px);animation:none;transition:opacity .26s ease-out}
+  transform:translateZ(22px);animation:none;transition:opacity .22s ease-out .3s}
 /* 두께 — 같은 모양을 뒤로 1px씩 두 장(캡틴 스티커와 같은 방식).
    옆면은 앞면보다 어둡다. */
 .updateBadge.is-set::before,
 .updateBadge.is-set::after{content:"";position:absolute;inset:0;border-radius:100px;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
   background:color-mix(in srgb,var(--brand) 62%, #000)}
 .updateBadge.is-set::before{transform:translateZ(-1px)}
 .updateBadge.is-set::after{transform:translateZ(-2px)}
@@ -696,21 +707,27 @@ button{font-family:var(--font)}
              0 5px 10px rgba(0,0,0,.42);
   transform-style:preserve-3d;
   transform:translateZ(calc(var(--card-thick) / 2 + 14px)) rotate(-20deg);
-  transition:opacity .26s ease-out}
+  /* 돌아올 때는 카드가 90도를 지난 뒤에 나타난다(.3s 지연) — 뒤집기가 .55s이므로 절반쯤이다.
+     지연이 없으면 아직 뒤를 보이는 동안 글자가 먼저 켜져 뒤집힌 채로 비친다. */
+  transition:opacity .22s ease-out .3s}
 /* 스티커 두께 — 같은 원을 뒤로 1px씩 두 장 깔아 옆면을 만든다(카드 두께와 같은 방식).
    28px 원에 2px면 종이 스티커의 두께로 읽힌다. 3px을 넘기면 붙인 스티커가 아니라
    박아 넣은 단추처럼 보인다.
    옆면은 앞면보다 어둡다 — 빛을 정면으로 받지 않는 면이니까.
    면적이 28×28이라 카드 두께 겹 하나의 1.6%다. 무게로 칠 것이 못 된다. */
+/* backface-visibility — 두께 겹은 제 앞쪽을 볼 때만 그린다.
+   없으면 카드가 90도를 넘어간 뒤 앞뒤 순서가 뒤집혀 이 불투명한 원들이 글자를 덮는다.
+   그래서 돌아올 때 글자가 없다가 90도를 지나는 순간 툭 나타났다(실제로 그랬다). */
 .cfCaptain::before,
 .cfCaptain::after{content:"";position:absolute;inset:0;border-radius:50%;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
   background:color-mix(in srgb,var(--g-b) 66%, #000)}
 .cfCaptain::before{transform:translateZ(-1px)}
 .cfCaptain::after{transform:translateZ(-2px)}
 /* 스티커는 카드에 붙은 물건이다 — 카드가 돌면 함께 돌고, 뒤를 보이기 전에 사라진다.
    UPDATE 뱃지도 같은 규칙이다(PO): 모든 스티커에 공통. */
 .cardInner.flipped .cfCaptain,
-.cardInner.flipped .updateBadge{opacity:0;transition:opacity .2s ease-in}
+.cardInner.flipped .updateBadge{opacity:0;transition:opacity .18s ease-in 0s}
 .cfCaptain[hidden]{display:none}   /* display:inline-flex가 hidden 기본값을 덮는다 */
 .cf-name{font-size:26px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
 /* 영문 이름 — 전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다.
