@@ -62,7 +62,7 @@
      명도만 내려 4.9:1을 맞춘다. 점·토글처럼 글자를 얹지 않는 곳은 --green을 그대로 쓴다. */
   --win:#22c55e; --on-win:#ffffff;   /* 승리 — 밝은 초록 하나로 통일(PO 지정). 흰 글자는 2.3:1이라 AA 미달 */
   --home:#3b82f6; --away:#ef4444;
-  --r-btn:100px; --r-card:16px; --r-chip:8px; --card-thick:10px;   /* 16에서 37% 얇게(PO) */
+  --r-btn:100px; --r-card:16px; --r-chip:8px; --card-thick:6px;   /* 16 → 10 → 6px로 얇게(PO) */
   /* 컨트롤 높이 3단계 — 이전엔 36/38/40/42/44px가 뒤섞여 있어 정렬이 미세하게 어긋났습니다 */
   --h-sm:40px; --h-md:44px; --h-lg:52px;
   /* 섹션·카드는 플랫(그림자 없음)으로 통일. --e1/--e2는 버튼, --e3는 오버레이(드롭다운·다이얼로그)에만 사용 */
@@ -1523,10 +1523,11 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdBackGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 /* 아래 최근 경기 행(.pdBackGameRow)과 같은 배경·라인·라운드 — 뒷면의 두 블록이 한 벌로 읽히게 */
 /* 선 없이 면으로만(PO, 선수 카드와 같은 규칙) */
-.pdBackStat{backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);text-align:center;background:rgba(255,255,255,.10);border-radius:12px;padding:10px 4px}
+/* 블러 대신 흰 면 10%(PO, 선수 카드와 같은 규칙) */
+.pdBackStat{text-align:center;background:rgba(255,255,255,.10);border-radius:12px;padding:10px 4px}
 .pdBackStat b{font-family:var(--font-display);display:block;font-size:20px;font-weight:800}
 .pdBackStat span{font-size:11px;color:rgba(255,255,255,.5)}
-.pdBackGameRow{backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.10);border:none;
+.pdBackGameRow{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.10);border:none;
   border-radius:12px;padding:11px 14px;font-size:13px;color:rgba(255,255,255,.65)}
 /* 최근 경기 행 묶음 — 예전엔 행에 margin-top:8px을 줬는데, 부모(.in)가 flex gap:14px이라
    14+8=22px로 벌어졌다. 행들을 자체 컨테이너로 묶어 그 안에서만 6px로 붙인다
@@ -4897,8 +4898,8 @@ function renderPlayerDetail(){
           '<div class="holoGrain" aria-hidden="true"></div>'+
           backBody+
         '</div></div>'+
-        // 두께 — 앞면(+5px)과 뒷면(-5px) 사이를 3px 간격으로 채운 같은 라운드의 면 넷
-        [-4.5,-1.5,1.5,4.5].map(function(z){
+        // 두께 — 앞면(+3px)과 뒷면(-3px) 사이를 2px 간격으로 채운 같은 라운드의 면 셋
+        [-2,0,2].map(function(z){
           return '<div class="pdEdge" aria-hidden="true" style="transform:translateZ('+z+'px)"></div>';
         }).join('')+
       '</div>'+
