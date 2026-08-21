@@ -396,7 +396,10 @@ button{font-family:var(--font)}
     color-mix(in srgb,var(--g-b) 30%, transparent) 52.5%,
     color-mix(in srgb,var(--g-b) 34%, transparent) 53.5%,
     transparent 54.5%);
-  mix-blend-mode:screen;
+  /* 섞지 않고 그대로 덮어 그린다. screen은 밝은 곳에서 아무 일도 하지 않는다 —
+     앞으로 카드에는 어린이 경기 사진이 들어가고 그 사진은 대체로 밝다(PO).
+     검은 무대에서만 보이는 빛은 쓸 수 없다. 덮어 그리면 어두운 사진에서도, 밝은 사진에서도
+     같은 세기로 지나간다. 합성 레이어가 하나 줄어드는 것은 덤이다. */
   transform:translateX(-70%);
   animation:cardSweep 6.5s cubic-bezier(.4,0,.5,1) infinite}
 @keyframes cardSweep{
