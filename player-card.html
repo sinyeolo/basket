@@ -624,14 +624,20 @@ button{font-family:var(--font)}
    ② 앞면보다 6px 앞에 세울 수 있다 — 앞면 안에서는 잘라내기(overflow+mask) 탓에
       3D가 평평해져 띄울 수가 없다.
    뒷면에는 붙을 자리가 없으므로 뒤집히면 backface-visibility가 알아서 감춘다. */
+/* 카드 면보다 14px 앞에 뜬다 — UPDATE 뱃지처럼 카드 위에 얹힌 물건으로 읽히게 한다.
+   그림자도 함께 키워야 그 높이가 보인다: 뜬 만큼 그림자는 멀어지고 퍼진다.
+
+   사라지는 방식 — backface-visibility로 끊으면 90도에서 툭 없어진다. 뒤집기 전환(.55s)에
+   맞춰 앞의 절반 동안 서서히 흐려지게 했다. 카드가 옆을 보일 즈음엔 이미 사라져 있다. */
 .cfCaptain{position:absolute;right:14px;bottom:69px;pointer-events:none;
   display:inline-flex;align-items:center;justify-content:center;
   width:28px;height:28px;flex:none;
   border-radius:50%;font-size:12px;font-weight:800;line-height:1;
   background:var(--g-b);color:var(--g-c);
-  box-shadow:0 2px 5px rgba(0,0,0,.45);
-  backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  transform:translateZ(calc(var(--card-thick) / 2 + 6px)) rotate(-20deg)}
+  box-shadow:0 6px 12px rgba(0,0,0,.5), 0 2px 4px rgba(0,0,0,.35);
+  transform:translateZ(calc(var(--card-thick) / 2 + 14px)) rotate(-20deg);
+  transition:opacity .26s ease-out}
+.cardInner.flipped .cfCaptain{opacity:0;transition:opacity .2s ease-in}
 .cfCaptain[hidden]{display:none}   /* display:inline-flex가 hidden 기본값을 덮는다 */
 .cf-name{font-size:26px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
 /* 영문 이름 — 전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다.
