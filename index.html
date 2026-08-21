@@ -1244,7 +1244,10 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdFace .in::after{
   content:"";position:absolute;top:-60%;bottom:-60%;left:-40%;right:-40%;
   z-index:6;pointer-events:none;
-  background:linear-gradient(104deg,
+  /* 사선 각도는 카드의 대각선과 같은 35도다(수직 기준). 카드가 270x378이라 대각선이 35.5도이고,
+     그 각으로 두면 빛이 한 모서리로 들어와 반대 모서리로 빠져나가며 면 전체를 한 번에 훑는다.
+     45도로 눕히면 세로로 긴 카드를 가로지르지 못하고 아래쪽에 고인 것처럼 보인다. */
+  background:linear-gradient(125deg,
     transparent 34%,
     color-mix(in srgb,var(--g-b,#888) 4%,  transparent) 41%,
     color-mix(in srgb,var(--g-b,#888) 11%, transparent) 45%,
