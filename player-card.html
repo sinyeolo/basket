@@ -291,7 +291,7 @@ button{font-family:var(--font)}
 /* 등장이 끝나면 잘라내기를 푼다 — clip-path가 걸려 있는 동안에는 3D가 평평해져서
    아래 두께 겹이 깊이를 못 갖는다. 등장에만 필요한 값이므로 끝나면 없앤다. */
 .updateBadge.is-set{clip-path:none;transform-style:preserve-3d;
-  transform:translateZ(22px);animation:none}
+  transform:translateZ(22px);animation:none;transition:opacity .26s ease-out}
 /* 두께 — 같은 모양을 뒤로 1px씩 두 장(캡틴 스티커와 같은 방식).
    옆면은 앞면보다 어둡다. */
 .updateBadge.is-set::before,
@@ -707,7 +707,10 @@ button{font-family:var(--font)}
   background:color-mix(in srgb,var(--g-b) 66%, #000)}
 .cfCaptain::before{transform:translateZ(-1px)}
 .cfCaptain::after{transform:translateZ(-2px)}
-.cardInner.flipped .cfCaptain{opacity:0;transition:opacity .2s ease-in}
+/* 스티커는 카드에 붙은 물건이다 — 카드가 돌면 함께 돌고, 뒤를 보이기 전에 사라진다.
+   UPDATE 뱃지도 같은 규칙이다(PO): 모든 스티커에 공통. */
+.cardInner.flipped .cfCaptain,
+.cardInner.flipped .updateBadge{opacity:0;transition:opacity .2s ease-in}
 .cfCaptain[hidden]{display:none}   /* display:inline-flex가 hidden 기본값을 덮는다 */
 .cf-name{font-size:26px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
 /* 영문 이름 — 전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다.
@@ -889,6 +892,25 @@ button{font-family:var(--font)}
 .hint{max-width:280px;margin:10px auto 0;text-align:center;font-size:13px;color:var(--on-dark-dim);
   background:#15171d;border:1px solid #2a2d36;border-radius:14px;padding:9px 14px;transition:opacity .3s}
 .hint.hide{opacity:0;pointer-events:none}
+/* ---- 시트 안내 한 줄 ----
+   접힌 시트는 핸들뿐이라 무엇을 하는 자리인지 말해 주는 글이 필요하다(레퍼런스도 같은 자리에 둔다).
+   계속 떠 있으면 배경 글자가 되므로, 나타났다 사라지기를 되풀이해 눈에 걸리게 한다.
+   6초 한 바퀴: 0.7초 나타나 2.6초 머물고 0.8초 사라진 뒤 1.9초 쉰다.
+   opacity만 움직이므로 합성 단계에서 끝난다. */
+.sheetHint{position:absolute;left:0;right:0;bottom:46px;margin:0;z-index:2;pointer-events:none;
+  text-align:center;font-size:11px;font-weight:500;letter-spacing:.01em;
+  color:rgba(255,255,255,.5);
+  animation:sheetHintLoop 6s ease-in-out infinite}
+@keyframes sheetHintLoop{
+  0%    {opacity:0}
+  12%   {opacity:1}
+  55%   {opacity:1}
+  68%   {opacity:0}
+  100%  {opacity:0}
+}
+/* 시트를 올리기 시작하면 할 일을 다 한 글이다 — 바로 사라진다 */
+.stage:has(.sheet.sheet-open) .sheetHint{animation:none;opacity:0}
+@media (prefers-reduced-motion:reduce){ .sheetHint{animation:none;opacity:.6} }
 
 /* 핵심 요약 스트립 — 시트 안에서만 쓰여서 화이트 테마로 바로 정의 */
 /* 요약 스트립만 반전 — 시트 전체가 흰 면이라 네 수치가 다른 카드들과 같은 무게로 흩어졌다.
@@ -1181,13 +1203,13 @@ button{font-family:var(--font)}
               <div class="backNote" id="backUpdated">update 2026.07.23 13:20</div>
             </div>
           </div>
-          <!-- 두께 — 앞면(+8px)과 뒷면(-8px) 사이를 2px 간격으로 채운 같은 라운드의 면들 -->
+          <!-- 두께 — 앞면(+3px)과 뒷면(-3px) 사이를 2px 간격으로 채운 같은 라운드의 면 셋 -->
           <div class="cardEdge" aria-hidden="true" style="transform:translateZ(-2px)"></div>
           <div class="cardEdge" aria-hidden="true" style="transform:translateZ(0px)"></div>
           <div class="cardEdge" aria-hidden="true" style="transform:translateZ(2px)"></div>
           <span class="cfCaptain" id="fCaptain" title="팀 주장" aria-label="팀 주장" hidden>C</span>
+          <span class="updateBadge" id="updateBadge" hidden>UPDATE</span>
         </div>
-        <span class="updateBadge" id="updateBadge" hidden>UPDATE</span>
       </div>
     </div>
     </div>
@@ -1199,6 +1221,7 @@ button{font-family:var(--font)}
       <button type="button" class="btn-text" id="btnFlip" aria-label="카드 뒤집어서 기록 보기"></button>
     </div>
     </div>
+    <p class="sheetHint" id="sheetHint" aria-hidden="true">위로 끌어올려 기록을 확인해요</p>
   </div>
 
   <!-- ============ 화면 하단에 고정된 정보 시트 — 평소엔 헤드만 보이다가, 헤드를 누르면 전체 화면으로 펼쳐짐 ============ -->
