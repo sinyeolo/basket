@@ -276,7 +276,18 @@ a.nitem:visited{color:inherit}
 svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* 아이콘 공통 규격 — 24 viewBox / stroke 2 / currentColor / round cap.
    텍스트 화살표(←, →, ▾, ↶)를 쓰면 폰트마다 굵기·정렬이 달라져 아이콘과 따로 놀기 때문에 전부 SVG로 통일 */
-.ic{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* 아이콘 스타일 = Material Symbols의 Sharp 계열(PO 확정 2026-08-21).
+   끝과 모서리를 둥글리지 않는다 — BASKET 워드마크가 모서리 없는 블록 서체라
+   round cap 아이콘과는 성격이 반대다. 직접 그린 아이콘도 이 규칙을 따른다. */
+.ic{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter}
+/* ---- 농구 특화 아이콘은 예외 ----
+   공·이음새처럼 곡선이 본체인 그림은 끝을 각지게 자르면 잘려 보인다.
+   Sharp 규칙(끝·모서리를 둥글리지 않음)은 UI 아이콘에만 적용하고,
+   농구 그림은 제 성질대로 둥근 끝을 유지한다(PO). */
+.ic-ball,
+.ball,
+.ic-ball *,
+.ball *{stroke-linecap:round;stroke-linejoin:round}
 .ic-sm{width:15px;height:15px}
 .ic-lg{width:20px;height:20px}
 /* ============ M3 Navigation Rail (접힘 상태) ============
@@ -557,7 +568,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
   background:var(--surface);border-radius:20px;box-shadow:0 18px 44px rgba(0,0,0,.22)}
 .pauseCard .pcIcon{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;
   background:var(--red-c);color:var(--on-red-c)}
-.pauseCard .pcIcon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round}
+.pauseCard .pcIcon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:butt}
 .pauseCard h2{font-size:16px;font-weight:800;letter-spacing:-.02em}
 .pauseCard p{font-size:13px;line-height:1.55;color:var(--on-surface-variant)}
 .pauseCard .btn{margin-top:6px;padding:0 22px}
@@ -1751,7 +1762,7 @@ body.modal-open{overflow:hidden}
 .ft-row.locked button{background:var(--surface-variant);color:var(--on-surface-variant);opacity:.45;cursor:default}
 .cf-head{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
 .cf-icon{display:flex;align-items:center;justify-content:center;flex:none;width:40px;height:40px;border-radius:50%}
-.cf-icon .ic{width:22px;height:22px;stroke:currentColor;fill:none;stroke-linecap:round}
+.cf-icon .ic{width:22px;height:22px;stroke:currentColor;fill:none;stroke-linecap:butt}
 .cf-ask{background:var(--surface-variant);color:var(--on-surface-variant)}
 .cf-alert{background:#fdf0d5;color:#8a5a00}
 .cf-danger{background:var(--red-c);color:var(--on-red-c)}
@@ -1946,7 +1957,7 @@ body.modal-open{overflow:hidden}
     </div>
     <span class="flexspace"></span>
     <button type="button" class="hamburger" id="mobileNavToggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mainNav">
-      <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <svg class="ic" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2"/></svg>
     </button>
   </div>
   <div class="nav-backdrop" id="navBackdrop"></div>
@@ -1954,7 +1965,7 @@ body.modal-open{overflow:hidden}
   <!-- ============ NAV (left, single shared instance) — 향후 <Sidebar/> 컴포넌트 ============ -->
   <aside class="nav" id="mainNav" aria-label="주요 메뉴">
     <button class="nav-toggle" id="navToggle" aria-label="메뉴 접기/펼치기" aria-expanded="true" title="메뉴 접기/펼치기">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2"/></svg>
     </button>
 
     <!-- 대회 전환 드롭다운 — GNB '대회 관리' 1티어 대신, 여러 대회를 오가는 게 더 잦은 동작이라 상단 스위처에서
@@ -1986,9 +1997,9 @@ body.modal-open{overflow:hidden}
       <div class="pmenu" role="menu" aria-label="계정 메뉴">
         <button type="button" class="mi" role="menuitem" id="pMenuProfile"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke-width="2"/><path d="M4 20a8 8 0 0116 0" stroke-width="2"/></svg>내 프로필</button>
         <button type="button" class="mi" role="menuitem" id="pMenuAccount"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke-width="2"/><path d="M19.4 15a7.9 7.9 0 000-6l1.6-1.3-2-3.4-2 .9a7.9 7.9 0 00-5-2L12 1H8l-.1 2.3a7.9 7.9 0 00-5 2L1 4.4l-2 3.4" stroke-width="1.6"/></svg>계정 설정</button>
-        <button type="button" class="mi" role="menuitem" id="pMenuSettings"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>설정</button>
+        <button type="button" class="mi" role="menuitem" id="pMenuSettings"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke-width="2"/></svg>설정</button>
         <div class="div"></div>
-        <button type="button" class="mi danger" role="menuitem" id="pMenuLogout"><svg viewBox="0 0 24 24" fill="none"><path d="M15 12H4M11 8l-4 4 4 4M20 4v16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>로그아웃</button>
+        <button type="button" class="mi danger" role="menuitem" id="pMenuLogout"><svg viewBox="0 0 24 24" fill="none"><path d="M15 12H4M11 8l-4 4 4 4M20 4v16" stroke-width="2"/></svg>로그아웃</button>
       </div>
     </div>
     <div class="brand">
@@ -2460,9 +2471,9 @@ body.modal-open{overflow:hidden}
       <div class="chipset" id="pPos2"></div>
     </div>
     <div class="field fieldrow">
-      <div><label for="pNo">등번호</label><div class="numfield"><input id="pNo" type="number" placeholder="7" min="0" max="99"><span class="numsteps"><button type="button" class="numstep up" data-target="pNo" aria-label="등번호 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="numstep down" data-target="pNo" aria-label="등번호 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></span></div></div>
-      <div><label for="pH">신장 (cm)</label><div class="numfield"><input id="pH" type="number" placeholder="178"><span class="numsteps"><button type="button" class="numstep up" data-target="pH" aria-label="신장 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="numstep down" data-target="pH" aria-label="신장 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></span></div></div>
-      <div><label for="pW">체중 (kg)</label><div class="numfield"><input id="pW" type="number" placeholder="72"><span class="numsteps"><button type="button" class="numstep up" data-target="pW" aria-label="체중 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" class="numstep down" data-target="pW" aria-label="체중 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button></span></div></div>
+      <div><label for="pNo">등번호</label><div class="numfield"><input id="pNo" type="number" placeholder="7" min="0" max="99"><span class="numsteps"><button type="button" class="numstep up" data-target="pNo" aria-label="등번호 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="pNo" aria-label="등번호 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
+      <div><label for="pH">신장 (cm)</label><div class="numfield"><input id="pH" type="number" placeholder="178"><span class="numsteps"><button type="button" class="numstep up" data-target="pH" aria-label="신장 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="pH" aria-label="신장 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
+      <div><label for="pW">체중 (kg)</label><div class="numfield"><input id="pW" type="number" placeholder="72"><span class="numsteps"><button type="button" class="numstep up" data-target="pW" aria-label="체중 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="pW" aria-label="체중 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
     </div>
     <div class="field">
       <button type="button" class="check-row" id="pCaptain" role="checkbox" aria-checked="false">
@@ -2664,23 +2675,23 @@ var ICONS = {
   // 득점 성공 표시 — 색 점 대신 무엇이 일어났는지 그림으로 바로 읽힌다
   pauseFill: '<rect x="8" y="5" width="3.2" height="14" rx="1"/><rect x="13" y="5" width="3.2" height="14" rx="1"/>',
   ballFill: '<circle cx="12" cy="12" r="9" fill="#e06a26" stroke="none"/>'+
-        '<path d="M12 3v18M3.2 12h17.6M5.6 5.6c3.4 3.4 3.4 9.4 0 12.8M18.4 5.6c-3.4 3.4-3.4 9.4 0 12.8" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".9"/>',
+        '<path d="M12 3v18M3.2 12h17.6M5.6 5.6c3.4 3.4 3.4 9.4 0 12.8M18.4 5.6c-3.4 3.4-3.4 9.4 0 12.8" stroke="#fff" stroke-width="1.2" fill="none" opacity=".9"/>',
   // 다이얼로그 헤더 아이콘 — 무엇을 묻는 상황인지 한눈에
-  alert: '<path d="M12 8v5" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="17" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9" stroke-width="2"/>',
-  ask:   '<path d="M9.5 9.2a2.6 2.6 0 115 .9c-.4 1-1.4 1.4-2 2.1-.4.5-.5 1-.5 1.6" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="17.4" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9" stroke-width="2"/>',
-  danger:'<path d="M12 9.5v4" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="16.8" r="1.3" fill="currentColor" stroke="none"/><path d="M10.3 3.9L2.6 17.2A2 2 0 004.3 20h15.4a2 2 0 001.7-2.8L13.7 3.9a2 2 0 00-3.4 0z" stroke-width="2" stroke-linejoin="round"/>',
-  checkOk:'<circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M8.2 12.3l2.6 2.6 5-5.2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>',
+  alert: '<path d="M12 8v5" stroke-width="2.4"/><circle cx="12" cy="17" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9" stroke-width="2"/>',
+  ask:   '<path d="M9.5 9.2a2.6 2.6 0 115 .9c-.4 1-1.4 1.4-2 2.1-.4.5-.5 1-.5 1.6" stroke-width="2.2"/><circle cx="12" cy="17.4" r="1.3" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9" stroke-width="2"/>',
+  danger:'<path d="M12 9.5v4" stroke-width="2.4"/><circle cx="12" cy="16.8" r="1.3" fill="currentColor" stroke="none"/><path d="M10.3 3.9L2.6 17.2A2 2 0 004.3 20h15.4a2 2 0 001.7-2.8L13.7 3.9a2 2 0 00-3.4 0z" stroke-width="2"/>',
+  checkOk:'<circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M8.2 12.3l2.6 2.6 5-5.2" stroke-width="2.4"/>',
   dashboard: '<rect x="3" y="3" width="7" height="9" rx="1.5" stroke-width="2"/><rect x="14" y="3" width="7" height="5" rx="1.5" stroke-width="2"/><rect x="14" y="12" width="7" height="9" rx="1.5" stroke-width="2"/><rect x="3" y="16" width="7" height="5" rx="1.5" stroke-width="2"/>',
-  tournament: '<path d="M8 21h8M12 17v4M4 4h16v9a4 4 0 01-4 4H8a4 4 0 01-4-4V4z" stroke-width="2" stroke-linecap="round"/>',
-  shield: '<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke-width="2" stroke-linejoin="round"/>',
-  team: '<circle cx="9" cy="8" r="3" stroke-width="2"/><path d="M3 20a6 6 0 0112 0M16 6a3 3 0 010 6M21 20a5 5 0 00-4-5" stroke-width="2" stroke-linecap="round"/>',
-  schedule: '<rect x="3" y="4" width="18" height="17" rx="2" stroke-width="2"/><path d="M3 9h18M8 2v4M16 2v4" stroke-width="2" stroke-linecap="round"/>',
+  tournament: '<path d="M8 21h8M12 17v4M4 4h16v9a4 4 0 01-4 4H8a4 4 0 01-4-4V4z" stroke-width="2"/>',
+  shield: '<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke-width="2"/>',
+  team: '<circle cx="9" cy="8" r="3" stroke-width="2"/><path d="M3 20a6 6 0 0112 0M16 6a3 3 0 010 6M21 20a5 5 0 00-4-5" stroke-width="2"/>',
+  schedule: '<rect x="3" y="4" width="18" height="17" rx="2" stroke-width="2"/><path d="M3 9h18M8 2v4M16 2v4" stroke-width="2"/>',
   record: '<circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M12 3a9 9 0 000 18M3 12h18" stroke-width="2"/>',
-  review: '<path d="M9 12l2 2 4-4M4 5h16v14H4z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
-  content: '<rect x="3" y="5" width="18" height="14" rx="2" stroke-width="2"/><circle cx="8.5" cy="10" r="1.5" stroke-width="2"/><path d="M21 16l-5-4-8 6" stroke-width="2" stroke-linecap="round"/>',
-  stats: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-width="2" stroke-linecap="round"/>',
-  cheer: '<path d="M20 13c0 5-8 8-8 8s-8-3-8-8V6l8-3 8 3v7z" stroke-width="2" stroke-linejoin="round"/>',
-  settings: '<circle cx="12" cy="12" r="3" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  review: '<path d="M9 12l2 2 4-4M4 5h16v14H4z" stroke-width="2"/>',
+  content: '<rect x="3" y="5" width="18" height="14" rx="2" stroke-width="2"/><circle cx="8.5" cy="10" r="1.5" stroke-width="2"/><path d="M21 16l-5-4-8 6" stroke-width="2"/>',
+  stats: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke-width="2"/>',
+  cheer: '<path d="M20 13c0 5-8 8-8 8s-8-3-8-8V6l8-3 8 3v7z" stroke-width="2"/>',
+  settings: '<circle cx="12" cy="12" r="3" stroke-width="2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke-width="2"/>',
   // --- UI 공통 아이콘 (stroke는 .ic 클래스에서 일괄 지정) ---
   undo: '<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 010 12h-3"/>',
   arrowLeft: '<path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/>',
@@ -2692,17 +2703,17 @@ var ICONS = {
   swap: '<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
   timer: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/>',
   pause: '<path d="M9 5v14M15 5v14"/>',
-  play: '<path d="M7 4.5l12 7.5-12 7.5z" stroke-linejoin="round"/>',
+  play: '<path d="M7 4.5l12 7.5-12 7.5z"/>',
   check: '<path d="M4 12.5l5 5L20 6.5"/>',
   edit: '<path d="M4 20h4l10.5-10.5a2.1 2.1 0 10-3-3L5 17v3z"/>',
   trash: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
-  download: '<path d="M12 3v12M8 11l4 4 4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
-  upload: '<path d="M12 17V5M8 9l4-4 4 4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  download: '<path d="M12 3v12M8 11l4 4 4-4M5 21h14" stroke="currentColor" stroke-width="2"/>',
+  upload: '<path d="M12 17V5M8 9l4-4 4 4M5 21h14" stroke="currentColor" stroke-width="2"/>',
   camera: '<rect x="3" y="6" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="13" r="3.2" stroke="currentColor" stroke-width="2"/><path d="M8 6l1.5-2h5L16 6" stroke="currentColor" stroke-width="2"/>',
-  grid: '<path d="M4 4h5M20 4h-5M4 20h5M20 20h-5M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+  grid: '<path d="M4 4h5M20 4h-5M4 20h5M20 20h-5M8 12h8" stroke="currentColor" stroke-width="2"/>',
   export: '<path d="M4 4h16v16H4zM4 9h16M9 9v11" stroke="currentColor" stroke-width="2"/>',
-  share: '<path d="M14 4h6v6M20 4L10 14M19 13v6a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
-  crown: '<path d="M4 18h16M4 18l-1-9 5 4 4-7 4 7 5-4-1 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'
+  share: '<path d="M14 4h6v6M20 4L10 14M19 13v6a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1h6" stroke="currentColor" stroke-width="2"/>',
+  crown: '<path d="M4 18h16M4 18l-1-9 5 4 4-7 4 7 5-4-1 9" stroke="currentColor" stroke-width="2"/>'
 };
 function icon(key, cls){ return '<svg class="'+(cls||'')+'" viewBox="0 0 24 24" fill="none" aria-hidden="true">'+ICONS[key]+'</svg>'; }
 
@@ -4666,7 +4677,7 @@ function playerSilhouetteSvg(playerId){
   var keys = Object.keys(PLAYER_SIL_POSES), h = 0;
   for(var i=0;i<playerId.length;i++){ h = (h*31 + playerId.charCodeAt(i)) >>> 0; }
   var pose = keys[h % keys.length];
-  return '<svg viewBox="0 0 100 140"><g fill="currentColor" stroke="rgba(0,0,0,.4)" stroke-width="1.5" stroke-linejoin="round">'+
+  return '<svg viewBox="0 0 100 140"><g fill="currentColor" stroke="rgba(0,0,0,.4)" stroke-width="1.5">'+
     '<circle cx="50" cy="17" r="12"/><path d="M38,32 C38,29 62,29 62,32 L65,78 C65,84 35,84 35,78 Z"/>'+
     PLAYER_SIL_POSES[pose]+'</g></svg>';
 }
