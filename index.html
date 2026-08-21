@@ -62,7 +62,7 @@
      명도만 내려 4.9:1을 맞춘다. 점·토글처럼 글자를 얹지 않는 곳은 --green을 그대로 쓴다. */
   --win:#22c55e; --on-win:#ffffff;   /* 승리 — 밝은 초록 하나로 통일(PO 지정). 흰 글자는 2.3:1이라 AA 미달 */
   --home:#3b82f6; --away:#ef4444;
-  --r-btn:100px; --r-card:16px; --r-chip:8px; --card-thick:16px;
+  --r-btn:100px; --r-card:16px; --r-chip:8px; --card-thick:10px;   /* 16에서 37% 얇게(PO) */
   /* 컨트롤 높이 3단계 — 이전엔 36/38/40/42/44px가 뒤섞여 있어 정렬이 미세하게 어긋났습니다 */
   --h-sm:40px; --h-md:44px; --h-lg:52px;
   /* 섹션·카드는 플랫(그림자 없음)으로 통일. --e1/--e2는 버튼, --e3는 오버레이(드롭다운·다이얼로그)에만 사용 */
@@ -1300,7 +1300,8 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    예전엔 네 변에 직사각형 띠를 세웠는데, 띠가 라운드 구간(네 모서리)을 비워 놓는 구조라
    기울이면 직선부에만 두께가 보이고 모서리에서 실루엣이 끊겨 라운드가 어긋나 보였다.
    (선수 카드 player-card.html의 .cardEdge와 같은 방식) */
-.pdEdge{position:absolute;inset:0;border-radius:20px;backface-visibility:hidden;pointer-events:none;
+/* backface-visibility 없음 — 두면 뒤집었을 때 옆면이 통째로 사라진다(선수 카드와 같은 이유) */
+.pdEdge{position:absolute;inset:0;border-radius:20px;pointer-events:none;
   background:linear-gradient(160deg,var(--g-b,#ccc),var(--g-a,#999) 55%,var(--g-c,#20232b))}
 /* 시즌 평균 패널 — 화면 크기와 무관하게 항상 노출(카드를 안 뒤집어도 바로 보이게), 카드 뒷면과 일부 중복이지만 의도된 구성 */
 /* 섹션 간격은 블록마다 적지 않고 형제 사이 규칙 하나로 둔다.
@@ -4896,8 +4897,8 @@ function renderPlayerDetail(){
           '<div class="holoGrain" aria-hidden="true"></div>'+
           backBody+
         '</div></div>'+
-        // 두께 — 앞면(+8px)과 뒷면(-8px) 사이를 2px 간격으로 채운 같은 라운드의 면들
-        [-7,-5,-3,-1,1,3,5,7].map(function(z){
+        // 두께 — 앞면(+5px)과 뒷면(-5px) 사이를 1.5px 간격으로 채운 같은 라운드의 면들
+        [-4.5,-3,-1.5,0,1.5,3,4.5].map(function(z){
           return '<div class="pdEdge" aria-hidden="true" style="transform:translateZ('+z+'px)"></div>';
         }).join('')+
       '</div>'+

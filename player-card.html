@@ -19,7 +19,7 @@
   --font-display:'Tektur',var(--font);
   --stage-bg:#0a0b0f; --stage-bg2:#14161c;
   --on-dark:#f4f4f6; --on-dark-dim:#9a9ba3;
-  --card-w:270px; --card-h:378px;   /* 300×420에서 10% 축소 */ --card-thick:16px;
+  --card-w:270px; --card-h:378px;   /* 300×420에서 10% 축소 */ --card-thick:10px;   /* 16에서 37% 얇게(PO) */
   /* 공통 컴포넌트 토큰 — prototype/index.html과 동일 값 사용(라운드·높이 스케일 통일) */
   --r-btn:100px; --r-card:20px; --r-chip:8px; --h-sm:40px; --h-md:44px;
   /* BASKET 메인(브랜드 포인트) 컬러 — index.html의 --primary/--on-primary와 동일 값 */
@@ -430,7 +430,10 @@ button{font-family:var(--font)}
    예전엔 네 변에 직사각형 띠를 세웠는데, 띠가 라운드 구간(네 모서리)을 비워 놓는 구조라
    기울이면 직선부에만 두께가 보이고 모서리에서 실루엣이 끊겨 라운드가 어긋나 보였다.
    같은 라운드의 면을 겹치면 모서리까지 두께가 이어지고, 옆에서 봐도 카드 윤곽이 유지된다. */
-.cardEdge{position:absolute;inset:0;border-radius:var(--r-card);backface-visibility:hidden;pointer-events:none;
+/* backface-visibility는 두지 않는다 — 두면 각 겹이 제 앞쪽을 볼 때만 보이므로,
+   카드를 뒤집는 순간 여덟 겹이 전부 등을 돌려 옆면이 통째로 사라졌다(실제로 그랬다).
+   앞뒤 면이 불투명해서 안쪽 겹이 비쳐 보일 일도 없다. */
+.cardEdge{position:absolute;inset:0;border-radius:var(--r-card);pointer-events:none;
   background:linear-gradient(160deg,var(--g-b),var(--g-a) 55%,var(--g-c))}
 
 /* 배경 오라 — 등급 컬러가 카드 안에서 천천히 일렁이며 움직임 (마우스 반응 아님, 항상 재생) — 운영단 index.html과 동일 */
@@ -1102,14 +1105,13 @@ button{font-family:var(--font)}
             </div>
           </div>
           <!-- 두께 — 앞면(+8px)과 뒷면(-8px) 사이를 2px 간격으로 채운 같은 라운드의 면들 -->
-          <div class="cardEdge" aria-hidden="true" style="transform:translateZ(-7px)"></div>
-          <div class="cardEdge" aria-hidden="true" style="transform:translateZ(-5px)"></div>
+          <div class="cardEdge" aria-hidden="true" style="transform:translateZ(-4.5px)"></div>
           <div class="cardEdge" aria-hidden="true" style="transform:translateZ(-3px)"></div>
-          <div class="cardEdge" aria-hidden="true" style="transform:translateZ(-1px)"></div>
-          <div class="cardEdge" aria-hidden="true" style="transform:translateZ(1px)"></div>
+          <div class="cardEdge" aria-hidden="true" style="transform:translateZ(-1.5px)"></div>
+          <div class="cardEdge" aria-hidden="true" style="transform:translateZ(0px)"></div>
+          <div class="cardEdge" aria-hidden="true" style="transform:translateZ(1.5px)"></div>
           <div class="cardEdge" aria-hidden="true" style="transform:translateZ(3px)"></div>
-          <div class="cardEdge" aria-hidden="true" style="transform:translateZ(5px)"></div>
-          <div class="cardEdge" aria-hidden="true" style="transform:translateZ(7px)"></div>
+          <div class="cardEdge" aria-hidden="true" style="transform:translateZ(4.5px)"></div>
           <span class="cfCaptain" id="fCaptain" title="팀 주장" aria-label="팀 주장" hidden>C</span>
         </div>
         <span class="updateBadge" id="updateBadge" hidden>UPDATE</span>
