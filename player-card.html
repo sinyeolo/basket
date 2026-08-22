@@ -1113,11 +1113,37 @@ button{font-family:var(--font)}
 .cardLightbox{position:fixed;inset:0;background:rgba(6,7,10,.82);z-index:60;
   display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s}
 .cardLightbox.open{opacity:1;pointer-events:auto}
-.cardLightbox .lbInner{position:relative;transform:scale(.9);transition:transform .22s cubic-bezier(.2,.9,.25,1.1)}
-.cardLightbox.open .lbInner{transform:scale(1)}
-.lbClose{position:absolute;top:-46px;right:0;width:36px;height:36px;border-radius:50%;border:none;
+/* ---- 카드 앨범 ----
+   한 장씩 넘겨 본다. 양옆 카드가 화면 끝에 조금 걸쳐 보이게 두는 이유는, 여기 더 있다는 걸
+   버튼이 아니라 화면이 먼저 말해 주기 위해서다.
+   카드는 각자 가운데를 기준으로 제 자리(--off)만큼 밀려 있다. 트랙을 통째로 옮기는 방식보다
+   계산이 단순하고, 넘길 때 --off만 다시 쓰면 된다. */
+.lbStage{position:absolute;inset:0}
+.lbSlot{position:absolute;left:50%;top:50%;width:var(--card-w);height:var(--card-h);
+  transform:translate(-50%,-50%) translateX(calc(var(--off,0) * (var(--card-w) + 18px))) scale(.84);
+  opacity:.4;pointer-events:none;
+  transition:transform .34s cubic-bezier(.2,.9,.25,1.1), opacity .34s ease}
+.lbSlot.is-cur{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:auto}
+/* 제목은 가운데 위, 닫기는 가운데 아래(PO) — 좌우는 넘기기 버튼의 자리다 */
+.lbLabel{position:absolute;left:0;right:0;top:calc(26px + env(safe-area-inset-top));
+  text-align:center;font-size:13px;font-weight:700;color:rgba(255,255,255,.72);
+  padding:0 64px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lbClose{position:absolute;left:50%;transform:translateX(-50%);
+  bottom:calc(26px + env(safe-area-inset-bottom));
+  width:44px;height:44px;border-radius:50%;border:none;
   background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.lbLabel{position:absolute;top:-46px;left:0;font-size:13px;font-weight:700;color:var(--on-dark-dim);white-space:nowrap}
+.lbClose:hover{background:rgba(255,255,255,.22)}
+.lbNav{position:absolute;top:50%;margin-top:-22px;width:44px;height:44px;border-radius:50%;border:none;
+  background:rgba(255,255,255,.14);color:#fff;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:2;transition:opacity .18s, background .12s}
+.lbNav:hover{background:rgba(255,255,255,.22)}
+.lbNav.prev{left:8px}
+.lbNav.next{right:8px}
+/* 끝에 닿으면 누를 수 없다 — 사라지게 두면 버튼이 있던 자리가 비어 화면이 흔들린다 */
+.lbNav[disabled]{opacity:.22;pointer-events:none}
+.lbCount{position:absolute;left:0;right:0;bottom:calc(84px + env(safe-area-inset-bottom));
+  text-align:center;font-size:11px;font-weight:500;color:rgba(255,255,255,.5);
+  font-variant-numeric:tabular-nums}
 
 /* 1단 배치 — 두 버튼을 나란히 두면 각각 폭이 좁아 라벨이 답답하고, 무게(검정 vs 화이트)가
    좌우로 갈려 뭘 먼저 눌러야 할지가 흐려진다. 세로로 쌓아 주 액션(링크 공유)을 위에 둔다. */
@@ -2500,28 +2526,63 @@ function lbCardBackHTML(entry){
   '</div>';
 }
 var lightboxController = null;
+var lbIndex = 0;
+/* 앨범은 한 장씩 넘겨 본다. 카드 셋을 한 번에 그려 두고 자리(--off)만 옮긴다 —
+   넘길 때마다 다시 그리면 카드 안의 홀로그램·빛이 매번 처음부터 시작해 튄다. */
 function openLightbox(entry){
   var lb = document.getElementById('cardLightbox');
+  lbIndex = Math.max(0, ALBUM.indexOf(entry));
   lb.innerHTML =
-    '<div class="lbInner" data-grade="'+entry.grade+'">'+
-      '<div class="lbLabel">'+entry.season+' · '+GRADES[entry.grade].label+'</div>'+
-      '<button type="button" class="lbClose" id="lbCloseBtn" aria-label="닫기">'+icon('close')+'</button>'+
-      '<div class="cardGlow" aria-hidden="true"></div>'+
-      '<div class="cardWrap" id="lbCardWrap">'+
-        '<div class="cardInner" id="lbCardInner">'+
-          '<div class="cardFace front">'+lbCardFrontHTML(entry.grade)+'</div>'+
-          '<div class="cardFace back">'+lbCardBackHTML(entry)+'</div>'+
-          '<div class="cardEdge l" aria-hidden="true"></div>'+
-          '<div class="cardEdge r" aria-hidden="true"></div>'+
-          '<div class="cardEdge t" aria-hidden="true"></div>'+
-          '<div class="cardEdge b" aria-hidden="true"></div>'+
-        '</div>'+
-      '</div>'+
-    '</div>';
+    '<div class="lbLabel" id="lbLabel"></div>'+
+    '<div class="lbStage" id="lbStage">'+
+      ALBUM.map(function(e, i){
+        return '<div class="lbSlot" data-i="'+i+'" data-grade="'+e.grade+'">'+
+          '<div class="cardWrap">'+
+            '<div class="cardInner">'+
+              '<div class="cardFace front">'+lbCardFrontHTML(e.grade)+'</div>'+
+              '<div class="cardFace back">'+lbCardBackHTML(e)+'</div>'+
+              '<div class="cardEdge" aria-hidden="true" style="transform:translateZ(-2px)"></div>'+
+              '<div class="cardEdge" aria-hidden="true" style="transform:translateZ(0px)"></div>'+
+              '<div class="cardEdge" aria-hidden="true" style="transform:translateZ(2px)"></div>'+
+            '</div>'+
+          '</div>'+
+        '</div>';
+      }).join('')+
+    '</div>'+
+    '<button type="button" class="lbNav prev" id="lbPrev" aria-label="이전 카드">'+icon('arrowLeft')+'</button>'+
+    '<button type="button" class="lbNav next" id="lbNext" aria-label="다음 카드">'+icon('arrowRight')+'</button>'+
+    '<div class="lbCount" id="lbCount"></div>'+
+    '<button type="button" class="lbClose" id="lbCloseBtn" aria-label="닫기">'+icon('close')+'</button>';
   lb.classList.add('open');
-  lightboxController = createCardController(document.getElementById('lbCardWrap'));
+  paintLightbox();
   document.getElementById('lbCloseBtn').addEventListener('click', closeLightbox);
+  document.getElementById('lbPrev').addEventListener('click', function(){ moveLightbox(-1); });
+  document.getElementById('lbNext').addEventListener('click', function(){ moveLightbox(1); });
   lb.addEventListener('click', function backdropClick(e){ if(e.target === lb) closeLightbox(); });
+}
+/* 가운데 카드만 기울고 뒤집힌다 — 옆 카드까지 살아 있으면 손이 닿지도 않는 카드가
+   매 프레임 자기 각도를 계산한다. */
+function paintLightbox(){
+  var lb = document.getElementById('cardLightbox');
+  var slots = lb.querySelectorAll('.lbSlot');
+  if(lightboxController){ lightboxController.destroy(); lightboxController = null; }
+  slots.forEach(function(el, i){
+    el.style.setProperty('--off', i - lbIndex);
+    el.classList.toggle('is-cur', i === lbIndex);
+  });
+  var cur = slots[lbIndex];
+  if(cur) lightboxController = createCardController(cur.querySelector('.cardWrap'));
+  var e = ALBUM[lbIndex];
+  document.getElementById('lbLabel').textContent = e.season + ' · ' + GRADES[e.grade].label;
+  document.getElementById('lbCount').textContent = (lbIndex + 1) + ' / ' + ALBUM.length;
+  document.getElementById('lbPrev').disabled = lbIndex === 0;
+  document.getElementById('lbNext').disabled = lbIndex === ALBUM.length - 1;
+}
+function moveLightbox(step){
+  var next = lbIndex + step;
+  if(next < 0 || next >= ALBUM.length) return;
+  lbIndex = next;
+  paintLightbox();
 }
 function closeLightbox(){
   var lb = document.getElementById('cardLightbox');
