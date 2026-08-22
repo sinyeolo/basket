@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@24,400,0,0&display=block">
 <style>
 /* ================================================================
  * 선수·관중 경기 상세 — 기획서 A-10
@@ -337,6 +338,18 @@ th:first-child .th-sort{justify-content:flex-start;padding-left:2px}
 th.sorted{color:var(--on-surface)}
 th.sorted .th-sort{font-weight:800}
 .arw{width:10px;height:10px;flex:none}
+/* ---- 아이콘 = Material Symbols Sharp (PO 확정 2026-08-21) ----
+   합자(ligature) 폰트다. <span class="ic msym">search</span>처럼 이름을 그대로 쓰면 글리프가 나온다.
+   Sharp 계열은 모서리 라운드가 0이라 BASKET 워드마크와 같은 언어를 쓴다.
+   폰트가 늦게 오면 이름이 글자로 잠깐 보이므로 display=block(=block period)으로 받아 두고,
+   font-size로 크기를 맞춘다 — width/height만으로는 글리프가 커지지 않는다. */
+.msym{font-family:'Material Symbols Sharp';font-weight:400;font-style:normal;
+  line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;
+  direction:ltr;-webkit-font-feature-settings:'liga';font-feature-settings:'liga';
+  -webkit-font-smoothing:antialiased;display:inline-flex;align-items:center;justify-content:center;
+  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+  user-select:none;flex:none}
+.msym{font-size:20px}
 /* ---- 농구 특화 아이콘은 예외 ----
    공·이음새처럼 곡선이 본체인 그림은 끝을 각지게 자르면 잘려 보인다.
    Sharp 규칙(끝·모서리를 둥글리지 않음)은 UI 아이콘에만 적용하고,
@@ -388,7 +401,7 @@ tfoot td:first-child{background:var(--head-bg);box-shadow:-14px 0 0 var(--head-b
   <header class="gh">
     <div class="gh-top">
       <a class="gh-back" id="ghBack" href="index.html#games" aria-label="뒤로">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        <span class="msym" style="font-size:20px" aria-hidden="true">arrow_back</span>
       </a>
       <span class="gh-meta" id="ghMeta"></span>
       <span class="gh-state" id="ghState"></span>
@@ -809,8 +822,7 @@ function viewBox(){
     '<option value="name"'+(boxSort==='name'?' selected':'')+'>이름순</option>'+
     '</select>'+
     '<button type="button" class="sortDir'+(boxDesc?'':' asc')+'" data-sortdir aria-label="정렬 방향 바꾸기">'+
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" '+
-      'aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>'+
+      '<span class="msym" style="font-size:16px" aria-hidden="true">keyboard_arrow_down</span>'+
       (boxDesc?'많은순':'적은순')+'</button></span>';
 
   return '<div class="card"><h3>선수 기록 '+sel+'</h3>'+
@@ -831,10 +843,10 @@ function viewBox(){
 /* 상태마다 다른 그림을 준다 — 넷 다 "비어 있다"지만 이유가 다르고, 아이콘이 같으면
    글을 읽기 전에는 구분이 안 된다. 진행 중은 농구공에 브랜드 컬러 바탕으로 구분한다. */
 var EMPTY_ART = {
-  soon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="13" r="8"/><path d="M12 9.5V13l2.5 1.5M9 2h6M18.5 5.5l1.5-1.5"/></svg>',
+  soon:'<span class="msym" aria-hidden="true">schedule</span>',
   live:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6a12 12 0 0 1 0 12.8M18.4 5.6a12 12 0 0 0 0 12.8"/></svg>',
-  end :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13l2 2 4-4"/></svg>',
-  none:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6M11 8.2v.1M11 11v2.2"/></svg>'
+  end :'<span class="msym" aria-hidden="true">task</span>',
+  none:'<span class="msym" aria-hidden="true">search_off</span>'
 };
 function viewNoRecord(){
   var msg = { soon:'아직 시작하지 않은 경기예요<br>경기가 끝나면 기록이 올라와요',

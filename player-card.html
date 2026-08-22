@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@24,400,0,0&display=block">
 <style>
 :root{
   --font:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
@@ -39,6 +40,18 @@ button{font-family:var(--font)}
 /* 아이콘 = Material Symbols의 Sharp 계열(PO 확정 2026-08-21) — 끝과 모서리를 둥글리지 않는다.
    BASKET 워드마크가 모서리 없는 블록 서체라 round cap과는 성격이 반대다. */
 .ic{width:1em;height:1em;stroke-linecap:butt;stroke-linejoin:miter}
+/* ---- 아이콘 = Material Symbols Sharp (PO 확정 2026-08-21) ----
+   합자(ligature) 폰트다. <span class="ic msym">search</span>처럼 이름을 그대로 쓰면 글리프가 나온다.
+   Sharp 계열은 모서리 라운드가 0이라 BASKET 워드마크와 같은 언어를 쓴다.
+   폰트가 늦게 오면 이름이 글자로 잠깐 보이므로 display=block(=block period)으로 받아 두고,
+   font-size로 크기를 맞춘다 — width/height만으로는 글리프가 커지지 않는다. */
+.msym{font-family:'Material Symbols Sharp';font-weight:400;font-style:normal;
+  line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;
+  direction:ltr;-webkit-font-feature-settings:'liga';font-feature-settings:'liga';
+  -webkit-font-smoothing:antialiased;display:inline-flex;align-items:center;justify-content:center;
+  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+  user-select:none;flex:none}
+.msym.ic{font-size:20px;width:auto;height:auto}
 /* ---- 농구 특화 아이콘은 예외 ----
    공·이음새처럼 곡선이 본체인 그림은 끝을 각지게 자르면 잘려 보인다.
    Sharp 규칙(끝·모서리를 둥글리지 않음)은 UI 아이콘에만 적용하고,
@@ -48,6 +61,7 @@ button{font-family:var(--font)}
 .ic-ball *,
 .ball *{stroke-linecap:round;stroke-linejoin:round}
 .ic-sm{width:16px;height:16px}
+.msym.ic-sm{font-size:16px}
 
 /* ---------------- 등급 토큰 — 프레임 재질·반사광 강도·홀로그램 패턴이 등급마다 달라짐 ---------------- */
 /* 스타터가 자꾸 실버로 읽힌 이유 — 밝은 쪽(#868b93)이 실버의 어두운 쪽(#8b929b)과 거의 같은 톤이었다.
@@ -1382,7 +1396,27 @@ var ICONS = {
   download: '<path d="M12 3v12M8 11l4 4 4-4M5 21h14" stroke="currentColor" stroke-width="2"/>',
   verified: '<path d="M12 3l2.4 1.4 2.7-.4 1 2.5 2.5 1-.4 2.7L21.6 12l-1.4 2.4.4 2.7-2.5 1-1 2.5-2.7-.4L12 21.6l-2.4-1.4-2.7.4-1-2.5-2.5-1 .4-2.7L2.4 12l1.4-2.4-.4-2.7 2.5-1 1-2.5 2.7.4L12 3z" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 12.2l2.3 2.3 4.2-4.8" stroke="currentColor" stroke-width="2"/>'
 };
-function icon(key, cls){ return '<svg class="'+(cls||'ic')+'" viewBox="0 0 24 24" fill="none" aria-hidden="true">'+ICONS[key]+'</svg>'; }
+/* 우리 아이콘 키 → Material Symbols Sharp 이름.
+   여기 없는 키는 예전 SVG를 그대로 쓴다 — 농구 특화 그림(공·교체·타이머)이 그렇다.
+   그 셋은 라이브러리에 대응하는 그림이 없고, 있어도 우리 것만큼 뜻이 분명하지 않다. */
+var MSYM = {
+  alert:'error', ask:'help', danger:'warning', checkOk:'check_circle',
+  dashboard:'dashboard', tournament:'emoji_events', shield:'shield', team:'group',
+  schedule:'calendar_month', record:'radio_button_checked', review:'fact_check',
+  content:'image', stats:'bar_chart', cheer:'campaign', settings:'settings',
+  undo:'undo', arrowLeft:'arrow_back', arrowRight:'arrow_forward',
+  chevronDown:'keyboard_arrow_down', plus:'add', search:'search',
+  pause:'pause', pauseFill:'pause', play:'play_arrow', check:'check',
+  edit:'edit', trash:'delete', download:'download', upload:'upload',
+  camera:'photo_camera', grid:'grid_view', export:'save_alt', share:'share',
+  crown:'workspace_premium', more:'more_horiz', flip:'flip', close:'close',
+  verified:'verified'
+};
+function icon(key, cls){
+  var c = cls || 'ic';
+  if(MSYM[key]) return '<span class="'+(c||'ic')+' msym" aria-hidden="true">'+MSYM[key]+'</span>';
+  return '<svg class="'+(c||'ic')+'" viewBox="0 0 24 24" fill="none" aria-hidden="true">'+ICONS[key]+'</svg>';
+}
 
 var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
