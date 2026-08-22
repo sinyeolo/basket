@@ -1125,10 +1125,10 @@ button{font-family:var(--font)}
    카드는 각자 가운데를 기준으로 제 자리(--off)만큼 밀려 있다. 트랙을 통째로 옮기는 방식보다
    계산이 단순하고, 넘길 때 --off만 다시 쓰면 된다. */
 .lbStage{position:absolute;inset:0}
-/* 간격 25px — 375px 화면에서 옆 카드가 6px쯤 걸친다(18px일 때 13px, PO 요청으로 절반).
+/* 간격 28px — 375px 화면에서 옆 카드가 3px쯤 걸친다(18px일 때 13px → 25px에서 6px → 여기서 절반).
    '더 있다'는 신호로는 이 정도면 충분하고, 더 내밀면 가운데 카드와 시선을 다툰다. */
 .lbSlot{position:absolute;left:50%;top:50%;width:var(--card-w);height:var(--card-h);
-  transform:translate(-50%,-50%) translateX(calc(var(--off,0) * (var(--card-w) + 25px))) scale(.84);
+  transform:translate(-50%,-50%) translateX(calc(var(--off,0) * (var(--card-w) + 28px))) scale(.84);
   pointer-events:none;
   transition:transform .34s cubic-bezier(.2,.9,.25,1.1)}
 .lbSlot.is-cur{transform:translate(-50%,-50%) scale(1);pointer-events:auto}
