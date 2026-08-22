@@ -1331,6 +1331,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   100% {transform:translateX(80%);  opacity:0}
 }
 @media (prefers-reduced-motion:reduce){ .pdFace .in::after{animation:none;opacity:0} }
+/* 스타터는 테두리를 두지 않는다(PO, 선수 카드와 같은 규칙) — 외곽을 도는 빛만 남는다 */
+[data-grade="starter"] .pdFace{padding:0;background:none}
+[data-grade="starter"] .pdFace .in{border-radius:20px}
 .pdFace .in{position:relative;width:100%;height:100%;border-radius:17px;overflow:hidden;color:#fff;
   background:linear-gradient(175deg,#191b22,#0d0e12 70%)}
 

@@ -387,6 +387,11 @@ button{font-family:var(--font)}
    모서리에 떨어져서 밝은 좌측·하단 사이에 검은 얼룩처럼 보였다. 어두운 끝을 빼고 밝은 두 톤만
    왕복시켜 네 모서리 모두 같은 금속 톤을 유지한다. */
 .cardFace{padding:2px;background:linear-gradient(155deg,var(--g-b),var(--g-a) 42%,var(--g-b) 70%,var(--g-a))}
+/* 스타터는 테두리를 두지 않는다(PO) — 아직 아무것도 이루지 않은 등급이라 두를 금속이 없다.
+   외곽을 도는 빛(.cardEdgeGlow)만 남아 카드가 살아 있다는 것만 말한다.
+   테두리를 없앤 만큼 안쪽 면의 라운드를 카드 바깥과 같은 값으로 되돌린다. */
+[data-grade="starter"] .cardFace{padding:0;background:none}
+[data-grade="starter"] .cardFace .inner{border-radius:var(--r-card)}
 /* ---- 테두리를 도는 빛 ----
    원뿔 그라디언트를 통째로 회전시키던 방식을 걷어냈다. 사각형을 돌려 카드 모양으로 자르는
    구조라, 둥근 클립이 무시되는 환경(iOS의 3D 컨텍스트)에서 귀퉁이가 각지게 나왔다.
@@ -1119,11 +1124,18 @@ button{font-family:var(--font)}
    카드는 각자 가운데를 기준으로 제 자리(--off)만큼 밀려 있다. 트랙을 통째로 옮기는 방식보다
    계산이 단순하고, 넘길 때 --off만 다시 쓰면 된다. */
 .lbStage{position:absolute;inset:0}
+/* 간격 25px — 375px 화면에서 옆 카드가 6px쯤 걸친다(18px일 때 13px, PO 요청으로 절반).
+   '더 있다'는 신호로는 이 정도면 충분하고, 더 내밀면 가운데 카드와 시선을 다툰다. */
 .lbSlot{position:absolute;left:50%;top:50%;width:var(--card-w);height:var(--card-h);
-  transform:translate(-50%,-50%) translateX(calc(var(--off,0) * (var(--card-w) + 18px))) scale(.84);
-  opacity:.4;pointer-events:none;
-  transition:transform .34s cubic-bezier(.2,.9,.25,1.1), opacity .34s ease}
-.lbSlot.is-cur{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:auto}
+  transform:translate(-50%,-50%) translateX(calc(var(--off,0) * (var(--card-w) + 25px))) scale(.84);
+  pointer-events:none;
+  transition:transform .34s cubic-bezier(.2,.9,.25,1.1)}
+.lbSlot.is-cur{transform:translate(-50%,-50%) scale(1);pointer-events:auto}
+/* 옆 카드는 투명하게 두지 않고 그대로 그린 뒤 어둡게 덮는다(PO) — 투명도로 죽이면
+   카드 뒤 무대가 비쳐 카드가 반쯤 지워진 것처럼 보인다. 덮으면 카드는 온전하고 빛만 죽는다. */
+.lbSlot::after{content:"";position:absolute;inset:0;z-index:2;border-radius:var(--r-card);
+  background:rgba(6,7,10,.62);pointer-events:none;transition:opacity .34s ease}
+.lbSlot.is-cur::after{opacity:0}
 /* 제목은 가운데 위, 닫기는 가운데 아래(PO) — 좌우는 넘기기 버튼의 자리다 */
 .lbLabel{position:absolute;left:0;right:0;top:calc(26px + env(safe-area-inset-top));
   text-align:center;font-size:13px;font-weight:700;color:rgba(255,255,255,.72);
