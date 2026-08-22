@@ -386,7 +386,8 @@ button{font-family:var(--font)}
 /* 프레임 그라디언트 — 예전엔 155deg 축의 끝을 --g-c(거의 검정)로 뒀는데, 그 지점이 하필 좌하단
    모서리에 떨어져서 밝은 좌측·하단 사이에 검은 얼룩처럼 보였다. 어두운 끝을 빼고 밝은 두 톤만
    왕복시켜 네 모서리 모두 같은 금속 톤을 유지한다. */
-.cardFace{padding:2px;background:linear-gradient(155deg,var(--g-b),var(--g-a) 42%,var(--g-b) 70%,var(--g-a))}
+/* 테두리 1px — 2px에서 줄였다(PO). 스타터는 아예 없고, 나머지 셋은 가늘게 두른다. */
+.cardFace{padding:1px;background:linear-gradient(155deg,var(--g-b),var(--g-a) 42%,var(--g-b) 70%,var(--g-a))}
 /* 스타터는 테두리를 두지 않는다(PO) — 아직 아무것도 이루지 않은 등급이라 두를 금속이 없다.
    외곽을 도는 빛(.cardEdgeGlow)만 남아 카드가 살아 있다는 것만 말한다.
    테두리를 없앤 만큼 안쪽 면의 라운드를 카드 바깥과 같은 값으로 되돌린다. */
@@ -512,7 +513,7 @@ button{font-family:var(--font)}
   100% {transform:translateX(80%);  opacity:0}
 }
 @media (prefers-reduced-motion:reduce){ .cardFace .inner::after{animation:none;opacity:0} }
-.cardFace .inner{position:relative;width:100%;height:100%;border-radius:calc(var(--r-card) - 3px);overflow:hidden;
+.cardFace .inner{position:relative;width:100%;height:100%;border-radius:calc(var(--r-card) - 1px);overflow:hidden;
   background:linear-gradient(175deg,#191b22,#0d0e12 70%)}
 
 /* 카드 두께 — 앞/뒷면과 같은 크기·같은 라운드의 면을 Z축으로 촘촘히 쌓아 만든다.

@@ -1247,7 +1247,8 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 프레임 그라디언트 — 예전엔 155deg 축의 끝을 --g-c(거의 검정)로 뒀는데, 그 지점이 하필 좌하단
    모서리에 떨어져서 밝은 좌측·하단 사이에 검은 얼룩처럼 보였다. 어두운 끝을 빼고 밝은 두 톤만
    왕복시켜 네 모서리 모두 같은 금속 톤을 유지한다. (player-card.html의 .cardFace와 동일) */
-.pdFace{position:absolute;inset:0;border-radius:20px;overflow:hidden;backface-visibility:hidden;padding:2px;
+/* 테두리 1px — 선수 카드와 같은 값(PO) */
+.pdFace{position:absolute;inset:0;border-radius:20px;overflow:hidden;backface-visibility:hidden;padding:1px;
   /* 그림자를 아래로 더 내리고 옅게. 콘솔은 밝은 표면이라 선수 카드(어두운 무대)와 같은 농도를 쓰면
      그림자가 검은 얼룩으로 읽힌다. 멀리·넓게·옅게 깔아야 카드가 눌린 게 아니라 떠 있어 보인다.
      두 번째 그림자는 접지 그림자다 — 이것까지 멀어지면 카드가 어디에 놓였는지 알 수 없어진다. */
@@ -1334,7 +1335,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 스타터는 테두리를 두지 않는다(PO, 선수 카드와 같은 규칙) — 외곽을 도는 빛만 남는다 */
 [data-grade="starter"] .pdFace{padding:0;background:none}
 [data-grade="starter"] .pdFace .in{border-radius:20px}
-.pdFace .in{position:relative;width:100%;height:100%;border-radius:17px;overflow:hidden;color:#fff;
+.pdFace .in{position:relative;width:100%;height:100%;border-radius:19px;overflow:hidden;color:#fff;
   background:linear-gradient(175deg,#191b22,#0d0e12 70%)}
 
 /* 카드 옆면(두께) — player-card.html의 .cardEdge와 동일 규칙. 평면일 땐 안 보이다가 좌우로 기울일 때만 살짝 드러남 */
