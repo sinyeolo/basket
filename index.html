@@ -890,7 +890,6 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .lname > :first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lname .sub{font-weight:500;font-size:13px;color:var(--on-surface-variant)}
 .lmeta{display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap;font-size:13px;color:var(--on-surface-variant)}
-.tag-owner{font-size:11px;font-weight:700;background:var(--surface-variant);color:var(--on-surface-variant);border-radius:6px;padding:2px 7px}
 /* 주장 서클 — 주황 배경에 검정 폰트로 C, 이름 옆에 붙는다 */
 .tag-captain{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;
   background:var(--primary);color:#000;font-size:11px;font-weight:800;flex:none}
@@ -1477,7 +1476,8 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   background:var(--g-b,#f4d16a);color:var(--g-c,#4a3608);
   box-shadow:0 6px 12px rgba(0,0,0,.5), 0 2px 4px rgba(0,0,0,.35);
   transform:rotate(-20deg)}
-.pdNameKr{font-size:34px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
+/* 선수 카드(.cf-name)와 같은 26px — 카드 폭이 같은데 이름만 크면 한 벌로 안 읽힌다 */
+.pdNameKr{font-size:26px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
 /* 영문 이름 — 첫 글자만 대문자, 한 단 얇게(선수 카드 .cf-nameEn과 같은 값).
    전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다. */
 .pdNameEn{font-size:13px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
@@ -1503,7 +1503,6 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 레벨·경험치는 카드 바깥 아래에 노출 — PC·태블릿·모바일 공통 */
 /* 카드와 같은 폭으로 세운다 — 정보 영역 전체 폭으로 늘리면 카드보다 훨씬 길어져서
    '이 카드의 진행도'가 아니라 페이지 구분선처럼 보인다. 카드 폭(270px)에 맞춰 가운데. */
-.pdLevelRow{width:100%;max-width:270px;margin:0 auto;display:flex;align-items:center;gap:10px}
 /* 카드 앞면 최하단의 작은 레벨 — 카드만 보고도 지금 어디쯤인지 알 수 있어야 한다.
    정보 영역의 것보다 한 단 작고 옅다: 카드의 주인공은 이름과 OVR이지 진행도가 아니다.
    (선수 카드 .cfLevel과 같은 값) */
@@ -1518,10 +1517,6 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   transition:width 1s cubic-bezier(.2,.8,.2,1)}
 /* 카드 밖 페이지는 밝은 배경이라 카드용 밝은 텍스트 톤(--g-text) 대신, 같은 등급의 어두운 언더톤(--g-c)을 써서
    대비는 지키면서도 등급 컬러라는 컨셉은 공유 카드(player-card.html)와 동일하게 맞춘다 */
-.pdLevelRow .lv{font-size:13px;font-weight:800;color:var(--g-c,#333);white-space:nowrap}
-.pdExpBar{flex:1;height:6px;border-radius:100px;background:var(--outline-variant);overflow:hidden}
-.pdExpBar i{display:block;width:0;height:100%;border-radius:100px;background:var(--primary);
-  transition:width 1s cubic-bezier(.2,.8,.2,1)}
 
 /* 뒷면 — 모바일 공유 카드(player-card.html)와 완전히 동일한 구성으로 통일 */
 /* 뒷면 바탕 — 중립 검정 대신 등급의 어두운 언더톤(--g-c)을 섞어 깐다. 그 위에 홀로그램(.holoFoil)이
@@ -1711,7 +1706,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .glog .pf4{color:var(--red);font-weight:700}
 
 /* 대회 관리 · 운영진 권한 목록 — .recRow/.op에 대응하는 규칙이 아예 없어서 이름과 역할이
-   "김신열대회 관리자"처럼 붙어 나왔다. 역할은 팀 리스트의 소유자 태그(.tag-owner)와 같은 회색 태그로 분리 */
+   "김신열대회 관리자"처럼 붙어 나왔다. 역할은 회색 태그로 분리한다. */
 .recRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 2px}
 .recRow .op{font-weight:600;font-size:13px;color:var(--on-surface);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .recRow b{flex:none;font-size:11px;font-weight:700;background:var(--surface-variant);color:var(--on-surface-variant);border-radius:6px;padding:3px 8px}
@@ -3118,7 +3113,7 @@ function buildKoBracket(){
 // photo: 선수가 사진을 업로드한 경우의 미리보기용 — 없으면 기존 실루엣으로 자동 대체됩니다.
 // 지금은 무료 라이선스 스톡 사진(Pexels)으로 디자인만 확인하는 용도입니다.
 var PLAYERS = [
-  { id:'p1',  name:'김민수', en:'KIM MIN SU',    no:7,  teamId:'t1', pos1:'SF', pos2:'PF', h:188, w:82, owner:true,
+  { id:'p1',  name:'김민수', en:'KIM MIN SU',    no:7,  teamId:'t1', pos1:'SF', pos2:'PF', h:188, w:82,
     photo:'https://images.pexels.com/photos/20615486/pexels-photo-20615486.jpeg?auto=compress&cs=tinysrgb&w=900' },
   { id:'p2',  name:'박정우', en:'PARK JUNG WOO', no:11, teamId:'t1', pos1:'PG', pos2:'SG', h:178, w:72,
     photo:'https://images.pexels.com/photos/31747054/pexels-photo-31747054.jpeg?auto=compress&cs=tinysrgb&w=900' },
@@ -4121,7 +4116,7 @@ function renderPlayerRoster(){
       '<button type="button" class="lmain" data-open-player="'+p.id+'" style="display:flex;align-items:center;gap:14px;border:none;background:transparent;font-family:var(--font);text-align:left;cursor:pointer;padding:0">'+
         avatar+
         '<span style="min-width:0">'+
-          '<span class="lname">'+p.name+(p.owner?'<span class="tag-owner">오너</span>':'')+(isCaptain?'<span class="tag-captain">C</span>':'')+
+          '<span class="lname">'+p.name+(isCaptain?'<span class="tag-captain">C</span>':'')+
             '<span class="sub">'+(t?t.name:'미배정')+'</span></span>'+
           '<span class="lmeta">'+posTag(p.pos1)+posTag(p.pos2,true)+(body?'<span>'+body+'</span>':'')+'</span>'+
         '</span>'+
@@ -4938,7 +4933,7 @@ function renderPlayerDetail(){
                 (posLabel ? '<span class="chip pdPos">'+posLabel+'</span>' : '')+
 
               '</div>'+
-              '<div class="pdNameKr">'+p.name+(p.owner?'<span class="tag-owner">오너</span>':'')+'</div>'+
+              '<div class="pdNameKr">'+p.name+'</div>'+
               (p.en ? '<div class="pdNameEn">'+titleCaseEn(p.en)+'</div>' : '')+
             '</div>'+
             '<div class="pdBottomRow">'+
@@ -5038,9 +5033,9 @@ function renderPlayerDetail(){
   /* 레벨은 카드 밑에 한 줄로 떠 있었다 — 카드에도 정보 영역에도 속하지 않아 보였다.
      정보 영역 첫머리로 옮겨 시즌 평균·경기별 기록과 같은 '이 선수의 현황' 묶음으로 읽히게 한다
      (선수 카드에서 시트 안으로 옮긴 것과 같은 뜻). */
-  var levelRow = '<div class="pdLevelRow"><span class="lv">Lv.'+level+'</span>'+
-    '<div class="pdExpBar"><i id="pdExpBar" data-target="'+expPct+'"></i></div></div>';
-  root.innerHTML = card + '<div class="pdInfoArea" data-grade="'+grade+'">' + levelRow + avgPanel + games + badgeSection + danger + '</div>';
+  /* 카드 밖 레벨 줄은 뺐다(PO) — 카드 안 하단(.pdCfLevel)에 이미 같은 값이 있어 두 번 나왔다.
+     선수 카드에서도 같은 이유로 시트 요약 블록 안 한 곳으로 모았다. */
+  root.innerHTML = card + '<div class="pdInfoArea" data-grade="'+grade+'">' + avgPanel + games + badgeSection + danger + '</div>';
 
   // 경기별 기록 한 줄을 누르면 해당 경기 상세(진행 중이면 기록 콘솔, 종료·확정이면 전체 기록)로 이동
   root.querySelectorAll('.glog tr[data-goto]').forEach(function(row){
@@ -5076,7 +5071,7 @@ function renderPlayerDetail(){
   // 레벨 프로그레스바 — 카드+정보 영역이 다 올라온 뒤(pdRiseIn 종료) 0%에서 목표치까지 채워진다
   (function(){
     // 정보 영역의 막대와 카드 앞면의 작은 막대 — 같은 값을 같은 때에 채운다
-    var bars = ['pdExpBar','pdExpBarMini'].map(function(id){ return document.getElementById(id); }).filter(Boolean);
+    var bars = ['pdExpBarMini'].map(function(id){ return document.getElementById(id); }).filter(Boolean);
     if(!bars.length) return;
     var cardArea = document.querySelector('.pdCardArea');
     bars.forEach(function(b){
