@@ -9,7 +9,7 @@
      한글에는 매칭되지 않고 자동으로 Pretendard로 넘어간다(Tektur에는 한글 글리프가 없다). -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&family=Black+Han+Sans&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@24,400,0,0&display=block">
 <style>
 /* 스코어보드 시계 — DSEG7 Classic (7세그먼트 LCD 폰트, SIL Open Font License).
@@ -1486,12 +1486,15 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   box-shadow:0 6px 12px rgba(0,0,0,.5), 0 2px 4px rgba(0,0,0,.35);
   transform:rotate(-20deg)}
 /* 선수 카드(.cf-name)와 같은 26px — 카드 폭이 같은데 이름만 크면 한 벌로 안 읽힌다 */
-.pdNameKr{font-size:26px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
+/* 한글 이름만 Black Han Sans(검은고딕) — 네모 골격에 획이 두꺼워 영문 메인(Tektur)과 결이 맞는다(PO).
+   무게는 400 한 종뿐이라 800을 주면 브라우저가 억지로 굵혀(가짜 볼드) 획이 뭉갠다. 400으로 둔다.
+   자간도 0으로 — 이 서체는 이미 속공간이 좁아 자간을 벌리면 글자가 흩어진다. */
+.pdNameKr{font-family:'Black Han Sans',var(--font);font-size:26px;font-weight:400;letter-spacing:0;display:flex;align-items:center;gap:8px;color:#fff}
 /* 영문 이름 — 첫 글자만 대문자, 한 단 얇게(선수 카드 .cf-nameEn과 같은 값).
    전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다. */
 /* 영문 이름은 영문 메인 폰트(Tektur)로(PO) — 한글 이름과 다른 얼굴이라 두 줄이 겹쳐 읽히지 않는다.
    각진 디스플레이 서체라 500 무게로도 충분히 서므로 굵기는 그대로 둔다. */
-.pdNameEn{font-family:var(--font-display);font-size:13px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
+.pdNameEn{font-family:var(--font-display);font-size:11px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
 .pdBottomRow{display:flex;align-items:center;gap:8px;padding-right:68px}
 .pdTeamMini{display:flex;align-items:center;gap:7px;min-width:0}
 .pdTeamMini span{font-size:13px;color:rgba(255,255,255,.7);font-weight:600}
