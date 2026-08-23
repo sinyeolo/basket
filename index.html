@@ -1480,7 +1480,8 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 주장 뱃지 — 선수 카드(.cfCaptain)와 같은 스티커다. 팀 씰 우측 상단에 겹쳐 붙는다. */
 .pdCaptain{position:absolute;top:2px;right:2px;z-index:1;
   display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;
-  border-radius:50%;flex:none;font-size:12px;font-weight:800;line-height:1;
+  /* 스티커 글자는 영문 메인 폰트(선수 카드와 같은 규칙) */
+  border-radius:50%;flex:none;font-family:var(--font-display);font-size:12px;font-weight:800;line-height:1;
   background:var(--g-b,#f4d16a);color:var(--g-c,#4a3608);
   box-shadow:0 6px 12px rgba(0,0,0,.5), 0 2px 4px rgba(0,0,0,.35);
   transform:rotate(-20deg)}

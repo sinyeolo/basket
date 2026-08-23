@@ -319,7 +319,8 @@ button{font-family:var(--font)}
   box-shadow:0 0 0 1.5px rgba(255,255,255,.92),
              0 1px 1px rgba(0,0,0,.5),
              0 5px 10px rgba(0,0,0,.38);
-  font-size:11px;font-weight:800;letter-spacing:.06em;line-height:1}
+  /* 스티커 글자도 영문 메인 폰트(Tektur) — 각진 서체라 스티커의 오려낸 형태와 결이 같다(PO) */
+  font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.06em;line-height:1}
 .updateBadge.is-in{animation:badgeRise .52s cubic-bezier(.16,.8,.24,1) both}
 @keyframes badgeRise{
   0%  {transform:translateZ(22px) translateY(22px);clip-path:inset(0 0 100% 0)}
@@ -732,7 +733,7 @@ button{font-family:var(--font)}
 .cfCaptain{position:absolute;right:14px;bottom:69px;pointer-events:none;
   display:inline-flex;align-items:center;justify-content:center;
   width:28px;height:28px;flex:none;
-  border-radius:50%;font-size:12px;font-weight:800;line-height:1;
+  border-radius:50%;font-family:var(--font-display);font-size:12px;font-weight:800;line-height:1;
   /* 표면 하이라이트 — 카드와 같은 --lit-x/--lit-y를 쓰되 스티커 크기에 맞게 줄여서 쓴다(0.2배).
      28px 원에서 18px쯤 움직이므로 기울일 때 빛이 도는 게 보인다.
      28×28 면 하나를 다시 칠하는 값이라 비용은 없다고 봐도 된다. */
