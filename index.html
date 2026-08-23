@@ -1488,7 +1488,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdNameKr{font-size:26px;font-weight:800;letter-spacing:.02em;display:flex;align-items:center;gap:8px;color:#fff}
 /* 영문 이름 — 첫 글자만 대문자, 한 단 얇게(선수 카드 .cf-nameEn과 같은 값).
    전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다. */
-.pdNameEn{font-size:13px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
+/* 영문 이름은 영문 메인 폰트(Tektur)로(PO) — 한글 이름과 다른 얼굴이라 두 줄이 겹쳐 읽히지 않는다.
+   각진 디스플레이 서체라 500 무게로도 충분히 서므로 굵기는 그대로 둔다. */
+.pdNameEn{font-family:var(--font-display);font-size:13px;font-weight:500;letter-spacing:.04em;color:rgba(255,255,255,.55);margin-top:2px}
 .pdBottomRow{display:flex;align-items:center;gap:8px;padding-right:68px}
 .pdTeamMini{display:flex;align-items:center;gap:7px;min-width:0}
 .pdTeamMini span{font-size:13px;color:rgba(255,255,255,.7);font-weight:600}
