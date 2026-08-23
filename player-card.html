@@ -271,8 +271,6 @@ button{font-family:var(--font)}
 .sheetTitle .stTeam{font-size:13px;font-weight:600;color:var(--sh-on-dim);flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96px}
 .sheetTitle .stNumDot{color:var(--sh-on-dim);flex:none}
 .sheetTitle .stNum{font-size:16px;font-weight:700;color:var(--sh-on-dim);flex:none}
-.sheetTitle .stVerified{flex:none;width:18px;height:18px;color:#0284c7;margin-left:2px;display:flex}
-.sheetTitle .stVerified svg{width:100%;height:100%}
 
 /* ---------------- 공통 컴포넌트: 버튼·칩 (index.html의 .btn/.chip과 동일 구조, 다크 배경용 색만 재정의) ---------------- */
 /* 버튼 라벨은 미디엄(500)이다(PO) — 굵게 두면 라벨이 제목만큼 무거워져 화면의 위계가 평평해진다 */
@@ -1342,7 +1340,6 @@ button{font-family:var(--font)}
         <span class="stTeam" id="stTeam"></span>
         <span class="stNumDot">·</span>
         <span class="stNum" id="stNum"></span>
-        <span class="stVerified" id="stVerified" title="공식 인증"></span>
       </div>
       <button type="button" class="sheetCloseBtn" id="sheetCloseBtn" aria-label="선수 정보 시트 닫기">×</button>
     </div>
@@ -1457,8 +1454,7 @@ var ICONS = {
   flip: '<path d="M12 3.5v17" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2.6" opacity=".5"/><path d="M9 6.2C4.6 8 4.6 16 9 17.8" stroke="currentColor" stroke-width="1.9" fill="none"/><path d="M6.2 15.2L9 17.9l2.8-2.4" stroke="currentColor" stroke-width="1.9" fill="none"/><path d="M15 17.8C19.4 16 19.4 8 15 6.2" stroke="currentColor" stroke-width="1.9" fill="none"/><path d="M17.8 8.8L15 6.1l-2.8 2.4" stroke="currentColor" stroke-width="1.9" fill="none"/>',
   check: '<path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2"/>',
   close: '<path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2"/>',
-  download: '<path d="M12 3v12M8 11l4 4 4-4M5 21h14" stroke="currentColor" stroke-width="2"/>',
-  verified: '<path d="M12 3l2.4 1.4 2.7-.4 1 2.5 2.5 1-.4 2.7L21.6 12l-1.4 2.4.4 2.7-2.5 1-1 2.5-2.7-.4L12 21.6l-2.4-1.4-2.7.4-1-2.5-2.5-1 .4-2.7L2.4 12l1.4-2.4-.4-2.7 2.5-1 1-2.5 2.7.4L12 3z" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 12.2l2.3 2.3 4.2-4.8" stroke="currentColor" stroke-width="2"/>'
+  download: '<path d="M12 3v12M8 11l4 4 4-4M5 21h14" stroke="currentColor" stroke-width="2"/>'
 };
 /* 우리 아이콘 키 → Material Symbols Sharp 이름.
    여기 없는 키는 예전 SVG를 그대로 쓴다 — 농구 특화 그림(공·교체·타이머)이 그렇다.
@@ -1473,8 +1469,7 @@ var MSYM = {
   pause:'pause', pauseFill:'pause', play:'play_arrow', check:'check',
   edit:'edit', trash:'delete', download:'download', upload:'upload',
   camera:'photo_camera', grid:'grid_view', export:'save_alt', share:'share',
-  crown:'workspace_premium', more:'more_horiz', flip:'autorenew', close:'close',
-  verified:'verified'
+  crown:'workspace_premium', more:'more_horiz', flip:'autorenew', close:'close'
 };
 function icon(key, cls){
   var c = cls || 'ic';
@@ -1851,7 +1846,6 @@ document.getElementById('fName').textContent = PLAYER.name;
 document.getElementById('stName').textContent = PLAYER.name;
 document.getElementById('stTeam').textContent = PLAYER.team;
 document.getElementById('stNum').textContent = PLAYER.no;
-document.getElementById('stVerified').innerHTML = icon('verified');
 document.getElementById('btnShareTop').innerHTML = icon('share');
 document.getElementById('btnFlip').innerHTML = icon('flip','ic ic-sm')+'카드 뒤집기';
 // 빈 상태 아이콘 — data-icon 키를 MSYM에서 찾아 글자 앞에 끼운다.
@@ -2338,7 +2332,7 @@ if(LINKED_PLAYER){
   function dismiss(){
     if(dismissed) return; dismissed = true;
     hint.classList.add('hide');
-    localStorage.setItem('basket_hint_seen','1');
+    try{ localStorage.setItem('basket_hint_seen','1'); }catch(_){}
     setTimeout(function(){ hint.remove(); }, 320);
   }
   setTimeout(dismiss, 4200);
