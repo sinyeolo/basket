@@ -294,7 +294,10 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .cmp{display:flex;flex-direction:column;gap:13px}
 .cmp-row{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:10px}
 .cmp-v{font-family:var(--font-display);font-size:16px;font-weight:800;text-align:center}
-.cmp-v.dim{color:var(--on-surface-variant);font-weight:700}
+/* 낮은 쪽은 두께만 한 단 내린다(기록별 리더와 같은 규칙, PO).
+   막대가 이미 길이로 비교를 끝냈다 — 그 위에 색까지 얹으면 같은 말을 두 번 하는 셈이고,
+   흐린 숫자는 '작다'가 아니라 '덜 중요하다'로 읽힌다. */
+.cmp-v.dim{font-weight:600}
 .cmp-bar{display:flex;flex-direction:column;gap:5px}
 .cmp-lb{font-size:11px;font-weight:600;color:var(--on-surface-variant);text-align:center}
 .cmp-bars{display:grid;grid-template-columns:1fr 1fr;gap:3px}
@@ -713,8 +716,10 @@ function viewSummary(){
     // 나란히 꽉 차 버려 "거의 같다"는 사실이 오히려 "둘 다 최고"로 읽힌다.
     // 개수 지표는 값의 폭이 커서 절대 스케일이 무의미하므로 큰 쪽을 100%로 잡는다.
     var max = r.unit === '%' ? 100 : (Math.max(r.h, r.a) || 1);
-    var hBetter = r.lowGood ? r.h < r.a : r.h > r.a;
-    var aBetter = r.lowGood ? r.a < r.h : r.a > r.h;
+    // 동점이면 양쪽 다 진하게 둔다(기록별 리더와 같은 규칙) — 한쪽만 내리면 없는 우열이 생기고,
+    // 둘 다 내리면 같은 값인데 둘 다 진 것처럼 보인다. '못한 쪽'일 때만 내린다.
+    var hBetter = !(r.lowGood ? r.h > r.a : r.h < r.a);
+    var aBetter = !(r.lowGood ? r.a > r.h : r.a < r.h);
     return '<div class="cmp-row">'+
       '<span class="cmp-v'+(hBetter?'':' dim')+'">'+r.h+(r.unit||'')+'</span>'+
       '<div class="cmp-bar"><span class="cmp-lb">'+r.lb+'</span>'+
