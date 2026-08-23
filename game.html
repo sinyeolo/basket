@@ -228,7 +228,7 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .res-gap{font-size:13px;font-weight:700;color:var(--on-surface-variant)}
 .res-meta{font-size:11px;color:var(--on-surface-variant)}
 
-/* ---- 기록별 리더 ----
+/* ---- 기록별 탑플레이어 ----
    양 팀에서 그 지표를 가장 많이 한 선수를 한 줄에 마주 세운다. 가운데 라벨을 기준으로
    왼쪽이 홈, 오른쪽이 원정이다 — 팀 기록 비교와 같은 읽기 방향이라 두 표가 한 벌로 읽힌다.
    팀 표시는 머리글 한 줄에 모은다(PO). 줄마다 로고를 붙이면 세 줄에 같은 로고가 여섯 번
@@ -305,7 +305,7 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .cmp-row{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:10px}
 .cmp-v{font-family:var(--font-display);font-size:16px;font-weight:800;text-align:center}
 /* 낮은 쪽은 두께를 한 단 내리고 색도 한 단만 내린다(PO).
-   여기는 '비교'가 섹션의 목적이라 기록별 리더와 달리 색 차이를 둔다. 다만 예전처럼
+   여기는 '비교'가 섹션의 목적이라 기록별 탑플레이어와 달리 색 차이를 둔다. 다만 예전처럼
    --on-surface-variant까지 내리면 숫자가 라벨과 같은 톤이 되어 '작다'가 아니라
    '덜 중요하다'로 읽혔다. 본문색과 라벨색 사이 한 단(6:4)에 세운다. */
 .cmp-v.dim{font-weight:600;
@@ -678,7 +678,7 @@ function viewSummary(){
     qflow+
   '</div>';
 
-  /* 기록별 리더 — 지표마다 양 팀의 1위를 마주 세운다. 표 전체를 훑지 않아도
+  /* 기록별 탑플레이어 — 지표마다 양 팀의 1위를 마주 세운다. 표 전체를 훑지 않아도
      '이 경기에서 누가 무엇을 했는지'가 세 줄로 잡힌다.
      동점이면 둘 다 진하게 둔다 — 한쪽만 밝히면 없는 우열을 만든다. */
   function leaderOf(list, key){
@@ -708,7 +708,7 @@ function viewSummary(){
   '</div>';
   var ldrMore = '<button type="button" class="ldr-more" data-tab="box">'+
     '전체기록 보기<span class="msym" aria-hidden="true">chevron_right</span></button>';
-  var leaders = '<div class="card"><h3>기록별 리더</h3><div class="ldr">'+
+  var leaders = '<div class="card"><h3>기록별 탑플레이어</h3><div class="ldr">'+
     (ldrRows ? ldrHead + ldrRows + ldrMore : '<div class="ldr-empty">아직 기록이 없어요</div>')+'</div></div>';
 
   // 팀 기록 비교 — 막대는 큰 쪽 대비 비율. 수치가 붙어 있어야 막대만 보고 오해하지 않는다
@@ -730,7 +730,7 @@ function viewSummary(){
     // 나란히 꽉 차 버려 "거의 같다"는 사실이 오히려 "둘 다 최고"로 읽힌다.
     // 개수 지표는 값의 폭이 커서 절대 스케일이 무의미하므로 큰 쪽을 100%로 잡는다.
     var max = r.unit === '%' ? 100 : (Math.max(r.h, r.a) || 1);
-    // 동점이면 양쪽 다 진하게 둔다(기록별 리더와 같은 규칙) — 한쪽만 내리면 없는 우열이 생기고,
+    // 동점이면 양쪽 다 진하게 둔다(기록별 탑플레이어와 같은 규칙) — 한쪽만 내리면 없는 우열이 생기고,
     // 둘 다 내리면 같은 값인데 둘 다 진 것처럼 보인다. '못한 쪽'일 때만 내린다.
     var hBetter = !(r.lowGood ? r.h > r.a : r.h < r.a);
     var aBetter = !(r.lowGood ? r.a > r.h : r.a < r.h);
