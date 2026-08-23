@@ -776,12 +776,14 @@ button{font-family:var(--font)}
 .cfCaptain[hidden]{display:none}   /* display:inline-flex가 hidden 기본값을 덮는다 */
 /* 카드에서는 영문 이름이 주인공이다(PO) — 한글은 그 위에 작게 얹어 누구인지만 알린다.
    트레이딩 카드의 읽는 순서가 그렇다: 눈이 먼저 큰 글자에 가고, 작은 줄은 그 뒤에 확인된다. */
-.cf-name{font-size:13px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.62)}
+/* 한글은 영문 아래에 붙는다 — 큰 줄이 먼저 서고 작은 줄들(한글·팀·번호)이 그 아래 모인다.
+   위에 얹었더니 칩과 큰 글자 사이에 홀로 떠서 어색했다. */
+.cf-name{font-size:13px;font-weight:700;letter-spacing:.02em;color:rgba(255,255,255,.62)}
 /* 영문 이름 — 전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다.
    첫 글자만 대문자로 두고 한 단 얇게 해서 한글 이름 아래 조용히 받치게 한다. */
 /* 영문 이름은 영문 메인 폰트(Tektur)로(PO) — 한글 이름과 다른 얼굴이라 두 줄이 겹쳐 읽히지 않는다.
    각진 디스플레이 서체라 500 무게로도 충분히 서므로 굵기는 그대로 둔다. */
-.cf-nameEn{font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:.01em;color:#fff;margin-top:1px;line-height:1.1}
+.cf-nameEn{font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:.01em;color:#fff;line-height:1.1}
 /* 구분선 — 다른 텍스트와 동일하게 좌우 패딩 안쪽에서 끝남(꽉 채우면 답답해 보여서 되돌림) */
 .cfBottomRow{display:flex;align-items:center;gap:8px;padding-right:68px}
 .cfTeamMini{display:flex;align-items:center;gap:7px;min-width:0}
@@ -1263,8 +1265,7 @@ button{font-family:var(--font)}
               <div class="infoBlur infoBlur3" aria-hidden="true"></div>
               <div class="cardFront-info">
                 <div class="cfTop">
-                  <div class="cfPosRow"><span class="chip cfPos" id="fPos">SF</span></div>
-                  <div class="cf-name" id="fName">김민수</div>
+                  <div class="cfPosRow"><span class="chip cfPos" id="fPos">SF</span><span class="cf-name" id="fName">김민수</span></div>
                   <div class="cf-nameEn" id="fNameEn">KIM MIN SU</div>
                 </div>
                 <div class="cfBottomRow">
@@ -1463,7 +1464,7 @@ var MSYM = {
   pause:'pause', pauseFill:'pause', play:'play_arrow', check:'check',
   edit:'edit', trash:'delete', download:'download', upload:'upload',
   camera:'photo_camera', grid:'grid_view', export:'save_alt', share:'share',
-  crown:'workspace_premium', more:'more_horiz', flip:'flip', close:'close',
+  crown:'workspace_premium', more:'more_horiz', flip:'autorenew', close:'close',
   verified:'verified'
 };
 function icon(key, cls){
@@ -2516,8 +2517,7 @@ function lbCardFrontHTML(grade){
     '<div class="infoBlur infoBlur3" aria-hidden="true"></div>'+
     '<div class="cardFront-info">'+
       '<div class="cfTop">'+
-        '<span class="chip cfPos">'+PLAYER.pos+'</span>'+
-        '<div class="cf-name">'+PLAYER.name+'</div>'+
+        '<div class="cfPosRow"><span class="chip cfPos">'+PLAYER.pos+'</span><span class="cf-name">'+PLAYER.name+'</span></div>'+
         '<div class="cf-nameEn">'+titleCase(PLAYER.en)+'</div>'+
       '</div>'+
       '<div class="cfBottomRow">'+

@@ -1488,12 +1488,12 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 선수 카드(.cf-name)와 같은 26px — 카드 폭이 같은데 이름만 크면 한 벌로 안 읽힌다 */
 /* 카드에서는 영문 이름이 주인공이다(PO) — 한글은 그 위에 작게 얹어 누구인지만 알린다.
    트레이딩 카드의 읽는 순서가 그렇다: 눈이 먼저 큰 글자에 가고, 작은 줄은 그 뒤에 확인된다. */
-.pdNameKr{font-size:13px;font-weight:700;letter-spacing:.02em;display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.62)}
+.pdNameKr{font-size:13px;font-weight:700;letter-spacing:.02em;color:rgba(255,255,255,.62)}
 /* 영문 이름 — 첫 글자만 대문자, 한 단 얇게(선수 카드 .cf-nameEn과 같은 값).
    전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다. */
 /* 영문 이름은 영문 메인 폰트(Tektur)로(PO) — 한글 이름과 다른 얼굴이라 두 줄이 겹쳐 읽히지 않는다.
    각진 디스플레이 서체라 500 무게로도 충분히 서므로 굵기는 그대로 둔다. */
-.pdNameEn{font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:.01em;color:#fff;margin-top:1px;line-height:1.1}
+.pdNameEn{font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:.01em;color:#fff;line-height:1.1}
 .pdBottomRow{display:flex;align-items:center;gap:8px;padding-right:68px}
 .pdTeamMini{display:flex;align-items:center;gap:7px;min-width:0}
 .pdTeamMini span{font-size:13px;color:rgba(255,255,255,.7);font-weight:600}
@@ -2753,7 +2753,7 @@ var MSYM = {
   pause:'pause', pauseFill:'pause', play:'play_arrow', check:'check',
   edit:'edit', trash:'delete', download:'download', upload:'upload',
   camera:'photo_camera', grid:'grid_view', export:'save_alt', share:'share',
-  crown:'workspace_premium', more:'more_horiz', flip:'flip', close:'close',
+  crown:'workspace_premium', more:'more_horiz', flip:'autorenew', close:'close',
   verified:'verified'
 };
 function icon(key, cls){
@@ -4944,9 +4944,8 @@ function renderPlayerDetail(){
             '<div class="pdIdBlock">'+
               '<div class="pdPosRow">'+
                 (posLabel ? '<span class="chip pdPos">'+posLabel+'</span>' : '')+
-
+                '<span class="pdNameKr">'+p.name+'</span>'+
               '</div>'+
-              '<div class="pdNameKr">'+p.name+'</div>'+
               (p.en ? '<div class="pdNameEn">'+titleCaseEn(p.en)+'</div>' : '')+
             '</div>'+
             '<div class="pdBottomRow">'+
