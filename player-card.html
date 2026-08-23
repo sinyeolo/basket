@@ -911,6 +911,10 @@ button{font-family:var(--font)}
 .recEmpty{font-size:11px;color:var(--sh-on-dim);text-align:center;padding:18px 8px;
   background:var(--sh-bg2);border-radius:12px;line-height:1.6}
 .cardFace.back .recEmpty{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.13);color:var(--on-dark-dim)}
+/* 빈 상태 아이콘 — 글자 위에 한 단 흐리게 얹는다(PO). 문장만 있으면 '비어 있다'가
+   읽히기 전에 '뭔가 잘못됐나'로 먼저 읽힌다. 그림이 먼저 상태를 말해 준다.
+   크기는 아이콘 기본 단(20px) 그대로 — 빈 상태라고 더 키우면 없는 것이 제일 크게 보인다. */
+.recEmpty .msym{display:block;margin:0 auto 6px;font-size:20px;opacity:.5}
 
 /* 조작 줄 — 이제 뒤집기 하나뿐이라 가운데 세운다(PO). 양 끝에 벌려 두던 건
    기울임 상태 표시가 오른쪽에 함께 있을 때의 배치였다. */
@@ -1304,7 +1308,7 @@ button{font-family:var(--font)}
               <div class="backGrid hasRec" id="backGrid"></div>
               <div class="backTitle hasRec">최근 경기<span class="recLegend">득점/리바운드/어시스트</span></div>
               <div class="backGames hasRec" id="backGames"></div>
-              <div class="recEmpty noRec">아직 뛴 경기가 없어요<br>첫 경기를 마치면 기록이 채워져요</div>
+              <div class="recEmpty noRec" data-icon="stats">아직 뛴 경기가 없어요<br>첫 경기를 마치면 기록이 채워져요</div>
               <div class="backNote" id="backUpdated">update 2026.07.23 13:20</div>
             </div>
           </div>
@@ -1368,7 +1372,7 @@ button{font-family:var(--font)}
       <!-- ============ 시즌 평균 ============ -->
       <div class="section">
         <h3>시즌 평균<span class="upAt" id="avgUpAt"></span></h3>
-        <div class="recEmpty noRec">아직 뛴 경기가 없어요</div>
+        <div class="recEmpty noRec" data-icon="stats">아직 뛴 경기가 없어요</div>
         <div class="avgRow hasRec">
           <div class="avgIt"><b id="sAvgPts">21.4</b><span>득점</span></div>
           <div class="avgIt"><b id="sAvgReb">7.1</b><span>리바운드</span></div>
@@ -1379,20 +1383,20 @@ button{font-family:var(--font)}
       <!-- ============ 기록 ============ -->
       <div class="section">
         <h3>최근 대회 기록</h3>
-        <div class="recEmpty noRec">참가한 대회가 아직 없어요</div>
+        <div class="recEmpty noRec" data-icon="tournament">참가한 대회가 아직 없어요</div>
         <div class="hasRec" id="sheetGames"></div>
         <button type="button" class="recMore hasRec" id="recMoreBtn" hidden></button>
       </div>
       <div class="section">
         <h3>획득 배지</h3>
-        <div class="recEmpty noRec">아직 받은 배지가 없어요</div>
+        <div class="recEmpty noRec" data-icon="crown">아직 받은 배지가 없어요</div>
         <div class="badgeRow hasRec" id="badgeRow"></div>
       </div>
 
       <!-- ============ 앨범 — 카드가 여러 장이면 가로로 스와이프, 누르면 실제 카드가 확대되어 열림 ============ -->
       <div class="section">
         <h3>카드 앨범</h3>
-        <div class="recEmpty noRec">첫 카드가 이 카드예요</div>
+        <div class="recEmpty noRec" data-icon="grid">첫 카드가 이 카드예요</div>
         <div class="albumScroll hasRec" id="album"></div>
       </div>
 
@@ -1850,6 +1854,11 @@ document.getElementById('stNum').textContent = PLAYER.no;
 document.getElementById('stVerified').innerHTML = icon('verified');
 document.getElementById('btnShareTop').innerHTML = icon('share');
 document.getElementById('btnFlip').innerHTML = icon('flip','ic ic-sm')+'카드 뒤집기';
+// 빈 상태 아이콘 — data-icon 키를 MSYM에서 찾아 글자 앞에 끼운다.
+// 글리프 이름을 마크업에 흩뿌리지 않으려고 한 곳(MSYM)에만 두고 여기서 채운다.
+[].forEach.call(document.querySelectorAll('.recEmpty[data-icon]'), function(el){
+  el.insertAdjacentHTML('afterbegin', icon(el.getAttribute('data-icon'), 'ic'));
+});
 document.getElementById('recMoreBtn').addEventListener('click', function(){
   sheetGamesExpanded = !sheetGamesExpanded;
   renderGameLists();
