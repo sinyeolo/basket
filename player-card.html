@@ -20,6 +20,8 @@
   --font-display:'Tektur',var(--font);
   --stage-bg:#0a0b0f; --stage-bg2:#14161c;
   --on-dark:#f4f4f6; --on-dark-dim:#9a9ba3;
+  /* 개봉 팩(은박) — 카드도 콘솔도 아닌 제3의 표면이라 자체 토큰을 갖는다 */
+  --pack-foil-deep:#464e5c; --pack-peek:#565d70;
   --card-w:270px; --card-h:378px;   /* 300×420에서 10% 축소 */ --card-thick:6px;   /* 16 → 10 → 6px로 얇게(PO) */
   /* 공통 컴포넌트 토큰 — prototype/index.html과 동일 값 사용(라운드·높이 스케일 통일) */
   --r-btn:100px; --r-card:20px; --r-chip:8px; --h-sm:40px; --h-md:44px;
@@ -356,7 +358,7 @@ button{font-family:var(--font)}
 /* 브랜드 로고 패턴 — 카드 뒷면(.backLogoPat)과 같은 에셋·같은 방식이다.
    여기서 새 패턴을 그리면 같은 브랜드가 두 벌이 된다. */
 .packPat{position:absolute;inset:-40%;pointer-events:none;opacity:.16;
-  background-color:#464e5c;
+  background-color:var(--pack-foil-deep);
   -webkit-mask-image:url(assets/logo-pat.svg);mask-image:url(assets/logo-pat.svg);
   -webkit-mask-size:78px auto;mask-size:78px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat;
@@ -375,8 +377,8 @@ button{font-family:var(--font)}
 
 /* 뜯긴 자리로 보이는 카드 윗동 — 안에 뭔가 들어 있다는 걸 여는 도중에 알려 준다 */
 .packPeek{position:absolute;left:10px;right:10px;top:18px;height:calc(var(--seam) + 12px);
-  border-radius:10px 10px 0 0;overflow:hidden;
-  background:linear-gradient(180deg,#565d70 0%,#14161c 100%);
+  border-radius:14px 14px 0 0;overflow:hidden;
+  background:linear-gradient(180deg,var(--pack-peek) 0%,var(--stage-bg2) 100%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
 
 /* 뚜껑 — 은박 압착부. 실물 파우치의 그 부분이라 잔주름(반복 그라디언트)을 넣는다.
