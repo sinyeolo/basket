@@ -490,13 +490,27 @@ function gradeOf(ovr){ return ovr >= 85 ? 'gold' : ovr >= 72 ? 'silver' : 'bronz
    한 경기 숫자를 넣으면 평균이라고 거짓말을 하게 된다. 신원과 등급까지만 싣는다. */
 function cardHref(p, side){
   var t = G[side] || {};
-  var ovr = ovrOf(p);
+  /* 이 경기 숫자가 아니라 시즌 누적을 싣는다. 카드 뒷면은 그 자리를 '시즌 평균'으로 읽기
+     때문에 한 경기 값을 넣으면 카드가 평균이라고 거짓말을 한다.
+     BASKET.seasonOf가 확정된 경기들의 박스스코어를 모아 계산해 준다 — 없는 숫자를 만들지 않는다. */
+  var sn = (typeof BASKET !== 'undefined' && BASKET.seasonOf) ? BASKET.seasonOf(t.name, p.no) : null;
+  var ovr = sn ? ovrOfAvg(sn) : ovrOf(p);
   var q = new URLSearchParams({
     id: (t.name||'') + '-' + p.no, name: p.name, team: t.name || '미배정',
     teamColor: t.color || '#6b6a72', season: G.tour || '', grade: gradeOf(ovr), ovr: ovr
   });
   if(p.no != null) q.set('no', p.no);
+  if(sn){
+    q.set('pts', sn.pts.toFixed(1));
+    q.set('reb', sn.reb.toFixed(1));
+    q.set('ast', sn.ast.toFixed(1));
+  }
   return 'player-card.html?' + q.toString();
+}
+/* 시즌 평균으로 내는 OVR — 한 경기용 ovrOf와 달리 스틸·블록·턴오버가 없다.
+   누적에 그 셋을 모으지 않아서다. 없는 값을 0으로 넣으면 모든 선수가 같은 만큼 깎인다. */
+function ovrOfAvg(sn){
+  return Math.min(99, Math.round(52 + sn.pts * 1.1 + sn.reb * 0.9 + sn.ast * 1.1));
 }
 function playerLink(p, side, cls){
   return '<a class="pLink'+(cls?' '+cls:'')+'" href="'+cardHref(p, side)+'" target="_blank" rel="noopener"'+

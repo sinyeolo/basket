@@ -164,5 +164,52 @@ var BASKET = {
     }, []);
   },
   find: function(id){ return BASKET.items().filter(function(g){ return g.id === id; })[0] || null; },
-  record: function(id){ return BASKET_RECORDS[id] || null; }
+  record: function(id){ return BASKET_RECORDS[id] || null; },
+  /* 시즌 누적 — 기록이 확정된 경기의 박스스코어를 선수 단위로 모은다.
+     선수 카드가 '시즌 평균'이라고 부르는 값의 실제 근거다. 지어내지 않고 여기서 계산하므로
+     경기 하나가 확정될 때마다 카드의 평균도 함께 움직인다.
+     선수 식별은 팀명+등번호다 — 이름은 동명이인이 있고 등번호만으로는 팀이 갈리지 않는다. */
+  seasonOf: function(teamName, no){
+    var g = 0, pts = 0, reb = 0, ast = 0;
+    BASKET.items().forEach(function(it){
+      var r = BASKET_RECORDS[it.id];
+      if(!r) return;
+      ['home', 'away'].forEach(function(side){
+        if(!it[side] || it[side].name !== teamName) return;
+        (r[side] || []).forEach(function(p){
+          if(String(p.no) !== String(no)) return;
+          g++; pts += p.pts || 0; reb += p.reb || 0; ast += p.ast || 0;
+        });
+      });
+    });
+    if(!g) return null;
+    return { games:g, pts:pts / g, reb:reb / g, ast:ast / g };
+  },
+  /* 이 선수가 뛴 경기 목록 — 최신순. 선수 카드의 '최근 경기'가 읽는다.
+     seasonOf와 같은 자리에서 같은 방식으로 훑는다 — 평균과 목록이 다른 근거를 보면
+     합이 안 맞는 카드가 나온다. */
+  recentOf: function(teamName, no){
+    var out = [];
+    BASKET.items().forEach(function(it){
+      var r = BASKET_RECORDS[it.id];
+      if(!r) return;
+      ['home', 'away'].forEach(function(side){
+        if(!it[side] || it[side].name !== teamName) return;
+        var line = (r[side] || []).filter(function(p){ return String(p.no) === String(no); })[0];
+        if(!line) return;
+        var foe = it[side === 'home' ? 'away' : 'home'];
+        out.push({
+          id: it.id,
+          date: it.date.slice(5).replace('-', '.'),
+          sort: it.date,
+          opp: foe.name,
+          stage: '2026 여름 3×3 리그 · ' + it.label,
+          win: (it[side].score || 0) > (foe.score || 0),
+          pts: line.pts || 0, reb: line.reb || 0, ast: line.ast || 0
+        });
+      });
+    });
+    out.sort(function(a, b){ return a.sort < b.sort ? 1 : a.sort > b.sort ? -1 : 0; });
+    return out;
+  }
 };

@@ -781,7 +781,10 @@ button{font-family:var(--font)}
    트레이딩 카드의 읽는 순서가 그렇다: 눈이 먼저 큰 글자에 가고, 작은 줄은 그 뒤에 확인된다. */
 /* 한글은 영문 아래에 붙는다 — 큰 줄이 먼저 서고 작은 줄들(한글·팀·번호)이 그 아래 모인다.
    위에 얹었더니 칩과 큰 글자 사이에 홀로 떠서 어색했다. */
-.cf-name{font-size:13px;font-weight:700;letter-spacing:.02em;color:rgba(255,255,255,.62)}
+/* 한글 이름은 팀명 줄 맨 앞에 선다(PO). 영문이 이름이고, 이 줄은 '누구의·어디의·몇 번'을
+   차례로 읽는 한 줄이다. 같은 줄의 다른 항목보다 한 겹 밝게 둬서 이름인 건 알아보게 한다. */
+.cf-name{flex:none;letter-spacing:.02em}
+.cfTeamMini .cf-name{font-weight:700;color:rgba(255,255,255,.88)}
 /* 영문 이름 — 전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다.
    첫 글자만 대문자로 두고 한 단 얇게 해서 한글 이름 아래 조용히 받치게 한다. */
 /* 영문 이름은 영문 메인 폰트(Tektur)로(PO) — 한글 이름과 다른 얼굴이라 두 줄이 겹쳐 읽히지 않는다.
@@ -1272,11 +1275,13 @@ button{font-family:var(--font)}
               <div class="infoBlur infoBlur3" aria-hidden="true"></div>
               <div class="cardFront-info">
                 <div class="cfTop">
-                  <div class="cfPosRow"><span class="chip cfPos" id="fPos">SF</span><span class="cf-name" id="fName">김민수</span></div>
+                  <div class="cfPosRow"><span class="chip cfPos" id="fPos">SF</span></div>
                   <div class="cf-nameEn" id="fNameEn">KIM MIN SU</div>
                 </div>
                 <div class="cfBottomRow">
                   <div class="cfTeamMini">
+                    <span class="cf-name" id="fName">김민수</span>
+                    <span class="cfNumDot">·</span>
                     <span class="cfTeamName" id="fTeam">서울 타이탄스</span>
                     <span class="cfNumDot">·</span>
                     <span class="cfNumInline" id="fNo">7</span>
@@ -1444,6 +1449,7 @@ button{font-family:var(--font)}
   </div>
 </div>
 
+<script src="game-data.js"></script>
 <script>
 /* 공통 아이콘 — index.html의 ICONS 구성 방식(24 viewBox, stroke-width 2, currentColor)과 동일 규칙으로 이 파일에도 최소 세트 유지 */
 var ICONS = {
@@ -1562,6 +1568,21 @@ var LINKED_PLAYER = false;
      남의 값과 비교해 엉뚱한 상승·하락 화살표가 뜬다. 기준이 없으면 아무 표시도 하지 않는다. */
   PLAYER.seen = null;
   PLAYER.statsUpdatedAt = null;
+  /* 최근 경기도 공용 데이터에서 가져온다. 예전엔 목업(김민수)의 목록이 그대로 남아,
+     다른 선수의 카드를 열어도 김민수가 뛴 경기가 나왔다 — 빈 목록보다 나쁜 상태였다.
+     평균(BASKET.seasonOf)과 같은 자리를 같은 방식으로 훑으므로 둘이 어긋나지 않는다. */
+  if(typeof BASKET !== 'undefined' && BASKET.recentOf){
+    PLAYER.recentGames = BASKET.recentOf(PLAYER.team, PLAYER.no) || [];
+    var sn = BASKET.seasonOf(PLAYER.team, PLAYER.no);
+    if(sn){
+      PLAYER.stats = { pts:+sn.pts.toFixed(1), reb:+sn.reb.toFixed(1), ast:+sn.ast.toFixed(1) };
+      PLAYER.hasRecord = true;
+    } else {
+      PLAYER.hasRecord = false;
+    }
+  } else {
+    PLAYER.recentGames = [];
+  }
 })();
 
 // 사진 미등록 선수의 기본 실루엣 4종 — 매 접속마다 바뀌면 안 되므로 선수 id를 해시해 고정 배정.
@@ -1676,7 +1697,7 @@ function paintAvgTrends(){
     var el = document.getElementById(pair[0]); if(!el) return;
     var v = now[pair[1]], o = seen ? seen[pair[1]] : null;
     var d = (v != null && o != null) ? v - o : 0;
-    el.innerHTML = ovrTrendHtml(d) + (v != null ? v : '-');
+    el.innerHTML = ovrTrendHtml(d) + (v != null ? avg1(v) : '-');
   });
 }
 function dot(){ return '<span class="newDot" aria-label="새로 바뀜"></span>'; }
@@ -1890,13 +1911,12 @@ document.getElementById('fCaptain').hidden = !PLAYER.captain;
 document.getElementById('fNameEn').textContent = titleCase(PLAYER.en);
 document.getElementById('fNo').textContent = PLAYER.no;
 // 시즌 평균 — 카드 뒷면과 같은 PLAYER.stats를 쓴다(운영 콘솔이 URL로 넘긴 실측값)
-document.getElementById('sAvgPts').textContent = PLAYER.stats.pts;
-document.getElementById('sAvgReb').textContent = PLAYER.stats.reb;
-document.getElementById('sAvgAst').textContent = PLAYER.stats.ast;
+/* 평균은 늘 소수 한 자리로 쓴다 — 23과 21.4가 한 줄에 서면 눈금이 다른 자로 잰 것처럼 보인다 */
+function avg1(v){ return (typeof v === 'number') ? v.toFixed(1) : v; }
 document.getElementById('backGrid').innerHTML =
-  '<div class="backStat"><b>'+PLAYER.stats.pts+'</b><span>득점</span></div>'+
-  '<div class="backStat"><b>'+PLAYER.stats.reb+'</b><span>리바운드</span></div>'+
-  '<div class="backStat"><b>'+PLAYER.stats.ast+'</b><span>어시스트</span></div>';
+  '<div class="backStat"><b>'+avg1(PLAYER.stats.pts)+'</b><span>득점</span></div>'+
+  '<div class="backStat"><b>'+avg1(PLAYER.stats.reb)+'</b><span>리바운드</span></div>'+
+  '<div class="backStat"><b>'+avg1(PLAYER.stats.ast)+'</b><span>어시스트</span></div>';
 document.getElementById('badgeRow').innerHTML = PLAYER.badges.map(function(b){
   return '<div class="badge"><span class="badgeCircle"><i></i></span><span class="badgeLabel">'+b+'</span></div>';
 }).join('');
@@ -2525,11 +2545,13 @@ function lbCardFrontHTML(grade){
     '<div class="infoBlur infoBlur3" aria-hidden="true"></div>'+
     '<div class="cardFront-info">'+
       '<div class="cfTop">'+
-        '<div class="cfPosRow"><span class="chip cfPos">'+PLAYER.pos+'</span><span class="cf-name">'+PLAYER.name+'</span></div>'+
+        '<div class="cfPosRow"><span class="chip cfPos">'+PLAYER.pos+'</span></div>'+
         '<div class="cf-nameEn">'+titleCase(PLAYER.en)+'</div>'+
       '</div>'+
       '<div class="cfBottomRow">'+
         '<div class="cfTeamMini">'+
+          '<span class="cf-name">'+PLAYER.name+'</span>'+
+          '<span class="cfNumDot">·</span>'+
           '<span class="cfTeamName">'+PLAYER.team+'</span>'+
           '<span class="cfNumDot">·</span>'+
           '<span class="cfNumInline">'+PLAYER.no+'</span>'+
@@ -2553,9 +2575,9 @@ function lbCardBackHTML(entry){
     '<div class="holoGrain" aria-hidden="true"></div>'+
     '<div class="backTitle">시즌 평균 기록</div>'+
     '<div class="backGrid">'+
-      '<div class="backStat"><b>'+PLAYER.stats.pts+'</b><span>득점</span></div>'+
-      '<div class="backStat"><b>'+PLAYER.stats.reb+'</b><span>리바운드</span></div>'+
-      '<div class="backStat"><b>'+PLAYER.stats.ast+'</b><span>어시스트</span></div>'+
+      '<div class="backStat"><b>'+avg1(PLAYER.stats.pts)+'</b><span>득점</span></div>'+
+      '<div class="backStat"><b>'+avg1(PLAYER.stats.reb)+'</b><span>리바운드</span></div>'+
+      '<div class="backStat"><b>'+avg1(PLAYER.stats.ast)+'</b><span>어시스트</span></div>'+
     '</div>'+
     '<div class="backTitle">'+entry.season+'</div>'+
     '<div class="backNote">앨범 보관용 스냅샷 · 시즌별 실제 기록 연동 전이에요</div>'+

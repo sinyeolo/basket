@@ -1502,7 +1502,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 선수 카드(.cf-name)와 같은 26px — 카드 폭이 같은데 이름만 크면 한 벌로 안 읽힌다 */
 /* 카드에서는 영문 이름이 주인공이다(PO) — 한글은 그 위에 작게 얹어 누구인지만 알린다.
    트레이딩 카드의 읽는 순서가 그렇다: 눈이 먼저 큰 글자에 가고, 작은 줄은 그 뒤에 확인된다. */
-.pdNameKr{font-size:13px;font-weight:700;letter-spacing:.02em;color:rgba(255,255,255,.62)}
+/* 한글 이름은 팀명 줄 맨 앞(선수 카드와 같은 규칙) */
+.pdNameKr{flex:none;letter-spacing:.02em}
+.pdTeamMini .pdNameKr{font-weight:700;color:rgba(255,255,255,.88)}
 /* 영문 이름 — 첫 글자만 대문자, 한 단 얇게(선수 카드 .cf-nameEn과 같은 값).
    전부 대문자면 한글 이름과 무게가 비슷해져 둘이 겨룬다. */
 /* 영문 이름은 영문 메인 폰트(Tektur)로(PO) — 한글 이름과 다른 얼굴이라 두 줄이 겹쳐 읽히지 않는다.
@@ -4958,13 +4960,14 @@ function renderPlayerDetail(){
             '<div class="pdIdBlock">'+
               '<div class="pdPosRow">'+
                 (posLabel ? '<span class="chip pdPos">'+posLabel+'</span>' : '')+
-                '<span class="pdNameKr">'+p.name+'</span>'+
               '</div>'+
               (p.en ? '<div class="pdNameEn">'+titleCaseEn(p.en)+'</div>' : '')+
             '</div>'+
             '<div class="pdBottomRow">'+
               // 팀명 앞 로고 서클은 제거 — 카드 우하단 팀 씰(.teamSeal)에 같은 이니셜이 이미 크게 들어가 중복이었다
               '<div class="pdTeamMini">'+
+                '<span class="pdNameKr">'+p.name+'</span>'+
+                '<span class="pdNumDot">·</span>'+
                 '<span class="pdTeamName">'+(t?t.name:'미배정')+'</span>'+
                 (p.no!=null ? '<span class="pdNumDot">·</span><span class="pdNumInline">'+p.no+'</span>' : '')+
               '</div>'+
