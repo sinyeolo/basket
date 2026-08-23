@@ -1478,13 +1478,16 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    명단의 주황 배경/검정 글자를 그대로 쓰면 카드에서 혼자 튄다. 등급색 테두리로 얹는다. */
 /* 주장 — 포지션 칩과 같은 크기의 원(선수 카드 .cfCaptain과 같은 값) */
 /* 주장 뱃지 — 선수 카드(.cfCaptain)와 같은 스티커다. 팀 씰 우측 상단에 겹쳐 붙는다. */
-.pdCaptain{position:absolute;top:2px;right:2px;z-index:1;
-  display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;
+.pdCaptain{position:absolute;top:-2px;right:0;z-index:1;
+  display:inline-flex;align-items:center;justify-content:center;
   /* 스티커 글자는 영문 메인 폰트(선수 카드와 같은 규칙) */
-  border-radius:50%;flex:none;font-family:var(--font-display);font-size:14px;font-weight:800;line-height:1;
-  -webkit-text-stroke:1.2px #fff;
-  background:var(--g-b,#f4d16a);color:var(--g-c,#4a3608);
-  box-shadow:0 6px 12px rgba(0,0,0,.5), 0 2px 4px rgba(0,0,0,.35);
+  flex:none;font-family:var(--font-display);font-size:26px;font-weight:800;line-height:1;
+  /* 서클 없이 C 자체가 스티커다(선수 카드와 같은 규칙) — 흰 선은 글자 윤곽을 따라간다.
+     paint-order 로 획을 먼저 깔아야 3px 선이 글자 안쪽을 파먹지 않는다. */
+  color:var(--g-b,#f4d16a);
+  -webkit-text-stroke:3px #fff;
+  paint-order:stroke fill;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.55)) drop-shadow(0 4px 8px rgba(0,0,0,.42));
   transform:rotate(-20deg)}
 /* 선수 카드(.cf-name)와 같은 26px — 카드 폭이 같은데 이름만 크면 한 벌로 안 읽힌다 */
 /* 카드에서는 영문 이름이 주인공이다(PO) — 한글은 그 위에 작게 얹어 누구인지만 알린다.
