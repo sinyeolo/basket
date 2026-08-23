@@ -735,7 +735,9 @@ button{font-family:var(--font)}
   font-family:var(--font-display);font-size:26px;font-weight:800;line-height:1;
   /* 서클을 없애고 C 자체를 오려낸 스티커로 쓴다(PO).
      면이 사라졌으니 글자가 그 자리를 대신해야 해서 14px → 26px. */
-  color:var(--g-b);
+  /* 브랜드 오렌지(PO) — 등급색을 쓰면 캡틴 표시가 등급 표시처럼 읽힌다.
+     주장은 등급과 무관한 역할이라 색도 등급에서 떼어 놓는다. */
+  color:var(--brand);
   /* 흰 선은 글자 윤곽을 그대로 따라간다 — 오려낸 자국이다.
      paint-order:stroke fill 이 없으면 -webkit-text-stroke는 획 중앙에 그려져
      안쪽을 파먹는다(1.6px에서 C의 구멍이 닫혔다). 획을 먼저 깔고 그 위에 면을
