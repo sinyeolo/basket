@@ -733,7 +733,10 @@ button{font-family:var(--font)}
 .cfCaptain{position:absolute;right:14px;bottom:69px;pointer-events:none;
   display:inline-flex;align-items:center;justify-content:center;
   width:28px;height:28px;flex:none;
-  border-radius:50%;font-family:var(--font-display);font-size:12px;font-weight:800;line-height:1;
+  border-radius:50%;font-family:var(--font-display);font-size:14px;font-weight:800;line-height:1;
+  /* C 글자 외곽에 흰 선(PO) — 스티커의 로고타입이 등급색 면 위에서 한 번 더 떨어져 나온다.
+     -webkit-text-stroke는 획 중앙에 그려져 안쪽을 파먹으므로, 800 굵기에서 견디는 1.2px까지만 준다. */
+  -webkit-text-stroke:1.2px #fff;
   /* 표면 하이라이트 — 카드와 같은 --lit-x/--lit-y를 쓰되 스티커 크기에 맞게 줄여서 쓴다(0.2배).
      28px 원에서 18px쯤 움직이므로 기울일 때 빛이 도는 게 보인다.
      28×28 면 하나를 다시 칠하는 값이라 비용은 없다고 봐도 된다. */
@@ -783,7 +786,7 @@ button{font-family:var(--font)}
    첫 글자만 대문자로 두고 한 단 얇게 해서 한글 이름 아래 조용히 받치게 한다. */
 /* 영문 이름은 영문 메인 폰트(Tektur)로(PO) — 한글 이름과 다른 얼굴이라 두 줄이 겹쳐 읽히지 않는다.
    각진 디스플레이 서체라 500 무게로도 충분히 서므로 굵기는 그대로 둔다. */
-.cf-nameEn{font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:.01em;color:#fff;line-height:1.1}
+.cf-nameEn{font-family:var(--font-display);font-size:20px;font-weight:800;letter-spacing:.01em;color:#fff;line-height:1.1}
 /* 구분선 — 다른 텍스트와 동일하게 좌우 패딩 안쪽에서 끝남(꽉 채우면 답답해 보여서 되돌림) */
 .cfBottomRow{display:flex;align-items:center;gap:8px;padding-right:68px}
 .cfTeamMini{display:flex;align-items:center;gap:7px;min-width:0}
@@ -1066,7 +1069,7 @@ button{font-family:var(--font)}
 /* 뒷면 행은 시트보다 조밀하다 — 카드 한 장 안에 5경기가 들어가야 하기 때문이다.
    시트와 같은 여백을 쓰면 5행이 카드 밖으로 400px 넘게 흘러나간다.
    글자는 11px(기능 텍스트 하한)까지만 줄이고 나머지는 여백으로 줄인다. */
-.cardFace.back .recRow{margin-bottom:5px;padding:7px 10px;font-size:11px;border-radius:9px;
+.cardFace.back .recRow{margin-bottom:5px;padding:7px 10px;font-size:11px;border-radius:8px;
   background:rgba(255,255,255,.11)}
 .cardFace.back .recRow:last-child{margin-bottom:0}
 .cardFace.back .recRow .op{gap:5px}
@@ -1076,7 +1079,7 @@ button{font-family:var(--font)}
 /* 24/8/1 — 슬래시를 흐리게 해서 숫자 셋이 먼저 읽히게 한다 */
 .recLine{font-family:var(--font-display);font-variant-numeric:tabular-nums;letter-spacing:.01em}
 .recLine i{font-style:normal;opacity:.45;margin:0 1px}
-.cardFace.back .wl{width:18px;height:15px;border-radius:4px}
+.cardFace.back .wl{width:18px;height:15px;border-radius:5px}
 .cardFace.back .inner{gap:10px}
 .sheet .recRow{background:var(--sh-bg2);color:var(--sh-on)}
 .recRow .newDot{margin-left:0}
