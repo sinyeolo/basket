@@ -390,6 +390,19 @@ button{font-family:var(--font)}
   background:
     linear-gradient(180deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,.04) 22%, rgba(255,255,255,0) 46%),
     linear-gradient(158deg, rgba(255,255,255,0) 32%, rgba(255,255,255,.10) 39%, rgba(255,255,255,0) 47%)}
+/* 빛줄기 — 카드와 같은 연출을 팩에도(PO). @keyframes cardSweep을 그대로 쓴다,
+   새 키프레임을 만들면 두 화면의 빛이 다른 속도로 지나가게 된다.
+   몸통(overflow:hidden) 안에 두어 팩 밖으로 새지 않는다. 카드보다 3초 늦게 시작해
+   개봉 중에 두 빛이 겹치지 않게 했다. */
+.packSweep{position:absolute;top:0;bottom:0;left:-40%;right:-40%;pointer-events:none;
+  background:linear-gradient(125deg,
+    rgba(255,205,235,0) 2%, rgba(255,205,235,.08) 22%, rgba(208,222,255,.16) 34%,
+    rgba(216,250,240,.26) 43%, rgba(255,248,220,.40) 48.5%, rgba(246,240,255,.56) 51.8%,
+    rgba(255,255,255,.72) 53.4%, rgba(255,255,255,0) 53.4%);
+  mix-blend-mode:overlay;
+  transform:translateX(-80%);
+  animation:cardSweep 6.5s cubic-bezier(.55,0,1,1) 3s infinite}
+@media (prefers-reduced-motion:reduce){ .packSweep{animation:none;opacity:0} }
 /* 은박 결 — 몸통도 은박이다(PO). 다만 색을 은색으로 되돌리면 브랜드가 다시 묻힌다.
    금속으로 읽히게 하는 건 색이 아니라 밝기가 급하게 오르내리는 결이라, 색은 그대로 두고
    결만 얹는다. 간격을 일부러 고르지 않게 둔 건 구겨진 포장재의 주름이 규칙적이지 않아서다.
@@ -424,6 +437,16 @@ button{font-family:var(--font)}
   letter-spacing:.3em;color:rgba(255,255,255,.62)}
 
 /* 뜯긴 자리로 보이는 카드 윗동 — 안에 뭔가 들어 있다는 걸 여는 도중에 알려 준다 */
+/* 두께 — 카드와 같은 방식이다(PO). 같은 실루엣을 뒤로 2px씩 세 장 깔아 옆면을 만든다.
+   옆면은 앞면보다 어둡다 — 빛을 정면으로 받지 않는 면이니까.
+   기울였을 때만 보이는 값이라 정면에서는 비용이 없다시피 하고,
+   합성 단계에서 끝나므로 매 프레임 다시 그리지도 않는다. */
+.packEdge{position:absolute;inset:0;border-radius:12px;pointer-events:none;
+  background:linear-gradient(180deg,#2b2f38 0%,#171a21 55%,#101319 100%);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.packEdge.e1{transform:translateZ(-2px)}
+.packEdge.e2{transform:translateZ(-4px)}
+.packEdge.e3{transform:translateZ(-6px)}
 /* 팩 안쪽 — 뜯긴 자리에 이게 없으면 봉투 너머의 무대 배경이 그대로 비친다.
    실제로 뜯는 순간 카드 옆으로 바깥 배경이 보여 봉투가 아니라 구멍처럼 읽혔다.
    압착부 전체를 덮고 몸통 위까지 조금 물려 두어 이음매가 생기지 않게 한다. */
@@ -1494,9 +1517,13 @@ body.intro .heroContent{animation:none;opacity:0}
   </p>
   <div class="pack" id="pack">
     <div class="packTilt" id="packTilt">
+    <span class="packEdge e1" aria-hidden="true"></span>
+    <span class="packEdge e2" aria-hidden="true"></span>
+    <span class="packEdge e3" aria-hidden="true"></span>
     <div class="packInside" aria-hidden="true"></div>
     <div class="packPeek" aria-hidden="true"></div>
     <div class="packBody">
+      <div class="packSweep" aria-hidden="true"></div>
       <div class="packPat" aria-hidden="true"></div>
       <div class="packGlow" aria-hidden="true"></div>
       <div class="packSheen" aria-hidden="true"></div>
@@ -2432,7 +2459,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     var tiltEl = document.getElementById('packTilt');
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     var tgt = {x:0, y:0}, cur = {x:0, y:0}, raf = null, moved = false, dx0 = 0, dy0 = 0;
-    var PACK_TILT = 12;      // 카드(15)보다 한 단 얕다 — 팩은 카드보다 크고 무거운 물건이다
+    var PACK_TILT = 15;      // 카드와 같은 각도(PO)
     var EPS = 0.02;
     function paintTilt(){
       tiltEl.style.setProperty('--prx', cur.x.toFixed(2)+'deg');
@@ -2449,6 +2476,9 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     }
     function wakeTilt(){ if(!reduce && !raf) raf = requestAnimationFrame(tiltLoop); }
     function tiltAt(cx, cy){
+      /* 기울임은 고르기 단계에서만 준다(PO). 확대한 뒤에는 손이 할 일이 '뜯기' 하나뿐이라,
+         같은 손가락에 기울임이 함께 붙으면 절단선이 흔들려 겨냥이 어려워진다. */
+      if(stage.getAttribute('data-phase') !== 'pick') return;
       if(dragging) return;                 // 뜯는 중에는 기울이지 않는다
       var r = pack.getBoundingClientRect();
       tgt.x = ((cx - r.left) / r.width - 0.5) * PACK_TILT * 2;
@@ -2468,6 +2498,19 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
         pack.addEventListener(t, function(e){ if(e.pointerType !== 'mouse') restTilt(); });
       });
     }
+
+    /* 확대한 팩 바깥을 누르면 고르기로 돌아간다(PO).
+       확대는 되돌릴 수 없는 동작이 아니어야 한다 — 잘못 눌렀을 때 빠져나갈 데가 없으면
+       남은 길이 '건너뛰기'뿐인데, 그건 연출을 통째로 포기하는 버튼이다.
+       뜯던 것도 함께 되돌린다. 반쯤 뜯긴 팩이 다시 작아져 있으면 상태가 어긋나 보인다. */
+    stage.addEventListener('click', function(e){
+      if(stage.getAttribute('data-phase') !== 'open') return;
+      if(e.target.closest('.pack') || e.target.closest('.packSkip')) return;
+      stage.setAttribute('data-phase', 'pick');
+      pack.classList.add('is-settling');
+      tear = 0; paint();
+      restTilt();
+    });
 
     document.getElementById('packSkip').addEventListener('click', skip);
     document.addEventListener('keydown', function(e){
