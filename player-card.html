@@ -315,6 +315,10 @@ button{font-family:var(--font)}
   color:rgba(255,255,255,.42)}
 .packStage[data-phase="pick"] .packHint .forPick,
 .packStage[data-phase="open"] .packHint .forOpen{display:block}
+/* 개봉 단계에서는 팩이 화면 아래로 내려가 있다(윗변 = 100vh - 336px).
+   안내문을 그 바로 위에 붙여 둔다 — 화면 위쪽에 그대로 두면 팩과 사이가 텅 빈다.
+   112px = 안내문 두 줄 + 화살표 높이에 팩과의 간격을 더한 값. */
+.packStage[data-phase="open"] .packHint{top:calc(100vh - 448px)}
 
 /* 팩 — 세워 놓은 파우치. 아래는 화면 밖으로 나간다.
    배치는 bottom 하나로 고정하고 단계 차이는 transform으로만 준다 —
@@ -402,7 +406,13 @@ button{font-family:var(--font)}
   letter-spacing:.3em;color:rgba(255,255,255,.62)}
 
 /* 뜯긴 자리로 보이는 카드 윗동 — 안에 뭔가 들어 있다는 걸 여는 도중에 알려 준다 */
-.packPeek{position:absolute;left:10px;right:10px;top:18px;height:calc(var(--seam) + 12px);
+/* 팩 안쪽 — 뜯긴 자리에 이게 없으면 봉투 너머의 무대 배경이 그대로 비친다.
+   실제로 뜯는 순간 카드 옆으로 바깥 배경이 보여 봉투가 아니라 구멍처럼 읽혔다.
+   압착부 전체를 덮고 몸통 위까지 조금 물려 두어 이음매가 생기지 않게 한다. */
+.packInside{position:absolute;left:0;right:0;top:0;height:var(--seam);z-index:1;
+  border-radius:12px 12px 0 0;
+  background:linear-gradient(180deg,#05060a 0%,#0b0d12 60%,#12141a 100%)}
+.packPeek{position:absolute;left:10px;right:10px;top:16px;height:calc(var(--seam) - 16px);z-index:1;
   border-radius:14px 14px 0 0;overflow:hidden;
   background:linear-gradient(180deg,var(--pack-peek) 0%,var(--stage-bg2) 100%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
@@ -429,6 +439,7 @@ button{font-family:var(--font)}
    정적인 마스크라 한 번만 계산되고, 뜯을 때 바뀌는 clip-path와도 따로 논다. */
 .packLid,.packFoot{--z:9px}
 .packLid{position:absolute;left:0;right:0;top:0;height:var(--seam);z-index:2;
+  border-radius:12px 12px 0 0;
   clip-path:inset(0 0 0 calc(var(--tear) * 100%));
   -webkit-mask:
     linear-gradient(45deg,  #0000 calc(var(--z)/2), #000 0) 0 0/var(--z) var(--z) repeat-x,
@@ -439,6 +450,7 @@ button{font-family:var(--font)}
     linear-gradient(-45deg, #0000 calc(var(--z)/2), #000 0) 0 0/var(--z) var(--z) repeat-x,
     linear-gradient(#000,#000) 0 var(--z)/100% calc(100% - var(--z)) no-repeat}
 .packFoot{position:absolute;left:0;right:0;bottom:0;height:var(--foot);z-index:2;
+  border-radius:0 0 12px 12px;
   -webkit-mask:
     linear-gradient(135deg,  #0000 calc(var(--z)/2), #000 0) 0 100%/var(--z) var(--z) repeat-x,
     linear-gradient(-135deg, #0000 calc(var(--z)/2), #000 0) 0 100%/var(--z) var(--z) repeat-x,
@@ -1463,6 +1475,7 @@ body.intro .heroContent{animation:none;opacity:0}
     <span class="msym" aria-hidden="true">keyboard_arrow_down</span>
   </p>
   <div class="pack" id="pack">
+    <div class="packInside" aria-hidden="true"></div>
     <div class="packPeek" aria-hidden="true"></div>
     <div class="packBody">
       <div class="packPat" aria-hidden="true"></div>
