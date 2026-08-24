@@ -504,19 +504,9 @@ button{font-family:var(--font)}
    옆면은 앞면보다 어둡다 — 빛을 정면으로 받지 않는 면이니까.
    기울였을 때만 보이는 값이라 정면에서는 비용이 없다시피 하고,
    합성 단계에서 끝나므로 매 프레임 다시 그리지도 않는다. */
-/* 두께 — 파우치는 카드가 아니다. 카드처럼 판을 여러 장 겹치니 옆면이 두툼한 슬래브가
-   되어 어색했다(PO). 봉투의 두께는 '얇은 테 하나'로 읽히는 게 맞다.
-   세 겹 6px → 두 겹 3px으로 줄이고, 좌우로 1.5px 물려 넣어 정면에서는 아예 숨는다.
-   위아래로도 물려 톱니 뒤로 검은 판이 삐져나오지 않게 한다 — 그게 제일 눈에 걸렸다. */
-/* 반경은 팩 실루엣과 같은 12px을 쓴다. 안쪽으로 물린 만큼 11px이 기하학적으로는
-   맞지만, 이 겹은 앞면 뒤에 숨어 모서리가 1px 다른 게 보이지 않는다 —
-   보이지도 않는 차이 때문에 사다리 밖 값을 만들 이유가 없다. */
-.packEdge{position:absolute;inset:5px 1.5px;border-radius:12px;pointer-events:none;
-  background:linear-gradient(180deg,var(--pack-edge) 0%,#171a21 60%,#131620 100%);
-  backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.packEdge.e1{transform:translateZ(-1.5px)}
-.packEdge.e2{transform:translateZ(-3px)}
-.packEdge.e3{display:none}   /* 세 번째 겹은 슬래브로 보이게 하던 장본인이다 */
+/* 두께 겹은 뺐다(PO). 파우치는 카드가 아니라, 기울일 때 뒤판이 보이면
+   봉투가 아니라 판때기 두 장을 붙여 놓은 것으로 읽힌다.
+   부피는 원통 음영이 이미 말하고 있어서 겹이 없어도 납작해 보이지 않는다. */
 /* 팩 안쪽 — 뜯긴 자리에 이게 없으면 봉투 너머의 무대 배경이 그대로 비친다.
    실제로 뜯는 순간 카드 옆으로 바깥 배경이 보여 봉투가 아니라 구멍처럼 읽혔다.
    압착부 전체를 덮고 몸통 위까지 조금 물려 두어 이음매가 생기지 않게 한다. */
@@ -637,9 +627,15 @@ button{font-family:var(--font)}
 .packCut{position:absolute;left:0;right:0;top:calc(var(--seam) - 9px);height:16px;z-index:4;
   pointer-events:none;
   clip-path:inset(0 calc((1 - var(--tear)) * 100%) 0 0);
+  /* 더 선명하고 쨍하게(PO). 알파를 올리는 것만으로는 뿌옇게 밝아질 뿐이라,
+     가운데 흰 심지를 얇게 세우고 그 양옆의 주황을 진하게 세운다 —
+     번짐이 좁아야 빛이 '난다'로 읽힌다. 바깥으로 한 겹 번져 나가는 건
+     drop-shadow가 맡는다. 그래야 선 자체는 또렷한 채로 주변만 물든다. */
   background:linear-gradient(180deg,
-    rgba(255,145,0,0) 0%, rgba(255,214,140,.85) 42%, #fff 52%,
-    rgba(255,145,0,.55) 70%, rgba(255,145,0,0) 100%)}
+    rgba(255,138,0,0) 0%, rgba(255,150,10,.5) 26%, rgba(255,196,90,.95) 42%,
+    #fff6e2 48%, #ffffff 52%, #ffcf7a 57%,
+    rgba(255,138,0,.9) 68%, rgba(255,120,0,.35) 84%, rgba(255,120,0,0) 100%);
+  filter:drop-shadow(0 0 6px rgba(255,150,20,.75)) drop-shadow(0 0 14px rgba(255,130,0,.45))}
 /* 핸들이 갈 길 — 선 위의 가는 화살표. 방향을 말이 아니라 그림으로 알린다 */
 .packTrack{position:absolute;left:16px;right:16px;top:calc(var(--seam) - 3px);height:2px;z-index:5;
   pointer-events:none;background:rgba(255,255,255,.5);
@@ -1671,9 +1667,6 @@ body.intro .heroContent{animation:none;opacity:0}
   </p>
   <div class="pack" id="pack">
     <div class="packTilt" id="packTilt">
-    <span class="packEdge e1" aria-hidden="true"></span>
-    <span class="packEdge e2" aria-hidden="true"></span>
-    <span class="packEdge e3" aria-hidden="true"></span>
     <div class="packInside" aria-hidden="true"></div>
     <div class="packLip" aria-hidden="true"></div>
     <div class="packBody">
