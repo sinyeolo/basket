@@ -395,7 +395,12 @@ button{font-family:var(--font)}
    새 키프레임을 만들면 두 화면의 빛이 다른 속도로 지나가게 된다.
    몸통(overflow:hidden) 안에 두어 팩 밖으로 새지 않는다. 카드보다 3초 늦게 시작해
    개봉 중에 두 빛이 겹치지 않게 했다. */
-.packSweep{position:absolute;top:0;bottom:0;left:-40%;right:-40%;pointer-events:none;
+/* 팩 전체를 훑는다(PO). 예전엔 몸통 안에 뒀더니 위아래 압착부만 빛이 비껴갔다.
+   .packTilt에는 overflow를 걸 수 없다 — 3D가 평평해져 두께 겹이 사라진다.
+   대신 이 요소에만 overflow를 걸어 빛줄기를 팩 실루엣 안에 가둔다. 3D 자식이 없으니 잃을 게 없다. */
+.packSweep{position:absolute;inset:0;z-index:5;pointer-events:none;
+  overflow:hidden;border-radius:12px}
+.packSweep i{position:absolute;top:0;bottom:0;left:-40%;right:-40%;display:block;
   background:linear-gradient(125deg,
     rgba(255,205,235,0) 2%, rgba(255,205,235,.08) 22%, rgba(208,222,255,.16) 34%,
     rgba(216,250,240,.26) 43%, rgba(255,248,220,.40) 48.5%, rgba(246,240,255,.56) 51.8%,
@@ -403,7 +408,7 @@ button{font-family:var(--font)}
   mix-blend-mode:overlay;
   transform:translateX(-80%);
   animation:cardSweep 6.5s cubic-bezier(.55,0,1,1) 3s infinite}
-@media (prefers-reduced-motion:reduce){ .packSweep{animation:none;opacity:0} }
+@media (prefers-reduced-motion:reduce){ .packSweep i{animation:none;opacity:0} }
 /* 은박 결 — 몸통도 은박이다(PO). 다만 색을 은색으로 되돌리면 브랜드가 다시 묻힌다.
    금속으로 읽히게 하는 건 색이 아니라 밝기가 급하게 오르내리는 결이라, 색은 그대로 두고
    결만 얹는다. 간격을 일부러 고르지 않게 둔 건 구겨진 포장재의 주름이 규칙적이지 않아서다.
@@ -1524,7 +1529,6 @@ body.intro .heroContent{animation:none;opacity:0}
     <div class="packInside" aria-hidden="true"></div>
     <div class="packPeek" aria-hidden="true"></div>
     <div class="packBody">
-      <div class="packSweep" aria-hidden="true"></div>
       <div class="packPat" aria-hidden="true"></div>
       <div class="packGlow" aria-hidden="true"></div>
       <div class="packSheen" aria-hidden="true"></div>
@@ -1537,6 +1541,7 @@ body.intro .heroContent{animation:none;opacity:0}
     <div class="packLid"><span class="packBandPat"></span><span class="packNotch"></span></div>
     <div class="packSeam" aria-hidden="true"></div>
     <div class="packCut" aria-hidden="true"></div>
+    <div class="packSweep" aria-hidden="true"><i></i></div>
     <div class="packTrack" aria-hidden="true"></div>
     <button type="button" class="packHandle" id="packGrip" aria-label="옆으로 쓸어서 개봉"><span class="msym" aria-hidden="true">keyboard_double_arrow_right</span></button>
     </div>
