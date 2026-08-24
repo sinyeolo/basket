@@ -554,7 +554,9 @@ button{font-family:var(--font)}
 .packLid{position:absolute;left:0;right:0;top:0;height:var(--seam);z-index:2;
   border-radius:12px 12px 0 0;
   transform-origin:100% 100%;
-  transform:rotate(calc(var(--tear) * 11deg)) translateY(calc(var(--tear) * -4px));
+  /* 벌어지면서 통째로도 위로 뜬다(PO). 회전만 주면 왼쪽 끝만 열리고 오른쪽 경첩은
+     붙어 있는 채라, 뜯긴 게 아니라 접힌 것으로 보인다. 22px이면 절단선이 확실히 떨어진다. */
+  transform:rotate(calc(var(--tear) * 11deg)) translateY(calc(var(--tear) * -22px));
   -webkit-mask:
     linear-gradient(45deg,  #0000 calc(var(--z)/2), #000 0) 0 0/var(--z) var(--z) repeat-x,
     linear-gradient(-45deg, #0000 calc(var(--z)/2), #000 0) 0 0/var(--z) var(--z) repeat-x,
@@ -655,7 +657,7 @@ button{font-family:var(--font)}
 /* 다 뜯으면 오른쪽 화면 밖으로 날아간다(PO). 경첩이 오른쪽이라 그 방향으로 빠지는 게
    손의 마지막 움직임과 이어진다 — 위로 띄우면 방금 오른쪽으로 민 힘과 어긋난다. */
 @keyframes packLidAway{
-  0%{transform:rotate(11deg) translateY(-4px);opacity:1}
+  0%{transform:rotate(11deg) translateY(-22px);opacity:1}
   100%{transform:translate(150%,-190px) rotate(30deg);opacity:0}}
 @keyframes packAway{to{transform:translateX(-50%) translateY(200px);opacity:0}}
 .packStage.is-gone .packHint,
