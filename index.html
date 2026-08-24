@@ -1497,7 +1497,13 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   display:flex;align-items:center;justify-content:center;
   color:#fff;-webkit-text-stroke:3px #fff;paint-order:stroke fill}
 .pdCaptain::before{transform:translate(0,1px)}
-.pdCaptain::after{transform:translate(0,2px);
+.pdCaptain::after{transform:translate(0,2px)}
+/* 세 번째 겹(선수 카드와 같은 규칙, PO). 가상 요소는 둘까지라 실제 요소를 쓴다.
+   그림자는 늘 가장 뒤 겹이 진다 — 카드에 닿는 면이 거기다. */
+.pdCaptain > i{position:absolute;inset:0;z-index:-1;font-style:normal;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;-webkit-text-stroke:3px #fff;paint-order:stroke fill;
+  transform:translate(0,3px);
   filter:drop-shadow(0 1px 1px rgba(0,0,0,.55)) drop-shadow(0 4px 8px rgba(0,0,0,.42))}
 .pdCaptain{isolation:isolate}
 /* 선수 카드(.cf-name)와 같은 26px — 카드 폭이 같은데 이름만 크면 한 벌로 안 읽힌다 */
@@ -4984,7 +4990,7 @@ function renderPlayerDetail(){
               '<text class="sealText"><textPath href="#sealPathPd">'+sealDate+'</textPath></text>'+
             '</svg>'+
             '<div class="sealLogo" style="background:'+teamColor+'">'+(t?t.name.charAt(0):'?')+'</div>'+
-            (isCaptainPd ? '<span class="pdCaptain" title="팀 주장" aria-label="팀 주장">C</span>' : '')+
+            (isCaptainPd ? '<span class="pdCaptain" title="팀 주장" aria-label="팀 주장">C<i aria-hidden="true">C</i></span>' : '')+
           '</div>'+
         '</div></div>'+
         '<div class="pdFace pdBack"><div class="in">'+

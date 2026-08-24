@@ -747,6 +747,11 @@ body.intro .heroContent{animation:none;opacity:0}
   background:color-mix(in srgb,var(--brand) 62%, #000)}
 .updateBadge.is-set::before{transform:translateZ(-1px)}
 .updateBadge.is-set::after{transform:translateZ(-2px)}
+/* 캡틴과 같은 세 겹. 두 스티커의 두께가 다르면 같은 카드 위에서 하나만 도드라진다. */
+.updateBadge.is-set > i{position:absolute;inset:0;border-radius:100px;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  transform:translateZ(-3px);
+  background:color-mix(in srgb,var(--brand) 52%, #000)}
 @media (prefers-reduced-motion:reduce){
   .updateBadge{transform:translateZ(22px);clip-path:none}
   .updateBadge.is-in{animation:none}
@@ -1189,7 +1194,14 @@ body.intro .heroContent{animation:none;opacity:0}
   color:#fff;-webkit-text-stroke:3px #fff;paint-order:stroke fill;
   backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .cfCaptain::before{transform:translateZ(-1px)}
-.cfCaptain::after{transform:translateZ(-2px);
+.cfCaptain::after{transform:translateZ(-2px)}
+/* 세 번째 겹(PO). 가상 요소는 한 요소에 둘까지라 여기서부터는 실제 요소를 쓴다.
+   그림자는 늘 가장 뒤 겹이 진다 — 카드에 닿는 면이 거기다. */
+.cfCaptain > i{position:absolute;inset:0;font-style:normal;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;-webkit-text-stroke:3px #fff;paint-order:stroke fill;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  transform:translateZ(-3px);
   /* 접촉 그림자 — 사각형이 아니라 흰 윤곽선을 따라 진다.
      바로 아래 짧고 진한 것 하나, 그 뒤로 길고 옅은 것 하나. 길기만 한 그림자는
      '떠 있는 물건'이고, 짧은 것이 함께 있어야 '붙어 있는 것'이 된다. */
@@ -1777,8 +1789,8 @@ body.intro .heroContent{animation:none;opacity:0}
           <div class="cardEdge" aria-hidden="true" style="transform:translateZ(-2px)"></div>
           <div class="cardEdge" aria-hidden="true" style="transform:translateZ(0px)"></div>
           <div class="cardEdge" aria-hidden="true" style="transform:translateZ(2px)"></div>
-          <span class="cfCaptain" id="fCaptain" title="팀 주장" aria-label="팀 주장" hidden>C</span>
-          <span class="updateBadge" id="updateBadge" hidden>UPDATE</span>
+          <span class="cfCaptain" id="fCaptain" title="팀 주장" aria-label="팀 주장" hidden>C<i aria-hidden="true">C</i></span>
+          <span class="updateBadge" id="updateBadge" hidden>UPDATE<i aria-hidden="true"></i></span>
         </div>
       </div>
     </div>
