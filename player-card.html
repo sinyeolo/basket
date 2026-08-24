@@ -24,6 +24,7 @@
   --pack-foil-deep:#464e5c; --pack-peek:#565d70;
   --pack-inside:#4a5059; --pack-inside-lit:#5c626c;
   --pack-edge:#2b2f38;   /* 팩 옆면 — 앞면보다 어둡다. 빛을 정면으로 받지 않는 면이다 */
+  --preview-h:38px;   /* 검토용 미리보기 바 — 실제 서비스에는 없는 줄이다 */
   --card-w:270px; --card-h:378px;   /* 300×420에서 10% 축소 */ --card-thick:6px;   /* 16 → 10 → 6px로 얇게(PO) */
   /* 공통 컴포넌트 토큰 — prototype/index.html과 동일 값 사용(라운드·높이 스케일 통일) */
   --r-btn:100px; --r-card:20px; --r-chip:8px; --h-sm:40px; --h-md:44px;
@@ -96,7 +97,7 @@ button{font-family:var(--font)}
    예전엔 bottom:74px이라 그 선에서 overflow가 잘렸는데, 등장하는 동안에는 시트가 아직
    화면 밖에 있어서 '빈 공간 위의 선'에서 카드가 뚝 끊겨 보였다(실기기 영상에서 확인).
    padding으로 바꾸면 카드가 서는 자리는 그대로면서 잘리는 선만 기기 바닥으로 내려간다. */
-.heroFixed{position:fixed;top:0;left:0;right:0;bottom:0;padding-bottom:34px;z-index:1;overflow:hidden;display:flex;flex-direction:column;align-items:center;
+.heroFixed{position:fixed;top:var(--preview-h,0);left:0;right:0;bottom:0;padding-bottom:34px;z-index:1;overflow:hidden;display:flex;flex-direction:column;align-items:center;
   /* 배경 팀 컬러 틴트는 제거 — 카드 주변 등급 오라(.cardGlow)와 색이 겹쳐 서로 탁해졌다 */
   background:radial-gradient(circle at 50% -10%,var(--stage-bg2),var(--stage-bg) 60%)}
 
@@ -1391,10 +1392,6 @@ body.intro .heroContent{animation:none;opacity:0}
 .ovrHero .ovrTrend svg{width:14px;height:14px}
 .ovrHero .ovrTrendSlot{display:inline-flex;align-self:center;margin-right:1px}   /* 숫자와 한 덩어리 */
 
-/* 조작 안내 — 최초 1회만 */
-.hint{max-width:280px;margin:10px auto 0;text-align:center;font-size:13px;color:var(--on-dark-dim);
-  background:#15171d;border:1px solid #2a2d36;border-radius:14px;padding:9px 14px;transition:opacity .3s}
-.hint.hide{opacity:0;pointer-events:none}
 /* ---- 시트 안내 한 줄 ----
    접힌 시트는 핸들뿐이라 무엇을 하는 자리인지 말해 주는 글이 필요하다(레퍼런스도 같은 자리에 둔다).
    계속 떠 있으면 배경 글자가 되므로, 나타났다 사라지기를 되풀이해 눈에 걸리게 한다.
@@ -1636,8 +1633,18 @@ body.intro .heroContent{animation:none;opacity:0}
 .copyright{text-align:center;font-size:11px;color:var(--sh-on-dim, #4a4c53);margin:8px auto 0}
 
 /* 검토 전용 미리보기 바 — 실제 서비스 화면 아님. 헤더 바로 아래 고정, 하단 탭바와 겹치지 않게 분리 */
-.previewBar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:8px 12px;
-  background:rgba(20,22,28,.9);border-bottom:1px solid #22242c;margin-bottom:4px}
+/* 검토용 바. 일반 흐름에 두었더니 화면 전체를 덮는 .heroFixed(fixed, inset:0) 아래로
+   깔려 좌우 끝만 삐져나왔다 — 덮은 게 아니라 덮인 쪽이었다.
+   화면 위에 고정하고 무대를 그만큼 내려 서로 겹치지 않게 한다.
+   줄바꿈 대신 가로 스크롤로 두는 건 높이를 한 줄로 못박기 위해서다 —
+   좁은 화면에서 두 줄이 되면 무대를 얼마나 내려야 할지가 매번 달라진다. */
+.previewBar{position:fixed;top:0;left:0;right:0;z-index:40;
+  display:flex;gap:6px;justify-content:flex-start;align-items:center;flex-wrap:nowrap;
+  height:var(--preview-h);box-sizing:border-box;padding:0 12px;
+  overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+  background:rgba(20,22,28,.94);border-bottom:1px solid #22242c}
+.previewBar::-webkit-scrollbar{display:none}
+.previewBar span,.previewBar button{flex:none}
 .previewBar span{font-size:11px;color:var(--on-dark-dim);align-self:center;margin-right:2px}
 .previewBar button{font-size:11px;font-weight:700;padding:5px 10px;border-radius:100px;border:1px solid #2a2d36;
   background:#15171d;color:var(--on-dark);cursor:pointer}
@@ -1790,7 +1797,6 @@ body.intro .heroContent{animation:none;opacity:0}
 
     <!-- 레벨 프로그레스바·뒤집기 버튼은 등장 애니메이션 없이 항상 바로 표시 -->
 
-    <div class="hint" id="hint">카드를 움직여 보세요 · 눌러서 뒷면을 확인하세요</div>
     <div class="flipBtn">
       <button type="button" class="btn-text" id="btnFlip" aria-label="카드 뒤집어서 기록 보기"></button>
     </div>
@@ -3034,25 +3040,6 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
 if(LINKED_PLAYER){
   document.querySelector('.previewBar').style.display = 'none';
 }
-
-/* ---- 조작 안내: 최초 1회만 ---- */
-(function(){
-  var hint = document.getElementById('hint');
-  /* 저장소가 막힌 환경(사생활 보호 모드, data: URL)에서는 읽기만으로도 예외가 난다.
-     감싸 두지 않으면 여기서 스크립트가 끊겨 아래의 팝업·시트 배선이 통째로 죽는다. */
-  var seen = false;
-  try{ seen = !!localStorage.getItem('basket_hint_seen'); }catch(_){}
-  if(seen){ hint.remove(); return; }
-  var dismissed = false;
-  function dismiss(){
-    if(dismissed) return; dismissed = true;
-    hint.classList.add('hide');
-    try{ localStorage.setItem('basket_hint_seen','1'); }catch(_){}
-    setTimeout(function(){ hint.remove(); }, 320);
-  }
-  setTimeout(dismiss, 4200);
-  document.getElementById('cardWrap').addEventListener('pointerdown', dismiss, { once:true });
-})();
 
 /* ---- 카드 기울기·뒤집기 인터랙션을 하나의 컨트롤러로 캡슐화 —
    메인 카드 1장, 그리고 앨범에서 열리는 라이트박스 카드마다 각각 독립된 상태로 재사용한다 ---- */
