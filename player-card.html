@@ -1169,7 +1169,9 @@ body.intro .heroContent{animation:none;opacity:0}
   -webkit-text-stroke:3px #fff;
   paint-order:stroke fill;
   transform-style:preserve-3d;
-  transform:translateZ(calc(var(--card-thick) / 2 + 14px)) rotate(-20deg);
+  /* 기울이지 않고 똑바로 세운다(PO). 비뚤게 붙인 스티커 연출이었는데,
+     같은 자리에 붙는 표시가 매번 같은 각도로 서 있어야 눈이 덜 걸린다. */
+  transform:translateZ(calc(var(--card-thick) / 2 + 14px));
   /* 카드가 뒤를 보이기 시작하면 그냥 안 그려진다 — 페이드가 아니라 회전 그 자체다.
      예전에는 .3s 지연 뒤 투명도로 되돌렸는데, 회전과 별개의 사건처럼 보여
      '다시 등장하는' 느낌이 났다(PO). 90도에서 카드 면이 바뀌는 순간과 같은

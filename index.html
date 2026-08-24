@@ -1488,7 +1488,8 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   color:var(--primary);
   -webkit-text-stroke:3px #fff;
   paint-order:stroke fill;
-  transform:rotate(-20deg)}
+  /* 기울이지 않고 똑바로(선수 카드와 같은 규칙, PO) */
+  transform:none}
 /* 두께 — 콘솔 카드는 3D가 아니라 translateZ를 쓸 수 없다. 같은 글자를 1px씩
    아래로 밀어 두 장 깔아 단면을 흉내낸다. 단면 색은 선수 카드와 같은 흰 테두리다. */
 .pdCaptain::before,
