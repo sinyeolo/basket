@@ -22,7 +22,7 @@
   --on-dark:#f4f4f6; --on-dark-dim:#9a9ba3;
   /* 개봉 팩(은박) — 카드도 콘솔도 아닌 제3의 표면이라 자체 토큰을 갖는다 */
   --pack-foil-deep:#464e5c; --pack-peek:#565d70;
-  --pack-glow:rgba(255,205,140,.95); --pack-glow-mid:rgba(255,155,20,.55);
+  --pack-glow:rgba(255,190,110,.42); --pack-glow-mid:rgba(255,155,20,.16);
   --pack-edge:#2b2f38;   /* 팩 옆면 — 앞면보다 어둡다. 빛을 정면으로 받지 않는 면이다 */
   --card-w:270px; --card-h:378px;   /* 300×420에서 10% 축소 */ --card-thick:6px;   /* 16 → 10 → 6px로 얇게(PO) */
   /* 공통 컴포넌트 토큰 — prototype/index.html과 동일 값 사용(라운드·높이 스케일 통일) */
@@ -313,14 +313,36 @@ button{font-family:var(--font)}
    팩과의 간격 28px을 더해 333px 위에 세운다. */
 .packHint{position:absolute;left:0;right:0;top:calc(50vh - 333px);margin:0;text-align:center;
   pointer-events:none;font-size:16px;font-weight:600;letter-spacing:.01em;
-  color:rgba(255,255,255,.72);transition:opacity .3s ease}
+  color:rgba(255,255,255,.72);
+  /* 단계가 바뀌면 자리를 미끄러져 옮긴다(PO). top을 바꾸면 프레임마다 레이아웃을 다시 재므로
+     자리는 고르기 기준으로 고정해 두고 차이만큼 transform으로 민다.
+     차이 = (100vh - 430) - (50vh - 333) = 50vh - 97px. */
+  transition:transform .5s cubic-bezier(.16,.8,.24,1), opacity .3s ease}
 .packHint b{display:none;font-weight:600}
+/* 문구가 갈릴 때마다 아래에서 떠오르며 켜진다. display:none에서 돌아오는 순간
+   애니메이션이 처음부터 다시 도는 성질을 그대로 쓴다 — 따로 붙일 상태 값이 없다. */
+.packHint b{animation:packHintIn .44s cubic-bezier(.16,.8,.24,1) both}
+@keyframes packHintIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+/* 텐션 루핑(PO) — 그냥 오르내리면 시계추지 '눌러라'가 아니다.
+   내려가기 전에 살짝 반동을 주고, 착지에서 한 번 튀고, 마지막 4분의 1은 쉰다.
+   쉬는 박자가 있어야 다음 반동이 다시 눈에 들어온다. */
+.packHint .msym{display:block;margin:10px auto 0;font-size:20px;color:rgba(255,255,255,.32);
+  animation:packNudge 2.2s cubic-bezier(.34,1.4,.5,1) infinite}
+@keyframes packNudge{
+  0%{transform:translateY(0) scaleY(1)}
+  10%{transform:translateY(-3px) scaleY(.9)}
+  34%{transform:translateY(9px) scaleY(1.14)}
+  48%{transform:translateY(3px) scaleY(.96)}
+  60%{transform:translateY(6px) scaleY(1.04)}
+  74%{transform:translateY(0) scaleY(1)}
+  100%{transform:translateY(0) scaleY(1)}}
+@media (prefers-reduced-motion:reduce){ .packHint .msym,.packHint b{animation:none} }
 .packHint small{display:block;margin-top:6px;font-size:13px;font-weight:500;
   color:rgba(255,255,255,.42)}
 .packStage[data-phase="pick"] .packHint .forPick,
 .packStage[data-phase="open"] .packHint .forOpen{display:block}
 /* 개봉 단계의 팩 윗변 = 100vh - 336px. 같은 셈으로 94px(66 + 28) 위에 세운다. */
-.packStage[data-phase="open"] .packHint{top:calc(100vh - 430px)}
+.packStage[data-phase="open"] .packHint{transform:translateY(calc(50vh - 97px))}
 
 /* 팩 — 세워 놓은 파우치. 아래는 화면 밖으로 나간다.
    배치는 bottom 하나로 고정하고 단계 차이는 transform으로만 준다 —
@@ -381,11 +403,20 @@ button{font-family:var(--font)}
 /* 몸통 — 레퍼런스의 팩은 은박 일색이 아니라 밴드만 은박이고 몸통은 브랜드 면이다.
    은색 위에 은색 각인을 얹었더니 브랜드가 안 보였다. 위쪽 한 점에서 브랜드 빛이
    쏟아지는 어두운 면으로 바꾼다 — 카드 무대(.stage)와 같은 연출이라 두 화면이 이어진다. */
+/* 몸통도 압착부와 같은 은색이다(PO). 금속으로 읽히게 하는 건 색이 아니라 밝기가
+   급하게 오르내리는 결이라, 좁은 구간에서 오르내리는 정지점을 여럿 둔다.
+   브랜드 발광은 위쪽에 한 뼘만 남긴다 — 은색을 덮을 만큼 얹으면 다시 금속이 아니게 된다. */
 .packBody{position:absolute;left:0;right:0;top:var(--seam);bottom:var(--foot);overflow:hidden;
   background:
-    radial-gradient(125% 62% at 50% -4%, var(--pack-glow) 0%, var(--pack-glow-mid) 24%,
-      rgba(255,145,0,.18) 46%, rgba(255,145,0,0) 68%),
-    linear-gradient(178deg,#23262f 0%,#171a21 52%,#0f1116 100%)}
+    radial-gradient(120% 42% at 50% -6%, var(--pack-glow) 0%, var(--pack-glow-mid) 34%,
+      rgba(255,145,0,0) 62%),
+    /* 압착부보다 한 단 어둡다(PO) — 같은 은색이되 몸통은 빛을 덜 받는 면이다.
+       각 정지점을 8% 정도씩 내렸고, 밝은 쪽과 어두운 쪽의 차이는 그대로 뒀다.
+       차이를 함께 줄이면 금속이 아니라 회색 종이가 된다. */
+    linear-gradient(100deg,
+      #71767f 0%, #a9afb8 7%, #c7ccd3 13%, #8c939d 21%, #ccd1d8 32%,
+      #e1e5ea 39%, #a7aeb8 47%, #81888f 57%, #bbc1c9 67%, #dde1e7 75%,
+      #949ba5 85%, #b9bfc7 93%, #7a8089 100%)}
 /* 유리광 — 파우치 필름은 위쪽이 더 번들거린다. 위에서 아래로 옅어지는 흰 면 하나면 된다. */
 .packBody::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:
@@ -400,11 +431,20 @@ button{font-family:var(--font)}
    대신 이 요소에만 overflow를 걸어 빛줄기를 팩 실루엣 안에 가둔다. 3D 자식이 없으니 잃을 게 없다. */
 .packSweep{position:absolute;inset:0;z-index:5;pointer-events:none;
   overflow:hidden;border-radius:12px}
+/* 카드의 빛은 앞쪽을 칼로 자른 듯 끊는다. 팩은 양쪽 다 부드럽게 둔다(PO) —
+   칼단면이 지나가는 순간이 아니라 '끝나는 순간'에 잘린 자국으로 보였다.
+   정지점을 요소 가장자리(0%·100%)에서 한참 물러난 20~72%에만 두는 것도 같은 이유다.
+   125도 사선이라 요소의 모서리는 그라디언트의 여러 지점을 한꺼번에 지나는데,
+   끝값이 가장자리에 붙어 있으면 그 모서리가 직선으로 드러난다. */
 .packSweep i{position:absolute;top:0;bottom:0;left:-40%;right:-40%;display:block;
+  /* 띠를 2~3배 두껍게(PO). 얇을 때는 '선이 지나간다'였는데, 넓히면 '빛이 훑고 지나간다'가 된다.
+     대신 최고점을 .66 → .42로 낮췄다 — 같은 밝기로 넓히면 팩이 통째로 하얘진다.
+     은박은 원래 넓게 번지는 재질이라 이쪽이 사실에도 가깝다. */
   background:linear-gradient(125deg,
-    rgba(255,205,235,0) 2%, rgba(255,205,235,.08) 22%, rgba(208,222,255,.16) 34%,
-    rgba(216,250,240,.26) 43%, rgba(255,248,220,.40) 48.5%, rgba(246,240,255,.56) 51.8%,
-    rgba(255,255,255,.72) 53.4%, rgba(255,255,255,0) 53.4%);
+    rgba(255,205,235,0) 2%, rgba(255,205,235,.04) 14%, rgba(208,222,255,.10) 24%,
+    rgba(216,250,240,.18) 33%, rgba(255,248,220,.28) 41%, rgba(246,240,255,.36) 47%,
+    rgba(255,255,255,.42) 52%, rgba(246,240,255,.34) 57%, rgba(216,250,240,.24) 64%,
+    rgba(208,222,255,.14) 72%, rgba(255,205,235,.05) 82%, rgba(255,255,255,0) 94%);
   mix-blend-mode:overlay;
   transform:translateX(-80%);
   animation:cardSweep 6.5s cubic-bezier(.55,0,1,1) 3s infinite}
@@ -424,8 +464,8 @@ button{font-family:var(--font)}
     rgba(0,0,0,.5) 90%, rgba(255,255,255,.65) 96%, rgba(0,0,0,.45) 100%)}
 /* 브랜드 로고 패턴 — 카드 뒷면(.backLogoPat)과 같은 에셋·같은 방식이다.
    여기서 새 패턴을 그리면 같은 브랜드가 두 벌이 된다. */
-.packPat{position:absolute;inset:-40%;pointer-events:none;opacity:.10;
-  background-color:#fff;
+.packPat{position:absolute;inset:-40%;pointer-events:none;opacity:.13;
+  background-color:var(--pack-foil-deep);
   -webkit-mask-image:url(assets/logo-pat.svg);mask-image:url(assets/logo-pat.svg);
   -webkit-mask-size:78px auto;mask-size:78px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat;
@@ -437,10 +477,12 @@ button{font-family:var(--font)}
 /* 브랜드와 팩 이름 — 가운데(PO). 은박 위라 흰 글자는 묻힌다. 어두운 각인으로 눌러 찍는다. */
 .packMark{position:absolute;left:0;right:0;top:44%;text-align:center;pointer-events:none;
   transform:translateY(-50%)}
+/* 은박 위라 흰 글자는 묻힌다. 어두운 각인으로 눌러 찍고 아래에 흰 선을 한 줄 넣어
+   눌린 자국을 만든다 — 인쇄가 아니라 찍어 낸 것으로 읽힌다. */
 .packLogo{font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:.12em;
-  color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.5)}
+  color:rgba(26,29,36,.72);text-shadow:0 1px 0 rgba(255,255,255,.5)}
 .packSub{margin-top:8px;font-family:var(--font-display);font-size:11px;font-weight:700;
-  letter-spacing:.3em;color:rgba(255,255,255,.62)}
+  letter-spacing:.3em;color:rgba(26,29,36,.46);text-shadow:0 1px 0 rgba(255,255,255,.4)}
 
 /* 뜯긴 자리로 보이는 카드 윗동 — 안에 뭔가 들어 있다는 걸 여는 도중에 알려 준다 */
 /* 두께 — 카드와 같은 방식이다(PO). 같은 실루엣을 뒤로 2px씩 세 장 깔아 옆면을 만든다.
