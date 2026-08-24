@@ -306,7 +306,7 @@ button{font-family:var(--font)}
 .packStage.is-gone{animation:packStageOut .55s ease-in both}
 @keyframes packStageOut{to{opacity:0;visibility:hidden}}
 
-.packHint{position:absolute;left:0;right:0;top:20%;margin:0;text-align:center;
+.packHint{position:absolute;left:0;right:0;top:7%;margin:0;text-align:center;
   pointer-events:none;font-size:16px;font-weight:600;letter-spacing:.01em;
   color:rgba(255,255,255,.72);transition:opacity .3s ease}
 .packHint b{display:none;font-weight:600}
@@ -319,14 +319,21 @@ button{font-family:var(--font)}
    배치는 bottom 하나로 고정하고 단계 차이는 transform으로만 준다 —
    여백을 애니메이션하면 매 프레임 레이아웃을 다시 잰다. */
 .pack{position:absolute;left:50%;bottom:-22vh;
-  width:min(300px, 78vw);height:520px;
+  width:min(320px, 84vw);height:520px;
   --tear:0; --seam:78px; --packY:0px; --packS:1;
   transform:translateX(-50%) translateY(var(--packY)) scale(var(--packS));
   transform-origin:bottom center;
   touch-action:none;user-select:none;
   filter:drop-shadow(0 -8px 30px rgba(0,0,0,.55));
   transition:transform .62s cubic-bezier(.16,.8,.24,1)}
-.packStage[data-phase="pick"] .pack{--packS:.62;--packY:calc(-22vh - 70px);cursor:pointer}
+/* 고르기 단계에서는 팩 전체가 화면 한가운데 선다(PO).
+   배율은 0.92다 — 팩은 카드를 담는 물건이라 카드(270×378)보다 커 보여야 한다.
+   0.62였을 때는 186×322로 카드보다 작아서, 뜯고 나면 없던 카드가 부풀어 나온 꼴이었다.
+   지금은 294×478로 폭은 한 뼘, 높이는 한참 크다.
+   가운데 세우는 계산 — 변형 전 팩의 아랫변은 화면 밑 22vh에 있고(bottom:-22vh),
+   줄인 높이는 478px다. 아랫변이 화면 밑에서 50vh-239px 위로 와야 하므로
+   올려야 할 거리는 22vh + (50vh - 239px) = 72vh - 239px. */
+.packStage[data-phase="pick"] .pack{--packS:.92;--packY:calc(-72vh + 239px);cursor:pointer}
 .packStage[data-phase="pick"] .packHandle,
 .packStage[data-phase="pick"] .packTrack{opacity:0;pointer-events:none}
 /* 고르기 단계에서만 팩이 숨을 쉰다 — 눌러야 할 물건이라는 걸 말 없이 알린다.
@@ -390,11 +397,30 @@ button{font-family:var(--font)}
     repeating-linear-gradient(90deg,
       rgba(60,66,76,.55) 0 1.5px, rgba(255,255,255,.85) 1.5px 3.5px),
     linear-gradient(180deg,#e9edf2 0%,#aab1bc 55%,#d7dce2 100%)}
-.packLid{position:absolute;left:0;right:0;top:0;height:var(--seam);z-index:2;overflow:hidden;
-  border-radius:6px 6px 0 0;
-  clip-path:inset(0 0 0 calc(var(--tear) * 100%))}
+/* 지그재그 컷 — 실제 팩은 핑킹가위 날로 잘라 위아래가 톱니다(PO).
+   삼각형을 하나씩 그리는 대신 45도 그라디언트 두 장을 한 칸(--z)씩 반복해 겹친다.
+   두 장이 만나 매 칸의 위 모서리를 파내므로 톱니가 된다. 세 번째 층은 나머지 몸통이다.
+   정적인 마스크라 한 번만 계산되고, 뜯을 때 바뀌는 clip-path와도 따로 논다. */
+.packLid,.packFoot{--z:9px}
+.packLid{position:absolute;left:0;right:0;top:0;height:var(--seam);z-index:2;
+  clip-path:inset(0 0 0 calc(var(--tear) * 100%));
+  -webkit-mask:
+    linear-gradient(45deg,  #0000 calc(var(--z)/2), #000 0) 0 0/var(--z) var(--z) repeat-x,
+    linear-gradient(-45deg, #0000 calc(var(--z)/2), #000 0) 0 0/var(--z) var(--z) repeat-x,
+    linear-gradient(#000,#000) 0 var(--z)/100% calc(100% - var(--z)) no-repeat;
+  mask:
+    linear-gradient(45deg,  #0000 calc(var(--z)/2), #000 0) 0 0/var(--z) var(--z) repeat-x,
+    linear-gradient(-45deg, #0000 calc(var(--z)/2), #000 0) 0 0/var(--z) var(--z) repeat-x,
+    linear-gradient(#000,#000) 0 var(--z)/100% calc(100% - var(--z)) no-repeat}
 .packFoot{position:absolute;left:0;right:0;bottom:0;height:var(--seam);z-index:2;
-  border-radius:0 0 6px 6px}
+  -webkit-mask:
+    linear-gradient(135deg,  #0000 calc(var(--z)/2), #000 0) 0 100%/var(--z) var(--z) repeat-x,
+    linear-gradient(-135deg, #0000 calc(var(--z)/2), #000 0) 0 100%/var(--z) var(--z) repeat-x,
+    linear-gradient(#000,#000) 0 0/100% calc(100% - var(--z)) no-repeat;
+  mask:
+    linear-gradient(135deg,  #0000 calc(var(--z)/2), #000 0) 0 100%/var(--z) var(--z) repeat-x,
+    linear-gradient(-135deg, #0000 calc(var(--z)/2), #000 0) 0 100%/var(--z) var(--z) repeat-x,
+    linear-gradient(#000,#000) 0 0/100% calc(100% - var(--z)) no-repeat}
 /* 압착부와 몸통이 만나는 접힘 — 여기서 한 번 꺾여야 두 장이 붙은 봉투가 된다 */
 .packLid::after{content:"";position:absolute;left:0;right:0;bottom:0;height:9px;
   background:linear-gradient(180deg, rgba(255,255,255,.9) 0%, rgba(120,127,138,.5) 100%)}
@@ -1428,6 +1454,8 @@ body.intro .heroContent{animation:none;opacity:0}
   <button data-g="gold" class="on">Gold</button>
   <span style="margin-left:8px">실루엣 포즈</span>
   <button id="btnPoseCycle">바꿔보기 ↻</button>
+  <span style="margin-left:8px">개봉</span>
+  <button id="btnIntroAgain">다시 보기 ↻</button>
 </div>
 
 <div class="stage">
@@ -2062,6 +2090,13 @@ document.getElementById('stTeam').textContent = PLAYER.team;
 document.getElementById('stNum').textContent = PLAYER.no;
 document.getElementById('btnShareTop').innerHTML = icon('share');
 document.getElementById('btnFlip').innerHTML = icon('flip','ic ic-sm')+'카드 뒤집기';
+/* 개봉 다시 보기(검토용) — 본 기록을 지우고 강제 실행 주소로 다시 연다.
+   지우기만 하면 등급이 스타터가 아닐 때 여전히 안 나온다. */
+document.getElementById('btnIntroAgain').addEventListener('click', function(){
+  try{ localStorage.removeItem('basket_pack_opened'); }catch(_){}
+  var q = new URLSearchParams(location.search); q.set('intro','1');
+  location.search = q.toString();
+});
 // 빈 상태 아이콘 — data-icon 키를 MSYM에서 찾아 글자 앞에 끼운다.
 // 글리프 이름을 마크업에 흩뿌리지 않으려고 한 곳(MSYM)에만 두고 여기서 채운다.
 [].forEach.call(document.querySelectorAll('.recEmpty[data-icon]'), function(el){
@@ -2225,11 +2260,16 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     var stage = document.getElementById('packStage');
     if(!stage) return;
     var OPEN_KEY = 'basket_pack_opened';
+    /* ?intro=1 은 검토용 강제 실행이다 — 등급도 기록도 보지 않는다.
+       한 번 열면 다시 안 나오는 연출이라, 확인할 방법이 없으면 손볼 수도 없다. */
+    var forced = new URLSearchParams(location.search).get('intro') === '1';
     var opened = false;
     try{ opened = !!localStorage.getItem(OPEN_KEY); }catch(_){}
     var grade = document.querySelector('[data-grade]');
     var isStarter = grade && grade.getAttribute('data-grade') === 'starter';
-    if(opened || !isStarter) return;
+    if(!forced && (opened || !isStarter)) return;
+    // 강제로 볼 때는 기록을 남기지 않는다 — 다음에도 또 볼 수 있어야 한다
+    var remember = !forced;
 
     stage.hidden = false;
     document.body.classList.add('intro');
@@ -2283,11 +2323,11 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     function finish(){
       pack.classList.add('is-settling');
       tear = 1; paint();
-      try{ localStorage.setItem(OPEN_KEY, '1'); }catch(_){}
+      if(remember){ try{ localStorage.setItem(OPEN_KEY, '1'); }catch(_){} }
       setTimeout(function(){ pack.classList.add('is-open'); reveal(360); }, 60);
     }
     function skip(){
-      try{ localStorage.setItem(OPEN_KEY, '1'); }catch(_){}
+      if(remember){ try{ localStorage.setItem(OPEN_KEY, '1'); }catch(_){} }
       reveal(0);
     }
     /* 팩이 사라지는 것과 카드가 올라오는 것이 겹쳐야 한 동작으로 읽힌다.
