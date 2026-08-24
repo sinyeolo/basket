@@ -361,14 +361,10 @@ button{font-family:var(--font)}
   transform:rotateX(var(--pry,0deg)) rotateY(var(--prx,0deg))}
 /* 원통 음영 — 파우치는 납작한 판이 아니라 속이 부푼 봉투다. 양 옆이 어둡고
    가운데가 밝아야 부피가 생긴다. 팩 전체에 한 장 덮으므로 밴드·몸통이 같이 휜다. */
-.packTilt::after{content:"";position:absolute;inset:0;z-index:7;pointer-events:none;
-  border-radius:12px;   /* 문서의 컨테이너 계단에서 가장 안쪽 단 — 팩은 카드만 한 물건이다 */
-  background:linear-gradient(90deg,
-    rgba(0,0,0,.38) 0%, rgba(0,0,0,.26) 2.5%, rgba(0,0,0,.15) 6%,
-    rgba(0,0,0,.07) 11%, rgba(0,0,0,.02) 17%, rgba(0,0,0,0) 24%,
-    rgba(255,255,255,.05) 40%, rgba(255,255,255,.07) 48%, rgba(255,255,255,.03) 58%,
-    rgba(0,0,0,0) 72%, rgba(0,0,0,.02) 80%, rgba(0,0,0,.07) 87%,
-    rgba(0,0,0,.16) 93%, rgba(0,0,0,.27) 97%, rgba(0,0,0,.38) 100%)}
+/* 원통 음영은 팩 전체에 한 장 덮지 않고 조각마다 나눠 넣는다.
+   한 장으로 덮었더니 뚜껑이 들려도 음영은 제자리에 남아, 뚜껑이 고정된 그늘 밑을
+   미끄러지는 것처럼 보였다(PO). 조각이 제 음영을 들고 있어야 함께 기울어진다.
+   세 조각 모두 팩 폭 전체를 차지하므로, 닫혀 있을 때는 한 장으로 그린 것과 같다. */
 /* 홀로그램 — 은박에 도는 무지개다. 카드의 홀로와 같은 원칙으로 아주 옅게,
    한 톤이 아니라 색이 흘러가게 둔다. 진하면 팩이 장난감이 된다. */
 .packTilt::before{content:"";position:absolute;inset:0;z-index:6;pointer-events:none;
@@ -410,6 +406,12 @@ button{font-family:var(--font)}
    브랜드 발광은 위쪽에 한 뼘만 남긴다 — 은색을 덮을 만큼 얹으면 다시 금속이 아니게 된다. */
 .packBody{position:absolute;left:0;right:0;top:var(--seam);bottom:var(--foot);overflow:hidden;
   background:
+    linear-gradient(90deg,
+      rgba(0,0,0,.38) 0%, rgba(0,0,0,.26) 2.5%, rgba(0,0,0,.15) 6%,
+      rgba(0,0,0,.07) 11%, rgba(0,0,0,.02) 17%, rgba(0,0,0,0) 24%,
+      rgba(255,255,255,.05) 40%, rgba(255,255,255,.07) 48%, rgba(255,255,255,.03) 58%,
+      rgba(0,0,0,0) 72%, rgba(0,0,0,.02) 80%, rgba(0,0,0,.07) 87%,
+      rgba(0,0,0,.16) 93%, rgba(0,0,0,.27) 97%, rgba(0,0,0,.38) 100%),
     /* 압착부보다 한 단 어둡다(PO) — 같은 은색이되 몸통은 빛을 덜 받는 면이다.
        각 정지점을 8% 정도씩 내렸고, 밝은 쪽과 어두운 쪽의 차이는 그대로 뒀다.
        차이를 함께 줄이면 금속이 아니라 회색 종이가 된다. */
@@ -523,6 +525,12 @@ button{font-family:var(--font)}
    촘촘한 세로 골은 실제 실링 자국이다. 반복 그라디언트 한 줄이면 된다. */
 .packLid,.packFoot{
   background:
+    linear-gradient(90deg,
+      rgba(0,0,0,.38) 0%, rgba(0,0,0,.26) 2.5%, rgba(0,0,0,.15) 6%,
+      rgba(0,0,0,.07) 11%, rgba(0,0,0,.02) 17%, rgba(0,0,0,0) 24%,
+      rgba(255,255,255,.05) 40%, rgba(255,255,255,.07) 48%, rgba(255,255,255,.03) 58%,
+      rgba(0,0,0,0) 72%, rgba(0,0,0,.02) 80%, rgba(0,0,0,.07) 87%,
+      rgba(0,0,0,.16) 93%, rgba(0,0,0,.27) 97%, rgba(0,0,0,.38) 100%),
     repeating-linear-gradient(90deg,
       rgba(60,66,76,.55) 0 1.5px, rgba(255,255,255,.85) 1.5px 3.5px),
     linear-gradient(180deg,#e9edf2 0%,#aab1bc 55%,#d7dce2 100%)}
@@ -648,7 +656,7 @@ button{font-family:var(--font)}
    손의 마지막 움직임과 이어진다 — 위로 띄우면 방금 오른쪽으로 민 힘과 어긋난다. */
 @keyframes packLidAway{
   0%{transform:rotate(11deg) translateY(-4px);opacity:1}
-  100%{transform:translate(150%,-90px) rotate(26deg);opacity:0}}
+  100%{transform:translate(150%,-190px) rotate(30deg);opacity:0}}
 @keyframes packAway{to{transform:translateX(-50%) translateY(200px);opacity:0}}
 .packStage.is-gone .packHint,
 .pack.is-open .packHandle,.pack.is-open .packTrack{opacity:0}
