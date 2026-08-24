@@ -23,6 +23,7 @@
   /* 개봉 팩(은박) — 카드도 콘솔도 아닌 제3의 표면이라 자체 토큰을 갖는다 */
   --pack-foil-deep:#464e5c; --pack-peek:#565d70;
   --pack-glow:rgba(255,205,140,.95); --pack-glow-mid:rgba(255,155,20,.55);
+  --pack-edge:#2b2f38;   /* 팩 옆면 — 앞면보다 어둡다. 빛을 정면으로 받지 않는 면이다 */
   --card-w:270px; --card-h:378px;   /* 300×420에서 10% 축소 */ --card-thick:6px;   /* 16 → 10 → 6px로 얇게(PO) */
   /* 공통 컴포넌트 토큰 — prototype/index.html과 동일 값 사용(라운드·높이 스케일 통일) */
   --r-btn:100px; --r-card:20px; --r-chip:8px; --h-sm:40px; --h-md:44px;
@@ -442,7 +443,7 @@ button{font-family:var(--font)}
    기울였을 때만 보이는 값이라 정면에서는 비용이 없다시피 하고,
    합성 단계에서 끝나므로 매 프레임 다시 그리지도 않는다. */
 .packEdge{position:absolute;inset:0;border-radius:12px;pointer-events:none;
-  background:linear-gradient(180deg,#2b2f38 0%,#171a21 55%,#101319 100%);
+  background:linear-gradient(180deg,var(--pack-edge) 0%,#171a21 55%,#101319 100%);
   backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .packEdge.e1{transform:translateZ(-2px)}
 .packEdge.e2{transform:translateZ(-4px)}
