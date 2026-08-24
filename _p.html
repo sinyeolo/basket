@@ -538,13 +538,15 @@ button{font-family:var(--font)}
    두 장이 만나 매 칸의 위 모서리를 파내므로 톱니가 된다. 세 번째 층은 나머지 몸통이다.
    정적인 마스크라 한 번만 계산되고, 뜯을 때 바뀌는 clip-path와도 따로 논다. */
 .packLid,.packFoot{--z:9px}
-/* 뚜껑은 지워지는 게 아니라 벌어진다(PO). 오른쪽 끝을 경첩 삼아 왼쪽이 들린다 —
+/* 뚜껑은 지워지는 게 아니라 위로 벌어진다(PO). 오른쪽 끝을 경첩 삼아 왼쪽이 들린다 —
+   부호를 뒤집기 전에는 왼쪽 끝이 아래로 처져 몸통을 덮었다. 봉투는 아래로 접히지 않는다. */
+/*
    마스킹은 '지워졌다'로 읽히고, 들리는 건 '뜯겼다'로 읽힌다.
    11도면 320px 폭에서 왼쪽 끝이 60px쯤 들린다. 더 주면 종이가 아니라 문짝이 된다. */
 .packLid{position:absolute;left:0;right:0;top:0;height:var(--seam);z-index:2;
   border-radius:12px 12px 0 0;
   transform-origin:100% 100%;
-  transform:rotate(calc(var(--tear) * -11deg)) translateY(calc(var(--tear) * -4px));
+  transform:rotate(calc(var(--tear) * 11deg)) translateY(calc(var(--tear) * -4px));
   -webkit-mask:
     linear-gradient(45deg,  #0000 calc(var(--z)/2), #000 0) 0 0/var(--z) var(--z) repeat-x,
     linear-gradient(-45deg, #0000 calc(var(--z)/2), #000 0) 0 0/var(--z) var(--z) repeat-x,
@@ -645,8 +647,8 @@ button{font-family:var(--font)}
 /* 다 뜯으면 오른쪽 화면 밖으로 날아간다(PO). 경첩이 오른쪽이라 그 방향으로 빠지는 게
    손의 마지막 움직임과 이어진다 — 위로 띄우면 방금 오른쪽으로 민 힘과 어긋난다. */
 @keyframes packLidAway{
-  0%{transform:rotate(-11deg) translateY(-4px);opacity:1}
-  100%{transform:translate(150%,-46px) rotate(22deg);opacity:0}}
+  0%{transform:rotate(11deg) translateY(-4px);opacity:1}
+  100%{transform:translate(150%,-90px) rotate(26deg);opacity:0}}
 @keyframes packAway{to{transform:translateX(-50%) translateY(200px);opacity:0}}
 .packStage.is-gone .packHint,
 .pack.is-open .packHandle,.pack.is-open .packTrack{opacity:0}
