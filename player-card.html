@@ -22,6 +22,7 @@
   --on-dark:#f4f4f6; --on-dark-dim:#9a9ba3;
   /* 개봉 팩(은박) — 카드도 콘솔도 아닌 제3의 표면이라 자체 토큰을 갖는다 */
   --pack-foil-deep:#464e5c; --pack-peek:#565d70;
+  --pack-glow:rgba(255,205,140,.95); --pack-glow-mid:rgba(255,155,20,.55);
   --card-w:270px; --card-h:378px;   /* 300×420에서 10% 축소 */ --card-thick:6px;   /* 16 → 10 → 6px로 얇게(PO) */
   /* 공통 컴포넌트 토큰 — prototype/index.html과 동일 값 사용(라운드·높이 스케일 통일) */
   --r-btn:100px; --r-card:20px; --r-chip:8px; --h-sm:40px; --h-md:44px;
@@ -329,7 +330,7 @@ button{font-family:var(--font)}
 /* 원통 음영 — 파우치는 납작한 판이 아니라 속이 부푼 봉투다. 양 옆이 어둡고
    가운데가 밝아야 부피가 생긴다. 팩 전체에 한 장 덮으므로 밴드·몸통이 같이 휜다. */
 .pack::after{content:"";position:absolute;inset:0;z-index:7;pointer-events:none;
-  border-radius:10px;
+  border-radius:12px;   /* 문서의 컨테이너 계단에서 가장 안쪽 단 — 팩은 카드만 한 물건이다 */
   background:linear-gradient(90deg,
     rgba(0,0,0,.38) 0%, rgba(0,0,0,.26) 2.5%, rgba(0,0,0,.15) 6%,
     rgba(0,0,0,.07) 11%, rgba(0,0,0,.02) 17%, rgba(0,0,0,0) 24%,
@@ -339,7 +340,7 @@ button{font-family:var(--font)}
 /* 홀로그램 — 은박에 도는 무지개다. 카드의 홀로와 같은 원칙으로 아주 옅게,
    한 톤이 아니라 색이 흘러가게 둔다. 진하면 팩이 장난감이 된다. */
 .pack::before{content:"";position:absolute;inset:0;z-index:6;pointer-events:none;
-  border-radius:10px;mix-blend-mode:screen;opacity:.34;
+  border-radius:12px;mix-blend-mode:screen;opacity:.34;
   background:linear-gradient(112deg,
     rgba(255,120,190,0) 12%, rgba(255,150,200,.10) 24%, rgba(150,190,255,.14) 33%,
     rgba(150,255,230,.16) 41%, rgba(255,245,180,.18) 48%, rgba(230,190,255,.14) 56%,
@@ -372,7 +373,7 @@ button{font-family:var(--font)}
    쏟아지는 어두운 면으로 바꾼다 — 카드 무대(.stage)와 같은 연출이라 두 화면이 이어진다. */
 .packBody{position:absolute;left:0;right:0;top:var(--seam);bottom:var(--foot);overflow:hidden;
   background:
-    radial-gradient(125% 62% at 50% -4%, rgba(255,205,140,.95) 0%, rgba(255,155,20,.55) 24%,
+    radial-gradient(125% 62% at 50% -4%, var(--pack-glow) 0%, var(--pack-glow-mid) 24%,
       rgba(255,145,0,.18) 46%, rgba(255,145,0,0) 68%),
     linear-gradient(178deg,#23262f 0%,#171a21 52%,#0f1116 100%)}
 /* 유리광 — 파우치 필름은 위쪽이 더 번들거린다. 위에서 아래로 옅어지는 흰 면 하나면 된다. */
