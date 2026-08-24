@@ -358,7 +358,8 @@ button{font-family:var(--font)}
   --tear:0; --seam:78px; --foot:42px; --packY:0px; --packS:1;   /* 뜯는 위쪽은 길게, 바닥은 짧게(PO) */
   transform:translateX(-50%) translateY(var(--packY)) scale(var(--packS));
   transform-origin:bottom center;
-  touch-action:none;user-select:none;
+  touch-action:none;user-select:none;-webkit-user-select:none;
+  -webkit-user-drag:none;-webkit-touch-callout:none;
   filter:drop-shadow(0 -8px 30px rgba(0,0,0,.55));
   transition:transform .62s cubic-bezier(.16,.8,.24,1)}
 /* 기울기 레이어 — 배치·확대는 .pack이, 회전은 .packTilt가 맡는다.
@@ -755,7 +756,14 @@ body.intro .heroContent{animation:none;opacity:0}
    그 뒤로는 끌어도 반응이 없었다(실제로 그랬다). 시트 헤드·핸들도 같은 이유로 none이다. */
 .cardWrap{width:var(--card-w);height:var(--card-h);position:relative;transform-style:preserve-3d;
   touch-action:none;
+  /* 손가락으로 카드를 기울일 때 브라우저가 이걸 '이미지·글자 끌기'로 가로챈다.
+     사진에는 반투명 유령이 딸려 나오고 글자에는 선택 블록이 잡혀, 기울이려던 손이
+     엉뚱한 걸 끌게 된다. 카드는 통째로 끌 수 없는 물건으로 못박는다.
+     touch-callout은 iOS에서 길게 눌렀을 때 뜨는 '이미지 저장' 메뉴를 막는다. */
+  user-select:none;-webkit-user-select:none;
+  -webkit-user-drag:none;-webkit-touch-callout:none;
   transform:rotateX(var(--ry,0)) rotateY(var(--rx,0))}
+.cardWrap img,.pack img,.cardWrap svg,.pack svg{-webkit-user-drag:none;user-drag:none;pointer-events:none}
 /* 카드 뒤 등급 컬러 오라 — 카드보다 크게 깔고 흐리게 번지게 해서 주변으로 은은하게 새어나온다.
    숨쉬듯 밝기와 크기가 함께 오르내려 정지 화면에서도 살아있게 보인다.
    .cardWrap(preserve-3d) 안에 두면 filter/z-index가 3D 렌더링과 충돌해 아예 안 보였다 —
@@ -2340,7 +2348,7 @@ document.getElementById('recMoreBtn').addEventListener('click', function(){
 document.getElementById('btnShare').innerHTML = icon('share','ic ic-sm')+'링크 공유';
 document.getElementById('btnSaveImg').innerHTML = icon('download','ic ic-sm')+'이미지 저장';
 if(PLAYER.photo){
-  document.getElementById('fPhotoBg').innerHTML = '<img class="avatarPhotoFull" src="'+PLAYER.photo+'" alt="">';
+  document.getElementById('fPhotoBg').innerHTML = '<img class="avatarPhotoFull" draggable="false" src="'+PLAYER.photo+'" alt="">';
   document.querySelector('.photoLayer').style.display = 'none';
   document.getElementById('frontInner').classList.add('card-photo');
 } else {
@@ -2679,6 +2687,13 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       if(!stage.hidden && e.key === 'Escape') skip();
     });
   })();
+
+  /* 마지막 빗장 — CSS의 -webkit-user-drag는 파이어폭스가 모른다. 드래그 시작 자체를
+     막아 두면 어느 브라우저에서든 사진이 손에 딸려 나오지 않는다.
+     카드·팩 밖(시트의 링크 등)은 그대로 두어 정상 동작을 건드리지 않는다. */
+  document.addEventListener('dragstart', function(e){
+    if(e.target.closest('#cardWrap, .pack, .heroFixed')) e.preventDefault();
+  });
 
   var COLLAPSED_H = 34; // 접힌 시트는 핸들만 보인다 — .sheet 기본 height와 같은 값
   function expandedH(){ return window.innerHeight; }
@@ -3205,7 +3220,7 @@ function lbCardFrontHTML(grade){
   var g = GRADES[grade];
   var holo = holoSkin('front-'+grade);
   return '<div class="inner'+(PLAYER.photo ? ' card-photo' : '')+'">'+
-    '<div class="cardPhotoBg">'+(PLAYER.photo ? '<img class="avatarPhotoFull" src="'+PLAYER.photo+'" alt="">' : '')+'</div>'+
+    '<div class="cardPhotoBg">'+(PLAYER.photo ? '<img class="avatarPhotoFull" draggable="false" src="'+PLAYER.photo+'" alt="">' : '')+'</div>'+
     '<div class="pdAura" aria-hidden="true"></div>'+
     '<div class="holoFoil '+holo+'" aria-hidden="true"></div>'+
     '<div class="holoGrain" aria-hidden="true"></div>'+
