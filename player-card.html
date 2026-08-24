@@ -71,7 +71,7 @@ button{font-family:var(--font)}
 /* 스타터가 자꾸 실버로 읽힌 이유 — 밝은 쪽(#868b93)이 실버의 어두운 쪽(#8b929b)과 거의 같은 톤이었다.
    같은 재질을 흐리게 한 것으로 보일 뿐이다. 두 색의 간격 자체를 좁혀 금속 광택을 없앤다:
    위아래 밝기 차가 있어야 금속으로 읽히므로, 차이를 줄이면 무광 흑연이 된다. 등급이 아니라 재질이 다르다. */
-[data-grade="starter"]{--g-a:#33363b; --g-b:#4d5158; --g-c:#1e2024; --g-text:#c9ccd2; --shine-op:.09; --holo-op:.04; }
+[data-grade="starter"]{--g-a:#33363b; --g-b:#4d5158; --g-c:#1e2024; --g-text:#c9ccd2; --shine-op:.108; --holo-op:.04; }
 [data-grade="bronze"]{ --g-a:#7a4a2a; --g-b:#c9905a; --g-c:#3d2412; --g-text:#f0d9c2; --shine-op:.28; --holo-op:.10; }
 [data-grade="silver"]{ --g-a:#8b929b; --g-b:#e7ebef; --g-c:#3d4249; --g-text:#eef1f4; --shine-op:.4;  --holo-op:.14; }
 [data-grade="gold"]{   --g-a:#9c7415; --g-b:#f4d16a; --g-c:#4a3608; --g-text:#fbedc4; --shine-op:.55; --holo-op:.18; }
@@ -305,7 +305,10 @@ button{font-family:var(--font)}
 .packStage{position:fixed;inset:0;z-index:20;overflow:hidden;perspective:1200px;
   background:radial-gradient(120% 80% at 50% 26%, #1b1e26 0%, #0a0b0f 68%)}
 .packStage[hidden]{display:none}
-.packStage.is-gone{animation:packStageOut .55s ease-in both}
+/* 무대 배경은 팩보다 먼저 걷힌다 — 팩이 내려가는 동안 그 뒤에서 카드가 올라오는데,
+   배경이 불투명한 채로 남아 있으면 카드가 가려 팩만 내려가는 그림이 된다. */
+.pack.is-open ~ .packHint{opacity:0;transition:opacity .2s}
+.packStage.is-gone{animation:packStageOut .5s ease-out both}
 @keyframes packStageOut{to{opacity:0;visibility:hidden}}
 
 /* 안내문은 팩 바로 위에 붙는다(PO). 화면 위쪽에 고정하면 팩과 사이가 텅 빈다.
@@ -514,20 +517,19 @@ button{font-family:var(--font)}
     linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.18) 34%, rgba(0,0,0,0) 62%),
     linear-gradient(100deg,var(--pack-inside) 0%,var(--pack-inside-lit) 38%,
       var(--pack-inside) 62%,var(--pack-inside-lit) 100%)}
-/* 봉투 안의 카드 — 진짜 카드 앞면을 복제해 여기에 넣는다(JS).
-   예전에는 카드 윗동을 흉내 낸 판때기였고, 다 뜯으면 그게 사라지고 진짜 카드가 따로
-   등장했다 — 교차 노출이라 '안에서 나온' 게 아니었다(PO).
-   카드 한 장 크기로 두되 몸통(.packBody)이 그 위를 덮으므로, 절단선 위로 삐져나온
-   윗동만 보인다. 다 뜯으면 이걸 그대로 위로 뽑아 진짜 카드 자리에 앉힌다. */
-.packPeek{position:absolute;left:50%;margin-left:calc(var(--card-w) / -2);top:10px;
-  width:var(--card-w);height:var(--card-h);border-radius:var(--r-card);overflow:hidden;
-  background:var(--stage-bg2);box-shadow:0 -2px 10px rgba(0,0,0,.5)}
-.packPeek .cardFace{position:absolute;inset:0}
-/* 뽑혀 나오는 길 — 목표 자리는 진짜 카드의 실제 위치라 JS가 재서 넣는다.
-   화면 크기·시트 상태에 따라 카드가 어디 서는지 달라지므로 값으로 박아 둘 수 없다. */
-.pack.is-open .packPeek{animation:packCardOut .66s cubic-bezier(.16,.8,.24,1) .1s both}
-@keyframes packCardOut{
-  to{transform:translate(var(--out-x,0px), var(--out-y,-260px))}}
+/* 벌어진 입 — 뜯긴 자리에서 보이는 건 카드가 아니라 팩 안쪽이다(PO 레퍼런스).
+   안에 카드를 미리 보여 주면 뽑는 재미가 먼저 새어 나간다.
+   실물 팩의 뜯긴 입은 곧은 선이 아니라 앞으로 휘어 벌어진다 — 위쪽을 타원으로 굴려
+   그 휨을 만든다. 밝은 테두리 두 줄은 필름의 잘린 단면이 빛을 받는 자리다.
+   벌어진 정도(--tear)를 그대로 투명도로 쓴다: 안 뜯었으면 입도 없다. */
+.packLip{position:absolute;left:0;right:0;top:calc(var(--seam) - 14px);height:26px;z-index:4;
+  pointer-events:none;opacity:var(--tear);
+  border-radius:50% 50% 0 0 / 100% 100% 0 0;
+  background:linear-gradient(180deg,
+    rgba(255,255,255,.95) 0 2px,
+    rgba(196,228,255,.8) 2px 4px,
+    rgba(30,34,42,.92) 4px 40%,
+    rgba(12,14,19,.98) 100%)}
 
 /* 뚜껑 — 은박 압착부. 실물 파우치의 그 부분이라 잔주름(반복 그라디언트)을 넣는다.
    왼쪽부터 뜯겨 나가므로 clip-path의 왼쪽 값이 진행도를 따라간다. */
@@ -675,9 +677,6 @@ button{font-family:var(--font)}
 
 /* 개봉 중에는 카드 묶음을 세워 두고, 다 뜯은 뒤에 기존 등장 연출로 이어 간다 */
 body.intro .heroContent{animation:none;opacity:0}
-/* 팩에서 뽑아 앉힌 뒤에는 하단 슬라이드업(heroRiseIn)을 돌리지 않는다 —
-   방금 손으로 꺼낸 카드가 다시 화면 밖에서 날아오면 두 번 등장하는 셈이다. */
-body.intro-done .heroContent{animation:none;opacity:1}
 @media (prefers-reduced-motion:reduce){
   .packStage[data-phase="pick"] .packBody{animation:none}
   .pack.is-open .packLid,.pack.is-open{animation-duration:.01s}
@@ -1636,7 +1635,7 @@ body.intro-done .heroContent{animation:none;opacity:1}
     <span class="packEdge e2" aria-hidden="true"></span>
     <span class="packEdge e3" aria-hidden="true"></span>
     <div class="packInside" aria-hidden="true"></div>
-    <div class="packPeek" aria-hidden="true"></div>
+    <div class="packLip" aria-hidden="true"></div>
     <div class="packBody">
       <div class="packPat" aria-hidden="true"></div>
       <div class="packGlow" aria-hidden="true"></div>
@@ -2542,34 +2541,13 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       pack.classList.add('is-settling');   // 덜 뜯었으면 되돌아간다
       tear = 0; paint();
     }
-    /* 봉투 안에 진짜 카드 앞면을 복제해 넣는다. 흉내 낸 판때기를 쓰면 다 뜯는 순간
-       그게 사라지고 진짜 카드가 따로 켜져, 아무리 붙여 놔도 교차 노출로 보인다(PO). */
-    var peek = document.querySelector('.packPeek');
-    (function fillPeek(){
-      var face = document.querySelector('#cardWrap .cardFace.front');
-      if(!face || !peek) return;
-      var copy = face.cloneNode(true);
-      copy.removeAttribute('id');
-      [].forEach.call(copy.querySelectorAll('[id]'), function(el){ el.removeAttribute('id'); });
-      peek.appendChild(copy);
-    })();
-
     function finish(){
       pack.classList.add('is-settling');
       tear = 1; paint();
       if(remember){ try{ localStorage.setItem(OPEN_KEY, '1'); }catch(_){} }
-      setTimeout(function(){
-        /* 뽑혀 나갈 목표는 진짜 카드가 서 있는 자리다. 화면 크기에 따라 달라지므로
-           그 순간에 재서 넣는다 — 값으로 박아 두면 기기마다 어긋난다. */
-        var real = document.getElementById('cardWrap');
-        if(real && peek){
-          var a = peek.getBoundingClientRect(), b = real.getBoundingClientRect();
-          peek.style.setProperty('--out-x', Math.round(b.left - a.left) + 'px');
-          peek.style.setProperty('--out-y', Math.round(b.top - a.top) + 'px');
-        }
-        pack.classList.add('is-open');
-        reveal(700);   // 카드가 다 올라온 뒤에 넘긴다
-      }, 60);
+      /* 뚜껑이 날아가고 팩이 내려가는 동안 카드가 뒤에서 밀려 올라온다(PO).
+         팩이 다 빠진 뒤에 시작하면 두 장면이 된다 — 겹쳐야 한 동작이다. */
+      setTimeout(function(){ pack.classList.add('is-open'); reveal(200); }, 60);
     }
     function skip(){
       if(remember){ try{ localStorage.setItem(OPEN_KEY, '1'); }catch(_){} }
@@ -2580,13 +2558,9 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     }
     /* 팩이 사라지는 것과 카드가 올라오는 것이 겹쳐야 한 동작으로 읽힌다.
        팩이 다 없어진 뒤에 카드가 올라오면 두 장면을 이어 붙인 것처럼 보인다. */
-    /* 복제 카드가 진짜 카드 자리에 정확히 겹친 순간에 바꿔치기한다.
-       진짜 카드를 먼저 켜 두고 무대를 걷어야 한 장이 계속 거기 있던 것처럼 보인다 —
-       순서를 뒤집으면 한 프레임 비어 깜빡인다. */
     function reveal(delay){
       setTimeout(function(){
-        document.body.classList.add('intro-done');
-        document.body.classList.remove('intro');
+        document.body.classList.remove('intro');   // heroRiseIn이 여기서 돈다
         stage.classList.add('is-gone');
         setTimeout(function(){ stage.hidden = true; }, 520);
       }, delay);
