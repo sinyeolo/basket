@@ -22,7 +22,7 @@
   --on-dark:#f4f4f6; --on-dark-dim:#9a9ba3;
   /* 개봉 팩(은박) — 카드도 콘솔도 아닌 제3의 표면이라 자체 토큰을 갖는다 */
   --pack-foil-deep:#464e5c; --pack-peek:#565d70;
-  --pack-glow:rgba(255,190,110,.42); --pack-glow-mid:rgba(255,155,20,.16);
+  --pack-inside:#4a5059; --pack-inside-lit:#5c626c;
   --pack-edge:#2b2f38;   /* 팩 옆면 — 앞면보다 어둡다. 빛을 정면으로 받지 않는 면이다 */
   --card-w:270px; --card-h:378px;   /* 300×420에서 10% 축소 */ --card-thick:6px;   /* 16 → 10 → 6px로 얇게(PO) */
   /* 공통 컴포넌트 토큰 — prototype/index.html과 동일 값 사용(라운드·높이 스케일 통일) */
@@ -503,7 +503,8 @@ button{font-family:var(--font)}
      식으로 두면 '안이 들여다보인다'가 된다. */
   background:
     linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.18) 34%, rgba(0,0,0,0) 62%),
-    linear-gradient(100deg,#4a5059 0%,#5c626c 38%,#464c55 62%,#565c66 100%)}
+    linear-gradient(100deg,var(--pack-inside) 0%,var(--pack-inside-lit) 38%,
+      var(--pack-inside) 62%,var(--pack-inside-lit) 100%)}
 .packPeek{position:absolute;left:5px;right:5px;top:10px;height:calc(var(--seam) - 10px);z-index:1;
   border-radius:14px 14px 0 0;overflow:hidden;
   background:linear-gradient(180deg,var(--pack-peek) 0%,var(--stage-bg2) 100%);
