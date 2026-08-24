@@ -506,7 +506,10 @@ button{font-family:var(--font)}
    되어 어색했다(PO). 봉투의 두께는 '얇은 테 하나'로 읽히는 게 맞다.
    세 겹 6px → 두 겹 3px으로 줄이고, 좌우로 1.5px 물려 넣어 정면에서는 아예 숨는다.
    위아래로도 물려 톱니 뒤로 검은 판이 삐져나오지 않게 한다 — 그게 제일 눈에 걸렸다. */
-.packEdge{position:absolute;inset:5px 1.5px;border-radius:11px;pointer-events:none;
+/* 반경은 팩 실루엣과 같은 12px을 쓴다. 안쪽으로 물린 만큼 11px이 기하학적으로는
+   맞지만, 이 겹은 앞면 뒤에 숨어 모서리가 1px 다른 게 보이지 않는다 —
+   보이지도 않는 차이 때문에 사다리 밖 값을 만들 이유가 없다. */
+.packEdge{position:absolute;inset:5px 1.5px;border-radius:12px;pointer-events:none;
   background:linear-gradient(180deg,var(--pack-edge) 0%,#171a21 60%,#131620 100%);
   backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .packEdge.e1{transform:translateZ(-1.5px)}
