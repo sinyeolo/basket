@@ -320,12 +320,30 @@ button{font-family:var(--font)}
    여백을 애니메이션하면 매 프레임 레이아웃을 다시 잰다. */
 .pack{position:absolute;left:50%;bottom:-22vh;
   width:min(320px, 84vw);height:520px;
-  --tear:0; --seam:78px; --packY:0px; --packS:1;
+  --tear:0; --seam:78px; --foot:42px; --packY:0px; --packS:1;   /* 뜯는 위쪽은 길게, 바닥은 짧게(PO) */
   transform:translateX(-50%) translateY(var(--packY)) scale(var(--packS));
   transform-origin:bottom center;
   touch-action:none;user-select:none;
   filter:drop-shadow(0 -8px 30px rgba(0,0,0,.55));
   transition:transform .62s cubic-bezier(.16,.8,.24,1)}
+/* 원통 음영 — 파우치는 납작한 판이 아니라 속이 부푼 봉투다. 양 옆이 어둡고
+   가운데가 밝아야 부피가 생긴다. 팩 전체에 한 장 덮으므로 밴드·몸통이 같이 휜다. */
+.pack::after{content:"";position:absolute;inset:0;z-index:7;pointer-events:none;
+  border-radius:10px;
+  background:linear-gradient(90deg,
+    rgba(0,0,0,.38) 0%, rgba(0,0,0,.26) 2.5%, rgba(0,0,0,.15) 6%,
+    rgba(0,0,0,.07) 11%, rgba(0,0,0,.02) 17%, rgba(0,0,0,0) 24%,
+    rgba(255,255,255,.05) 40%, rgba(255,255,255,.07) 48%, rgba(255,255,255,.03) 58%,
+    rgba(0,0,0,0) 72%, rgba(0,0,0,.02) 80%, rgba(0,0,0,.07) 87%,
+    rgba(0,0,0,.16) 93%, rgba(0,0,0,.27) 97%, rgba(0,0,0,.38) 100%)}
+/* 홀로그램 — 은박에 도는 무지개다. 카드의 홀로와 같은 원칙으로 아주 옅게,
+   한 톤이 아니라 색이 흘러가게 둔다. 진하면 팩이 장난감이 된다. */
+.pack::before{content:"";position:absolute;inset:0;z-index:6;pointer-events:none;
+  border-radius:10px;mix-blend-mode:screen;opacity:.34;
+  background:linear-gradient(112deg,
+    rgba(255,120,190,0) 12%, rgba(255,150,200,.10) 24%, rgba(150,190,255,.14) 33%,
+    rgba(150,255,230,.16) 41%, rgba(255,245,180,.18) 48%, rgba(230,190,255,.14) 56%,
+    rgba(150,215,255,.10) 65%, rgba(255,170,210,0) 80%)}
 /* 고르기 단계에서는 팩 전체가 화면 한가운데 선다(PO).
    배율은 0.92다 — 팩은 카드를 담는 물건이라 카드(270×378)보다 커 보여야 한다.
    0.62였을 때는 186×322로 카드보다 작아서, 뜯고 나면 없던 카드가 부풀어 나온 꼴이었다.
@@ -349,23 +367,23 @@ button{font-family:var(--font)}
   transform .34s cubic-bezier(.2,.9,.25,1)}
 
 /* 몸통 — 브랜드 오렌지가 위에서 번지는 밝은 면. 주식 뽑기 팩의 인상이 여기서 나온다. */
-/* 몸통 — 은박 파우치(PO 레퍼런스). 금속 느낌은 색이 아니라 밝기의 급한 오르내림에서 나온다.
-   그래서 완만한 그라디언트 하나가 아니라 좁은 구간에서 오르내리는 정지점을 여럿 둔다. */
-.packBody{position:absolute;left:0;right:0;top:var(--seam);bottom:var(--seam);overflow:hidden;
-  background:linear-gradient(100deg,
-    #6f7681 0%, #aeb5bf 8%, #cfd5dd 14%, #9aa1ac 22%, #d8dde4 33%,
-    #f2f5f8 40%, #b4bbc5 48%, #868d98 58%, #c6ccd4 68%, #eef1f5 76%,
-    #9ba2ad 86%, #c3c9d1 94%, #7a818c 100%)}
-/* 눌린 자국 — 파우치는 평평하지 않다. 사선으로 흐릿하게 두 줄만 넣는다. */
+/* 몸통 — 레퍼런스의 팩은 은박 일색이 아니라 밴드만 은박이고 몸통은 브랜드 면이다.
+   은색 위에 은색 각인을 얹었더니 브랜드가 안 보였다. 위쪽 한 점에서 브랜드 빛이
+   쏟아지는 어두운 면으로 바꾼다 — 카드 무대(.stage)와 같은 연출이라 두 화면이 이어진다. */
+.packBody{position:absolute;left:0;right:0;top:var(--seam);bottom:var(--foot);overflow:hidden;
+  background:
+    radial-gradient(125% 62% at 50% -4%, rgba(255,205,140,.95) 0%, rgba(255,155,20,.55) 24%,
+      rgba(255,145,0,.18) 46%, rgba(255,145,0,0) 68%),
+    linear-gradient(178deg,#23262f 0%,#171a21 52%,#0f1116 100%)}
+/* 유리광 — 파우치 필름은 위쪽이 더 번들거린다. 위에서 아래로 옅어지는 흰 면 하나면 된다. */
 .packBody::before{content:"";position:absolute;inset:0;pointer-events:none;
   background:
-    linear-gradient(158deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.4) 38%, rgba(255,255,255,0) 46%),
-    linear-gradient(200deg, rgba(0,0,0,0) 52%, rgba(0,0,0,.14) 60%, rgba(0,0,0,0) 68%);
-  filter:blur(4px)}
+    linear-gradient(180deg, rgba(255,255,255,.16) 0%, rgba(255,255,255,.04) 22%, rgba(255,255,255,0) 46%),
+    linear-gradient(158deg, rgba(255,255,255,0) 32%, rgba(255,255,255,.10) 39%, rgba(255,255,255,0) 47%)}
 /* 브랜드 로고 패턴 — 카드 뒷면(.backLogoPat)과 같은 에셋·같은 방식이다.
    여기서 새 패턴을 그리면 같은 브랜드가 두 벌이 된다. */
-.packPat{position:absolute;inset:-40%;pointer-events:none;opacity:.16;
-  background-color:var(--pack-foil-deep);
+.packPat{position:absolute;inset:-40%;pointer-events:none;opacity:.10;
+  background-color:#fff;
   -webkit-mask-image:url(assets/logo-pat.svg);mask-image:url(assets/logo-pat.svg);
   -webkit-mask-size:78px auto;mask-size:78px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat;
@@ -378,9 +396,9 @@ button{font-family:var(--font)}
 .packMark{position:absolute;left:0;right:0;top:44%;text-align:center;pointer-events:none;
   transform:translateY(-50%)}
 .packLogo{font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:.12em;
-  color:rgba(28,31,38,.62);text-shadow:0 1px 0 rgba(255,255,255,.45)}
+  color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.5)}
 .packSub{margin-top:8px;font-family:var(--font-display);font-size:11px;font-weight:700;
-  letter-spacing:.3em;color:rgba(28,31,38,.4);text-shadow:0 1px 0 rgba(255,255,255,.35)}
+  letter-spacing:.3em;color:rgba(255,255,255,.62)}
 
 /* 뜯긴 자리로 보이는 카드 윗동 — 안에 뭔가 들어 있다는 걸 여는 도중에 알려 준다 */
 .packPeek{position:absolute;left:10px;right:10px;top:18px;height:calc(var(--seam) + 12px);
@@ -397,6 +415,13 @@ button{font-family:var(--font)}
     repeating-linear-gradient(90deg,
       rgba(60,66,76,.55) 0 1.5px, rgba(255,255,255,.85) 1.5px 3.5px),
     linear-gradient(180deg,#e9edf2 0%,#aab1bc 55%,#d7dce2 100%)}
+/* 압착부에도 로고가 옅게 찍힌다(레퍼런스) — 몸통과 같은 에셋을 더 흐리게 얹는다.
+   골무늬 위에 겹치므로 진하면 둘 다 안 읽힌다. */
+.packBandPat{position:absolute;inset:0;pointer-events:none;opacity:.14;
+  background-color:#3a3f4a;
+  -webkit-mask-image:url(assets/logo-pat.svg);mask-image:url(assets/logo-pat.svg);
+  -webkit-mask-size:42px auto;mask-size:42px auto;
+  -webkit-mask-repeat:repeat;mask-repeat:repeat}
 /* 지그재그 컷 — 실제 팩은 핑킹가위 날로 잘라 위아래가 톱니다(PO).
    삼각형을 하나씩 그리는 대신 45도 그라디언트 두 장을 한 칸(--z)씩 반복해 겹친다.
    두 장이 만나 매 칸의 위 모서리를 파내므로 톱니가 된다. 세 번째 층은 나머지 몸통이다.
@@ -412,7 +437,7 @@ button{font-family:var(--font)}
     linear-gradient(45deg,  #0000 calc(var(--z)/2), #000 0) 0 0/var(--z) var(--z) repeat-x,
     linear-gradient(-45deg, #0000 calc(var(--z)/2), #000 0) 0 0/var(--z) var(--z) repeat-x,
     linear-gradient(#000,#000) 0 var(--z)/100% calc(100% - var(--z)) no-repeat}
-.packFoot{position:absolute;left:0;right:0;bottom:0;height:var(--seam);z-index:2;
+.packFoot{position:absolute;left:0;right:0;bottom:0;height:var(--foot);z-index:2;
   -webkit-mask:
     linear-gradient(135deg,  #0000 calc(var(--z)/2), #000 0) 0 100%/var(--z) var(--z) repeat-x,
     linear-gradient(-135deg, #0000 calc(var(--z)/2), #000 0) 0 100%/var(--z) var(--z) repeat-x,
@@ -421,13 +446,22 @@ button{font-family:var(--font)}
     linear-gradient(135deg,  #0000 calc(var(--z)/2), #000 0) 0 100%/var(--z) var(--z) repeat-x,
     linear-gradient(-135deg, #0000 calc(var(--z)/2), #000 0) 0 100%/var(--z) var(--z) repeat-x,
     linear-gradient(#000,#000) 0 0/100% calc(100% - var(--z)) no-repeat}
+/* 뜯기 시작하는 홈 — 두 레퍼런스 모두 압착부 한쪽에 이 홈이 있다.
+   손톱이 걸리는 자리라, 어디서부터 뜯는지를 그림이 먼저 말해 준다. */
+.packNotch{position:absolute;right:20px;top:-1px;width:15px;height:6px;
+  background:var(--stage-bg);border-radius:0 0 8px 8px}
 /* 압착부와 몸통이 만나는 접힘 — 여기서 한 번 꺾여야 두 장이 붙은 봉투가 된다 */
 .packLid::after{content:"";position:absolute;left:0;right:0;bottom:0;height:9px;
   background:linear-gradient(180deg, rgba(255,255,255,.9) 0%, rgba(120,127,138,.5) 100%)}
-.packSeam{position:absolute;left:0;right:0;top:calc(var(--seam) - 3px);height:3px;z-index:3;
+/* 절단선 — 레퍼런스는 점선이 아니라 밝은 두 줄이다. 두 줄 사이의 어두운 틈이
+   '여기가 접힌 자리'를 말한다. 점선으로 뒀더니 재봉선처럼 보였다. */
+.packSeam{position:absolute;left:0;right:0;top:calc(var(--seam) - 7px);height:8px;z-index:3;
   pointer-events:none;
-  background:repeating-linear-gradient(90deg,
-    rgba(0,0,0,.3) 0 5px, rgba(255,255,255,.3) 5px 10px)}
+  background:linear-gradient(180deg,
+    rgba(255,255,255,.95) 0 2px,
+    rgba(40,44,52,.55) 2px 5px,
+    rgba(255,255,255,.85) 5px 7px,
+    rgba(0,0,0,.28) 7px 8px)}
 /* 뜯긴 자국 — 지나간 만큼만 밝게 남는다 */
 .packCut{position:absolute;left:0;right:0;top:calc(var(--seam) - 9px);height:16px;z-index:4;
   pointer-events:none;
@@ -1438,8 +1472,8 @@ body.intro .heroContent{animation:none;opacity:0}
         <div class="packSub">PLAYER CARD</div>
       </div>
     </div>
-    <div class="packFoot" aria-hidden="true"></div>
-    <div class="packLid"></div>
+    <div class="packFoot" aria-hidden="true"><span class="packBandPat"></span></div>
+    <div class="packLid"><span class="packBandPat"></span><span class="packNotch"></span></div>
     <div class="packSeam" aria-hidden="true"></div>
     <div class="packCut" aria-hidden="true"></div>
     <div class="packTrack" aria-hidden="true"></div>
