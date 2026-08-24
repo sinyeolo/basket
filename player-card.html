@@ -408,8 +408,6 @@ button{font-family:var(--font)}
    브랜드 발광은 위쪽에 한 뼘만 남긴다 — 은색을 덮을 만큼 얹으면 다시 금속이 아니게 된다. */
 .packBody{position:absolute;left:0;right:0;top:var(--seam);bottom:var(--foot);overflow:hidden;
   background:
-    radial-gradient(120% 42% at 50% -6%, var(--pack-glow) 0%, var(--pack-glow-mid) 34%,
-      rgba(255,145,0,0) 62%),
     /* 압착부보다 한 단 어둡다(PO) — 같은 은색이되 몸통은 빛을 덜 받는 면이다.
        각 정지점을 8% 정도씩 내렸고, 밝은 쪽과 어두운 쪽의 차이는 그대로 뒀다.
        차이를 함께 줄이면 금속이 아니라 회색 종이가 된다. */
@@ -499,9 +497,14 @@ button{font-family:var(--font)}
    실제로 뜯는 순간 카드 옆으로 바깥 배경이 보여 봉투가 아니라 구멍처럼 읽혔다.
    압착부 전체를 덮고 몸통 위까지 조금 물려 두어 이음매가 생기지 않게 한다. */
 .packInside{position:absolute;left:0;right:0;top:0;height:var(--seam);z-index:1;
-  border-radius:12px 12px 0 0;
-  background:linear-gradient(180deg,#05060a 0%,#0b0d12 60%,#12141a 100%)}
-.packPeek{position:absolute;left:10px;right:10px;top:16px;height:calc(var(--seam) - 16px);z-index:1;
+  border-radius:12px 12px 0 0;overflow:hidden;
+  /* 봉투 안쪽 면. 무대 배경보다 어두우면 '뚫린 구멍'으로 읽혀, 뜯는 순간 카드 옆으로
+     바깥이 비쳐 보인다는 말이 나왔다(PO). 무대보다 밝은 회색에 위에서 그림자가 지는
+     식으로 두면 '안이 들여다보인다'가 된다. */
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.18) 34%, rgba(0,0,0,0) 62%),
+    linear-gradient(100deg,#4a5059 0%,#5c626c 38%,#464c55 62%,#565c66 100%)}
+.packPeek{position:absolute;left:5px;right:5px;top:10px;height:calc(var(--seam) - 10px);z-index:1;
   border-radius:14px 14px 0 0;overflow:hidden;
   background:linear-gradient(180deg,var(--pack-peek) 0%,var(--stage-bg2) 100%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
@@ -555,6 +558,14 @@ button{font-family:var(--font)}
 /* 압착부와 몸통이 만나는 접힘 — 여기서 한 번 꺾여야 두 장이 붙은 봉투가 된다 */
 .packLid::after{content:"";position:absolute;left:0;right:0;bottom:0;height:9px;
   background:linear-gradient(180deg, rgba(255,255,255,.9) 0%, rgba(120,127,138,.5) 100%)}
+/* 아래 이음새도 같은 접힘이다(PO). 방향만 뒤집는다 — 위쪽은 아래로 꺾이고
+   아래쪽은 위로 꺾이므로 밝은 면이 오는 자리가 반대다. */
+.packFoot::after{content:"";position:absolute;left:0;right:0;top:0;height:9px;
+  background:linear-gradient(0deg, rgba(255,255,255,.9) 0%, rgba(120,127,138,.5) 100%)}
+/* 몸통 쪽 밑선 — 위쪽 절단선(.packSeam)이 하는 일을 아래에서는 이 한 줄이 한다.
+   뜯을 자리가 아니니 두 줄이 아니라 접힌 그림자 한 줄로 족하다. */
+.packFoot::before{content:"";position:absolute;left:0;right:0;top:-3px;height:3px;
+  background:linear-gradient(0deg, rgba(255,255,255,.5) 0 1px, rgba(0,0,0,.3) 1px 3px)}
 /* 절단선 — 레퍼런스는 점선이 아니라 밝은 두 줄이다. 두 줄 사이의 어두운 틈이
    '여기가 접힌 자리'를 말한다. 점선으로 뒀더니 재봉선처럼 보였다. */
 .packSeam{position:absolute;left:0;right:0;top:calc(var(--seam) - 7px);height:8px;z-index:3;
@@ -593,6 +604,17 @@ button{font-family:var(--font)}
   color:#fff;cursor:grab;touch-action:none;
   box-shadow:0 2px 12px rgba(0,0,0,.5);transition:opacity .3s ease}
 .pack.is-dragging .packHandle{cursor:grabbing}
+/* 어포던스 시연 — 확대되면 고리가 한 번 끝까지 갔다가 제자리로 돌아온다(PO).
+   '옆으로 쓸어라'는 글보다 한 번 해 보이는 쪽이 빠르다.
+   갈 때는 빠르고 올 때는 느리게 둔다 — 돌아오는 길이 같은 속도면 두 번 시킨 것처럼 보인다.
+   끝에서 잠깐 머무는 박자가 '여기까지'를 말한다.
+   손이 닿는 순간 이 애니메이션은 걷어낸다. 시연과 실제 조작이 겹치면 고리가 두 군데에 있게 된다. */
+.packHandle.is-hinting{animation:packHandHint 2.4s cubic-bezier(.4,0,.2,1) .5s 1 both}
+@keyframes packHandHint{
+  0%,6%{transform:translateX(0)}
+  42%,54%{transform:translateX(var(--packW,300px))}
+  94%,100%{transform:translateX(0)}}
+@media (prefers-reduced-motion:reduce){ .packHandle.is-hinting{animation:none} }
 .packHandle .msym{font-size:20px}
 
 .packSkip{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;z-index:2;
@@ -2427,6 +2449,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       if(moved) return;   // 기울이려고 끈 제스처는 고르기 탭이 아니다
       stage.setAttribute('data-phase', 'open');
       restTilt();         // 확대되는 동안 기울어 있으면 두 움직임이 섞인다
+      hintHand();
     });
     var tear = 0, dragging = false, startX = 0, startTear = 0;
     /* 다 뜯은 것으로 칠 지점. 끝까지 밀어야만 열리게 하면 마지막 몇 px에서 손이 미끄러져
@@ -2445,8 +2468,16 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     window.addEventListener('resize', measure);
     function width(){ return packW; }
 
+    /* 고리 시연을 다시 처음부터 돌린다. 클래스를 붙였다 떼기만 하면 브라우저가
+       같은 애니메이션으로 보고 재생하지 않으므로, 사이에 강제로 한 번 재계산시킨다. */
+    function hintHand(){
+      grip.classList.remove('is-hinting');
+      void grip.offsetWidth;
+      grip.classList.add('is-hinting');
+    }
     function down(x){
       if(stage.getAttribute('data-phase') !== 'open') return;
+      grip.classList.remove('is-hinting');   // 손이 닿으면 시연은 끝이다
       dragging = true; startX = x; startTear = tear;
       pack.classList.add('is-dragging');
       pack.classList.remove('is-settling');
@@ -2506,7 +2537,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
        뜯는 중에는 기울이지 않는다 — 한 손가락이 두 가지를 동시에 하면 둘 다 어설퍼진다. */
     var tiltEl = document.getElementById('packTilt');
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var tgt = {x:0, y:0}, cur = {x:0, y:0}, raf = null, moved = false, dx0 = 0, dy0 = 0;
+    var tgt = {x:0, y:0}, cur = {x:0, y:0}, raf = null, moved = false, pressing = false, dx0 = 0, dy0 = 0;
     var PACK_TILT = 15;      // 카드와 같은 각도(PO)
     var EPS = 0.02;
     function paintTilt(){
@@ -2535,10 +2566,15 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     }
     function restTilt(){ tgt.x = 0; tgt.y = 0; wakeTilt(); }
     if(!reduce){
-      pack.addEventListener('pointerdown', function(e){ moved = false; dx0 = e.clientX; dy0 = e.clientY; });
+      /* 누르고 있는 동안의 움직임만 '끌었다'로 친다. 예전엔 누르지 않고 지나가기만 해도
+         moved가 켜져, 마우스로 팩 위를 훑고 지나간 뒤의 첫 탭이 먹히지 않았다. */
+      pack.addEventListener('pointerdown', function(e){ pressing = true; moved = false; dx0 = e.clientX; dy0 = e.clientY; });
       pack.addEventListener('pointermove', function(e){
-        if(Math.hypot(e.clientX - dx0, e.clientY - dy0) > 8) moved = true;
+        if(pressing && Math.hypot(e.clientX - dx0, e.clientY - dy0) > 8) moved = true;
         tiltAt(e.clientX, e.clientY);
+      });
+      ['pointerup','pointercancel','pointerleave'].forEach(function(t){
+        pack.addEventListener(t, function(){ pressing = false; });
       });
       pack.addEventListener('pointerleave', restTilt);
       /* 손가락은 떼면 그 자리에 머무를 수 없다 — 마우스처럼 '아직 올려둔' 상태가 없다 */
@@ -2555,6 +2591,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       if(stage.getAttribute('data-phase') !== 'open') return;
       if(e.target.closest('.pack') || e.target.closest('.packSkip')) return;
       stage.setAttribute('data-phase', 'pick');
+      grip.classList.remove('is-hinting');
       pack.classList.add('is-settling');
       tear = 0; paint();
       restTilt();
