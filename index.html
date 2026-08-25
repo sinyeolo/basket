@@ -44,7 +44,7 @@
    "개발 핸드오프" 문서를 참고하세요.
    ============================================================ */
 :root{
-  --primary:#ff9100; --on-primary:#1c1b1f; --primary-container:#f0ddc4; --on-primary-container:#6d3306;
+  --primary:#ff9100; --on-primary:#1c1b1f; --primary-container:#ffe7cf; --on-primary-container:#6b3308;
   --primary-strong-text:#d95f00; /* 흰 배경 위 텍스트 전용 — 순수 --primary는 대비 3:1 미달(약 2.6:1)이라 텍스트에는 이 톤 사용 */
   --main:#1c1b1f; --on-main:#ffffff;
   --surface:#ffffff; --surface-container:#f4eef2; --surface-variant:#f4eef2;
@@ -53,9 +53,9 @@
   --outline:#c9c6cf; --outline-variant:#e6e2ea;
   --mono-fill:#e6e2ea; --mono-on:#5b5a61;
   --blue:#3b82f6; --red:#ef4444; --green:#22c55e; --amber:#f59e0b; --violet:#8b5cf6; --teal:#14b8a6;
-  --clock:#ff3d00;  /* 경기 시계 — 실제 전광판의 붉은 7세그먼트 */
-  --green-c:#caead6; --on-green-c:#145f30;
-  --red-c:#f2e5e5; --on-red-c:#8c1212;
+  --clock:#d81d1d;  /* 경기 시계 → red-600. 전광판의 붉은 7세그먼트 */
+  --green-c:#d9f4e6; --on-green-c:#0c5c37;
+  --red-c:#fde2e2; --on-red-c:#a41e1e;
   /* 승리 뱃지 — 밝은 초록 + 흰 글씨. 대비는 2.28:1로 WCAG AA(작은 텍스트 4.5:1) 미달이지만,
      밝은 초록 배경을 유지하는 쪽을 PO가 선택했다. 접근성이 필요해지면 글씨를 #052e16으로
      뒤집으면 배경 톤 그대로 6.5:1이 나온다. */
@@ -246,7 +246,7 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 .profile-wrap:hover .pmenu,.profile-wrap.open .pmenu{visibility:visible;opacity:1;transform:translateY(0)}
 .pmenu .mi{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:500;color:var(--on-surface);cursor:pointer;border:none;background:transparent;width:100%;font-family:var(--font);text-align:left}
 .pmenu .mi:hover{background:var(--surface-variant)}
-.pmenu .mi.danger{color:#8c1212}
+.pmenu .mi.danger{color:#a41e1e}
 .pmenu .mi svg{width:17px;height:17px;stroke:currentColor;opacity:.85;flex:none}
 .pmenu .div{height:1px;background:var(--outline-variant);margin:5px 6px}
 /* nav 자체가 아니라 메뉴 목록만 스크롤되게: min-height:0으로 flex 아이템이 줄어들 수 있게 함 */
@@ -617,7 +617,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .tfoul.bonus,.tfoul.penalty{color:var(--red);font-weight:700}
 .fbadge{display:inline-flex;align-items:center;height:18px;padding:0 7px;border-radius:5px;
   background:var(--red);color:#fff;font-size:11px;font-weight:800;letter-spacing:.02em}
-.tfoul.penalty .fbadge{background:#8c1212}
+.tfoul.penalty .fbadge{background:#a41e1e}
 .center{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 40px}
 /* 쿼터 상태·시계는 '상태 표시'이지 액션이 아니므로 포인트 컬러를 쓰지 않음 */
 .qchip{background:var(--surface-variant);color:var(--on-surface-variant);font-weight:700;font-size:13px;padding:5px 13px;border-radius:var(--r-btn);white-space:nowrap}
@@ -1756,7 +1756,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 위험 액션은 위 내용과 붙어 있으면 안 된다 — 실수로 누르는 걸 막는 건 확인 팝업이지만,
    그 전에 '여기서부터는 다른 성격'이라는 게 간격으로 읽혀야 한다. 섹션 간격과 같은 값. */
 .danger-zone{margin-top:28px;padding:10px 4px 4px;display:flex;align-items:center;justify-content:flex-end;gap:16px;flex-wrap:wrap}
-.btn-danger{background:transparent;border:1px solid #edc7c7;color:#8c1212}
+.btn-danger{background:transparent;border:1px solid #f1b7b7;color:#a41e1e}
 .btn-danger:hover{background:#fee2e2}
 
 /* 목록 검색 · 필터 바 */
@@ -1887,7 +1887,7 @@ body.modal-open{overflow:hidden}
 .sheet .acts button:hover{background:var(--main);color:var(--on-main)}
 .sheet .acts .acts-lab{font-size:11px;font-weight:700;color:var(--on-surface-variant);padding:6px 2px 0}
 .sheet .acts .acts-lab:first-child{padding-top:0}
-.sheet .acts button.danger{color:#8c1212}
+.sheet .acts button.danger{color:#a41e1e}
 /* #ef4444에 흰 글자는 3.8:1로 AA(4.5:1) 미달 — 위험한 동작일수록 라벨이 또렷해야 한다 */
 .sheet .acts button.danger:hover{background:#b91c1c;color:#fff}
 

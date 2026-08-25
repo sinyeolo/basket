@@ -51,7 +51,7 @@ h3:first-of-type{margin-top:16px}
 .warn{border-left:3px solid var(--primary);padding-left:13px;margin:14px 0 0}
 .warn p{font-size:13px;color:var(--muted);line-height:1.72;margin:0}
 .warn + .warn{margin-top:10px}
-.gap{border-left-color:#ba1010}
+.gap{border-left-color:#a41e1e}
 
 .ramp{display:flex;flex-direction:column;gap:2px}
 .r{display:flex;align-items:baseline;gap:12px;padding:9px 11px;border-radius:10px}
@@ -134,14 +134,14 @@ h3:first-of-type{margin-top:16px}
 .d-tonal{background:var(--variant);color:var(--ink)}
 .d-outline{background:var(--surface);border:1px solid var(--line);color:var(--ink)}
 .d-ghost{background:transparent;color:var(--muted)}
-.d-danger{background:transparent;border:1px solid #edc7c7;color:#8c1212}
+.d-danger{background:transparent;border:1px solid #f1b7b7;color:#a41e1e}
 .d-btn[disabled]{opacity:.38;cursor:default}
 .d-sm{height:36px;padding:0 16px;font-size:12px}
 .d-lg{height:52px;padding:0 28px;font-size:14px}
 .d-icon{width:44px;height:44px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center}
 .d-chip{display:inline-flex;align-items:center;font-size:13px;font-weight:600;padding:5px 11px;border-radius:8px}
-.d-c-ok{background:#caead6;color:#145f30}
-.d-c-rv{background:#f2e5e5;color:#8c1212}
+.d-c-ok{background:#d9f4e6;color:#0c5c37}
+.d-c-rv{background:#fde2e2;color:#a41e1e}
 .d-c-live{background:var(--primary);color:#1c1b1f}
 .d-c-tonal{background:var(--variant);color:var(--ink)}
 .d-wl{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;
@@ -150,12 +150,12 @@ h3:first-of-type{margin-top:16px}
 .f{margin-bottom:14px}
 .f label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px}
 .f em{display:block;font-size:11px;color:var(--muted);font-style:normal;margin-top:6px;line-height:1.5}
-.f em.er{color:#ba1010;font-weight:600}
+.f em.er{color:#a41e1e;font-weight:600}
 .d-input{display:flex;align-items:center;height:48px;padding:0 18px;border-radius:100px;
   background:var(--variant);color:var(--ink);font-size:13px;max-width:340px}
 .d-input.ph{color:var(--muted)}
 .d-input.is-focus{outline:2px solid var(--ink);outline-offset:2px}
-.d-input.is-err{box-shadow:inset 0 0 0 2px #ba1010}
+.d-input.is-err{box-shadow:inset 0 0 0 2px #a41e1e}
 .d-input.is-dis{opacity:.38}
 .d-card{background:var(--surface);border-radius:16px;padding:16px}
 .d-card-h{font-size:16px;font-weight:700;margin-bottom:16px}
@@ -194,8 +194,8 @@ h3:first-of-type{margin-top:16px}
   background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(18px) saturate(1.7);backdrop-filter:blur(18px) saturate(1.7);
   border:1px solid var(--line);border-radius:12px;padding:13px 15px;font-size:13px;max-width:420px;
   box-shadow:0 4px 10px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);margin-bottom:10px}
-.d-toast .msym{font-size:20px;flex:none;color:#1eac52}
-.d-toast.is-err .msym{color:#ba1010}
+.d-toast .msym{font-size:20px;flex:none;color:#1cae5a}
+.d-toast.is-err .msym{color:#a41e1e}
 .d-toast.is-undo .msym{color:var(--muted)}
 .d-toast span{flex:1;line-height:1.5}
 .d-toast em{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:3px}
@@ -217,9 +217,9 @@ h3:first-of-type{margin-top:16px}
 .stat span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
 .tag{display:inline-block;font-family:var(--font-display);font-size:10px;font-weight:800;letter-spacing:.06em;
   padding:2px 7px;border-radius:5px;margin-left:7px;vertical-align:2px}
-.tag-ok{background:#caead6;color:#145f30}
-.tag-part{background:#f0ddc4;color:#6d3306}
-.tag-no{background:#f2e5e5;color:#8c1212}
+.tag-ok{background:#d9f4e6;color:#0c5c37}
+.tag-part{background:#ffe7cf;color:#6b3308}
+.tag-no{background:#fde2e2;color:#a41e1e}
 footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-align:center}
 </style>
 </head>
@@ -295,7 +295,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
   <h3>1 · Primitive — 램프</h3>
   <p class="note"><span class="dot dot-a"></span>진한 테두리는 <b>지금 쓰고 있는 값</b>,
   <span class="dot dot-n"></span>주황 테두리는 <b>비어 있던 자리를 메운 값</b>입니다.</p>
-<div class="rampbox"><div class="rl2">Neutral<span class="rn">기존 7단 + 새로 채운 4단</span></div><div class="rcs"><div class="rc"><i style="background:#f8f7f9"></i><b>50</b><span>#F8F7F9</span></div><div class="rc"><i style="background:#f4eef2"></i><b>100</b><span>#F4EEF2</span></div><div class="rc"><i style="background:#e6e2ea"></i><b>200</b><span>#E6E2EA</span></div><div class="rc"><i style="background:#c9c6cf"></i><b>300</b><span>#C9C6CF</span></div><div class="rc is-new"><i style="background:#aeadb3"></i><b>400</b><span>#AEADB3</span></div><div class="rc is-new"><i style="background:#8d8c94"></i><b>500</b><span>#8D8C94</span></div><div class="rc"><i style="background:#6b6a72"></i><b>600</b><span>#6B6A72</span></div><div class="rc"><i style="background:#5b5a61"></i><b>700</b><span>#5B5A61</span></div><div class="rc is-new"><i style="background:#46464c"></i><b>800</b><span>#46464C</span></div><div class="rc is-new"><i style="background:#303034"></i><b>900</b><span>#303034</span></div><div class="rc is-anchor"><i style="background:#1c1b1f"></i><b>950</b><span>#1C1B1F</span></div></div></div><div class="rampbox"><div class="rl2">Brand<span class="rn">#ff9100 = 600 · #d95f00 = 700</span></div><div class="rcs"><div class="rc"><i style="background:#faf7f3"></i><b>50</b><span>#FAF7F3</span></div><div class="rc"><i style="background:#f4ede4"></i><b>100</b><span>#F4EDE4</span></div><div class="rc"><i style="background:#f0ddc4"></i><b>200</b><span>#F0DDC4</span></div><div class="rc"><i style="background:#f4cc98"></i><b>300</b><span>#F4CC98</span></div><div class="rc"><i style="background:#ffb95c"></i><b>400</b><span>#FFB95C</span></div><div class="rc"><i style="background:#ffa226"></i><b>500</b><span>#FFA226</span></div><div class="rc is-anchor"><i style="background:#ff9100"></i><b>600</b><span>#FF9100</span></div><div class="rc is-anchor"><i style="background:#d95f00"></i><b>700</b><span>#D95F00</span></div><div class="rc"><i style="background:#994605"></i><b>800</b><span>#994605</span></div><div class="rc"><i style="background:#6d3306"></i><b>900</b><span>#6D3306</span></div><div class="rc"><i style="background:#4a2305"></i><b>950</b><span>#4A2305</span></div></div></div><div class="rampbox"><div class="rl2">Green<span class="rn">#22c55e = green-600</span></div><div class="rcs"><div class="rc"><i style="background:#f4f9f5"></i><b>50</b><span>#F4F9F5</span></div><div class="rc"><i style="background:#e6f1ea"></i><b>100</b><span>#E6F1EA</span></div><div class="rc"><i style="background:#caead6"></i><b>200</b><span>#CAEAD6</span></div><div class="rc"><i style="background:#a5e6bd"></i><b>300</b><span>#A5E6BD</span></div><div class="rc"><i style="background:#74e79e"></i><b>400</b><span>#74E79E</span></div><div class="rc"><i style="background:#46df7e"></i><b>500</b><span>#46DF7E</span></div><div class="rc is-anchor"><i style="background:#22c55e"></i><b>600</b><span>#22C55E</span></div><div class="rc"><i style="background:#1eac52"></i><b>700</b><span>#1EAC52</span></div><div class="rc"><i style="background:#1c8242"></i><b>800</b><span>#1C8242</span></div><div class="rc"><i style="background:#145f30"></i><b>900</b><span>#145F30</span></div><div class="rc"><i style="background:#0e4121"></i><b>950</b><span>#0E4121</span></div></div></div><div class="rampbox"><div class="rl2">Red<span class="rn">#ef4444 = red-500</span></div><div class="rcs"><div class="rc"><i style="background:#f9f3f3"></i><b>50</b><span>#F9F3F3</span></div><div class="rc"><i style="background:#f2e5e5"></i><b>100</b><span>#F2E5E5</span></div><div class="rc"><i style="background:#edc7c7"></i><b>200</b><span>#EDC7C7</span></div><div class="rc"><i style="background:#ec9f9f"></i><b>300</b><span>#EC9F9F</span></div><div class="rc"><i style="background:#f26969"></i><b>400</b><span>#F26969</span></div><div class="rc is-anchor"><i style="background:#ef4444"></i><b>500</b><span>#EF4444</span></div><div class="rc"><i style="background:#e21313"></i><b>600</b><span>#E21313</span></div><div class="rc"><i style="background:#ba1010"></i><b>700</b><span>#BA1010</span></div><div class="rc"><i style="background:#8c1212"></i><b>800</b><span>#8C1212</span></div><div class="rc"><i style="background:#660d0d"></i><b>900</b><span>#660D0D</span></div><div class="rc"><i style="background:#460909"></i><b>950</b><span>#460909</span></div></div></div><div class="rampbox"><div class="rl2">Blue<span class="rn">#3b82f6 = blue-500</span></div><div class="rcs"><div class="rc"><i style="background:#f3f5f9"></i><b>50</b><span>#F3F5F9</span></div><div class="rc"><i style="background:#e5eaf3"></i><b>100</b><span>#E5EAF3</span></div><div class="rc"><i style="background:#c6d5ee"></i><b>200</b><span>#C6D5EE</span></div><div class="rc"><i style="background:#9cbcef"></i><b>300</b><span>#9CBCEF</span></div><div class="rc"><i style="background:#639bf8"></i><b>400</b><span>#639BF8</span></div><div class="rc is-anchor"><i style="background:#3b82f6"></i><b>500</b><span>#3B82F6</span></div><div class="rc"><i style="background:#0b60ea"></i><b>600</b><span>#0B60EA</span></div><div class="rc"><i style="background:#094fc1"></i><b>700</b><span>#094FC1</span></div><div class="rc"><i style="background:#0d3f91"></i><b>800</b><span>#0D3F91</span></div><div class="rc"><i style="background:#092e6a"></i><b>900</b><span>#092E6A</span></div><div class="rc"><i style="background:#062049"></i><b>950</b><span>#062049</span></div></div></div><div class="rampbox"><div class="rl2">Amber<span class="rn">#f59e0b = amber-600</span></div><div class="rcs"><div class="rc"><i style="background:#f9f7f3"></i><b>50</b><span>#F9F7F3</span></div><div class="rc"><i style="background:#f3eee5"></i><b>100</b><span>#F3EEE5</span></div><div class="rc"><i style="background:#eedfc6"></i><b>200</b><span>#EEDFC6</span></div><div class="rc"><i style="background:#f0d09b"></i><b>300</b><span>#F0D09B</span></div><div class="rc"><i style="background:#f9c162"></i><b>400</b><span>#F9C162</span></div><div class="rc"><i style="background:#f6ac2f"></i><b>500</b><span>#F6AC2F</span></div><div class="rc is-anchor"><i style="background:#f59e0b"></i><b>600</b><span>#F59E0B</span></div><div class="rc"><i style="background:#c27d08"></i><b>700</b><span>#C27D08</span></div><div class="rc"><i style="background:#92600c"></i><b>800</b><span>#92600C</span></div><div class="rc"><i style="background:#6a4609"></i><b>900</b><span>#6A4609</span></div><div class="rc"><i style="background:#493006"></i><b>950</b><span>#493006</span></div></div></div>  <div class="warn"><p><b>중립에 네 칸을 새로 채웠습니다</b> — N400·N500·N800·N900.
+<div class="rampbox"><div class="rl2">Neutral<span class="rn">기존 7단 + 새로 채운 4단</span></div><div class="rcs"><div class="rc"><i style="background:#f8f7f9"></i><b>50</b><span>#F8F7F9</span></div><div class="rc"><i style="background:#f4eef2"></i><b>100</b><span>#F4EEF2</span></div><div class="rc"><i style="background:#e6e2ea"></i><b>200</b><span>#E6E2EA</span></div><div class="rc"><i style="background:#c9c6cf"></i><b>300</b><span>#C9C6CF</span></div><div class="rc is-new"><i style="background:#aeadb3"></i><b>400</b><span>#AEADB3</span></div><div class="rc is-new"><i style="background:#8d8c94"></i><b>500</b><span>#8D8C94</span></div><div class="rc"><i style="background:#6b6a72"></i><b>600</b><span>#6B6A72</span></div><div class="rc"><i style="background:#5b5a61"></i><b>700</b><span>#5B5A61</span></div><div class="rc is-new"><i style="background:#46464c"></i><b>800</b><span>#46464C</span></div><div class="rc is-new"><i style="background:#303034"></i><b>900</b><span>#303034</span></div><div class="rc is-anchor"><i style="background:#1c1b1f"></i><b>950</b><span>#1C1B1F</span></div></div></div><div class="rampbox"><div class="rl2">Brand<span class="rn">쓰던 값 3개가 앵커</span></div><div class="rcs"><div class="rc"><i style="background:#fff6ed"></i><b>50</b><span>#FFF6ED</span></div><div class="rc"><i style="background:#ffecd9"></i><b>100</b><span>#FFECD9</span></div><div class="rc is-anchor"><i style="background:#ffe7cf"></i><b>200</b><span>#FFE7CF</span></div><div class="rc"><i style="background:#ffc88c"></i><b>300</b><span>#FFC88C</span></div><div class="rc"><i style="background:#ffb35c"></i><b>400</b><span>#FFB35C</span></div><div class="rc"><i style="background:#ff9e26"></i><b>500</b><span>#FF9E26</span></div><div class="rc is-anchor"><i style="background:#ff9100"></i><b>600</b><span>#FF9100</span></div><div class="rc is-anchor"><i style="background:#d95f00"></i><b>700</b><span>#D95F00</span></div><div class="rc"><i style="background:#964608"></i><b>800</b><span>#964608</span></div><div class="rc"><i style="background:#6b3308"></i><b>900</b><span>#6B3308</span></div><div class="rc"><i style="background:#492306"></i><b>950</b><span>#492306</span></div></div></div><div class="rampbox"><div class="rl2">Green<span class="rn">쓰던 값 3개가 앵커</span></div><div class="rcs"><div class="rc"><i style="background:#f1fbf6"></i><b>50</b><span>#F1FBF6</span></div><div class="rc"><i style="background:#e1f6eb"></i><b>100</b><span>#E1F6EB</span></div><div class="rc is-anchor"><i style="background:#d9f4e6"></i><b>200</b><span>#D9F4E6</span></div><div class="rc"><i style="background:#a4e7c2"></i><b>300</b><span>#A4E7C2</span></div><div class="rc"><i style="background:#7ae1a6"></i><b>400</b><span>#7AE1A6</span></div><div class="rc"><i style="background:#4adb84"></i><b>500</b><span>#4ADB84</span></div><div class="rc is-anchor"><i style="background:#22c55e"></i><b>600</b><span>#22C55E</span></div><div class="rc"><i style="background:#1cae5a"></i><b>700</b><span>#1CAE5A</span></div><div class="rc"><i style="background:#148a4d"></i><b>800</b><span>#148A4D</span></div><div class="rc is-anchor"><i style="background:#0c5c37"></i><b>900</b><span>#0C5C37</span></div><div class="rc"><i style="background:#103f29"></i><b>950</b><span>#103F29</span></div></div></div><div class="rampbox"><div class="rl2">Red<span class="rn">쓰던 값 4개가 앵커</span></div><div class="rcs"><div class="rc"><i style="background:#feeeee"></i><b>50</b><span>#FEEEEE</span></div><div class="rc is-anchor"><i style="background:#fde2e2"></i><b>100</b><span>#FDE2E2</span></div><div class="rc is-anchor"><i style="background:#f1b7b7"></i><b>200</b><span>#F1B7B7</span></div><div class="rc"><i style="background:#f09c9c"></i><b>300</b><span>#F09C9C</span></div><div class="rc"><i style="background:#ee6d6d"></i><b>400</b><span>#EE6D6D</span></div><div class="rc is-anchor"><i style="background:#ef4444"></i><b>500</b><span>#EF4444</span></div><div class="rc"><i style="background:#d81d1d"></i><b>600</b><span>#D81D1D</span></div><div class="rc is-anchor"><i style="background:#a41e1e"></i><b>700</b><span>#A41E1E</span></div><div class="rc is-anchor"><i style="background:#a41e1e"></i><b>800</b><span>#A41E1E</span></div><div class="rc"><i style="background:#631010"></i><b>900</b><span>#631010</span></div><div class="rc"><i style="background:#430c0c"></i><b>950</b><span>#430C0C</span></div></div></div><div class="rampbox"><div class="rl2">Blue<span class="rn">#3b82f6 = blue-500</span></div><div class="rcs"><div class="rc"><i style="background:#f3f5f9"></i><b>50</b><span>#F3F5F9</span></div><div class="rc"><i style="background:#e5eaf3"></i><b>100</b><span>#E5EAF3</span></div><div class="rc"><i style="background:#c6d5ee"></i><b>200</b><span>#C6D5EE</span></div><div class="rc"><i style="background:#9cbcef"></i><b>300</b><span>#9CBCEF</span></div><div class="rc"><i style="background:#639bf8"></i><b>400</b><span>#639BF8</span></div><div class="rc is-anchor"><i style="background:#3b82f6"></i><b>500</b><span>#3B82F6</span></div><div class="rc"><i style="background:#0b60ea"></i><b>600</b><span>#0B60EA</span></div><div class="rc"><i style="background:#094fc1"></i><b>700</b><span>#094FC1</span></div><div class="rc"><i style="background:#0d3f91"></i><b>800</b><span>#0D3F91</span></div><div class="rc"><i style="background:#092e6a"></i><b>900</b><span>#092E6A</span></div><div class="rc"><i style="background:#062049"></i><b>950</b><span>#062049</span></div></div></div><div class="rampbox"><div class="rl2">Amber<span class="rn">#f59e0b = amber-600</span></div><div class="rcs"><div class="rc"><i style="background:#f9f7f3"></i><b>50</b><span>#F9F7F3</span></div><div class="rc"><i style="background:#f3eee5"></i><b>100</b><span>#F3EEE5</span></div><div class="rc"><i style="background:#eedfc6"></i><b>200</b><span>#EEDFC6</span></div><div class="rc"><i style="background:#f0d09b"></i><b>300</b><span>#F0D09B</span></div><div class="rc"><i style="background:#f9c162"></i><b>400</b><span>#F9C162</span></div><div class="rc"><i style="background:#f6ac2f"></i><b>500</b><span>#F6AC2F</span></div><div class="rc is-anchor"><i style="background:#f59e0b"></i><b>600</b><span>#F59E0B</span></div><div class="rc"><i style="background:#c27d08"></i><b>700</b><span>#C27D08</span></div><div class="rc"><i style="background:#92600c"></i><b>800</b><span>#92600C</span></div><div class="rc"><i style="background:#6a4609"></i><b>900</b><span>#6A4609</span></div><div class="rc"><i style="background:#493006"></i><b>950</b><span>#493006</span></div></div></div>  <div class="warn"><p><b>중립에 네 칸을 새로 채웠습니다</b> — N400·N500·N800·N900.
   예전에는 N300에서 N600으로 한 번에 떨어져 그 사이에 쓸 색이 없었습니다.
   흰 바탕에서 글자로 쓸 수 있는 단계가 <b>둘에서 다섯(N600~N950)</b>으로 늘었습니다.
   기존 일곱 값은 그대로 두고 자리만 매겼으므로 지금 화면은 하나도 바뀌지 않습니다.</p></div>
@@ -305,20 +305,19 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
   WCAG AA(4.5:1)에는 못 미칩니다. 이 단계는 <b>마크·아이콘·큰 진열 숫자</b>에 쓰고,
   본문처럼 읽어 내려가는 글자에는 800~950단을 씁니다 — <b>The Mark Rule</b>이 그 경계입니다.</p></div>
 
-  <div class="warn gap"><p><b>2026-08-25 · 프리미티브에 없던 색 13개를 정리했습니다.</b>
-  화면에서 쓰던 값 중 램프 어느 단에도 없던 것들입니다 —
-  <code>#1b1b1f→N950</code> <code>#f3f1f5→N100</code> <code>#e8e6ea→N200</code>
-  <code>#1a1200→N950</code> <code>#ffe7cf→brand-200</code> <code>#7a3600→brand-900</code>
-  <code>#d9f4e6→green-200</code> <code>#0c5c37→green-900</code>
-  <code>#fde2e2→red-100</code> <code>#a41e1e→red-800</code> <code>#e5484d→red-500</code>
-  <code>#f1b7b7→red-200</code> <code>#a4321f→red-800</code>.
-  옮긴 뒤 짝 대비를 전부 다시 쟀고 모두 AA를 지킵니다(최저 6.00:1).
-  <b>#d95f00만 반대로 했습니다</b> — 대비를 맞추려고 일부러 붉게 튼 색이라
-  램프 쪽을 이 값에 맞춰 brand-700으로 앉혔습니다. 만든 값보다 쓰던 값이 사실입니다.</p></div>
+  <div class="warn gap"><p><b>2026-08-25 · 프리미티브에 없던 색을 정리했습니다.</b>
+  램프 어느 단에도 없던 값이 열넷이었습니다. 정리하는 방향이 둘인데 —
+  <b>쓰던 색을 램프로 끌어내리거나, 램프를 쓰던 색에 맞추거나</b>입니다.
+  처음엔 전자로 했다가 <code>#FDE2E2</code>가 <code>#F2E5E5</code>로,
+  <code>#D9F4E6</code>가 <code>#CAEAD6</code>로 가면서 칩이 탁해졌습니다. PO가 바로 잡았습니다.
+  그래서 <b>후자로 되돌렸습니다</b> — 쓰던 색 열 개를 앵커로 박고 램프를 그 사이로 다시 그렸습니다.
+  화면 색은 하나도 안 바뀌었고, 대비도 그대로입니다(확정 칩 6.93:1 · 검수 칩 6.16:1 · 앰버 컨테이너 8.27:1).
+  <b>시계만 예외로 red-600에 스냅했습니다</b>(PO 지시) — <code>#FF3D00</code> → <code>#D81D1D</code>.
+  하나 쓰자고 여섯 번째 색상을 두지 않습니다.</p></div>
 
-  <h3>1-b · Primitive — 한 단짜리</h3>
-  <p class="note">단계가 필요 없는 색입니다. <b>팀 색</b>은 정체성이라 연하게·진하게 쓸 일이 없고,
-  <b>시계</b>는 전광판 하나에만 붙습니다. 램프로 만들지 않고 한 값으로 둡니다.</p>
+  <h3>1-b · Primitive — 팀 색</h3>
+  <p class="note">단계가 필요 없는 색입니다. 팀 색은 <b>정체성</b>이라 연하게·진하게 쓸 일이 없습니다.
+  넷은 램프 위에 있고 보라·청록만 자기 값으로 섭니다 — 팀을 여섯까지 구분하려면 여섯 색상이 필요했습니다.</p>
   <div class="sw">
     <div class="s"><span class="chip" style="background:#3b82f6"></span><span class="meta"><span class="nm">Team Blue</span><span class="tok">--blue → blue-500</span><span class="hex">#3B82F6</span><span class="use">팀 식별</span></span></div>
     <div class="s"><span class="chip" style="background:#ef4444"></span><span class="meta"><span class="nm">Team Red</span><span class="tok">--red → red-500</span><span class="hex">#EF4444</span><span class="use">팀 식별</span></span></div>
@@ -326,7 +325,6 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
     <div class="s"><span class="chip" style="background:#f59e0b"></span><span class="meta"><span class="nm">Team Amber</span><span class="tok">--amber → amber-600</span><span class="hex">#F59E0B</span><span class="use">팀 식별</span></span></div>
     <div class="s"><span class="chip" style="background:#8b5cf6"></span><span class="meta"><span class="nm">Team Violet</span><span class="tok">--violet</span><span class="hex">#8B5CF6</span><span class="use">팀 식별 — 램프 없음</span></span></div>
     <div class="s"><span class="chip" style="background:#14b8a6"></span><span class="meta"><span class="nm">Team Teal</span><span class="tok">--teal</span><span class="hex">#14B8A6</span><span class="use">팀 식별 — 램프 없음</span></span></div>
-    <div class="s"><span class="chip" style="background:#ff3d00"></span><span class="meta"><span class="nm">Scoreboard Red</span><span class="tok">--clock</span><span class="hex">#FF3D00</span><span class="use">라이브 경기 시계 전용 — 램프 없음</span></span></div>
   </div>
   <div class="warn"><p><b>팀 색 위에 글자를 얹을 때는 램프에서 고르지 않습니다.</b>
   팀 색은 주최자가 정하는 데이터라 무슨 색이 올지 모릅니다.
@@ -336,7 +334,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
   <div class="sw">
     <div class="s"><span class="chip" style="background:#ff9100"></span><span class="meta"><span class="nm">Court Amber</span><span class="tok">--primary → brand-600</span><span class="hex">#FF9100</span><span class="use">지금 살아 있거나 누를 수 있는 것에만</span></span></div>
     <div class="s"><span class="chip" style="background:#1c1b1f"></span><span class="meta"><span class="nm">On Primary</span><span class="tok">--on-primary → N950</span><span class="hex">#1C1B1F</span><span class="use">앰버 위 글자</span></span></div>
-    <div class="s"><span class="chip" style="background:#f0ddc4"></span><span class="meta"><span class="nm">Primary Container</span><span class="tok">--primary-container → brand-200</span><span class="hex">#F0DDC4</span><span class="use">앰버 계열 연한 면</span></span></div>
+    <div class="s"><span class="chip" style="background:#ffe7cf"></span><span class="meta"><span class="nm">Primary Container</span><span class="tok">--primary-container → brand-200</span><span class="hex">#FFE7CF</span><span class="use">앰버 계열 연한 면</span></span></div>
     <div class="s"><span class="chip" style="background:#d95f00"></span><span class="meta"><span class="nm">Primary Strong Text</span><span class="tok">--primary-strong-text → brand-700</span><span class="hex">#D95F00</span><span class="use">흰 바탕 위 앰버 글자</span></span></div>
     <div class="s"><span class="chip" style="background:#ffffff"></span><span class="meta"><span class="nm">Paper</span><span class="tok">--surface</span><span class="hex">#FFFFFF</span><span class="use">카드·컨트롤 배경</span></span></div>
     <div class="s"><span class="chip" style="background:#f4eef2"></span><span class="meta"><span class="nm">Fog Canvas</span><span class="tok">--surface-container → N100</span><span class="hex">#F4EEF2</span><span class="use">모든 카드가 얹히는 페이지 바탕</span></span></div>
@@ -354,7 +352,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
     <div class="s"><span class="chip" style="background:#ef4444"></span><span class="meta"><span class="nm">Away Red</span><span class="tok">--away → red-500</span><span class="hex">#EF4444</span><span class="use">원정 팀</span></span></div>
     <div class="s"><span class="chip" style="background:#22c55e"></span><span class="meta"><span class="nm">Win Green</span><span class="tok">--win → green-600</span><span class="hex">#22C55E</span><span class="use">승리</span></span></div>
     <div class="s"><span class="chip" style="background:#ef4444"></span><span class="meta"><span class="nm">Rise Red</span><span class="tok">red-500</span><span class="hex">#EF4444</span><span class="use">OVR·평균 상승. 한국 관습대로 빨강</span></span></div>
-    <div class="s"><span class="chip" style="background:#ff3d00"></span><span class="meta"><span class="nm">Clock</span><span class="tok">--clock (한 단짜리)</span><span class="hex">#FF3D00</span><span class="use">라이브 경기 시계 전용</span></span></div>
+    <div class="s"><span class="chip" style="background:#d81d1d"></span><span class="meta"><span class="nm">Clock</span><span class="tok">--clock → red-600</span><span class="hex">#D81D1D</span><span class="use">라이브 경기 시계 — 전광판의 붉은 7세그먼트</span></span></div>
     <div class="s"><span class="chip" style="background:#e6e2ea"></span><span class="meta"><span class="nm">Mono Fill</span><span class="tok">--mono-fill → N200</span><span class="hex">#E6E2EA</span><span class="use">“나” 행 강조 — 상태색과 겹치지 않는 중립</span></span></div>
   </div>
   <h3>검수 상태 — 이 제품의 뼈대</h3>
@@ -362,7 +360,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
     <span class="d-chip d-c-ok">확정됨</span><span class="d-chip d-c-rv">검수 필요</span><span class="d-chip d-c-live">진행 중</span>
   </div>
   <div class="warn"><p>“기록됨 ≠ 확정됨”은 이 제품의 뼈대라 두 컨테이너 색을 다른 뜻으로 재사용하지 않습니다.
-  확정 <code>#caead6 / #145f30</code> · 검수 <code>#f2e5e5 / #8c1212</code></p></div>
+  확정 <code>#d9f4e6 / #0c5c37</code> · 검수 <code>#fde2e2 / #a41e1e</code></p></div>
 </section>
 <section id="color-dark" class="dark">
   <h2>색 — 진열장(다크)</h2>
@@ -816,6 +814,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
   <p class="note">대표적인 디자인 시스템과 대조해 <b>우리에게 빠진 부품</b>을 적어 둡니다.
   필요해질 때 즉흥으로 만들지 않기 위해서입니다.</p>
   <div class="ramp">
+    <div class="r"><span class="rl">The Vivid Rule</span><span class="rs">접근성이 채도를 깎지 못한다. 대비가 모자라면 색을 흐리는 게 아니라 <b>짝을 바꾼다</b> — 글자를 연하게 하지 말고 면을 진하게, 면을 흐리지 말고 글자를 어둡게. 탁해진 화면은 아무도 안 본다</span><span class="rv">색</span></div>
     <div class="r"><span class="rl">The Source Rule</span><span class="rs">화면에 적는 모든 색은 1층 램프의 어느 한 단이다. 램프에 없는 값을 새로 적으면, 그 값이 틀린 게 아니라 램프가 아직 그 자리를 모르는 것이다 — 둘 중 하나를 고쳐야 한다</span><span class="rv">색</span></div>
     <div class="r"><span class="rl">토스트</span><span class="rs">짧은 알림 — 2026-08-25 정의함</span><span class="rv"><span class="tag tag-ok">정의됨</span></span></div>
     <div class="r"><span class="rl">스켈레톤</span><span class="rs">불러오는 동안의 자리 표시 — 2026-08-25 정의함</span><span class="rv"><span class="tag tag-ok">정의됨</span></span></div>
