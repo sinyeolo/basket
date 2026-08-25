@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BASKET · 디자인 시스템</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@24,400,0,0&display=block">
+<style>
+:root{
+  --font:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+  --font-display:'Tektur',var(--font);
+  --primary:#ff9100; --surface:#ffffff; --surface-container:#f3f1f5; --surface-variant:#f4eef2;
+  --head-bg:#f8f7f9; --on-surface:#1c1b1f; --on-surface-variant:#6b6a72;
+  --outline:#c9c6cf; --outline-variant:#e6e2ea;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font);background:var(--surface-container);color:var(--on-surface);
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:940px;margin:0 auto;padding:26px 16px 80px}
+code{font-family:var(--font-display);font-size:.92em;font-weight:600}
+
+nav{position:sticky;top:0;z-index:5;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+  background:var(--surface-container);padding:10px 0 12px;margin-bottom:6px}
+nav::-webkit-scrollbar{display:none}
+nav a{flex:none;padding:7px 13px;border-radius:100px;background:var(--surface);
+  font-size:12px;font-weight:700;color:var(--on-surface-variant);text-decoration:none}
+nav a:hover{color:var(--on-surface)}
+
+h1{font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:.02em;margin:0 0 6px}
+.lede{font-size:13px;color:var(--on-surface-variant);line-height:1.75;margin:0;max-width:640px}
+
+section{background:var(--surface);border-radius:16px;padding:20px 16px;margin-bottom:14px;scroll-margin-top:64px}
+section > h2{font-size:16px;font-weight:700;margin:0 0 4px}
+section > .note{font-size:13px;color:var(--on-surface-variant);line-height:1.75;margin:0 0 16px;max-width:660px}
+h3{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--on-surface-variant);
+  margin:22px 0 10px;text-transform:uppercase}
+h3:first-of-type{margin-top:0}
+
+.sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(198px,1fr));gap:10px}
+.s{display:flex;gap:11px;align-items:flex-start;padding:9px;border-radius:12px;background:var(--surface-variant)}
+.chip{width:42px;height:42px;border-radius:10px;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.07)}
+.meta{min-width:0;flex:1}
+.meta > span{display:block}   /* 인라인이면 네 줄이 한 줄로 붙는다 */
+.nm{font-size:13px;font-weight:700;line-height:1.35}
+.tok{font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--on-surface-variant);margin-top:2px;word-break:break-all}
+.hex{font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:.03em;margin-top:1px}
+.use{font-size:11px;color:var(--on-surface-variant);line-height:1.55;margin-top:4px}
+
+.pair{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:12px;margin-bottom:8px;font-size:13px}
+.pair b{font-family:var(--font-display);font-size:11px;margin-left:auto;opacity:.85}
+
+.dark{background:#0a0b0f;color:#f4f4f6}
+.dark > h2{color:#f4f4f6}
+.dark > .note,.dark h3{color:#9a9ba3}
+.dark .s{background:rgba(255,255,255,.06)}
+.dark .chip{box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.dark .tok,.dark .use{color:#9a9ba3}
+
+.grade{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:10px}
+.g{border-radius:14px;padding:14px 12px;text-align:center}
+.g .gn{font-family:var(--font-display);font-size:13px;font-weight:800;letter-spacing:.08em}
+.g .gv{font-family:var(--font-display);font-size:10px;font-weight:600;margin-top:6px;opacity:.78;line-height:1.7}
+
+.ramp{display:flex;flex-direction:column;gap:2px}
+.r{display:flex;align-items:baseline;gap:12px;padding:9px 11px;border-radius:10px}
+.r:nth-child(odd){background:var(--head-bg)}
+.r .rl{font-family:var(--font-display);font-size:11px;font-weight:700;color:var(--on-surface-variant);
+  min-width:88px;flex:none}
+.r .rs{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r .rv{font-family:var(--font-display);font-size:11px;font-weight:700;color:var(--on-surface-variant);flex:none}
+
+.rad{display:flex;flex-wrap:wrap;gap:10px}
+.rad div{width:74px;text-align:center}
+.rad i{display:block;height:52px;background:var(--surface-variant);
+  box-shadow:inset 0 0 0 1.5px var(--outline);margin-bottom:5px}
+.rad span{font-family:var(--font-display);font-size:10px;font-weight:700;color:var(--on-surface-variant);line-height:1.5;display:block}
+
+.sh{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.sh div{background:var(--surface);border-radius:12px;padding:14px 12px;text-align:center;font-size:11px;color:var(--on-surface-variant);line-height:1.6}
+.sh b{display:block;font-family:var(--font-display);font-size:11px;color:var(--on-surface);margin-bottom:5px}
+
+.icons{display:flex;flex-wrap:wrap;gap:8px}
+.icons span{width:44px;height:44px;border-radius:10px;background:var(--surface-variant);
+  display:flex;align-items:center;justify-content:center}
+.msym{font-family:'Material Symbols Sharp';font-weight:400;font-style:normal;font-size:20px;
+  line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;
+  word-wrap:normal;direction:ltr;font-feature-settings:'liga';
+  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+
+.rule{padding:13px 15px;border-radius:12px;background:var(--surface-variant);margin-bottom:9px}
+.rule b{display:block;font-family:var(--font-display);font-size:12px;font-weight:800;letter-spacing:.04em;margin-bottom:5px}
+.rule span{font-size:13px;color:var(--on-surface-variant);line-height:1.72}
+
+.warn{border-left:3px solid var(--primary);padding-left:13px;margin:14px 0 0}
+.warn p{font-size:13px;color:var(--on-surface-variant);line-height:1.72;margin:0}
+footer{margin-top:26px;font-size:11px;color:var(--on-surface-variant);line-height:1.9;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>BASKET 디자인 시스템</h1>
+<p class="lede">DESIGN.md를 눈으로 볼 수 있게 옮긴 것입니다. 값이 어긋나면 <b>문서가 원본</b>입니다 —
+이 페이지가 아니라 문서를 고치고, 코드와 함께 맞춥니다.</p>
+
+<nav>
+  <a href="#surfaces">표면</a><a href="#light">라이트</a><a href="#dark">다크</a>
+  <a href="#type">타이포</a><a href="#shape">모양</a><a href="#elev">그림자</a>
+  <a href="#icon">아이콘</a><a href="#motion">모션</a><a href="#rules">규칙</a>
+</nav>
+
+<section id="surfaces">
+  <h2>표면이 둘이다</h2>
+  <p class="note">이 시스템에는 표면이 둘 있습니다 — <b>작업대</b>(라이트)와 <b>진열장</b>(다크).
+  콘솔은 읽고 입력하는 작업대이고, 카드는 자랑하고 공유하는 물건입니다. 목적이 다르니 팔레트도 다릅니다.
+  한 화면이 둘을 섞으면 둘 다 죽습니다. 브랜드 오렌지와 팀 컬러만 두 세계를 관통합니다 —
+  같은 대회, 같은 팀을 가리키니까요.</p>
+</section>
+
+<section id="light">
+  <h2>작업대 · 라이트</h2>
+  <p class="note">운영 콘솔과 공개 경기 상세가 쓰는 팔레트입니다.</p>
+
+  <h3>브랜드</h3>
+  <div class="sw">
+    <div class="s"><span class="chip" style="background:#ff9100"></span><span class="meta"><span class="nm">Court Amber</span><span class="tok">--primary</span><span class="hex">#ff9100</span><span class="use">지금 살아 있거나 누를 수 있는 것에만</span></span></div>
+    <div class="s"><span class="chip" style="background:#1a1200"></span><span class="meta"><span class="nm">On Primary</span><span class="tok">--on-primary</span><span class="hex">#1a1200</span><span class="use">앰버 위 글자</span></span></div>
+    <div class="s"><span class="chip" style="background:#ffe7cf"></span><span class="meta"><span class="nm">Primary Container</span><span class="tok">--primary-container</span><span class="hex">#ffe7cf</span><span class="use">앰버 계열 연한 면</span></span></div>
+    <div class="s"><span class="chip" style="background:#d95f00"></span><span class="meta"><span class="nm">Primary Strong Text</span><span class="tok">--primary-strong-text</span><span class="hex">#d95f00</span><span class="use">흰 바탕 위 앰버 글자</span></span></div>
+  </div>
+
+  <h3>중립 · 면</h3>
+  <div class="sw">
+    <div class="s"><span class="chip" style="background:#ffffff"></span><span class="meta"><span class="nm">Paper</span><span class="tok">--surface</span><span class="hex">#ffffff</span><span class="use">카드·컨트롤 배경</span></span></div>
+    <div class="s"><span class="chip" style="background:#f3f1f5"></span><span class="meta"><span class="nm">Fog Canvas</span><span class="tok">--surface-container</span><span class="hex">#f3f1f5</span><span class="use">모든 카드가 얹히는 페이지 바탕</span></span></div>
+    <div class="s"><span class="chip" style="background:#f4eef2"></span><span class="meta"><span class="nm">Surface Variant</span><span class="tok">--surface-variant</span><span class="hex">#f4eef2</span><span class="use">입력·토널 버튼·호버</span></span></div>
+    <div class="s"><span class="chip" style="background:#f8f7f9"></span><span class="meta"><span class="nm">Header Wash</span><span class="tok">--head-bg</span><span class="hex">#f8f7f9</span><span class="use">표·목록 머리글 행 전용</span></span></div>
+    <div class="s"><span class="chip" style="background:#c9c6cf"></span><span class="meta"><span class="nm">Outline</span><span class="tok">--outline</span><span class="hex">#c9c6cf</span><span class="use">테두리</span></span></div>
+    <div class="s"><span class="chip" style="background:#e6e2ea"></span><span class="meta"><span class="nm">Outline Faint</span><span class="tok">--outline-variant</span><span class="hex">#e6e2ea</span><span class="use">머리카락 굵기 구분선</span></span></div>
+    <div class="s"><span class="chip" style="background:#e8e6ea"></span><span class="meta"><span class="nm">Mono Fill</span><span class="tok">--mono-fill</span><span class="hex">#e8e6ea</span><span class="use">'나' 행 강조 — 어떤 상태색과도 겹치지 않는다</span></span></div>
+    <div class="s"><span class="chip" style="background:#5b5a61"></span><span class="meta"><span class="nm">Mono Text</span><span class="tok">--mono-on</span><span class="hex">#5b5a61</span><span class="use">그 위 글자</span></span></div>
+  </div>
+
+  <h3>글자 — 두 단뿐이다</h3>
+  <div class="sw">
+    <div class="s"><span class="chip" style="background:#1c1b1f"></span><span class="meta"><span class="nm">Ink Text</span><span class="tok">--on-surface</span><span class="hex">#1c1b1f</span><span class="use">본문·세운 수치</span></span></div>
+    <div class="s"><span class="chip" style="background:#6b6a72"></span><span class="meta"><span class="nm">Muted Ink</span><span class="tok">--on-surface-variant</span><span class="hex">#6b6a72</span><span class="use">보조 텍스트·라벨·하위 수치</span></span></div>
+  </div>
+  <div class="warn"><p>세 번째 단은 없습니다. “한 단 아래”가 필요하면 섞어 만들지 말고 Muted Ink를 씁니다.</p></div>
+
+  <h3>상태 · 뜻이 고정된 색</h3>
+  <div class="sw">
+    <div class="s"><span class="chip" style="background:#3b82f6"></span><span class="meta"><span class="nm">Home Blue</span><span class="tok">--home</span><span class="hex">#3b82f6</span><span class="use">홈 팀. 유일하게 위치를 뜻하는 색</span></span></div>
+    <div class="s"><span class="chip" style="background:#ef4444"></span><span class="meta"><span class="nm">Away Red</span><span class="tok">--away</span><span class="hex">#ef4444</span><span class="use">원정 팀</span></span></div>
+    <div class="s"><span class="chip" style="background:#22c55e"></span><span class="meta"><span class="nm">Win Green</span><span class="tok">--green / --win</span><span class="hex">#22c55e</span><span class="use">승리</span></span></div>
+    <div class="s"><span class="chip" style="background:#e5484d"></span><span class="meta"><span class="nm">Rise Red</span><span class="tok">리터럴</span><span class="hex">#e5484d</span><span class="use">OVR·평균 상승. 한국 관습대로 빨강</span></span></div>
+    <div class="s"><span class="chip" style="background:#f59e0b"></span><span class="meta"><span class="nm">Amber</span><span class="tok">--amber</span><span class="hex">#f59e0b</span><span class="use">지표 구분용</span></span></div>
+    <div class="s"><span class="chip" style="background:#8b5cf6"></span><span class="meta"><span class="nm">Violet</span><span class="tok">--violet</span><span class="hex">#8b5cf6</span><span class="use">지표 구분용</span></span></div>
+    <div class="s"><span class="chip" style="background:#14b8a6"></span><span class="meta"><span class="nm">Teal</span><span class="tok">--teal</span><span class="hex">#14b8a6</span><span class="use">지표 구분용</span></span></div>
+    <div class="s"><span class="chip" style="background:#ff3d00"></span><span class="meta"><span class="nm">Clock</span><span class="tok">--clock</span><span class="hex">#ff3d00</span><span class="use">라이브 경기 시계 전용</span></span></div>
+  </div>
+
+  <h3>검수 상태</h3>
+  <div class="pair" style="background:#d9f4e6;color:#0c5c37">확정됨 — 기록이 검수를 통과했다<b>#d9f4e6 / #0c5c37</b></div>
+  <div class="pair" style="background:#fde2e2;color:#a41e1e">검수 필요 — 기록됐지만 아직 확정 전이다<b>#fde2e2 / #a41e1e</b></div>
+  <div class="pair" style="background:#22c55e;color:#ffffff">승 뱃지 — 2.3:1, AA 미달을 알고 받아들인 값<b>#22c55e / #ffffff</b></div>
+  <div class="warn"><p>“기록됨 ≠ 확정됨”은 이 제품의 뼈대입니다. 두 컨테이너 색이 그 상태를 나눠 가집니다.</p></div>
+</section>
+
+<section id="dark" class="dark">
+  <h2>진열장 · 다크</h2>
+  <p class="note">선수 카드와 개봉 팩이 쓰는 팔레트입니다. 콘솔 화면으로 새어 나가면 안 됩니다.</p>
+
+  <h3>무대와 시트</h3>
+  <div class="sw">
+    <div class="s"><span class="chip" style="background:#0a0b0f"></span><span class="meta"><span class="nm">Stage</span><span class="tok">--stage-bg</span><span class="hex">#0a0b0f</span><span class="use">카드가 놓이는 무대</span></span></div>
+    <div class="s"><span class="chip" style="background:#14161c"></span><span class="meta"><span class="nm">Stage Lit</span><span class="tok">--stage-bg2</span><span class="hex">#14161c</span><span class="use">빛이 쏟아지는 위쪽</span></span></div>
+    <div class="s"><span class="chip" style="background:#f4f4f6"></span><span class="meta"><span class="nm">On Dark</span><span class="tok">--on-dark</span><span class="hex">#f4f4f6</span><span class="use">무대 위 본문</span></span></div>
+    <div class="s"><span class="chip" style="background:#9a9ba3"></span><span class="meta"><span class="nm">On Dark Dim</span><span class="tok">--on-dark-dim</span><span class="hex">#9a9ba3</span><span class="use">무대 위 보조</span></span></div>
+    <div class="s"><span class="chip" style="background:#ffffff"></span><span class="meta"><span class="nm">Sheet</span><span class="tok">--sh-bg</span><span class="hex">#ffffff</span><span class="use">하단 시트 흰 면</span></span></div>
+    <div class="s"><span class="chip" style="background:#f4f5f7"></span><span class="meta"><span class="nm">Sheet Sub</span><span class="tok">--sh-bg2</span><span class="hex">#f4f5f7</span><span class="use">시트 안 연한 면</span></span></div>
+    <div class="s"><span class="chip" style="background:#16171b"></span><span class="meta"><span class="nm">Sheet Ink</span><span class="tok">--sh-on</span><span class="hex">#16171b</span><span class="use">시트 본문</span></span></div>
+    <div class="s"><span class="chip" style="background:#6d6f78"></span><span class="meta"><span class="nm">Sheet Muted</span><span class="tok">--sh-on-dim</span><span class="hex">#6d6f78</span><span class="use">시트 보조</span></span></div>
+  </div>
+  <div class="warn"><p>시트의 흰색이 콘솔의 Paper와 값이 다른 이유 — 어두운 무대 위에 겹쳤을 때 두 흰색이 서로 탁해 보이지 않게 분리했습니다.</p></div>
+
+  <h3>등급 금속 — 테두리 그라디언트 양 끝</h3>
+  <div class="grade">
+    <div class="g" style="background:linear-gradient(155deg,#4d5158,#33363b);color:#c9ccd2"><div class="gn">STARTER</div><div class="gv">#33363b → #4d5158<br>광택 .108</div></div>
+    <div class="g" style="background:linear-gradient(155deg,#c9905a,#7a4a2a);color:#f0d9c2"><div class="gn">BRONZE</div><div class="gv">#7a4a2a → #c9905a<br>광택 .28</div></div>
+    <div class="g" style="background:linear-gradient(155deg,#e7ebef,#8b929b);color:#3d4249"><div class="gn">SILVER</div><div class="gv">#8b929b → #e7ebef<br>광택 .4</div></div>
+    <div class="g" style="background:linear-gradient(155deg,#f4d16a,#9c7415);color:#4a3608"><div class="gn">GOLD</div><div class="gv">#9c7415 → #f4d16a<br>광택 .55</div></div>
+  </div>
+  <div class="warn"><p>스타터가 무광인 건 밝기가 아니라 재질의 문제입니다 — 금속 광택은 양 끝의 밝기 차에서 나오므로, 그 차이를 좁혀야(스타터 27 / 브론즈 70 / 실버 89 / 골드 91) 무광이 됩니다.</p></div>
+
+  <h3>개봉 팩 — 제3의 표면</h3>
+  <div class="sw">
+    <div class="s"><span class="chip" style="background:#464e5c"></span><span class="meta"><span class="nm">Foil Deep</span><span class="tok">--pack-foil-deep</span><span class="hex">#464e5c</span><span class="use">로고 패턴</span></span></div>
+    <div class="s"><span class="chip" style="background:#565d70"></span><span class="meta"><span class="nm">Peek</span><span class="tok">--pack-peek</span><span class="hex">#565d70</span><span class="use">뜯긴 자리로 보이는 카드 윗동</span></span></div>
+    <div class="s"><span class="chip" style="background:#4a5059"></span><span class="meta"><span class="nm">Inside</span><span class="tok">--pack-inside</span><span class="hex">#4a5059</span><span class="use">봉투 안쪽 면</span></span></div>
+    <div class="s"><span class="chip" style="background:#2b2f38"></span><span class="meta"><span class="nm">Edge</span><span class="tok">--pack-edge</span><span class="hex">#2b2f38</span><span class="use">옆면 (현재 미사용)</span></span></div>
+  </div>
+</section>
+
+<section id="type">
+  <h2>타이포그래피</h2>
+  <p class="note">본문은 <b>Pretendard</b>, 숫자를 물건처럼 세우는 자리에만 <b>Tektur</b>를 켭니다.
+  아이콘은 Material Symbols Sharp — 로고의 각진 인상과 맞습니다.</p>
+
+  <h3>텍스트 램프 — 다섯 단</h3>
+  <div class="ramp">
+    <div class="r"><span class="rl">Headline</span><span class="rs" style="font-family:var(--font-display);font-size:26px;font-weight:700;letter-spacing:-.02em">페이지 제목 26</span><span class="rv">26 / 700</span></div>
+    <div class="r"><span class="rl">Title Large</span><span class="rs" style="font-size:20px;font-weight:700;letter-spacing:-.02em">섹션 헤더 20</span><span class="rv">20 / 700</span></div>
+    <div class="r"><span class="rl">Title</span><span class="rs" style="font-size:16px;font-weight:700;letter-spacing:-.02em">카드 헤더·팀명 16</span><span class="rv">16 / 700</span></div>
+    <div class="r"><span class="rl">Body</span><span class="rs" style="font-size:13px;font-weight:500;letter-spacing:-.01em">본문과 표 셀 13 · 버튼은 같은 13에 600</span><span class="rv">13 / 500</span></div>
+    <div class="r"><span class="rl">Label</span><span class="rs" style="font-size:11px;font-weight:700;letter-spacing:.02em">칩·상태 뱃지·표 머리글 11</span><span class="rv">11 / 700</span></div>
+  </div>
+  <div class="warn"><p>정수 px만 씁니다. 콘솔이 한때 21단이었는데, 소수점을 정수로 옮기자 역할마다 1px 간격 두세 단이 겹쳤습니다 — 그건 위계가 아니라 그라데이션이었습니다.
+  기능 텍스트의 하한은 11px이고, 예외는 둘입니다: 팀 씰 회전 각인(10px, 장식), 카드 OVR 라벨(14px, PO 확정).</p></div>
+
+  <h3>진열 숫자 — 램프 밖</h3>
+  <div class="ramp">
+    <div class="r"><span class="rl">Live Score</span><span class="rs" style="font-family:var(--font-display);font-size:40px;font-weight:800;line-height:1">88</span><span class="rv">60</span></div>
+    <div class="r"><span class="rl">Game Score</span><span class="rs" style="font-family:var(--font-display);font-size:34px;font-weight:800;line-height:1">71</span><span class="rv">52</span></div>
+    <div class="r"><span class="rl">Card OVR</span><span class="rs" style="font-family:var(--font-display);font-size:30px;font-weight:800;line-height:1">90</span><span class="rv">43</span></div>
+  </div>
+  <div class="warn"><p>숫자를 물건처럼 세우는 자리에만 씁니다 — 글이 아니라 전광판이라서 텍스트 램프와 따로 둡니다.</p></div>
+</section>
+
+<section id="shape">
+  <h2>모양 · 반경</h2>
+  <p class="note">컨테이너 반경은 <b>겹침 깊이를 따라 한 단씩 줄입니다</b> — 시트 20 → 카드 16 → 안쪽 면 14 → 박스 12.
+  안쪽이 바깥보다 둥글면 층이 뒤집혀 보입니다.</p>
+  <div class="rad">
+    <div><i style="border-radius:100px"></i><span>Pill<br>100</span></div>
+    <div><i style="border-radius:26px"></i><span>시트 하단<br>26</span></div>
+    <div><i style="border-radius:20px"></i><span>시트·카드<br>20</span></div>
+    <div><i style="border-radius:16px"></i><span>카드<br>16</span></div>
+    <div><i style="border-radius:14px"></i><span>안쪽 면<br>14</span></div>
+    <div><i style="border-radius:12px"></i><span>박스<br>12</span></div>
+    <div><i style="border-radius:8px"></i><span>칩<br>8</span></div>
+    <div><i style="border-radius:6px"></i><span>작은 칩<br>6</span></div>
+    <div><i style="border-radius:5px"></i><span>뱃지<br>5</span></div>
+  </div>
+
+  <h3>컨트롤 높이</h3>
+  <div class="ramp">
+    <div class="r"><span class="rl">--h-sm</span><span class="rs">보조 버튼·작은 입력</span><span class="rv">40px</span></div>
+    <div class="r"><span class="rl">--h-md</span><span class="rs">기본 버튼·입력</span><span class="rv">44px</span></div>
+    <div class="r"><span class="rl">--h-lg</span><span class="rs">주요 액션</span><span class="rv">52px</span></div>
+  </div>
+
+  <h3>중단점</h3>
+  <div class="ramp">
+    <div class="r"><span class="rl">phone</span><span class="rs">한 손으로 쥐는 화면 — 기본</span><span class="rv">640px</span></div>
+    <div class="r"><span class="rl">tablet</span><span class="rs">기록원의 태블릿</span><span class="rv">900px</span></div>
+    <div class="r"><span class="rl">desktop</span><span class="rs">운영 콘솔 넓은 화면</span><span class="rv">1180px</span></div>
+  </div>
+</section>
+
+<section id="elev">
+  <h2>그림자 — 네 개뿐</h2>
+  <p class="note">각각 쓰는 자리가 정해져 있습니다. 새 그림자를 만들지 않습니다.</p>
+  <div class="sh">
+    <div style="box-shadow:0 1px 2px rgba(0,0,0,.05),0 1px 3px 1px rgba(0,0,0,.05)"><b>e1</b>쉬고 있는 버튼</div>
+    <div style="box-shadow:0 1px 2px rgba(0,0,0,.05),0 2px 6px 2px rgba(0,0,0,.06)"><b>e2</b>호버된 버튼</div>
+    <div style="box-shadow:0 4px 10px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06)"><b>e3</b>드롭다운·다이얼로그·모달</div>
+    <div style="box-shadow:0 26px 50px rgba(0,0,0,.5),0 5px 8px rgba(0,0,0,.32)"><b>card-ambient</b>선수 카드 전용 — UI 면이 아니라 물건</div>
+  </div>
+</section>
+
+<section id="icon">
+  <h2>아이콘</h2>
+  <p class="note"><b>Material Symbols Sharp</b>(Google, Apache 2.0). 각진 획이 로고의 인상과 맞습니다.
+  획 굵기 2, 24 그리드, <code>butt</code> 끝·<code>miter</code> 모서리, 색은 언제나 <code>currentColor</code>.
+  크기는 <b>16px</b>(작은 자리)과 <b>20px</b>(기본) 두 단만 씁니다.</p>
+  <div class="icons">
+    <span><i class="msym">dashboard</i></span><span><i class="msym">emoji_events</i></span>
+    <span><i class="msym">group</i></span><span><i class="msym">calendar_month</i></span>
+    <span><i class="msym">radio_button_checked</i></span><span><i class="msym">fact_check</i></span>
+    <span><i class="msym">bar_chart</i></span><span><i class="msym">campaign</i></span>
+    <span><i class="msym">settings</i></span><span><i class="msym">autorenew</i></span>
+    <span><i class="msym">workspace_premium</i></span><span><i class="msym">share</i></span>
+  </div>
+  <div class="warn"><p>농구 특화 그림(공·교체·타이머)은 예외입니다 — 손으로 그린 SVG를 그대로 쓰고, 거기만 둥근 획 끝을 유지합니다. 공이 각지면 공으로 안 보입니다.</p></div>
+</section>
+
+<section id="motion">
+  <h2>모션</h2>
+  <p class="note">기본은 절제하고, 놀이는 한 곳에만 둡니다.</p>
+  <div class="ramp">
+    <div class="r"><span class="rl">standard</span><span class="rs">호버·투명도·배경 전환 0.12–0.2초</span><span class="rv">ease</span></div>
+    <div class="r"><span class="rl">snap</span><span class="rs">누름·변형 — 이 시스템의 유일한 장난기</span><span class="rv">cubic-bezier(.2,.9,.25,1.2)</span></div>
+    <div class="r"><span class="rl">card sweep</span><span class="rs">카드를 훑는 빛 6.5초 / 팩은 그 두 배</span><span class="rv">linear infinite</span></div>
+  </div>
+  <div class="warn"><p>공개 화면(경기 상세·선수 카드)은 사람들에게 보여질 화면이라 무거워지면 안 됩니다.
+  매 프레임 도는 값은 <code>transform</code>과 <code>opacity</code>로 제한합니다 — 레이아웃을 다시 재게 하는 속성은 쓰지 않습니다.
+  <code>prefers-reduced-motion</code>에서는 반복 모션을 끕니다.</p></div>
+</section>
+
+<section id="rules">
+  <h2>이름 붙은 규칙</h2>
+  <p class="note">판단이 갈리면 이 다섯 문장으로 정합니다.</p>
+  <div class="rule"><b>THE TWO WORLDS RULE</b><span>표면이 둘이다 — 작업대(라이트)와 진열장(다크). 한 화면이 둘을 섞으면 둘 다 죽는다. 브랜드 앰버와 팀 컬러만 두 세계를 관통한다.</span></div>
+  <div class="rule"><b>THE WHISTLE RULE</b><span>Court Amber는 지금 살아 있거나, 누를 수 있거나, 선택된 것에만 쓴다 — 페이지 장식이나 섹션 배경으로는 쓰지 않는다. 앰버를 지워도 화면이 설명되면 그 앰버는 없어야 한다. 카드 표면의 스티커 둘(UPDATE·캡틴 C)만 예외다.</span></div>
+  <div class="rule"><b>THE FLAT CANVAS RULE</b><span>이 시스템의 모든 색은 Fog Canvas 위의 납작한 면에서 나온다 — 그라디언트나 그림자가 색을 대신하지 않는다.</span></div>
+  <div class="rule"><b>THE MARK RULE</b><span>명도 대비 기준은 읽는 글자에만 적용한다. 그래픽·마크·심볼은 대상이 아니다. 팀 마크는 로고가 없으면 팀 색 바탕에 흰 글자 한 자 — 외곽 라인 없음, 팀 색에 따라 글자색을 바꾸지 않음. 뱃지·칩·라벨처럼 읽어야 뜻이 통하는 것은 이 예외 밖이고 AA를 지킨다.</span></div>
+  <div class="rule"><b>THE STAT WEIGHT RULE</b><span>공개 경기 상세의 수치 위계는 화면 전체가 한 규칙을 쓴다 — 우위는 800에 Ink Text, 하위는 500에 Muted Ink. 요약 탭 세 섹션과 기록 탭 박스스코어가 같은 토큰(<code>--stat-dim</code>)을 본다. 이름은 규칙 밖이다.</span></div>
+</section>
+
+<footer>원본은 <b>DESIGN.md</b>입니다 · 값이 어긋나면 문서를 고치고 코드와 함께 맞춥니다<br>
+검사기 사이드카 <code>.impeccable/design.json</code>도 같은 내용을 기계가 읽는 형태로 들고 있습니다</footer>
+</div>
+</body>
+</html>
