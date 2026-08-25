@@ -379,6 +379,13 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* shared buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:var(--h-md);padding:0 24px;border:none;border-radius:var(--r-btn);font-family:var(--font);font-weight:600;font-size:13px;cursor:pointer;transition:.15s;white-space:nowrap}
 .btn[disabled]{opacity:.38;box-shadow:none;cursor:default;filter:none;pointer-events:none}
+/* 로딩 — 라벨을 지우지 않고 바꾼다("확정" → "확정 중"). 라벨이 사라지면 무엇을 눌렀는지 잊는다.
+   비활성과 달리 흐려지지 않는다 — 꺼진 것이 아니라 일하고 있는 것이다. */
+.btn.is-loading[disabled]{opacity:1}
+.btn .spin{flex:none;width:13px;height:13px;border-radius:50%;
+  border:2px solid currentColor;border-top-color:transparent;opacity:.85;animation:btnspin .7s linear infinite}
+@keyframes btnspin{to{transform:rotate(1turn)}}
+@media (prefers-reduced-motion:reduce){.btn .spin{animation-duration:1.8s}}
 .btn-main{background:var(--main);color:var(--on-main);box-shadow:var(--e1)}
 .btn-main:hover{box-shadow:var(--e2);filter:brightness(1.18)}
 .btn-primary{background:var(--primary);color:#fff;box-shadow:var(--e1)}
@@ -711,12 +718,20 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 #page-record .act.is-locked:hover{filter:none;background:var(--surface-variant)}
 #page-record .act-score.is-locked:hover{background:var(--main)}
 /* 조종석은 화면 맨 아래가 최근 기록 바다 — 그 위로 띄워야 가려지지 않는다 */
-.toast{position:fixed;left:50%;bottom:84px;z-index:200;transform:translate(-50%,calc(100% + 84px));
-  display:flex;align-items:center;gap:9px;max-width:calc(100vw - 32px);
-  padding:13px 20px;border-radius:100px;background:#26252a;color:#fff;
-  font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.28);
-  opacity:0;pointer-events:none;transition:transform .26s cubic-bezier(.2,.8,.25,1),opacity .2s}
-.toast.on{transform:translate(-50%,0);opacity:1}
+/* 토스트 — 흰 바탕 화면에 어두운 알약을 띄우면 그것만 보인다. 흰 면에 배경 블러를 얹어
+   아래 내용이 비치게 두면 "지나가는 말"로 읽힌다. 알약이 아니라 반경 12인 이유는
+   The Pill-Means-Press Rule — 누를 수 없는 것은 알약을 쓰지 않는다. */
+.toast{position:fixed;bottom:84px;z-index:200;
+  left:0;right:0;margin:0 auto;width:-webkit-fit-content;width:fit-content;
+  transform:translateY(12px) scale(.98);transform-origin:50% 100%;
+  display:flex;align-items:center;gap:9px;max-width:min(420px, calc(100vw - 32px));
+  padding:13px 16px;border-radius:12px;
+  background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(18px) saturate(1.7);backdrop-filter:blur(18px) saturate(1.7);
+  border:1px solid var(--outline-variant);color:var(--on-surface);
+  font-size:13px;font-weight:600;box-shadow:var(--e3);
+  opacity:0;pointer-events:none;transition:transform .24s cubic-bezier(.2,.8,.25,1),opacity .18s}
+.toast.on{transform:translateY(0) scale(1);opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:opacity .18s}}
 .act.cooling{pointer-events:none;opacity:.5}
 .act.cooling::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:currentColor;opacity:.55;transform-origin:left;animation:cool var(--cool-ms,1000ms) linear forwards}
 @keyframes cool{from{transform:scaleX(1)}to{transform:scaleX(0)}}
@@ -3706,6 +3721,7 @@ function openConfirm(opt){
   foot.hidden = !opt.foot;
   var yes = document.getElementById('confirmYes');
   yes.textContent = opt.ok || '확인';
+  if(opt.okLoading) yes.dataset.loadingLabel = opt.okLoading; else delete yes.dataset.loadingLabel;
   confirmCb = opt.onOk; confirmTrigger = opt.trigger || null;
   confirmModal.classList.add('open');
   confirmModal.setAttribute('aria-hidden','false');
@@ -3720,7 +3736,14 @@ function closeConfirm(){
 function initConfirm(){
   confirmModal = document.getElementById('confirmModal');
   document.getElementById('confirmYes').addEventListener('click', function(){
-    var cb = confirmCb; closeConfirm(); if(cb) cb();
+    var cb = confirmCb, btn = this;
+    /* onOk가 인자를 받으면 서버를 기다리는 동작이다 — 끝날 때까지 버튼이 로딩으로 서 있는다 */
+    if(cb && cb.length){
+      btnLoading(btn, true, btn.dataset.loadingLabel || '처리 중');
+      cb(function(){ btnLoading(btn, false); closeConfirm(); });
+      return;
+    }
+    closeConfirm(); if(cb) cb();
   });
   document.getElementById('confirmNo').addEventListener('click', closeConfirm);
   confirmModal.addEventListener('click', function(e){ if(e.target === confirmModal) closeConfirm(); });
@@ -3930,12 +3953,29 @@ function setActionsEnabled(on){
   });
 }
 var toastTimer = null;
+/* 버튼 로딩 — 서버를 기다리는 동안 같은 버튼이 두 번 눌리지 않게 한다.
+   btnLoading(el, true, '확정 중') → btnLoading(el, false) */
+function btnLoading(el, on, label){
+  if(!el) return;
+  if(on){
+    el.dataset.label = el.textContent;
+    el.classList.add('is-loading');
+    el.disabled = true;
+    el.setAttribute('aria-busy','true');
+    el.innerHTML = '<span class="spin" aria-hidden="true"></span>' + (label || el.dataset.label);
+  } else {
+    el.classList.remove('is-loading');
+    el.disabled = false;
+    el.removeAttribute('aria-busy');
+    if(el.dataset.label) el.textContent = el.dataset.label;
+  }
+}
 function showToast(msg){
   var t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('on');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(function(){ t.classList.remove('on'); }, 2400);
+  toastTimer = setTimeout(function(){ t.classList.remove('on'); }, 3000);
 }
 
 // <SelectedPlayerBar/>
@@ -6546,9 +6586,13 @@ function renderReviewBar(){
         desc: summary,
         foot: '확정하면 선수·관중에게 공식 결과로 공개되고, 되돌릴 수 없어요.',
         ok: '확정',
+        okLoading: '확정 중',
         trigger: this,
-        onOk: function(){ /* 실제 구현: POST /api/games/:id/confirm → status end→fix */
-          matchConfirmed = true; renderReviewBar();
+        onOk: function(done){ /* 실제 구현: POST /api/games/:id/confirm → status end→fix */
+          setTimeout(function(){          /* 프로토타입이라 서버가 없다 — 기다림만 흉내낸다 */
+            matchConfirmed = true; renderReviewBar(); done();
+            showToast('결과를 확정했어요 · 공식 결과로 공개됩니다');
+          }, 900);
         }
       });
     });

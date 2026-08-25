@@ -1620,9 +1620,18 @@ body.intro .heroContent{animation:none;opacity:0}
 /* 이미지 저장 — 화이트 라운드(보조 액션). 흰 시트 위라 테두리로 형태를 잡아 준다 */
 .sheet .btn-white{background:#fff;color:var(--sh-on);border:1px solid var(--sh-border)}
 .sheet .btn-white:hover{background:var(--sh-bg2)}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1c1f27;color:#fff;
-  font-size:13px;padding:10px 16px;border-radius:100px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:70}
-.toast.show{opacity:1}
+/* 토스트 — 운영 콘솔과 같은 모양. 이 화면에서도 토스트는 흰 시트가 올라와 있을 때만 뜬다
+   (공유·저장은 시트 안 버튼이라) 어두운 무대 위에 얹힐 일이 없다(PO 확인 2026-08-25). */
+.toast{position:fixed;bottom:24px;z-index:70;
+  left:0;right:0;margin:0 auto;width:-webkit-fit-content;width:fit-content;
+  transform:translateY(12px) scale(.98);transform-origin:50% 100%;
+  max-width:min(420px, calc(100vw - 32px));padding:13px 16px;border-radius:12px;
+  background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(18px) saturate(1.7);backdrop-filter:blur(18px) saturate(1.7);
+  border:1px solid #e6e2ea;color:#1c1b1f;
+  font-size:13px;font-weight:600;box-shadow:0 4px 10px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);
+  opacity:0;pointer-events:none;transition:transform .24s cubic-bezier(.2,.8,.25,1),opacity .18s}
+.toast.show{transform:translateY(0) scale(1);opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:opacity .18s}}
 
 /* ---------------- 하단 브랜드 푸터 ---------------- */
 /* 브랜드 푸터 앞 굵은 구분선 — 위쪽 안내문까지가 '내용'이고 여기부터는 서비스 표기라 성격이 다르다.
@@ -1894,7 +1903,7 @@ body.intro .heroContent{animation:none;opacity:0}
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="cardLightbox" id="cardLightbox"></div>
 
 <div class="ovrInfoModal" id="ovrInfoModal">
@@ -3349,7 +3358,7 @@ document.addEventListener('keydown', function(e){
 var toast = document.getElementById('toast');
 function showToast(msg){
   toast.textContent = msg; toast.classList.add('show');
-  setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  setTimeout(function(){ toast.classList.remove('show'); }, 3000);
 }
 function doShare(){
   var shareData = { title:'BASKET · '+PLAYER.name+' 선수 카드', text:PLAYER.team+' · '+PLAYER.pos, url: location.href };
