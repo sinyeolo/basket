@@ -306,12 +306,29 @@ button{font-family:var(--font)}
 .packStage{position:fixed;inset:0;z-index:20;overflow:hidden;perspective:1200px}
 /* 배경을 무대가 아니라 별도 층으로 뺀다. 무대째 흐리면 팩까지 같이 흐려지는데,
    팩은 사라지는 게 아니라 화면 밖으로 내려가야 한다(PO). */
-.packBg{position:absolute;inset:0;
-  background:radial-gradient(120% 80% at 50% 26%, #1b1e26 0%, #0a0b0f 68%);
-  transition:opacity .45s ease}
-.packStage.is-clearing .packBg,
+/* 화면 두 배 높이로 두고, 위쪽 절반에 투명으로 빠지는 경사를 들려 둔다.
+   가만히 있을 때(translateY(-100vh)) 화면에는 아래쪽 절반 — 지금까지와 똑같은 어두운 면 —
+   만 보인다. 아래로 흘려보내면 그 경사가 화면을 위에서 아래로 훑고 지나가며
+   뒤에 있던 무대가 서서히 드러난다(PO: 디바이스 위에서부터 아래로).
+   투명도를 한꺼번에 내리지 않는 이유는 그러면 화면 전체가 동시에 밝아져
+   "언제 배경이 왔는지" 모르게 되기 때문이다. 바뀌는 건 transform 하나뿐이라
+   합성 단계에서 끝난다 — 폰에서 매 프레임 다시 칠하지 않는다. */
+.packBg{position:absolute;left:0;right:0;top:0;height:200vh;transform:translateY(-100vh);
+  background:radial-gradient(120% 40% at 50% 63%, #1b1e26 0%, #0a0b0f 68%);
+  /* 경사는 배경 층이 아니라 마스크로 준다. 배경으로 얹으면 그 아래 radial이 불투명하게
+     남아, 요소의 윗변에서 어둠이 칼로 자른 듯 시작한다(실측으로 확인). */
+  -webkit-mask-image:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.5) 21%, #000 46%);
+  mask-image:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.5) 21%, #000 46%)}
+/* 카드가 올라오기 시작하는 순간에 함께 시작해, 카드가 가운데 서는 즈음에 끝난다(PO).
+   먼저 걷어 두면 카드가 도착하기도 전에 배경이 다 와 있어 등장이 심심해진다. */
+.packStage.is-wiping .packBg{animation:packBgWipe 1.05s cubic-bezier(.36,0,.2,1) both}
+@keyframes packBgWipe{ from{transform:translateY(-100vh)} to{transform:translateY(100vh)} }
+.packStage.is-clearing{pointer-events:none}
 .packStage.is-clearing .packHint,
 .packStage.is-clearing .packSkip{opacity:0}
+@media (prefers-reduced-motion:reduce){
+  .packStage.is-wiping .packBg{animation:none;opacity:0;transition:opacity .3s ease}
+}
 .packStage[hidden]{display:none}
 .packHint,.packSkip{transition:opacity .3s ease}
 
@@ -442,9 +459,18 @@ button{font-family:var(--font)}
 /* 팩 전체를 훑는다(PO). 예전엔 몸통 안에 뒀더니 위아래 압착부만 빛이 비껴갔다.
    .packTilt에는 overflow를 걸 수 없다 — 3D가 평평해져 두께 겹이 사라진다.
    대신 이 요소에만 overflow를 걸어 빛줄기를 팩 실루엣 안에 가둔다. 3D 자식이 없으니 잃을 게 없다. */
-/* 뚜껑 안의 빛줄기 — 같은 키프레임을 쓰므로 닫혀 있을 때는 한 줄기로 이어져 보이고,
-   뚜껑이 들리면 그 빛도 함께 기울어 따라간다. */
-.packLid .lidSweep{top:0;bottom:0;z-index:1}
+/* 뚜껑 안의 빛줄기 — 닫혀 있을 때는 몸통과 한 줄기로 이어져 보인다.
+   뜯기 시작하면 사라진다(PO): 같은 키프레임을 쓰니 뚜껑이 기울어도 빛의 위치가
+   몸통과 계속 맞아떨어져, 떨어져 나온 조각이 아니라 아직 붙어 있는 면으로 보였다. */
+.packLid .lidSweep{top:0;bottom:0;z-index:1;opacity:calc(1 - var(--tear))}
+/* 떨어져 나온 뚜껑이 새로 받는 빛. 압착부와 몸통은 같은 세로 결(90도 원통 음영)을
+   공유하는데, 그 결이 절단선 너머로 그대로 이어지는 것이 "빛이 몸통과 연결되어 있다"의
+   정체였다(PO). 뜯는 만큼 이 면이 덮여 결이 끊기고, 위에서 비스듬히 받는 빛으로 바뀐다. */
+.packLid::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  opacity:var(--tear);
+  background:linear-gradient(196deg,
+    rgba(255,255,255,.46) 0%, rgba(255,255,255,.13) 24%,
+    rgba(30,34,42,.13) 58%, rgba(30,34,42,.42) 100%)}
 .packSweep{position:absolute;left:0;right:0;top:var(--seam);bottom:0;z-index:5;pointer-events:none;
   overflow:hidden;border-radius:12px}
 /* 카드의 빛은 앞쪽을 칼로 자른 듯 끊는다. 팩은 양쪽 다 부드럽게 둔다(PO) —
@@ -2611,16 +2637,18 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       /* 건너뛰기는 꺼낸 게 아니라 그만둔 것이다 — 여기서는 원래의 등장 연출을 돌려준다 */
       document.body.classList.remove('intro');
       stage.classList.add('is-clearing');
-      setTimeout(function(){ stage.hidden = true; }, 460);
+      stage.classList.add('is-wiping');
+      setTimeout(function(){ stage.hidden = true; }, 1120);
     }
     /* 팩이 사라지는 것과 카드가 올라오는 것이 겹쳐야 한 동작으로 읽힌다.
        팩이 다 없어진 뒤에 카드가 올라오면 두 장면을 이어 붙인 것처럼 보인다. */
     function reveal(delay){
       setTimeout(function(){
         document.body.classList.remove('intro');   // heroRiseIn이 여기서 돈다
-        /* 무대는 팩이 화면 밖으로 다 나간 뒤에 치운다. 먼저 치우면 내려가던 팩이
-           도중에 사라져, 내려간 게 아니라 꺼진 것으로 보인다. */
-        setTimeout(function(){ stage.hidden = true; }, 620);
+        stage.classList.add('is-wiping');          // 배경도 같은 순간에 위에서부터 걷힌다
+        /* 무대는 팩이 화면 밖으로 다 나간 뒤, 배경을 다 걷은 뒤에 치운다. 먼저 치우면
+           내려가던 팩이 도중에 사라지거나 걷히던 배경이 툭 끊긴다. 훑기가 1.05초다. */
+        setTimeout(function(){ stage.hidden = true; }, 1120);
       }, delay);
     }
 
