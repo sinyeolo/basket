@@ -375,7 +375,10 @@ button{font-family:var(--font)}
    세 조각 모두 팩 폭 전체를 차지하므로, 닫혀 있을 때는 한 장으로 그린 것과 같다. */
 /* 홀로그램 — 은박에 도는 무지개다. 카드의 홀로와 같은 원칙으로 아주 옅게,
    한 톤이 아니라 색이 흘러가게 둔다. 진하면 팩이 장난감이 된다. */
-.packTilt::before{content:"";position:absolute;inset:0;z-index:6;pointer-events:none;
+/* 뚜껑 위에는 덮지 않는다. 팩 전체에 한 장 덮어 두면 뚜껑이 들려도 이 빛은 제자리에 남아,
+   뜯어냈는데 그 자리에 뭔가 그대로 있는 것처럼 보였다(PO).
+   뚜껑은 제 몫의 빛을 안에 따로 들고 있다(.packLid .packSweep). */
+.packTilt::before{content:"";position:absolute;left:0;right:0;top:var(--seam);bottom:0;z-index:6;pointer-events:none;
   border-radius:12px;mix-blend-mode:screen;opacity:.34;
   background:linear-gradient(112deg,
     rgba(255,120,190,0) 12%, rgba(255,150,200,.10) 24%, rgba(150,190,255,.14) 33%,
@@ -439,7 +442,10 @@ button{font-family:var(--font)}
 /* 팩 전체를 훑는다(PO). 예전엔 몸통 안에 뒀더니 위아래 압착부만 빛이 비껴갔다.
    .packTilt에는 overflow를 걸 수 없다 — 3D가 평평해져 두께 겹이 사라진다.
    대신 이 요소에만 overflow를 걸어 빛줄기를 팩 실루엣 안에 가둔다. 3D 자식이 없으니 잃을 게 없다. */
-.packSweep{position:absolute;inset:0;z-index:5;pointer-events:none;
+/* 뚜껑 안의 빛줄기 — 같은 키프레임을 쓰므로 닫혀 있을 때는 한 줄기로 이어져 보이고,
+   뚜껑이 들리면 그 빛도 함께 기울어 따라간다. */
+.packLid .lidSweep{top:0;bottom:0;z-index:1}
+.packSweep{position:absolute;left:0;right:0;top:var(--seam);bottom:0;z-index:5;pointer-events:none;
   overflow:hidden;border-radius:12px}
 /* 카드의 빛은 앞쪽을 칼로 자른 듯 끊는다. 팩은 양쪽 다 부드럽게 둔다(PO) —
    칼단면이 지나가는 순간이 아니라 '끝나는 순간'에 잘린 자국으로 보였다.
@@ -563,7 +569,7 @@ button{font-family:var(--font)}
 /*
    마스킹은 '지워졌다'로 읽히고, 들리는 건 '뜯겼다'로 읽힌다.
    11도면 320px 폭에서 왼쪽 끝이 60px쯤 들린다. 더 주면 종이가 아니라 문짝이 된다. */
-.packLid{position:absolute;left:0;right:0;top:0;height:var(--seam);z-index:2;
+.packLid{position:absolute;left:0;right:0;top:0;height:var(--seam);z-index:2;overflow:hidden;
   border-radius:12px 12px 0 0;
   transform-origin:100% 100%;
   /* 벌어지면서 통째로도 위로 뜬다(PO). 회전만 주면 왼쪽 끝만 열리고 오른쪽 경첩은
@@ -622,15 +628,17 @@ button{font-family:var(--font)}
 .packCut{position:absolute;left:0;right:0;top:calc(var(--seam) - 9px);height:16px;z-index:4;
   pointer-events:none;
   clip-path:inset(0 calc((1 - var(--tear)) * 100%) 0 0);
-  /* 더 선명하고 쨍하게(PO). 알파를 올리는 것만으로는 뿌옇게 밝아질 뿐이라,
-     가운데 흰 심지를 얇게 세우고 그 양옆의 주황을 진하게 세운다 —
-     번짐이 좁아야 빛이 '난다'로 읽힌다. 바깥으로 한 겹 번져 나가는 건
-     drop-shadow가 맡는다. 그래야 선 자체는 또렷한 채로 주변만 물든다. */
+  /* 그라디언트로 번지게 두었더니 자국이 아니라 얼룩으로 보였다(PO).
+     빛은 '선'이고 번짐은 '그 선이 주변에 만든 것'이라, 둘을 섞지 않고 나눈다:
+     여기서는 1px 흰 심지와 그 위아래 1px 주황만 딱 그리고, 번지는 몫은 전부
+     drop-shadow가 맡는다. 정지점이 셋뿐이라 단이 생길 여지도 없다. */
   background:linear-gradient(180deg,
-    rgba(255,138,0,0) 0%, rgba(255,150,10,.5) 26%, rgba(255,196,90,.95) 42%,
-    #fff6e2 48%, #ffffff 52%, #ffcf7a 57%,
-    rgba(255,138,0,.9) 68%, rgba(255,120,0,.35) 84%, rgba(255,120,0,0) 100%);
-  filter:drop-shadow(0 0 6px rgba(255,150,20,.75)) drop-shadow(0 0 14px rgba(255,130,0,.45))}
+    rgba(255,150,20,0) 0 6px,
+    #ffb340 6px 7px,
+    #ffffff 7px 9px,
+    #ffb340 9px 10px,
+    rgba(255,150,20,0) 10px 100%);
+  filter:drop-shadow(0 0 3px rgba(255,170,50,.9)) drop-shadow(0 0 9px rgba(255,140,10,.55))}
 /* 핸들이 갈 길 — 선 위의 가는 화살표. 방향을 말이 아니라 그림으로 알린다 */
 .packTrack{position:absolute;left:16px;right:16px;top:calc(var(--seam) - 3px);height:2px;z-index:5;
   pointer-events:none;background:rgba(255,255,255,.5);
@@ -1681,7 +1689,7 @@ body.intro .heroContent{animation:none;opacity:0}
     </div>
     <div class="packFoot" aria-hidden="true"><span class="packBandPat"></span></div>
     <div class="packFootSeam" aria-hidden="true"></div>
-    <div class="packLid"><span class="packBandPat"></span><span class="packNotch"></span></div>
+    <div class="packLid"><span class="packBandPat"></span><div class="packSweep lidSweep" aria-hidden="true"><i></i></div></div>
     <div class="packSeam" aria-hidden="true"></div>
     <div class="packCut" aria-hidden="true"></div>
     <div class="packSweep" aria-hidden="true"><i></i></div>
