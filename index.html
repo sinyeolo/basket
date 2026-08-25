@@ -881,7 +881,9 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .lrow:hover{background:var(--surface-variant)}
 /* border 대신 box-shadow로 테두리를 그린다 — border를 쓰면 배경 사진(cover)이 padding-box 기준으로 계산되면서
    테두리 바로 안쪽에 얇게 안 채워진 틈이 생기는 문제가 있어(사진 등록 시에만 눈에 띔) box-shadow로 대체 */
-.av-c{width:44px;height:44px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+/* 팀·선수 마크 — 팀 색 위 흰 글자 한 자, 그 둘로 끝난다(PO 확정 2026-08-24).
+   외곽 라인은 뺐다. 테두리를 두르면 마크가 아니라 뱃지로 읽힌다. */
+.av-c{width:44px;height:44px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff}
 .av-c.av-logo{position:relative;background-size:cover;background-position:center;overflow:hidden}
 .av-c.av-logo::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.4)}
 .av-c.av-logo b{position:relative;z-index:1}
@@ -1533,7 +1535,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .sealText{font-size:10px;font-weight:700;letter-spacing:.5px;fill:rgba(255,255,255,.92)}
 .sealLogo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;
-  box-shadow:0 0 0 .5px rgba(255,255,255,.5),0 2px 6px rgba(0,0,0,.4)}
+  box-shadow:0 2px 6px rgba(0,0,0,.4)}   /* 외곽 라인 제거(선수 카드와 같은 규칙, PO) */
 
 /* 레벨·경험치는 카드 바깥 아래에 노출 — PC·태블릿·모바일 공통 */
 /* 카드와 같은 폭으로 세운다 — 정보 영역 전체 폭으로 늘리면 카드보다 훨씬 길어져서
