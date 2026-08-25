@@ -3050,6 +3050,10 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
 
 if(LINKED_PLAYER){
   document.querySelector('.previewBar').style.display = 'none';
+  /* 바를 감추면 그 자리도 함께 걷는다. 높이만 남겨 두면 무대가 38px 내려간 채라,
+     그 틈으로 body의 납작한 검정이 보인다 — 무대 위쪽은 빛이 도는 그라디언트여서
+     화면 맨 위에 더 어두운 띠가 생겼다. */
+  document.documentElement.style.setProperty('--preview-h', '0px');
 }
 
 /* ---- 카드 기울기·뒤집기 인터랙션을 하나의 컨트롤러로 캡슐화 —
