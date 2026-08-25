@@ -392,11 +392,14 @@ th.sorted .th-sort{font-weight:800}
 .ic-ball *,
 .ball *{stroke-linecap:round;stroke-linejoin:round}
 .arw.asc{transform:rotate(180deg)}
-/* 정렬 중인 열은 셀까지 살짝 세워 어느 기준으로 늘어놨는지 표를 훑을 때도 보이게 한다 */
-td.sorted{color:var(--on-surface);font-weight:700;background:var(--head-bg)}
-td{border-bottom:1px solid var(--outline-variant);font-family:var(--font-display);font-weight:500;
-  color:var(--on-surface-variant)}
-td.key{font-weight:700;color:var(--on-surface)}
+/* 표의 수치도 요약 탭과 같은 규칙을 쓴다(PO) — 세운 값은 800 + 본문색,
+   나머지는 600 + 한 단 연한 색(--stat-dim). 예전엔 500 / 라벨색이라 요약 탭보다
+   한 단 더 내려가 있었고, 같은 '보조 수치'가 탭에 따라 다르게 보였다.
+   정렬 중인 열은 어느 기준으로 늘어놨는지 표를 훑을 때도 보여야 해서 함께 세운다. */
+td.sorted{color:var(--on-surface);font-weight:800;background:var(--head-bg)}
+td{border-bottom:1px solid var(--outline-variant);font-family:var(--font-display);font-weight:600;
+  color:var(--stat-dim)}
+td.key{font-weight:800;color:var(--on-surface)}
 /* 선수 칸은 가로 스크롤 중에도 붙어 있어야 한다. 다만 스크롤러가 카드 여백만큼 바깥으로
    나가 있어서(margin -14 / padding 14), sticky의 left:0은 패딩 안쪽 가장자리에 선다.
    그 14px 틈으로 지나가는 열이 비쳐 보였다 — box-shadow로 셀 배경을 왼쪽으로 늘려 덮는다. */
@@ -408,7 +411,7 @@ td:first-child{font-family:var(--font);font-weight:600;font-size:13px;color:var(
 td .no{font-family:var(--font-display);color:var(--on-surface-variant);font-size:11px;margin-right:6px}
 td .tmdot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:1px}
 tr.out td:first-child{color:var(--on-surface-variant);text-decoration:line-through;text-decoration-thickness:1px}
-tfoot td{font-weight:700;color:var(--on-surface);border-bottom:none;background:var(--head-bg)}
+tfoot td{font-weight:800;color:var(--on-surface);border-bottom:none;background:var(--head-bg)}
 /* 합계 줄만 배경색이 달라 — 늘려 덮는 색도 같이 바꾼다.
    선수 열로 정렬해도 이 칸은 흰색을 유지하므로(td:first-child가 td.sorted보다 뒤에 있다)
    덮는 색도 흰색 그대로여야 한다 — 여기서 회색을 쓰면 셀 옆에 회색 띠만 남는다. */
