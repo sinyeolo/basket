@@ -175,6 +175,36 @@ h3:first-of-type{margin-top:16px}
 .d-bar{height:9px;border-radius:100px;background:var(--variant);max-width:300px;overflow:hidden}
 .d-bar i{display:block;height:100%;width:62%;background:var(--primary);border-radius:100px}
 
+.sk{background:var(--variant);border-radius:6px;position:relative;overflow:hidden}
+.sk::after{content:"";position:absolute;inset:0;transform:translateX(-100%);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);
+  animation:skshine 1.4s linear infinite}
+@keyframes skshine{to{transform:translateX(100%)}}
+.sk-t{height:16px;margin-bottom:16px}
+.sk-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.sk-row:last-child{border-bottom:none}
+.sk-c{width:34px;height:34px;border-radius:50%;flex:none}
+.sk-l{height:11px;margin-bottom:6px}
+.sk-s{height:9px}
+.sk-n{width:52px;height:13px;flex:none}
+@media (prefers-reduced-motion:reduce){ .sk::after{animation:none;opacity:0} }
+.d-toast{display:flex;align-items:flex-start;gap:9px;background:#1c1b1f;color:#fff;
+  border-radius:12px;padding:13px 15px;font-size:13px;max-width:420px;
+  box-shadow:0 4px 10px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);margin-bottom:10px}
+.d-toast .msym{font-size:20px;flex:none;color:#7de8a4}
+.d-toast.is-err .msym{color:#f26969}
+.d-toast.is-undo .msym{color:#fff}
+.d-toast span{flex:1;line-height:1.5}
+.d-toast em{display:block;font-style:normal;font-size:12px;color:rgba(255,255,255,.6);margin-top:3px}
+.d-toast b{font-family:var(--font);font-size:13px;font-weight:700;color:var(--primary);flex:none;align-self:center}
+.d-page{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.d-pg{width:36px;height:36px;border:none;border-radius:8px;background:var(--variant);
+  color:var(--ink);font-family:var(--font-display);font-size:12px;font-weight:700;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center}
+.d-pg.on{background:#1c1b1f;color:#fff}
+.d-pg[disabled]{opacity:.38;cursor:default}
+.d-pg .msym{font-size:16px}
+.d-pg-gap{font-family:var(--font-display);font-size:12px;color:var(--muted);padding:0 3px}
 .rule{padding:13px 15px;border-radius:12px;background:var(--variant);margin-bottom:9px}
 .rule b{display:block;font-family:var(--font-display);font-size:12px;font-weight:800;letter-spacing:.04em;margin-bottom:5px}
 .rule span{font-size:13px;color:var(--muted);line-height:1.72}
@@ -201,7 +231,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
     <a href="#icon">아이콘</a><a href="#motion">모션</a><a href="#a11y">접근성</a></div>
   <div class="grp"><div class="gt">COMPONENTS</div>
     <a href="#actions">액션</a><a href="#inputs">입력</a><a href="#display">데이터 표시</a>
-    <a href="#feedback">피드백</a><a href="#nav">내비게이션</a><a href="#overlay">오버레이</a></div>
+    <a href="#feedback">피드백</a><a href="#skeleton">스켈레톤</a><a href="#toast">토스트</a><a href="#pagination">페이지네이션</a><a href="#nav">내비게이션</a><a href="#overlay">오버레이</a></div>
   <div class="grp"><div class="gt">PATTERNS</div>
     <a href="#rules">이름 붙은 규칙</a><a href="#roadmap">아직 없는 것</a></div>
 </aside>
@@ -244,6 +274,9 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
     <div class="r"><span class="rl">2층을 고치면</span><span class="rs">그 뜻을 쓰는 자리만 바뀝니다 — “보조 텍스트를 진하게”</span><span class="rv">역할별</span></div>
     <div class="r"><span class="rl">3층을 고치면</span><span class="rs">그 부품만 바뀝니다 — “표의 하위 수치만”</span><span class="rv">부품별</span></div>
   </div>
+  <div class="warn"><p><b>기본은 2층입니다.</b> 당근 Seed가 세운 원칙을 그대로 따릅니다 —
+  역할(semantic)로 말할 수 있으면 역할을 쓰고, <b>역할로 표현되지 않는 예외에서만</b> 1층 램프를 직접 집습니다.
+  1층은 “한 단 위/아래”를 물었을 때 답이 있게 하려고 두는 것이지, 화면에서 골라 쓰라고 두는 게 아닙니다.</p></div>
   <div class="warn gap"><p><b>지금 우리 코드는 2층까지입니다.</b> 1층이 없어서 “한 단 아래”에 답할 데가 없었고,
   3층이 없어서 컴포넌트마다 값을 따로 적다 보니 같은 “하위 수치”가 섹션마다 달랐습니다.
   아래 램프가 1층이고, <code>--stat-dim</code>이 3층의 첫 예입니다.</p></div>
@@ -482,6 +515,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
     <div class="r"><span class="rl">손가락 목표</span><span class="rs">누르는 영역 44×44 이상. 보이는 크기는 더 작아도 된다</span><span class="rv">44px</span></div>
     <div class="r"><span class="rl">포커스</span><span class="rs">키보드로만 쓰는 사람에게 유일한 단서 — 빠지면 화면을 못 쓴다</span><span class="rv">:focus-visible</span></div>
     <div class="r"><span class="rl">색 단독 금지</span><span class="rs">색 변화에는 모양 · 글자 · 움직임을 함께 붙인다</span><span class="rv">필수</span></div>
+    <div class="r"><span class="rl">대비 계산 기준</span><span class="rs">지금은 WCAG 2.x 명도비를 쓴다. 당근 Seed는 APCA로 옮겨 갔는데, 얇은 글자·어두운 배경에서 더 사람 눈에 가깝다 — 우리도 검토 대상이다</span><span class="rv">WCAG 2.x</span></div>
   </div>
   <div class="warn"><p><b>알고 받아들인 예외 하나</b> — 승 뱃지(<code>#22c55e</code> + 흰 글자, 2.3:1).
   뱃지 색이 이미 결과를 말하고 글자는 그 위의 확인이라, PO가 대비보다 초록의 선명함을 택했습니다(2026-08-24).
@@ -625,6 +659,80 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
   지금은 “언제 채워지는지”까지만 말하고 버튼이 없습니다.</p></div>
 </section>
 
+
+<section id="skeleton">
+  <h2>스켈레톤 — 불러오는 동안</h2>
+  <p class="note">빈 화면을 보여 주면 사람은 <b>고장</b>으로 읽습니다.
+  들어올 내용의 <b>모양</b>을 미리 그려 두면 “곧 온다”가 됩니다.</p>
+  <div class="demo dcol">
+    <div class="d-card" style="max-width:360px">
+      <div class="sk sk-t" style="width:38%"></div>
+      <div class="sk-row"><div class="sk sk-c"></div><div style="flex:1"><div class="sk sk-l" style="width:52%"></div><div class="sk sk-s" style="width:34%"></div></div><div class="sk sk-n"></div></div>
+      <div class="sk-row"><div class="sk sk-c"></div><div style="flex:1"><div class="sk sk-l" style="width:44%"></div><div class="sk sk-s" style="width:40%"></div></div><div class="sk sk-n"></div></div>
+      <div class="sk-row"><div class="sk sk-c"></div><div style="flex:1"><div class="sk sk-l" style="width:58%"></div><div class="sk sk-s" style="width:30%"></div></div><div class="sk sk-n"></div></div>
+    </div>
+  </div>
+  <div class="ramp">
+    <div class="r"><span class="rl">바탕</span><span class="rs">N100 · 반경은 대신하는 요소를 따른다(글자 6 · 원형 마크 50%)</span><span class="rv">--surface-variant</span></div>
+    <div class="r"><span class="rl">움직임</span><span class="rs">왼쪽에서 오른쪽으로 흐르는 옅은 빛 1.4초 · 무한 반복</span><span class="rv">transform만</span></div>
+    <div class="r"><span class="rl">개수</span><span class="rs">실제로 올 개수를 모르면 <b>3줄</b>. 화면을 다 채우지 않는다</span><span class="rv">3</span></div>
+    <div class="r"><span class="rl">전환</span><span class="rs">내용이 오면 그 자리에서 바뀐다 — 위치가 달라지면 튄다</span><span class="rv">같은 자리</span></div>
+  </div>
+  <div class="warn"><p><b>0.3초 안에 올 것에는 쓰지 않습니다.</b> 깜빡이고 사라지는 스켈레톤은
+  없는 것만 못합니다. 반대로 3초를 넘길 일이면 스켈레톤이 아니라 진행 표시를 씁니다.</p></div>
+  <div class="warn"><p>글자를 넣지 않습니다 — “불러오는 중…”은 스켈레톤이 이미 하고 있는 말입니다.
+  <code>prefers-reduced-motion</code>에서는 흐르는 빛을 끄고 바탕만 남깁니다.</p></div>
+</section>
+
+<section id="toast">
+  <h2>토스트 — 끝났다는 신호</h2>
+  <p class="note">동작이 끝난 것을 알리는 가장 가벼운 방법입니다.
+  지금 우리는 기록을 확정해도 <b>아무 말이 없습니다</b>.</p>
+  <div class="demo dcol">
+    <div class="d-toast"><i class="msym">check_circle</i><span>기록이 확정됐어요</span></div>
+    <div class="d-toast is-undo"><i class="msym">delete</i><span>기록을 지웠어요</span><b>되돌리기</b></div>
+    <div class="d-toast is-err"><i class="msym">error</i><span>저장하지 못했어요<em>연결을 확인하고 다시 시도해 주세요</em></span></div>
+  </div>
+  <div class="ramp">
+    <div class="r"><span class="rl">자리</span><span class="rs">화면 아래 중앙 · 안전영역 위 16 · 최대 폭 420</span><span class="rv">bottom</span></div>
+    <div class="r"><span class="rl">모양</span><span class="rs">N950 바탕 · 흰 글자 · 반경 12 · e3</span><span class="rv">--r-box</span></div>
+    <div class="r"><span class="rl">머무는 시간</span><span class="rs">기본 3초 · 되돌리기가 붙으면 6초 · 오류는 사람이 닫을 때까지</span><span class="rv">3 / 6 / ∞</span></div>
+    <div class="r"><span class="rl">동시에</span><span class="rs">한 번에 하나. 새것이 오면 앞의 것을 밀어낸다</span><span class="rv">1</span></div>
+    <div class="r"><span class="rl">들고 남</span><span class="rs">아래에서 12px 올라오며 켜지고, 그대로 꺼진다 · 0.24초</span><span class="rv">transform · opacity</span></div>
+  </div>
+  <div class="warn"><p><b>되돌릴 수 있는 동작에는 되돌리기를 붙입니다.</b> 그러면 삭제 앞에 확인 대화를
+  세우지 않아도 됩니다 — 물어보고 지우는 것보다, 지우고 되돌릴 수 있게 하는 쪽이 손이 덜 갑니다.</p></div>
+  <div class="warn"><p>토스트는 <b>사라지는 것</b>이라 꼭 알아야 하는 정보를 담지 않습니다.
+  검수 반려처럼 남아야 하는 것은 인라인 배너로 화면에 붙입니다.
+  스크린리더에는 <code>role="status"</code>로 알리고, 오류는 <code>role="alert"</code>로 올립니다.</p></div>
+</section>
+
+<section id="pagination">
+  <h2>페이지네이션 — 긴 목록</h2>
+  <p class="note">기록이 쌓이면 한 번에 다 보여 줄 수 없습니다.
+  나누는 방법이 둘인데, <b>어느 쪽인지에 따라 사람이 하는 일이 달라집니다</b>.</p>
+  <div class="demo dcol">
+    <div class="d-page">
+      <button class="d-pg" disabled><i class="msym">chevron_left</i></button>
+      <button class="d-pg on">1</button><button class="d-pg">2</button><button class="d-pg">3</button>
+      <span class="d-pg-gap">···</span><button class="d-pg">12</button>
+      <button class="d-pg"><i class="msym">chevron_right</i></button>
+    </div>
+    <div style="margin-top:14px"><button class="d-btn d-tonal" style="width:100%;max-width:360px">경기 20개 더보기</button></div>
+  </div>
+  <div class="ramp">
+    <div class="r"><span class="rl">번호</span><span class="rs">돌아올 자리가 필요한 곳 — 운영 콘솔의 경기 · 선수 목록</span><span class="rv">데스크톱</span></div>
+    <div class="r"><span class="rl">더보기</span><span class="rs">쭉 훑는 곳 — 공개 화면의 기록 · 카드 앨범</span><span class="rv">모바일</span></div>
+    <div class="r"><span class="rl">한 쪽 크기</span><span class="rs">표 20줄 · 카드 12장. 스크롤 한 번에 끝나는 양</span><span class="rv">20 / 12</span></div>
+    <div class="r"><span class="rl">버튼</span><span class="rs">36×36 · 반경 8 · 현재 쪽만 N950 채움. 양 끝은 비활성</span><span class="rv">SM</span></div>
+    <div class="r"><span class="rl">생략</span><span class="rs">앞뒤 1쪽 + 처음 · 끝은 항상 보인다. 나머지는 ···</span><span class="rv">···</span></div>
+  </div>
+  <div class="warn"><p><b>남은 개수를 버튼에 적습니다</b> — “더보기”만 있으면 누를지 말지를 감으로 정해야 합니다.
+  “경기 20개 더보기”면 여기서 결정할 수 있습니다. 선수 카드 시트가 이미 그렇게 하고 있습니다.</p></div>
+  <div class="warn"><p>무한 스크롤은 쓰지 않습니다 — 바닥에 닿을 수 없으면 “다 봤다”가 없고,
+  아래에 있는 것(공유 · 저장)에 영영 못 닿습니다.</p></div>
+</section>
+
 <section id="nav">
   <h2>내비게이션</h2>
   <div class="demo dcol">
@@ -633,7 +741,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
   <div class="ramp">
     <div class="r"><span class="rl">탭</span><span class="rs">균등 분할 · 13px · 선택된 것만 700 Ink + 아래 2px 밑줄</span><span class="rv">있음</span></div>
     <div class="r"><span class="rl">사이드 내비</span><span class="rs">운영 콘솔 좌측. 선택 행에 브랜드 3px 띠</span><span class="rv">있음</span></div>
-    <div class="r"><span class="rl">페이지네이션</span><span class="rs">기록이 쌓이면 목록을 나눠야 한다</span><span class="rv">없음</span></div>
+    <div class="r"><span class="rl">페이지네이션</span><span class="rs">기록이 쌓이면 목록을 나눠야 한다 — 정의 완료, 코드 적용 대기</span><span class="rv">정의됨</span></div>
     <div class="r"><span class="rl">브레드크럼</span><span class="rs">대회 → 경기 → 선수 깊이가 생기면 필요하다</span><span class="rv">없음</span></div>
   </div>
 </section>
@@ -670,10 +778,10 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
   <p class="note">대표적인 디자인 시스템과 대조해 <b>우리에게 빠진 부품</b>을 적어 둡니다.
   필요해질 때 즉흥으로 만들지 않기 위해서입니다.</p>
   <div class="ramp">
-    <div class="r"><span class="rl">토스트</span><span class="rs">짧은 알림. 지금은 동작이 끝난 것을 알릴 방법이 없다</span><span class="rv"><span class="tag tag-no">없음</span></span></div>
-    <div class="r"><span class="rl">스켈레톤</span><span class="rs">불러오는 동안의 자리 표시. 지금은 빈 화면이 잠깐 보인다</span><span class="rv"><span class="tag tag-no">없음</span></span></div>
+    <div class="r"><span class="rl">토스트</span><span class="rs">짧은 알림 — 2026-08-25 정의함</span><span class="rv"><span class="tag tag-ok">정의됨</span></span></div>
+    <div class="r"><span class="rl">스켈레톤</span><span class="rs">불러오는 동안의 자리 표시 — 2026-08-25 정의함</span><span class="rv"><span class="tag tag-ok">정의됨</span></span></div>
     <div class="r"><span class="rl">툴팁</span><span class="rs">아이콘만 있는 버튼의 이름</span><span class="rv"><span class="tag tag-no">없음</span></span></div>
-    <div class="r"><span class="rl">페이지네이션</span><span class="rs">기록이 쌓이면 목록을 나눠야 한다</span><span class="rv"><span class="tag tag-no">없음</span></span></div>
+    <div class="r"><span class="rl">페이지네이션</span><span class="rs">긴 목록 나누기 — 2026-08-25 정의함</span><span class="rv"><span class="tag tag-ok">정의됨</span></span></div>
     <div class="r"><span class="rl">인라인 배너</span><span class="rs">화면 상단의 경고 · 안내</span><span class="rv"><span class="tag tag-no">없음</span></span></div>
     <div class="r"><span class="rl">확인 대화</span><span class="rs">되돌릴 수 없는 동작 앞의 확인</span><span class="rv"><span class="tag tag-part">일부</span></span></div>
     <div class="r"><span class="rl">빈 상태의 행동</span><span class="rs">“무엇이 없다”까지만 있고 “그럼 뭘 하면 되는지”가 없다</span><span class="rv"><span class="tag tag-part">일부</span></span></div>
