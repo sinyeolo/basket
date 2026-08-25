@@ -44,18 +44,18 @@
    "개발 핸드오프" 문서를 참고하세요.
    ============================================================ */
 :root{
-  --primary:#ff9100; --on-primary:#1a1200; --primary-container:#ffe7cf; --on-primary-container:#7a3600;
+  --primary:#ff9100; --on-primary:#1c1b1f; --primary-container:#f0ddc4; --on-primary-container:#6d3306;
   --primary-strong-text:#d95f00; /* 흰 배경 위 텍스트 전용 — 순수 --primary는 대비 3:1 미달(약 2.6:1)이라 텍스트에는 이 톤 사용 */
-  --main:#1b1b1f; --on-main:#ffffff;
-  --surface:#ffffff; --surface-container:#f3f1f5; --surface-variant:#f4eef2;
+  --main:#1c1b1f; --on-main:#ffffff;
+  --surface:#ffffff; --surface-container:#f4eef2; --surface-variant:#f4eef2;
   --head-bg:#f8f7f9; /* 표·목록 헤더 영역 전용 — surface-container보다 밝은 톤, 전체 페이지 통일 적용 */
   --on-surface:#1c1b1f; --on-surface-variant:#6b6a72;
   --outline:#c9c6cf; --outline-variant:#e6e2ea;
-  --mono-fill:#e8e6ea; --mono-on:#5b5a61;
+  --mono-fill:#e6e2ea; --mono-on:#5b5a61;
   --blue:#3b82f6; --red:#ef4444; --green:#22c55e; --amber:#f59e0b; --violet:#8b5cf6; --teal:#14b8a6;
   --clock:#ff3d00;  /* 경기 시계 — 실제 전광판의 붉은 7세그먼트 */
-  --green-c:#d9f4e6; --on-green-c:#0c5c37;
-  --red-c:#fde2e2; --on-red-c:#a41e1e;
+  --green-c:#caead6; --on-green-c:#145f30;
+  --red-c:#f2e5e5; --on-red-c:#8c1212;
   /* 승리 뱃지 — 밝은 초록 + 흰 글씨. 대비는 2.28:1로 WCAG AA(작은 텍스트 4.5:1) 미달이지만,
      밝은 초록 배경을 유지하는 쪽을 PO가 선택했다. 접근성이 필요해지면 글씨를 #052e16으로
      뒤집으면 배경 톤 그대로 6.5:1이 나온다. */
@@ -246,7 +246,7 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 .profile-wrap:hover .pmenu,.profile-wrap.open .pmenu{visibility:visible;opacity:1;transform:translateY(0)}
 .pmenu .mi{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:500;color:var(--on-surface);cursor:pointer;border:none;background:transparent;width:100%;font-family:var(--font);text-align:left}
 .pmenu .mi:hover{background:var(--surface-variant)}
-.pmenu .mi.danger{color:#a4321f}
+.pmenu .mi.danger{color:#8c1212}
 .pmenu .mi svg{width:17px;height:17px;stroke:currentColor;opacity:.85;flex:none}
 .pmenu .div{height:1px;background:var(--outline-variant);margin:5px 6px}
 /* nav 자체가 아니라 메뉴 목록만 스크롤되게: min-height:0으로 flex 아이템이 줄어들 수 있게 함 */
@@ -381,7 +381,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .btn[disabled]{opacity:.38;box-shadow:none;cursor:default;filter:none;pointer-events:none}
 .btn-main{background:var(--main);color:var(--on-main);box-shadow:var(--e1)}
 .btn-main:hover{box-shadow:var(--e2);filter:brightness(1.18)}
-.btn-primary{background:var(--primary);color:var(--on-primary);box-shadow:var(--e1)}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:var(--e1)}
 .btn-primary:hover{box-shadow:var(--e2);filter:brightness(1.04)}
 .btn-tonal{background:var(--surface-variant);color:var(--on-surface)}
 .btn-tonal:hover{background:#e7e1e8}
@@ -617,7 +617,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .tfoul.bonus,.tfoul.penalty{color:var(--red);font-weight:700}
 .fbadge{display:inline-flex;align-items:center;height:18px;padding:0 7px;border-radius:5px;
   background:var(--red);color:#fff;font-size:11px;font-weight:800;letter-spacing:.02em}
-.tfoul.penalty .fbadge{background:#a41e1e}
+.tfoul.penalty .fbadge{background:#8c1212}
 .center{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 40px}
 /* 쿼터 상태·시계는 '상태 표시'이지 액션이 아니므로 포인트 컬러를 쓰지 않음 */
 .qchip{background:var(--surface-variant);color:var(--on-surface-variant);font-weight:700;font-size:13px;padding:5px 13px;border-radius:var(--r-btn);white-space:nowrap}
@@ -903,7 +903,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
   border:none;background:transparent;padding:0;font-family:var(--font);text-align:left}
 .m3check{position:relative;width:18px;height:18px;flex:none;border-radius:6px;border:2px solid var(--outline);
   background:var(--surface);transition:background .12s,border-color .12s}
-/* 체크 표시는 --on-primary(#1a1200) — 채워진 배경이 --primary(#ff9100)라 흰 체크는 대비 2.26:1로
+/* 체크 표시는 --on-primary(#1c1b1f) — 채워진 배경이 --primary(#ff9100)라 흰 체크는 대비 2.26:1로
    비텍스트 대비 기준(3:1)에 미달했다. 토큰 조합(primary + on-primary)을 그대로 쓰면 8.2:1 */
 .m3check::after{content:"";position:absolute;inset:0;margin:auto;width:12px;height:12px;opacity:0;transition:opacity .1s;
   background:no-repeat center/12px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1200' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5 5L20 6.5'/%3E%3C/svg%3E")}
@@ -1756,7 +1756,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 위험 액션은 위 내용과 붙어 있으면 안 된다 — 실수로 누르는 걸 막는 건 확인 팝업이지만,
    그 전에 '여기서부터는 다른 성격'이라는 게 간격으로 읽혀야 한다. 섹션 간격과 같은 값. */
 .danger-zone{margin-top:28px;padding:10px 4px 4px;display:flex;align-items:center;justify-content:flex-end;gap:16px;flex-wrap:wrap}
-.btn-danger{background:transparent;border:1px solid #f1b7b7;color:#a4321f}
+.btn-danger{background:transparent;border:1px solid #edc7c7;color:#8c1212}
 .btn-danger:hover{background:#fee2e2}
 
 /* 목록 검색 · 필터 바 */
@@ -1887,7 +1887,7 @@ body.modal-open{overflow:hidden}
 .sheet .acts button:hover{background:var(--main);color:var(--on-main)}
 .sheet .acts .acts-lab{font-size:11px;font-weight:700;color:var(--on-surface-variant);padding:6px 2px 0}
 .sheet .acts .acts-lab:first-child{padding-top:0}
-.sheet .acts button.danger{color:#a4321f}
+.sheet .acts button.danger{color:#8c1212}
 /* #ef4444에 흰 글자는 3.8:1로 AA(4.5:1) 미달 — 위험한 동작일수록 라벨이 또렷해야 한다 */
 .sheet .acts button.danger:hover{background:#b91c1c;color:#fff}
 
