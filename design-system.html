@@ -38,6 +38,21 @@ h3{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--on-surface-va
   margin:22px 0 10px;text-transform:uppercase}
 h3:first-of-type{margin-top:0}
 
+.ladbox{display:flex;flex-direction:column;gap:2px}
+.lad{display:flex;align-items:center;gap:11px;padding:7px 10px;border-radius:9px}
+.lad:nth-child(odd){background:var(--head-bg)}
+.lad i{width:30px;height:30px;border-radius:8px;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)}
+.lad b{font-family:var(--font-display);font-size:11px;font-weight:800;color:var(--on-surface-variant);
+  min-width:26px;flex:none}
+.lad .ln{font-size:13px;font-weight:700;min-width:132px;flex:none}
+.lad .lh{font-family:var(--font-display);font-size:11px;font-weight:700;color:var(--on-surface-variant);
+  min-width:66px;flex:none}
+.lad .lu{font-size:11px;color:var(--on-surface-variant);flex:1;min-width:0}
+.ladbox.dk{background:#0a0b0f;border-radius:12px;padding:8px;gap:2px}
+.ladbox.dk .lad:nth-child(odd){background:rgba(255,255,255,.05)}
+.ladbox.dk .lad i{box-shadow:inset 0 0 0 1px rgba(255,255,255,.16)}
+.ladbox.dk .ln{color:#f4f4f6}
+.ladbox.dk b,.ladbox.dk .lh,.ladbox.dk .lu{color:#9a9ba3}
 .sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(198px,1fr));gap:10px}
 .s{display:flex;gap:11px;align-items:flex-start;padding:9px;border-radius:12px;background:var(--surface-variant)}
 .chip{width:42px;height:42px;border-radius:10px;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.07)}
@@ -65,12 +80,15 @@ h3:first-of-type{margin-top:0}
 
 .ramp{display:flex;flex-direction:column;gap:2px}
 .r{display:flex;align-items:baseline;gap:12px;padding:9px 11px;border-radius:10px}
+.r .rv{white-space:nowrap}
 .r:nth-child(odd){background:var(--head-bg)}
 .r .rl{font-family:var(--font-display);font-size:11px;font-weight:700;color:var(--on-surface-variant);
   min-width:88px;flex:none}
-.r .rs{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r .rs{flex:1;min-width:0;line-height:1.6}   /* 설명이 길면 접힌다 — 잘리면 규칙을 못 읽는다 */
 .r .rv{font-family:var(--font-display);font-size:11px;font-weight:700;color:var(--on-surface-variant);flex:none}
 
+.sp{display:inline-block;height:14px;background:var(--primary);border-radius:2px;
+  margin-right:9px;vertical-align:middle}
 .rad{display:flex;flex-wrap:wrap;gap:10px}
 .rad div{width:74px;text-align:center}
 .rad i{display:block;height:52px;background:var(--surface-variant);
@@ -89,6 +107,38 @@ h3:first-of-type{margin-top:0}
   word-wrap:normal;direction:ltr;font-feature-settings:'liga';
   font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
 
+.demo{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:16px;border-radius:12px;
+  background:var(--surface-container);margin:16px 0 10px}
+.demo.dcol{display:block}
+.d-btn{height:44px;padding:0 24px;border:none;border-radius:100px;font-family:var(--font);
+  font-weight:600;font-size:13px;cursor:pointer}
+.d-main{background:#1b1b1f;color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.05),0 1px 3px 1px rgba(0,0,0,.05)}
+.d-primary{background:var(--primary);color:#1a1200;box-shadow:0 1px 2px rgba(0,0,0,.05),0 1px 3px 1px rgba(0,0,0,.05)}
+.d-tonal{background:var(--surface-variant);color:var(--on-surface)}
+.d-btn[disabled]{opacity:.38;cursor:default}
+.d-chip{display:inline-flex;align-items:center;font-size:13px;font-weight:600;padding:5px 11px;border-radius:8px}
+.d-c-ok{background:#d9f4e6;color:#0c5c37}
+.d-c-rv{background:#fde2e2;color:#a41e1e}
+.d-c-live{background:#ff9100;color:#1a1200}
+.d-c-tonal{background:var(--surface-variant);color:var(--on-surface)}
+.d-wl{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;
+  font-family:var(--font-display);font-size:11px;font-weight:800;background:#22c55e;color:#fff}
+.d-wl.d-l{background:#e8e6ea;color:#5b5a61}
+.d-input{display:inline-flex;align-items:center;height:48px;padding:0 18px;border-radius:100px;
+  background:var(--surface-variant);color:var(--on-surface-variant);font-size:13px}
+.d-card{background:var(--surface);border-radius:16px;padding:16px}
+.d-card-h{font-size:16px;font-weight:700;margin-bottom:16px}
+.d-tbl{width:100%;border-collapse:separate;border-spacing:0}
+.d-tbl th{font-size:11px;font-weight:600;color:var(--on-surface-variant);text-align:center;
+  padding:0 7px 10px;border-bottom:1px solid var(--outline-variant)}
+.d-tbl th:first-child,.d-tbl td:first-child{text-align:left}
+.d-tbl td{font-family:var(--font-display);font-size:13px;font-weight:500;color:var(--on-surface-variant);
+  text-align:center;padding:12px 7px;border-bottom:1px solid var(--outline-variant)}
+.d-tbl td:first-child{font-family:var(--font);font-weight:600;color:var(--on-surface)}
+.d-tbl td.k{font-weight:800;color:var(--on-surface)}
+.d-tbl tfoot td{font-weight:800;color:var(--on-surface);background:var(--head-bg);border-bottom:none}
+.d-mark{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;
+  border-radius:50%;color:#fff;font-weight:800;font-size:14px}
 .rule{padding:13px 15px;border-radius:12px;background:var(--surface-variant);margin-bottom:9px}
 .rule b{display:block;font-family:var(--font-display);font-size:12px;font-weight:800;letter-spacing:.04em;margin-bottom:5px}
 .rule span{font-size:13px;color:var(--on-surface-variant);line-height:1.72}
@@ -105,10 +155,16 @@ footer{margin-top:26px;font-size:11px;color:var(--on-surface-variant);line-heigh
 이 페이지가 아니라 문서를 고치고, 코드와 함께 맞춥니다.</p>
 
 <nav>
-  <a href="#surfaces">표면</a><a href="#light">라이트</a><a href="#dark">다크</a>
-  <a href="#type">타이포</a><a href="#shape">모양</a><a href="#elev">그림자</a>
-  <a href="#icon">아이콘</a><a href="#motion">모션</a><a href="#rules">규칙</a>
+  <a href="#surfaces">시작</a>
+  <a href="#ladder">사다리</a><a href="#light">색 · 라이트</a><a href="#dark">색 · 다크</a>
+  <a href="#type">타이포</a><a href="#space">간격</a><a href="#shape">모양</a>
+  <a href="#elev">그림자</a><a href="#icon">아이콘</a><a href="#motion">모션</a>
+  <a href="#components">컴포넌트</a><a href="#rules">규칙</a>
 </nav>
+<p class="lede" style="margin:0 0 14px">
+  <b>Foundations</b> — 사다리 · 색 · 타이포 · 간격 · 모양 · 그림자 · 아이콘 · 모션<br>
+  <b>Components</b> — 버튼 · 칩 · 입력 · 카드 · 표 · 마크 · 시트
+</p>
 
 <section id="surfaces">
   <h2>표면이 둘이다</h2>
@@ -116,6 +172,24 @@ footer{margin-top:26px;font-size:11px;color:var(--on-surface-variant);line-heigh
   콘솔은 읽고 입력하는 작업대이고, 카드는 자랑하고 공유하는 물건입니다. 목적이 다르니 팔레트도 다릅니다.
   한 화면이 둘을 섞으면 둘 다 죽습니다. 브랜드 오렌지와 팀 컬러만 두 세계를 관통합니다 —
   같은 대회, 같은 팀을 가리키니까요.</p>
+</section>
+
+
+<section id="ladder">
+  <h2>중립 사다리 — “한 단 위 / 한 단 아래”의 답</h2>
+  <p class="note">중립 색을 <b>밝기 순으로 세운 것</b>입니다. “한 단 올려/내려”라는 말이 나오면
+  섞어서 만들지 말고 <b>이 사다리의 이웃 칸</b>을 씁니다. 세계가 둘이니 사다리도 둘입니다.</p>
+
+  <h3>작업대 · 라이트</h3>
+  <div class="ladbox"><div class="lad"><i style="background:#ffffff"></i><b>N0</b><span class="ln">Paper · 시트 흰 면</span><span class="lh">#FFFFFF</span><span class="lu">카드·컨트롤 배경</span></div><div class="lad"><i style="background:#f8f7f9"></i><b>N1</b><span class="ln">Header Wash</span><span class="lh">#F8F7F9</span><span class="lu">표·목록 머리글 행</span></div><div class="lad"><i style="background:#f3f1f5"></i><b>N2</b><span class="ln">Fog Canvas</span><span class="lh">#F3F1F5</span><span class="lu">페이지 바탕</span></div><div class="lad"><i style="background:#f4eef2"></i><b>N3</b><span class="ln">Surface Variant</span><span class="lh">#F4EEF2</span><span class="lu">입력·토널 버튼·호버</span></div><div class="lad"><i style="background:#e8e6ea"></i><b>N4</b><span class="ln">Mono Fill</span><span class="lh">#E8E6EA</span><span class="lu">"나" 행 강조</span></div><div class="lad"><i style="background:#e6e2ea"></i><b>N5</b><span class="ln">Outline Faint</span><span class="lh">#E6E2EA</span><span class="lu">머리카락 구분선</span></div><div class="lad"><i style="background:#c9c6cf"></i><b>N6</b><span class="ln">Outline</span><span class="lh">#C9C6CF</span><span class="lu">테두리</span></div><div class="lad"><i style="background:#6b6a72"></i><b>N7</b><span class="ln">Muted Ink</span><span class="lh">#6B6A72</span><span class="lu">보조 텍스트·라벨·하위 수치</span></div><div class="lad"><i style="background:#5b5a61"></i><b>N8</b><span class="ln">Mono Text</span><span class="lh">#5B5A61</span><span class="lu">Mono Fill 위 글자</span></div><div class="lad"><i style="background:#1c1b1f"></i><b>N9</b><span class="ln">Ink Text</span><span class="lh">#1C1B1F</span><span class="lu">본문·세운 수치</span></div></div>
+
+  <div class="warn"><p><b>N6과 N7 사이가 비어 있습니다.</b> Outline(밝기 .57)에서 Muted Ink(.15)로 한 번에 떨어져,
+  그 사이에 쓸 중간 톤이 없습니다. 글자에 쓸 수 있는 칸은 N7·N8·N9 셋뿐이고 N7과 N8은 거의 붙어 있어
+  실질적으로 <b>두 단</b>입니다 — 제가 “한 단 아래”를 만들어 쓴 것도 여기가 비어서였습니다.
+  중간 칸이 필요하면 새로 정하고 문서에 올려야 합니다. 즉흥으로 섞지 않습니다.</p></div>
+
+  <h3>진열장 · 다크</h3>
+  <div class="ladbox dk"><div class="lad"><i style="background:#ffffff"></i><b>N0</b><span class="ln">Sheet</span><span class="lh">#FFFFFF</span><span class="lu">하단 시트 흰 면</span></div><div class="lad"><i style="background:#f4f5f7"></i><b>N1</b><span class="ln">Sheet Sub</span><span class="lh">#F4F5F7</span><span class="lu">시트 안 연한 면</span></div><div class="lad"><i style="background:#f4f4f6"></i><b>N2</b><span class="ln">On Dark</span><span class="lh">#F4F4F6</span><span class="lu">무대 위 본문</span></div><div class="lad"><i style="background:#9a9ba3"></i><b>N3</b><span class="ln">On Dark Dim</span><span class="lh">#9A9BA3</span><span class="lu">무대 위 보조</span></div><div class="lad"><i style="background:#6d6f78"></i><b>N4</b><span class="ln">Sheet Muted</span><span class="lh">#6D6F78</span><span class="lu">시트 보조</span></div><div class="lad"><i style="background:#2b2f38"></i><b>N5</b><span class="ln">Pack Edge</span><span class="lh">#2B2F38</span><span class="lu">팩 옆면</span></div><div class="lad"><i style="background:#16171b"></i><b>N6</b><span class="ln">Sheet Ink</span><span class="lh">#16171B</span><span class="lu">시트 본문</span></div><div class="lad"><i style="background:#14161c"></i><b>N7</b><span class="ln">Stage Lit</span><span class="lh">#14161C</span><span class="lu">빛이 쏟아지는 위쪽</span></div><div class="lad"><i style="background:#0a0b0f"></i><b>N8</b><span class="ln">Stage</span><span class="lh">#0A0B0F</span><span class="lu">무대 바탕</span></div></div>
 </section>
 
 <section id="light">
@@ -228,6 +302,38 @@ footer{margin-top:26px;font-size:11px;color:var(--on-surface-variant);line-heigh
   <div class="warn"><p>숫자를 물건처럼 세우는 자리에만 씁니다 — 글이 아니라 전광판이라서 텍스트 램프와 따로 둡니다.</p></div>
 </section>
 
+
+<section id="space">
+  <h2>간격 · 굵기</h2>
+  <p class="note">간격도 사다리입니다. 실제로 코드에서 세어 보니 <b>4의 배수</b>가 뼈대이고,
+  그 사이 반 칸(2·6·10·14)이 촘촘한 자리를 메웁니다.</p>
+
+  <h3>간격 — 세어 본 결과</h3>
+  <div class="ramp">
+    <div class="r"><span class="rl">S1 · 2</span><span class="rs"><i class="sp" style="width:2px"></i>선 두께·미세 보정</span><span class="rv">44회</span></div>
+    <div class="r"><span class="rl">S2 · 4</span><span class="rs"><i class="sp" style="width:4px"></i>붙은 요소 사이</span><span class="rv">39회</span></div>
+    <div class="r"><span class="rl">S3 · 6</span><span class="rs"><i class="sp" style="width:6px"></i>아이콘과 글자</span><span class="rv">80회</span></div>
+    <div class="r"><span class="rl">S4 · 8</span><span class="rs"><i class="sp" style="width:8px"></i>기본 — 가장 많이 쓴다</span><span class="rv">104회</span></div>
+    <div class="r"><span class="rl">S5 · 10</span><span class="rs"><i class="sp" style="width:10px"></i>줄 사이</span><span class="rv">79회</span></div>
+    <div class="r"><span class="rl">S6 · 12</span><span class="rs"><i class="sp" style="width:12px"></i>블록 사이</span><span class="rv">55회</span></div>
+    <div class="r"><span class="rl">S7 · 16</span><span class="rs"><i class="sp" style="width:16px"></i>카드 안쪽 여백</span><span class="rv">40회</span></div>
+    <div class="r"><span class="rl">S8 · 20</span><span class="rs"><i class="sp" style="width:20px"></i>섹션 사이</span><span class="rv">18회</span></div>
+    <div class="r"><span class="rl">S9 · 28</span><span class="rs"><i class="sp" style="width:28px"></i>큰 단락</span><span class="rv">9회</span></div>
+  </div>
+  <div class="warn"><p><b>드리프트</b> — 5·7·9·11·13·18·22·26px이 아직 남아 있습니다(합쳐 60여 회).
+  타입 램프를 21단에서 5단으로 줄였던 것과 같은 정리가 필요한 자리입니다. 새로 짤 때는 위 사다리에서 고릅니다.</p></div>
+
+  <h3>굵기 — 네 단</h3>
+  <div class="ramp">
+    <div class="r"><span class="rl">500</span><span class="rs" style="font-weight:500">본문 · 하위 수치</span><span class="rv">Medium</span></div>
+    <div class="r"><span class="rl">600</span><span class="rs" style="font-weight:600">버튼 라벨 · 이름 · 부제</span><span class="rv">Semi Bold</span></div>
+    <div class="r"><span class="rl">700</span><span class="rs" style="font-weight:700">제목 · 칩 · 표 머리글</span><span class="rv">Bold</span></div>
+    <div class="r"><span class="rl">800</span><span class="rs" style="font-weight:800">세운 수치 · 진열 숫자</span><span class="rv">Extra Bold</span></div>
+  </div>
+  <div class="warn"><p>400은 쓰지 않습니다 — Pretendard의 400은 이 크기(11~13px)에서 흐려 보입니다.
+  “한 단 낮춰”는 이 네 칸에서 이웃으로 옮기는 뜻입니다.</p></div>
+</section>
+
 <section id="shape">
   <h2>모양 · 반경</h2>
   <p class="note">컨테이너 반경은 <b>겹침 깊이를 따라 한 단씩 줄입니다</b> — 시트 20 → 카드 16 → 안쪽 면 14 → 박스 12.
@@ -297,6 +403,87 @@ footer{margin-top:26px;font-size:11px;color:var(--on-surface-variant);line-heigh
   <div class="warn"><p>공개 화면(경기 상세·선수 카드)은 사람들에게 보여질 화면이라 무거워지면 안 됩니다.
   매 프레임 도는 값은 <code>transform</code>과 <code>opacity</code>로 제한합니다 — 레이아웃을 다시 재게 하는 속성은 쓰지 않습니다.
   <code>prefers-reduced-motion</code>에서는 반복 모션을 끕니다.</p></div>
+</section>
+
+
+<section id="components">
+  <h2>Components</h2>
+  <p class="note">Foundations의 값을 어떻게 조합하는지입니다. 새 화면을 짤 때는 여기서 골라 쓰고,
+  여기 없는 조합이 필요하면 먼저 이 문서에 올립니다.</p>
+
+  <h3>버튼</h3>
+  <div class="demo">
+    <button class="d-btn d-main">경기 시작</button>
+    <button class="d-btn d-primary">기록 확정</button>
+    <button class="d-btn d-tonal">취소</button>
+    <button class="d-btn d-tonal" disabled>비활성</button>
+  </div>
+  <div class="ramp">
+    <div class="r"><span class="rl">공통</span><span class="rs">높이 44 · 반경 Pill · 좌우 24 · 13px/600 · 아이콘 간격 7</span><span class="rv">--h-md</span></div>
+    <div class="r"><span class="rl">Main</span><span class="rs">가장 중요한 하나. 화면당 하나를 넘지 않는다</span><span class="rv">#1b1b1f</span></div>
+    <div class="r"><span class="rl">Primary</span><span class="rs">지금 살아 있는 동작 — Whistle Rule을 따른다</span><span class="rv">#ff9100</span></div>
+    <div class="r"><span class="rl">Tonal</span><span class="rs">보조 · 취소</span><span class="rv">Surface Variant</span></div>
+  </div>
+
+  <h3>칩 · 뱃지</h3>
+  <div class="demo">
+    <span class="d-chip d-c-ok">확정됨</span>
+    <span class="d-chip d-c-rv">검수 필요</span>
+    <span class="d-chip d-c-live">진행 중</span>
+    <span class="d-chip d-c-tonal">SF</span>
+    <span class="d-wl">W</span><span class="d-wl d-l">L</span>
+  </div>
+  <div class="ramp">
+    <div class="r"><span class="rl">칩</span><span class="rs">13px/600 · 상하 5 좌우 11 · 반경 8</span><span class="rv">--r-chip</span></div>
+    <div class="r"><span class="rl">승패 뱃지</span><span class="rs">20×20 · 11px/800 · 반경 6</span><span class="rv">--win</span></div>
+  </div>
+  <div class="warn"><p>칩의 뜻은 색이 정합니다 — 확정/검수는 이 제품의 뼈대(“기록됨 ≠ 확정됨”)라
+  다른 색으로 재사용하지 않습니다.</p></div>
+
+  <h3>입력</h3>
+  <div class="demo"><span class="d-input">선수 이름으로 찾기</span></div>
+  <div class="ramp">
+    <div class="r"><span class="rl">입력</span><span class="rs">높이 48 · 좌우 18 · 반경 Pill · Surface Variant 바탕 · 테두리 없음</span><span class="rv">13px</span></div>
+  </div>
+
+  <h3>카드 · 표</h3>
+  <div class="demo dcol">
+    <div class="d-card">
+      <div class="d-card-h">팀 기록 비교</div>
+      <table class="d-tbl">
+        <thead><tr><th>선수</th><th>득점</th><th>리바</th><th>어시</th></tr></thead>
+        <tbody>
+          <tr><td>윤성민</td><td class="k">23</td><td>7</td><td>3</td></tr>
+          <tr><td>김민수</td><td class="k">19</td><td>3</td><td>6</td></tr>
+        </tbody>
+        <tfoot><tr><td>합계</td><td class="k">42</td><td>10</td><td>9</td></tr></tfoot>
+      </table>
+    </div>
+  </div>
+  <div class="ramp">
+    <div class="r"><span class="rl">카드</span><span class="rs">Paper 바탕 · 반경 16 · 안쪽 여백 16 · 그림자 없음</span><span class="rv">--r-card</span></div>
+    <div class="r"><span class="rl">표 머리글</span><span class="rs">11px/600 Muted Ink · 아래 Outline Faint 한 줄</span><span class="rv">--head-bg</span></div>
+    <div class="r"><span class="rl">표 셀</span><span class="rs">13px · 상하 12 좌우 7 · 세운 값 800 Ink / 나머지 500 Muted</span><span class="rv">Stat Weight</span></div>
+  </div>
+
+  <h3>팀 마크</h3>
+  <div class="demo">
+    <span class="d-mark" style="background:#3b82f6">서</span>
+    <span class="d-mark" style="background:#f59e0b">송</span>
+    <span class="d-mark" style="background:#22c55e">마</span>
+    <span class="d-mark" style="background:#8b5cf6">강</span>
+  </div>
+  <div class="ramp">
+    <div class="r"><span class="rl">마크</span><span class="rs">팀 색 바탕 · 흰 글자 첫 자 · 원형 · 외곽 라인 없음</span><span class="rv">Mark Rule</span></div>
+  </div>
+  <div class="warn"><p>로고가 있으면 로고를 씁니다. 없을 때만 이 규칙이 적용됩니다.
+  명도 대비는 따지지 않습니다 — 마크는 읽는 글자가 아니라 팀을 가리키는 그림입니다.</p></div>
+
+  <h3>하단 시트</h3>
+  <div class="ramp">
+    <div class="r"><span class="rl">시트</span><span class="rs">위쪽 모서리 26 · 흰 면 · 접히면 핸들만(34px)</span><span class="rv">--sh-bg</span></div>
+    <div class="r"><span class="rl">핸들</span><span class="rs">48×5 · 반경 3 · 끌어올리면 내용이 투명도로 떠오른다</span><span class="rv">—</span></div>
+  </div>
 </section>
 
 <section id="rules">
