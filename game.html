@@ -28,9 +28,10 @@
   /* 이 화면의 수치 위계는 한 규칙이다(PO 2026-08-24): 우위는 800 + 본문색,
      하위는 600 + 한 단 연한 색. 세 섹션(쿼터 표·기록별 탑플레이어·팀 기록 비교)이
      같은 값을 봐야 한 화면으로 읽힌다 — 예전엔 섹션마다 하위 색이 달랐다.
-     라벨색(--on-surface-variant)까지 내리지 않는 건, 거기까지 가면 숫자가
-     '작다'가 아니라 '덜 중요하다'로 읽히기 때문이다. */
-  --stat-dim:color-mix(in srgb, var(--on-surface) 60%, var(--on-surface-variant));
+     색은 팔레트의 보조 텍스트(Muted Ink)를 그대로 쓴다 — 본문 계열은 Ink Text와 Muted Ink
+     두 단뿐이라, '한 단 아래'는 섞어 만드는 값이 아니라 이미 있는 그 단이다. */
+  --stat-dim:var(--on-surface-variant);   /* 팔레트의 보조 텍스트 그대로 — 섞은 값을 새로 만들지 않는다 */
+  --stat-dim-w:500;                       /* 굵기도 같은 자리에 둔다. 색만 옮기면 다음에 또 어긋난다 */
   --outline:#c9c6cf; --outline-variant:#e6e2ea;
   --green:#22c55e; --red:#ef4444; --amber:#f59e0b;
   --win:#22c55e; --on-win:#ffffff;   /* 승리 — 밝은 초록 하나로 통일(운영 콘솔과 같은 값) */
@@ -258,7 +259,7 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .ldr-v{font-family:var(--font-display);font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;min-width:26px;text-align:center}
 /* 낮은 쪽은 화면 공통 규칙을 따른다 — 두께 600에 한 단 연한 색(PO).
    섹션마다 하위 색이 다르면 같은 '낮은 수치'가 자리에 따라 다른 뜻으로 보인다. */
-.ldr-v.dim{font-weight:600;color:var(--stat-dim)}
+.ldr-v.dim{font-weight:var(--stat-dim-w);color:var(--stat-dim)}
 /* 라벨 폭을 고정한다 — '득점'(20px)과 '리바운드'(39px)가 폭이 달라 양옆 수치가
    줄마다 다른 자리에 섰다. 가장 긴 라벨에 맞춰 두면 세 줄의 수치가 저절로 한 줄로 선다. */
 .ldr-lb{font-size:11px;font-weight:700;color:var(--on-surface-variant);flex:none;
@@ -290,7 +291,7 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .qf-row:last-child{border-bottom:none}
 .qf-head{padding:0 0 7px;font-size:11px;font-weight:600;color:var(--on-surface-variant)}
 .qf-head span{text-align:center}
-.qf-row span{text-align:center;font-family:var(--font-display);font-size:13px;font-weight:600;
+.qf-row span{text-align:center;font-family:var(--font-display);font-size:13px;font-weight:var(--stat-dim-w);
   color:var(--stat-dim)}
 .qf-row .qf-up{color:var(--on-surface);font-weight:800}
 .qf-nm{display:flex;align-items:center;gap:6px;font-family:var(--font);font-size:13px;font-weight:600;
@@ -311,7 +312,7 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .cmp-row{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:10px}
 .cmp-v{font-family:var(--font-display);font-size:16px;font-weight:800;text-align:center}
 /* 화면 공통 규칙 — 값은 --stat-dim 한 곳에 있다 */
-.cmp-v.dim{font-weight:600;color:var(--stat-dim)}
+.cmp-v.dim{font-weight:var(--stat-dim-w);color:var(--stat-dim)}
 .cmp-bar{display:flex;flex-direction:column;gap:5px}
 .cmp-lb{font-size:11px;font-weight:600;color:var(--on-surface-variant);text-align:center}
 .cmp-bars{display:grid;grid-template-columns:1fr 1fr;gap:3px}
@@ -397,7 +398,7 @@ th.sorted .th-sort{font-weight:800}
    한 단 더 내려가 있었고, 같은 '보조 수치'가 탭에 따라 다르게 보였다.
    정렬 중인 열은 어느 기준으로 늘어놨는지 표를 훑을 때도 보여야 해서 함께 세운다. */
 td.sorted{color:var(--on-surface);font-weight:800;background:var(--head-bg)}
-td{border-bottom:1px solid var(--outline-variant);font-family:var(--font-display);font-weight:600;
+td{border-bottom:1px solid var(--outline-variant);font-family:var(--font-display);font-weight:var(--stat-dim-w);
   color:var(--stat-dim)}
 td.key{font-weight:800;color:var(--on-surface)}
 /* 선수 칸은 가로 스크롤 중에도 붙어 있어야 한다. 다만 스크롤러가 카드 여백만큼 바깥으로
