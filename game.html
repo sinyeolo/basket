@@ -25,6 +25,12 @@
   --main:#1b1b1f; --on-main:#ffffff;
   --surface:#ffffff; --surface-container:#f3f1f5; --surface-variant:#f4eef2; --head-bg:#f8f7f9;
   --on-surface:#1c1b1f; --on-surface-variant:#6b6a72;
+  /* 이 화면의 수치 위계는 한 규칙이다(PO 2026-08-24): 우위는 800 + 본문색,
+     하위는 600 + 한 단 연한 색. 세 섹션(쿼터 표·기록별 탑플레이어·팀 기록 비교)이
+     같은 값을 봐야 한 화면으로 읽힌다 — 예전엔 섹션마다 하위 색이 달랐다.
+     라벨색(--on-surface-variant)까지 내리지 않는 건, 거기까지 가면 숫자가
+     '작다'가 아니라 '덜 중요하다'로 읽히기 때문이다. */
+  --stat-dim:color-mix(in srgb, var(--on-surface) 60%, var(--on-surface-variant));
   --outline:#c9c6cf; --outline-variant:#e6e2ea;
   --green:#22c55e; --red:#ef4444; --amber:#f59e0b;
   --win:#22c55e; --on-win:#ffffff;   /* 승리 — 밝은 초록 하나로 통일(운영 콘솔과 같은 값) */
@@ -250,9 +256,9 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .ldr-head + .ldr-row{border-top:none}
 .ldr-mid{display:flex;align-items:baseline;justify-content:center;gap:8px;flex:none}
 .ldr-v{font-family:var(--font-display);font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;min-width:26px;text-align:center}
-/* 낮은 쪽은 두께만 한 단 내린다 — 색을 흐리게 하면 '못한 선수'로 읽히는데,
-   여기 오른 시점에 이미 팀 대표다. 굵기 차이는 크기를 말하지 자격을 말하지 않는다. */
-.ldr-v.dim{font-weight:600}
+/* 낮은 쪽은 화면 공통 규칙을 따른다 — 두께 600에 한 단 연한 색(PO).
+   섹션마다 하위 색이 다르면 같은 '낮은 수치'가 자리에 따라 다른 뜻으로 보인다. */
+.ldr-v.dim{font-weight:600;color:var(--stat-dim)}
 /* 라벨 폭을 고정한다 — '득점'(20px)과 '리바운드'(39px)가 폭이 달라 양옆 수치가
    줄마다 다른 자리에 섰다. 가장 긴 라벨에 맞춰 두면 세 줄의 수치가 저절로 한 줄로 선다. */
 .ldr-lb{font-size:11px;font-weight:700;color:var(--on-surface-variant);flex:none;
@@ -284,8 +290,8 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .qf-row:last-child{border-bottom:none}
 .qf-head{padding:0 0 7px;font-size:11px;font-weight:600;color:var(--on-surface-variant)}
 .qf-head span{text-align:center}
-.qf-row span{text-align:center;font-family:var(--font-display);font-size:13px;font-weight:500;
-  color:var(--on-surface-variant)}
+.qf-row span{text-align:center;font-family:var(--font-display);font-size:13px;font-weight:600;
+  color:var(--stat-dim)}
 .qf-row .qf-up{color:var(--on-surface);font-weight:800}
 .qf-nm{display:flex;align-items:center;gap:6px;font-family:var(--font);font-size:13px;font-weight:600;
   color:var(--on-surface);text-align:left;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -304,12 +310,8 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .cmp{display:flex;flex-direction:column;gap:13px}
 .cmp-row{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:10px}
 .cmp-v{font-family:var(--font-display);font-size:16px;font-weight:800;text-align:center}
-/* 낮은 쪽은 두께를 한 단 내리고 색도 한 단만 내린다(PO).
-   여기는 '비교'가 섹션의 목적이라 기록별 탑플레이어와 달리 색 차이를 둔다. 다만 예전처럼
-   --on-surface-variant까지 내리면 숫자가 라벨과 같은 톤이 되어 '작다'가 아니라
-   '덜 중요하다'로 읽혔다. 본문색과 라벨색 사이 한 단(6:4)에 세운다. */
-.cmp-v.dim{font-weight:600;
-  color:color-mix(in srgb, var(--on-surface) 60%, var(--on-surface-variant))}
+/* 화면 공통 규칙 — 값은 --stat-dim 한 곳에 있다 */
+.cmp-v.dim{font-weight:600;color:var(--stat-dim)}
 .cmp-bar{display:flex;flex-direction:column;gap:5px}
 .cmp-lb{font-size:11px;font-weight:600;color:var(--on-surface-variant);text-align:center}
 .cmp-bars{display:grid;grid-template-columns:1fr 1fr;gap:3px}
