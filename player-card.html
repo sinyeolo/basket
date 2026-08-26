@@ -84,7 +84,9 @@ button{font-family:var(--font)}
    폭을 고정하고 margin:auto로 가운데 둔다. transform은 쓰지 않는다: 시트의 드래그가 transform을
    쓰고 있어 여기서 겹치면 끌 때마다 자리가 튄다. */
 @media (min-width:560px){
-  .heroFixed,.sheet{max-width:520px;margin-left:auto;margin-right:auto}
+  /* 개봉 무대·배경·덮개도 같은 폭에 넣는다 — 폭이 다르면 개봉이 끝나는 순간
+     화면이 한 번 좁아지면서 다른 페이지로 넘어간 것처럼 보인다(PO). */
+  .heroFixed,.sheet,.packStage,.heroBg,.packBg{max-width:520px;margin-left:auto;margin-right:auto}
   /* 폰 화면 바깥은 무대와 같은 어둠으로 — 흰 여백이 남으면 창이 잘린 것처럼 보인다 */
   body{background:var(--stage-bg)}
 }
@@ -97,9 +99,14 @@ button{font-family:var(--font)}
    예전엔 bottom:74px이라 그 선에서 overflow가 잘렸는데, 등장하는 동안에는 시트가 아직
    화면 밖에 있어서 '빈 공간 위의 선'에서 카드가 뚝 끊겨 보였다(실기기 영상에서 확인).
    padding으로 바꾸면 카드가 서는 자리는 그대로면서 잘리는 선만 기기 바닥으로 내려간다. */
-.heroFixed{position:fixed;top:var(--preview-h,0);left:0;right:0;height:calc(var(--vph,100dvh) - var(--preview-h,0px));padding-bottom:34px;z-index:1;overflow:hidden;display:flex;flex-direction:column;align-items:center;
+/* 배경은 카드와 같은 층에 두지 않는다. 개봉 덮개(.packBg)가 배경 위·카드 아래로
+   들어가야 "카드가 먼저 올라오고 배경이 뒤따라 온다"가 되기 때문이다(PO).
+   한 층에 두면 덮개가 카드까지 가려서, 카드가 올라오는 게 안 보이고
+   덮개가 걷히면서 배경과 함께 나타나 버린다. */
+.heroBg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
   /* 배경 팀 컬러 틴트는 제거 — 카드 주변 등급 오라(.cardGlow)와 색이 겹쳐 서로 탁해졌다 */
   background:radial-gradient(circle at 50% -10%,var(--stage-bg2),var(--stage-bg) 60%)}
+.heroFixed{position:fixed;top:var(--preview-h,0);left:0;right:0;height:calc(var(--vph,100dvh) - var(--preview-h,0px));padding-bottom:34px;z-index:2;overflow:hidden;display:flex;flex-direction:column;align-items:center}
 
 /* ---- 무대 배경 ----
    광선 다발(회전하는 원뿔 그라디언트 세 겹 + 큰 블러)을 걷어냈다. 화면보다 큰 레이어를 돌리며
@@ -316,7 +323,8 @@ button{font-family:var(--font)}
    투명도를 한꺼번에 내리지 않는 이유는 그러면 화면 전체가 동시에 밝아져
    "언제 배경이 왔는지" 모르게 되기 때문이다. 바뀌는 건 transform 하나뿐이라
    합성 단계에서 끝난다 — 폰에서 매 프레임 다시 칠하지 않는다. */
-.packBg{position:absolute;left:0;right:0;top:0;height:calc(var(--vph,100dvh) * 2);transform:translateY(calc(var(--vph,100dvh) * -1));
+.packBg{position:fixed;left:0;right:0;top:0;z-index:1;display:none;
+  height:calc(var(--vph,100dvh) * 2);transform:translateY(calc(var(--vph,100dvh) * -1));
   background:radial-gradient(120% 40% at 50% 63%, #1b1e26 0%, #0a0b0f 68%);
   /* 경사는 배경 층이 아니라 마스크로 준다. 배경으로 얹으면 그 아래 radial이 불투명하게
      남아, 요소의 윗변에서 어둠이 칼로 자른 듯 시작한다(실측으로 확인). */
@@ -325,13 +333,14 @@ button{font-family:var(--font)}
 /* 카드가 다 등장한 뒤에 배경이 온다(PO). 카드가 올라오는 데 1.2초가 걸리므로
    0.75초 늦춰 시작해(카드가 사실상 자리에 선 시점) 1.6초에 걸쳐 훑는다 —
    먼저 것보다 50% 느리다. 카드가 먼저 서고 나서 무대가 뒤따라 밝아지는 순서다. */
-.packStage.is-wiping .packBg{animation:packBgWipe 1.6s cubic-bezier(.36,0,.2,1) .75s both}
+body.pack-cover .packBg{display:block}
+body.pack-wiping .packBg{animation:packBgWipe 1.6s cubic-bezier(.36,0,.2,1) .75s both}
 @keyframes packBgWipe{ from{transform:translateY(calc(var(--vph,100dvh) * -1))} to{transform:translateY(var(--vph,100dvh))} }
 .packStage.is-clearing{pointer-events:none}
 .packStage.is-clearing .packHint,
 .packStage.is-clearing .packSkip{opacity:0}
 @media (prefers-reduced-motion:reduce){
-  .packStage.is-wiping .packBg{animation:none;opacity:0;transition:opacity .3s ease}
+  body.pack-wiping .packBg{animation:none;opacity:0;transition:opacity .3s ease}
 }
 .packStage[hidden]{display:none}
 .packHint,.packSkip{transition:opacity .3s ease}
@@ -339,7 +348,7 @@ button{font-family:var(--font)}
 /* 안내문은 팩 바로 위에 붙는다(PO). 화면 위쪽에 고정하면 팩과 사이가 텅 빈다.
    고르기 단계의 팩 윗변 = 50vh - 239px(높이 478의 절반). 안내문 두 줄 + 화살표가 66px,
    팩과의 간격 28px을 더해 333px 위에 세운다. */
-.packHint{position:absolute;left:0;right:0;top:calc(var(--vph,100dvh) * .5 - 333px);margin:0;text-align:center;
+.packHint{position:absolute;left:0;right:0;top:calc(var(--vph,100dvh) * .5 - 315px);margin:0;text-align:center;
   pointer-events:none;font-size:16px;font-weight:600;letter-spacing:.01em;
   color:rgba(255,255,255,.72);
   /* 단계가 바뀌면 자리를 미끄러져 옮긴다(PO). top을 바꾸면 프레임마다 레이아웃을 다시 재므로
@@ -369,13 +378,16 @@ button{font-family:var(--font)}
   color:rgba(255,255,255,.42)}
 .packStage[data-phase="pick"] .packHint .forPick,
 .packStage[data-phase="open"] .packHint .forOpen{display:block}
-/* 개봉 단계 — 팩을 화면 높이의 10%만큼 더 내린다(PO). 손잡이가 엄지에 가까워진다. */
-.packStage[data-phase="open"] .pack{--packY:calc(var(--vph,100dvh) * .10)}
+/* 개봉 단계 — 손잡이가 화면 79% 지점에 오도록 내린다(PO).
+   팩을 10% 줄이면(0.9배) 아랫변이 고정이라 윗변이 52px 내려간다. 그만큼 덜 밀어야
+   손잡이가 같은 자리에 선다 — 10%가 아니라 5%다. 내리라던 요청의 뜻은 거리가 아니라
+   엄지 위치였으므로 그쪽을 지킨다. */
+.packStage[data-phase="open"] .pack{--packS:.9;--packY:calc(var(--vph,100dvh) * .05)}
 /* 안내문 자리는 팩 윗변에서 거꾸로 푼다. 예전 식(50vh - 97px)은 화면 높이 844px에
    맞춰 굳어 있었다 — 다른 높이에서는 안내문이 팩 뒤로 들어간다.
    개봉 단계 팩 윗변 = 1.22H - 520 + 0.10H. 안내문 높이 66 + 간격 28을 빼면
    옮길 거리 = 0.82H - 281이다. */
-.packStage[data-phase="open"] .packHint{transform:translateY(calc(var(--vph,100dvh) * .82 - 281px))}
+.packStage[data-phase="open"] .packHint{transform:translateY(calc(var(--vph,100dvh) * .77 - 252px))}
 
 /* 팩 — 세워 놓은 파우치. 아래는 화면 밖으로 나간다.
    배치는 bottom 하나로 고정하고 단계 차이는 transform으로만 준다 —
@@ -417,7 +429,7 @@ button{font-family:var(--font)}
    가운데 세우는 계산 — 변형 전 팩의 아랫변은 화면 밑 22vh에 있고(bottom:-22vh),
    줄인 높이는 478px다. 아랫변이 화면 밑에서 50vh-239px 위로 와야 하므로
    올려야 할 거리는 22vh + (50vh - 239px) = 72vh - 239px. */
-.packStage[data-phase="pick"] .pack{--packS:.92;--packY:calc(var(--vph,100dvh) * -.72 + 239px);cursor:pointer}
+.packStage[data-phase="pick"] .pack{--packS:.83;--packY:calc(var(--vph,100dvh) * -.72 + 216px);cursor:pointer}
 .packStage[data-phase="pick"] .packHandle,
 .packStage[data-phase="pick"] .packTrack{opacity:0;pointer-events:none}
 /* 고르기 단계에서만 팩이 숨을 쉰다 — 눌러야 할 물건이라는 걸 말 없이 알린다.
@@ -737,7 +749,18 @@ button{font-family:var(--font)}
 .pack.is-open .packHandle,.pack.is-open .packTrack{opacity:0}
 
 /* 개봉 중에는 카드 묶음을 세워 두고, 다 뜯은 뒤에 기존 등장 연출로 이어 간다 */
+/* 개봉 중에는 무대 층 전체를 감춘다. 예전에는 덮개(.packBg)가 무대(z20) 안에 있어
+   카드도 헤더도 자동으로 가려졌는데, 덮개를 배경과 카드 사이(z1)로 내리면서
+   카드보다 아래가 됐다 — 카드가 먼저 올라오게 하려면 그래야 하지만, 대신
+   뒤집기 버튼·시트 안내처럼 카드가 아닌 것들이 개봉 중에 비쳤다. */
+body.intro .heroFixed{opacity:0}
 body.intro .heroContent{animation:none;opacity:0}
+/* 카드가 올라오는 1.2초 동안 나머지 화면 장치는 아직 오지 않는다 —
+   카드만 올라와야 "카드가 나온다"로 읽힌다. 덮개가 다 걷힌 뒤에 함께 켠다. */
+.pcHeader,.flipBtn,.sheetHint{transition:opacity .35s ease .1s}
+body.pack-cover .pcHeader,
+body.pack-cover .flipBtn,
+body.pack-cover .sheetHint{opacity:0;pointer-events:none}
 @media (prefers-reduced-motion:reduce){
   .packStage[data-phase="pick"] .packBody{animation:none}
   .pack.is-open .packLid,.pack.is-open{animation-duration:.01s}
@@ -1698,6 +1721,10 @@ body.intro .heroContent{animation:none;opacity:0}
   height:var(--preview-h);box-sizing:border-box;padding:0 12px;
   overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
   background:rgba(20,22,28,.94);border-bottom:1px solid #22242c}
+/* 넓은 화면에서는 내용을 가운데로 모은다(PO). 폭을 520px로 가두지는 않는다 —
+   항목이 다 안 들어가 오른쪽이 잘린다. 좁은 화면에서 가운데 정렬을 쓰지 않는 이유는
+   내용이 넘칠 때 flex가 왼쪽 끝을 스크롤 밖으로 밀어내 첫 항목에 닿을 수 없기 때문이다. */
+@media (min-width:900px){ .previewBar{justify-content:center} }
 .previewBar::-webkit-scrollbar{display:none}
 .previewBar span,.previewBar button{flex:none}
 .previewBar span{font-size:11px;color:var(--on-dark-dim);align-self:center;margin-right:2px}
@@ -1735,7 +1762,6 @@ body.intro .heroContent{animation:none;opacity:0}
      밀봉된 팩의 절단선을 옆으로 쓸어 뜯으면 카드가 나온다(포켓몬 카드 팩 방식, PO).
      JS가 조건을 확인하고 body.intro를 붙일 때만 보인다. 조건이 아니면 아예 그리지 않는다. -->
 <div class="packStage" id="packStage" data-phase="pick" hidden>
-  <div class="packBg" aria-hidden="true"></div>
   <button type="button" class="packSkip" id="packSkip">건너뛰기</button>
   <p class="packHint" id="packHint">
     <b class="forPick">카드팩을 눌러 열어보세요<small>첫 카드가 들어 있어요</small></b>
@@ -1777,10 +1803,11 @@ body.intro .heroContent{animation:none;opacity:0}
   <button id="btnIntroAgain">다시 보기 ↻</button>
 </div>
 
+<div class="heroBg" aria-hidden="true"><div class="stageRays"><i></i><i></i><i></i></div></div>
+<div class="packBg" id="packBg" aria-hidden="true"></div>
 <div class="stage">
   <div class="heroFixed" id="heroFixed">
     <!-- 무대 조명 — 등급 컬러 빛줄기가 위에서 쏟아지며 일렁인다. 두 겹이 서로 다른 속도로 움직인다 -->
-    <div class="stageRays" aria-hidden="true"><i></i><i></i><i></i></div>
     <!-- 카드 자체에 BASKET 마크가 박혀 있어 헤더 로고는 같은 말의 반복이었다. 남는 건 공유 하나뿐 -->
     <header class="pcHeader">
       <span class="sp"></span>
@@ -2590,6 +2617,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     var remember = !forced;
 
     stage.hidden = false;
+    document.body.classList.add('pack-cover');   // 덮개는 무대 밖 층이라 따로 켠다
     document.body.classList.add('intro');
     var pack = document.getElementById('pack');
     var grip = document.getElementById('packGrip');
@@ -2669,19 +2697,19 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       /* 건너뛰기는 꺼낸 게 아니라 그만둔 것이다 — 여기서는 원래의 등장 연출을 돌려준다 */
       document.body.classList.remove('intro');
       stage.classList.add('is-clearing');
-      stage.classList.add('is-wiping');
-      setTimeout(function(){ stage.hidden = true; }, 2420);
+      document.body.classList.add('pack-wiping');
+      setTimeout(function(){ stage.hidden = true; document.body.classList.remove('pack-cover','pack-wiping'); }, 2420);
     }
     /* 팩이 사라지는 것과 카드가 올라오는 것이 겹쳐야 한 동작으로 읽힌다.
        팩이 다 없어진 뒤에 카드가 올라오면 두 장면을 이어 붙인 것처럼 보인다. */
     function reveal(delay){
       setTimeout(function(){
         document.body.classList.remove('intro');   // heroRiseIn이 여기서 돈다
-        stage.classList.add('is-wiping');          // 배경도 같은 순간에 위에서부터 걷힌다
-        /* 무대는 팩이 화면 밖으로 다 나간 뒤, 배경을 다 걷은 뒤에 치운다. 먼저 치우면
-           내려가던 팩이 도중에 사라지거나 걷히던 배경이 툭 끊긴다. 0.75초 뒤에
-           1.6초짜리 훑기가 도니 2.35초에 끝난다. */
-        setTimeout(function(){ stage.hidden = true; }, 2420);
+        document.body.classList.add('pack-wiping');
+        /* 카드는 덮개(z1)보다 위(z2)에 있으므로 여기서부터 바로 보이며 올라온다.
+           덮개는 0.75초 뒤에야 흐르기 시작한다 — 카드가 먼저 서고 배경이 뒤따른다(PO).
+           무대는 훑기(0.75 + 1.6초)가 다 끝난 뒤에 치운다. */
+        setTimeout(function(){ stage.hidden = true; document.body.classList.remove('pack-cover','pack-wiping'); }, 2420);
       }, delay);
     }
 
