@@ -316,35 +316,21 @@ button{font-family:var(--font)}
   z-index:20;overflow:hidden;perspective:1200px}
 /* 배경을 무대가 아니라 별도 층으로 뺀다. 무대째 흐리면 팩까지 같이 흐려지는데,
    팩은 사라지는 게 아니라 화면 밖으로 내려가야 한다(PO). */
-/* 화면 두 배 높이로 두고, 위쪽 절반에 투명으로 빠지는 경사를 들려 둔다.
-   가만히 있을 때(translateY(-100vh)) 화면에는 아래쪽 절반 — 지금까지와 똑같은 어두운 면 —
-   만 보인다. 아래로 흘려보내면 그 경사가 화면을 위에서 아래로 훑고 지나가며
-   뒤에 있던 무대가 서서히 드러난다(PO: 디바이스 위에서부터 아래로).
-   투명도를 한꺼번에 내리지 않는 이유는 그러면 화면 전체가 동시에 밝아져
-   "언제 배경이 왔는지" 모르게 되기 때문이다. 바뀌는 건 transform 하나뿐이라
-   합성 단계에서 끝난다 — 폰에서 매 프레임 다시 칠하지 않는다. */
-.packBg{position:fixed;left:0;right:0;top:0;z-index:1;display:none;
-  height:calc(var(--vph,100dvh) * 2);transform:translateY(calc(var(--vph,100dvh) * -1));
-  background:radial-gradient(120% 40% at 50% 63%, #1b1e26 0%, #0a0b0f 68%);
-  /* 경사는 배경 층이 아니라 마스크로 준다. 배경으로 얹으면 그 아래 radial이 불투명하게
-     남아, 요소의 윗변에서 어둠이 칼로 자른 듯 시작한다(실측으로 확인). */
-  /* 경사를 46%에서 9%로 좁혔다(PO). 넓으면 화면 전체가 서서히 밝아지는 것으로 읽혀
-     "일렁인다"가 된다 — 걷히는 것으로 보이려면 경계가 눈에 잡혀야 한다.
-     9% × 200vh = 18vh. 칼로 자른 선은 아니고, 지나가는 자리가 보이는 정도다. */
-  -webkit-mask-image:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 4%, #000 9%);
-  mask-image:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 4%, #000 9%)}
-/* 카드가 다 등장한 뒤에 배경이 온다(PO). 카드가 올라오는 데 1.2초가 걸리므로
-   0.75초 늦춰 시작해(카드가 사실상 자리에 선 시점) 1.6초에 걸쳐 훑는다 —
-   먼저 것보다 50% 느리다. 카드가 먼저 서고 나서 무대가 뒤따라 밝아지는 순서다. */
+/* 개봉 덮개 — 무대 배경 바로 위, 카드 바로 아래 층이다(z1).
+   위에서 아래로 훑는 마스크를 써 봤지만 걷히는 것보다 화면이 일렁이는 것으로 읽혔다(PO).
+   두 배경(덮개와 무대)이 둘 다 어두운 라디얼이라 경계가 설 자리가 없었던 것이다.
+   그냥 디졸브로 사라진다 — 바뀌는 건 opacity 하나뿐이라 합성 단계에서 끝난다. */
+.packBg{position:fixed;inset:0;z-index:1;display:none;
+  background:radial-gradient(120% 80% at 50% 26%, #1b1e26 0%, #0a0b0f 68%)}
 body.pack-cover .packBg{display:block}
-body.pack-wiping .packBg{animation:packBgWipe 1.6s cubic-bezier(.36,0,.2,1) .75s both}
-@keyframes packBgWipe{ from{transform:translateY(calc(var(--vph,100dvh) * -1))} to{transform:translateY(var(--vph,100dvh))} }
+/* 카드가 다 등장한 뒤에 배경이 온다(PO). 카드가 올라오는 데 1.2초가 걸리므로
+   0.75초 늦춰 시작해(카드가 사실상 자리에 선 시점) 1.6초에 걸쳐 걷힌다. */
+body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
+@keyframes packBgFade{ from{opacity:1} to{opacity:0} }
 .packStage.is-clearing{pointer-events:none}
 .packStage.is-clearing .packHint,
 .packStage.is-clearing .packSkip{opacity:0}
-@media (prefers-reduced-motion:reduce){
-  body.pack-wiping .packBg{animation:none;opacity:0;transition:opacity .3s ease}
-}
+@media (prefers-reduced-motion:reduce){ body.pack-wiping .packBg{animation-duration:.4s;animation-delay:.2s} }
 .packStage[hidden]{display:none}
 .packHint,.packSkip{transition:opacity .3s ease}
 
@@ -367,13 +353,18 @@ body.pack-wiping .packBg{animation:packBgWipe 1.6s cubic-bezier(.36,0,.2,1) .75s
    한 바퀴의 뒤쪽 절반은 쉰다. 쉬는 참이 없으면 빛이 계속 흘러 글이 안 읽힌다. */
 .packHint b{
   background-image:linear-gradient(100deg,
-    rgba(255,255,255,.72) 0 40%, #fff 47%, #fff 53%, rgba(255,255,255,.72) 60% 100%);
+    rgba(255,255,255,.72) 0 34%, rgba(255,255,255,.9) 43%, #fff 50%,
+    rgba(255,255,255,.9) 57%, rgba(255,255,255,.72) 66% 100%);
   background-size:280% 100%;background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
   animation:packHintIn .44s cubic-bezier(.16,.8,.24,1) both,
             hintShine 3.6s linear 1s infinite}
-@keyframes hintShine{ 0%{background-position:180% 0} 46%,100%{background-position:-80% 0} }
+/* 정지점을 0~100%에 가둔다. 배경이 글상자보다 넓을 때 background-position 100%는
+   "배경의 오른쪽 끝을 글상자 오른쪽에 맞춤"이라 그 사이가 전부 덮인다.
+   범위를 벗어나면(-80% 같은 값) no-repeat 배경이 글상자 밖으로 빠져 글자가 통째로
+   사라진다 — 실제로 첫 줄이 매 주기 절반씩 안 보였다. 100 → 0이 왼쪽에서 오른쪽이다. */
+@keyframes hintShine{ 0%{background-position:100% 0} 46%,100%{background-position:0% 0} }
 /* 둘째 줄은 빛을 받지 않는다 — 안내가 두 줄 다 흐르면 어느 쪽을 읽어야 할지 모른다.
    b의 text-fill-color가 상속되므로 여기서 되돌린다. */
 .packHint small{-webkit-text-fill-color:rgba(255,255,255,.42)}
