@@ -269,11 +269,12 @@ a.nitem:visited{color:inherit}
 .logoMark{display:block;background-color:currentColor;
   -webkit-mask:url(assets/logo.svg?v=1.1) no-repeat left center/contain;
           mask:url(assets/logo.svg?v=1.1) no-repeat left center/contain}
-.brand{display:flex;align-items:center;gap:11px;padding:16px 14px 2px;border-top:1px solid var(--outline-variant)}
+/* 사이드바 맨 아래 — 로고 왼쪽, 버전 오른쪽 한 줄(PO). "대회 운영센터"는 뺐다:
+   사이드바 전체가 운영 콘솔이라 이름표를 한 번 더 다는 것은 같은 말의 반복이었다. */
+.brand{display:flex;align-items:center;justify-content:space-between;gap:11px;padding:16px 14px 2px;border-top:1px solid var(--outline-variant)}
 .brand .logo{width:34px;height:34px;border-radius:10px;background:var(--mono-fill);display:flex;align-items:center;justify-content:center;color:var(--mono-on);font-weight:800;font-size:16px;flex:none}
-.brand .bt{color:var(--on-surface-variant)}
-.brand .btLogo{width:69px;height:36px;margin-bottom:3px}
-.brand .bt small{display:block;font-size:11px;font-weight:500;color:var(--on-surface-variant);letter-spacing:0;margin-top:2px}
+.brand .btLogo{width:69px;height:36px;color:var(--on-surface-variant);flex:none}
+.brand .btVer{font-size:11px;font-weight:500;color:var(--on-surface-variant);letter-spacing:0;flex:none}
 svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* 아이콘 공통 규격 — 24 viewBox / stroke 2 / currentColor / round cap.
    텍스트 화살표(←, →, ▾, ↶)를 쓰면 폰트마다 굵기·정렬이 달라져 아이콘과 따로 놀기 때문에 전부 SVG로 통일 */
@@ -656,8 +657,10 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .prow:hover{background:var(--surface-variant)}
 /* 선택된 선수 = 팀 컬러 좌측 바 + 무채색 배경. 어느 팀 선수를 선택했는지까지 함께 전달 */
 .prow.sel{background:var(--mono-fill)}
-#homeList .prow.sel{background:color-mix(in srgb, var(--home) 14%, var(--surface));box-shadow:inset 3px 0 0 var(--home)}
-#awayList .prow.sel{background:color-mix(in srgb, var(--away) 14%, var(--surface));box-shadow:inset 3px 0 0 var(--away)}
+/* 고른 선수도 띠 없이 면으로만 말한다(PO) — 콘솔 전체에서 왼쪽 색 띠를 걷었다.
+   여기는 태그가 없지만 팀 색 14% 면이 이미 충분히 세다. */
+#homeList .prow.sel{background:color-mix(in srgb, var(--home) 18%, var(--surface))}
+#awayList .prow.sel{background:color-mix(in srgb, var(--away) 18%, var(--surface))}
 .prow .no{width:26px;text-align:center;font-weight:700;font-size:13px;color:var(--on-surface-variant)}
 .prow.sel .no{color:var(--on-surface)}
 .prow .nm{display:flex;align-items:center;gap:7px;font-weight:600;font-size:13px}
@@ -1077,8 +1080,8 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   width:100%;border:none;background:transparent;font-family:var(--font);text-align:left;cursor:pointer;transition:.12s}
 .grow+.grow{border-top:1px solid var(--outline-variant)}
 .grow:hover{background:var(--surface-variant)}
-/* 진행 중 경기는 왼쪽 브랜드컬러 띠로 목록에서 즉시 구분된다 */
-.grow.is-live{box-shadow:inset 3px 0 0 var(--primary)}
+/* 왼쪽 색 띠는 뺐다(PO) — 상태는 이미 태그가 말한다. 같은 것을 두 번 말하면
+   목록이 색으로 뒤덮여, 정작 눈이 가야 할 "검수 대기"가 다른 색들 사이에 묻힌다. */
 .gstat{display:flex;flex-direction:column;gap:2px;min-width:0}
 /* nowrap만 두고 overflow를 안 잡아서, "A코트 · 검수 대기"(72px)처럼 긴 라벨이 열 밖으로 흘러나와
    옆 팀의 컬러 점과 겹쳤다(태블릿·폰 폭). 열 폭은 아래에서 74px로 맞추고 여기선 넘칠 때 말줄임 처리 */
@@ -1124,8 +1127,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .grow.is-soon .gside .gt-sc{color:var(--outline);font-weight:700}
 .grow.is-soon .gstat .gs-t{color:var(--on-surface-variant);font-weight:600}
 .grow.is-soon .dot{opacity:.55}
-/* 검수 대기 — 목록에서 유일하게 '내가 지금 해야 할 일'이다. 상태 뱃지와 같은 빨강을 쓴다. */
-.grow.is-end{box-shadow:inset 3px 0 0 var(--red)}
+
 /* 쿼터별 점수 — 좁은 화면에선 접힌다(아래 미디어쿼리) */
 .gq{display:flex;gap:10px}
 .gq-col{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:22px}
@@ -2067,7 +2069,8 @@ body.modal-open{overflow:hidden}
       </div>
     </div>
     <div class="brand">
-      <div class="bt"><span class="btLogo logoMark" role="img" aria-label="BASKET COUNT"></span><small>대회 운영센터 · v0.1 MVP</small></div>
+      <span class="btLogo logoMark" role="img" aria-label="BASKET COUNT"></span>
+      <small class="btVer">v0.1 MVP</small>
     </div>
   </aside>
 

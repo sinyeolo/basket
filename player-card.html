@@ -1743,7 +1743,8 @@ body.glow-hold .cardGlow{animation-play-state:paused}
 .section + .footDivider{margin-top:34px}   /* 섹션 사이에 낄 때는 위아래를 섹션 간격에 맞춘다 */
 .brandFoot{display:flex;align-items:center;justify-content:center;margin:24px auto 0}
 .brandFootName{width:77px;height:40px;color:var(--sh-on-dim, var(--on-dark-dim))}
-.copyright{text-align:center;font-size:11px;color:var(--sh-on-dim, #4a4c53);margin:8px auto 0}
+/* 로고와 저작권 사이는 8 → 22px(PO). 붙어 있으면 한 덩어리로 읽혀 로고가 캡션처럼 보인다 */
+.copyright{text-align:center;font-size:11px;color:var(--sh-on-dim, #4a4c53);margin:22px auto 0}
 
 /* 검토 전용 미리보기 바 — 실제 서비스 화면 아님. 헤더 바로 아래 고정, 하단 탭바와 겹치지 않게 분리 */
 /* 검토용 바. 일반 흐름에 두었더니 화면 전체를 덮는 .heroFixed(fixed, inset:0) 아래로

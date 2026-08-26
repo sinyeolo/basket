@@ -46,6 +46,16 @@ body{font-family:var(--font);color:var(--on-surface);background:var(--surface-co
   -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 button{font-family:inherit;border:none;background:none;color:inherit;cursor:pointer}
 .wrap{position:relative;max-width:520px;margin:0 auto;min-height:100dvh;background:var(--surface-container)}
+/* 브랜드 푸터 — 선수 카드 시트 맨 아래와 같은 부품이다(PO). 새로 만들지 않고 그대로 옮긴다.
+   다만 여기는 구분선을 두지 않는다 — 카드 위가 아니라 페이지 바탕에 바로 얹히는 자리라
+   선을 그으면 없는 경계를 만든다. 로고 색은 이 화면의 보조 텍스트 색을 그대로 쓴다. */
+.logoMark{display:block;background-color:currentColor;
+  -webkit-mask:url(assets/logo.svg?v=1.1) no-repeat center/contain;
+          mask:url(assets/logo.svg?v=1.1) no-repeat center/contain}
+.brandFoot{display:flex;align-items:center;justify-content:center;margin:40px auto 0}
+.brandFootName{width:77px;height:40px;color:var(--on-surface-variant)}
+/* 로고와 저작권 사이는 22px — 선수 카드와 같은 값(PO) */
+.copyright{text-align:center;font-size:11px;color:var(--on-surface-variant);margin:22px auto 0;padding-bottom:34px}
 /* ---- 헤더 — 스크롤해도 점수는 붙어 있어야 한다. 어느 탭을 보든 "지금 몇 대 몇"이 기준점이다 ---- */
 .gh{position:sticky;top:0;z-index:20;background:var(--surface);box-shadow:var(--e1)}
 /* 스크롤하면 헤더를 접는다 — 점수는 남기되 쿼터 줄과 여백을 걷어 본문에 화면을 돌려준다.
@@ -452,6 +462,11 @@ tfoot td:first-child{background:var(--head-bg);box-shadow:-14px 0 0 var(--head-b
   </header>
 
   <main id="view"></main>
+
+  <div class="brandFoot">
+    <span class="brandFootName logoMark" role="img" aria-label="BASKET COUNT"></span>
+  </div>
+  <p class="copyright">© 2026 BASKET COUNT. All rights reserved.</p>
 </div>
 
 <script>
