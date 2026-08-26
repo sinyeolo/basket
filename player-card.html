@@ -503,11 +503,17 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
 /* 떨어져 나온 뚜껑이 새로 받는 빛. 압착부와 몸통은 같은 세로 결(90도 원통 음영)을
    공유하는데, 그 결이 절단선 너머로 그대로 이어지는 것이 "빛이 몸통과 연결되어 있다"의
    정체였다(PO). 뜯는 만큼 이 면이 덮여 결이 끊기고, 위에서 비스듬히 받는 빛으로 바뀐다. */
+/* 흰 면을 얹었더니 은박 위에 반투명 막이 한 장 씌워진 꼴이 됐다(PO) — 결을 끊으려다
+   재질을 덮었다. 들린 뚜껑이 실제로 겪는 건 밝아지는 게 아니라 어두워지는 것이다:
+   광원에서 등을 돌린 면이라 그늘이 진다. 그늘로 결을 끊으면 막이 생기지 않는다.
+   맨 위 6%만 얇게 밝혀 뜯긴 단면을 남긴다. */
 .packLid::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
   opacity:var(--tear);
   background:linear-gradient(196deg,
-    rgba(255,255,255,.46) 0%, rgba(255,255,255,.13) 24%,
-    rgba(30,34,42,.13) 58%, rgba(30,34,42,.42) 100%)}
+    rgba(255,255,255,.16) 0 6%,
+    rgba(18,21,27,.10) 34%,
+    rgba(18,21,27,.34) 72%,
+    rgba(18,21,27,.52) 100%)}
 .packSweep{position:absolute;left:0;right:0;top:var(--seam);bottom:0;z-index:5;pointer-events:none;
   overflow:hidden;border-radius:12px}
 /* 카드의 빛은 앞쪽을 칼로 자른 듯 끊는다. 팩은 양쪽 다 부드럽게 둔다(PO) —
