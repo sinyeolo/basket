@@ -61,7 +61,11 @@ button{font-family:inherit;border:none;background:none;color:inherit;cursor:poin
    점수 축소는 font-size 대신 transform:scale로 옮겨 레이아웃 재계산에서 빼고,
    높이 변화는 컨테이너 여백에만 짧게 준다. */
 .gh-score{transition:padding .2s ease}
-.gh-pt,.gh-nm,.tmark{transition:transform .2s ease, font-size .2s ease}
+/* font-size는 전환에서 뺐다 — 점수(.gh-pt)는 scale로 줄이므로 애초에 크기가 안 바뀌고,
+   팀명(.gh-nm 13→11)과 칩 이니셜(→0)만 남아 있었다. 스크롤 도중에 도는 전환이라
+   글자 크기를 프레임마다 다시 재는 값어치가 없다. 툭 바뀌어도 동시에 도는
+   transform에 묻힌다. */
+.gh-pt,.gh-nm,.tmark{transition:transform .2s ease}
 @media (prefers-reduced-motion:reduce){
   .gh-score,.gh-pt,.gh-nm,.tmark{transition:none}
 }
