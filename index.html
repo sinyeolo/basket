@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BASKET · 운영 콘솔 (Material Design 3)</title>
+<title>BASKET COUNT · 운영 콘솔 (Material Design 3)</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 <!-- Tektur — 영문·숫자 전용. Google이 서브셋마다 unicode-range를 붙여 배포하므로 폰트 스택 맨 앞에 둬도
      한글에는 매칭되지 않고 자동으로 Pretendard로 넘어간다(Tektur에는 한글 글리프가 없다). -->
@@ -272,7 +272,7 @@ a.nitem:visited{color:inherit}
 .brand{display:flex;align-items:center;gap:11px;padding:16px 14px 2px;border-top:1px solid var(--outline-variant)}
 .brand .logo{width:34px;height:34px;border-radius:10px;background:var(--mono-fill);display:flex;align-items:center;justify-content:center;color:var(--mono-on);font-weight:800;font-size:16px;flex:none}
 .brand .bt{color:var(--on-surface-variant)}
-.brand .btLogo{width:78px;height:27px;margin-bottom:3px}
+.brand .btLogo{width:69px;height:36px;margin-bottom:3px}
 .brand .bt small{display:block;font-size:11px;font-weight:500;color:var(--on-surface-variant);letter-spacing:0;margin-top:2px}
 svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* 아이콘 공통 규격 — 24 viewBox / stroke 2 / currentColor / round cap.
@@ -1404,7 +1404,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 
 .pdTopRow{position:absolute;top:14px;left:14px;right:14px;z-index:2;display:flex;justify-content:space-between;align-items:flex-start}
 .pdBrand{display:flex;flex-direction:column;align-items:center;gap:6px}
-.pdLogo{color:var(--g-text,#fff);width:64px;height:22px;
+.pdLogo{color:var(--g-text,#fff);width:52px;height:27px;
   filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
 .pdGradeBadge{border-radius:100px;background:rgba(0,0,0,.4);color:var(--g-text,#fff);
   border:1px solid color-mix(in srgb,var(--g-b,#fff) 55%,transparent);
@@ -2067,7 +2067,7 @@ body.modal-open{overflow:hidden}
       </div>
     </div>
     <div class="brand">
-      <div class="bt"><span class="btLogo logoMark" role="img" aria-label="BASKET"></span><small>대회 운영센터 · v0.1 MVP</small></div>
+      <div class="bt"><span class="btLogo logoMark" role="img" aria-label="BASKET COUNT"></span><small>대회 운영센터 · v0.1 MVP</small></div>
     </div>
   </aside>
 
@@ -4996,7 +4996,7 @@ function renderPlayerDetail(){
           '<div class="holoFoil '+holo+'" aria-hidden="true"></div>'+
           '<div class="holoGrain" aria-hidden="true"></div>'+
           '<div class="pdTopRow">'+
-            '<div class="pdBrand"><span class="pdLogo logoMark" role="img" aria-label="BASKET"></span><span class="pdGradeBadge">'+gradeLabel+'</span></div>'+
+            '<div class="pdBrand"><span class="pdLogo logoMark" role="img" aria-label="BASKET COUNT"></span><span class="pdGradeBadge">'+gradeLabel+'</span></div>'+
             '<div class="pdOvr"><button type="button" class="lb pdOvrInfoBtn" id="pdOvrInfoBtn" aria-label="OVR 계산 방식 안내">OVR<span class="pdOvrInfoIcon" aria-hidden="true">?</span></button>'+
               '<div class="pdOvrVal">'+pdOvrTrendHtml(ovrTrend)+'<div class="vl">'+ovr+'</div></div></div>'+
           '</div>'+

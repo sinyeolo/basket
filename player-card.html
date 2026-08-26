@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>BASKET · 선수 카드 (프로토타입)</title>
+<title>BASKET COUNT · 선수 카드 (프로토타입)</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 <!-- Tektur — 영문·숫자 전용. Google이 서브셋마다 unicode-range를 붙여 배포하므로 폰트 스택 맨 앞에 둬도
      한글에는 매칭되지 않고 자동으로 Pretendard로 넘어간다(Tektur에는 한글 글리프가 없다). -->
@@ -22,7 +22,7 @@
   --on-dark:#f4f4f6; --on-dark-dim:#9a9ba3;
   /* 개봉 팩(은박) — 카드도 콘솔도 아닌 제3의 표면이라 자체 토큰을 갖는다 */
   --pack-foil-deep:#464e5c; --pack-peek:#565d70;
-  --pack-inside:#171a20; --pack-inside-lit:#232730;
+  --pack-inside:#0d0f14; --pack-inside-lit:#141821;
   --pack-edge:#2b2f38;   /* 팩 옆면 — 앞면보다 어둡다. 빛을 정면으로 받지 않는 면이다 */
   --preview-h:38px;   /* 검토용 미리보기 바 — 실제 서비스에는 없는 줄이다 */
   --card-w:270px; --card-h:378px;   /* 300×420에서 10% 축소 */ --card-thick:6px;   /* 16 → 10 → 6px로 얇게(PO) */
@@ -339,7 +339,7 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
    팩과의 간격 28px을 더해 333px 위에 세운다. */
 .packHint{position:absolute;left:0;right:0;top:calc(var(--vph,100dvh) * .5 - 265px);margin:0;text-align:center;
   pointer-events:none;font-size:16px;font-weight:600;letter-spacing:.01em;
-  color:rgba(255,255,255,.72);
+  color:rgba(255,255,255,.56);
   /* 단계가 바뀌면 자리를 미끄러져 옮긴다(PO). top을 바꾸면 프레임마다 레이아웃을 다시 재므로
      자리는 고르기 기준으로 고정해 두고 차이만큼 transform으로 민다.
      차이 = (100vh - 430) - (50vh - 333) = 50vh - 97px. */
@@ -352,9 +352,11 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
    기본 밝기는 .72로 두고 지나가는 자리만 흰색까지 오른다.
    한 바퀴의 뒤쪽 절반은 쉰다. 쉬는 참이 없으면 빛이 계속 흘러 글이 안 읽힌다. */
 .packHint b{
+  /* 바탕을 한 단 낮춰(.72 → .56) 흰 띠와의 낙차를 키웠다(PO) — 같은 빛도 어두운
+     바탕에서 더 세게 읽힌다. 색을 더한 게 아니라 바탕을 내린 것이다. */
   background-image:linear-gradient(100deg,
-    rgba(255,255,255,.72) 0 34%, rgba(255,255,255,.9) 43%, #fff 50%,
-    rgba(255,255,255,.9) 57%, rgba(255,255,255,.72) 66% 100%);
+    rgba(255,255,255,.56) 0 32%, rgba(255,255,255,.82) 42%, #fff 50%,
+    rgba(255,255,255,.82) 58%, rgba(255,255,255,.56) 68% 100%);
   background-size:280% 100%;background-repeat:no-repeat;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
@@ -367,16 +369,16 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
 @keyframes hintShine{ 0%{background-position:100% 0} 46%,100%{background-position:0% 0} }
 /* 둘째 줄은 빛을 받지 않는다 — 안내가 두 줄 다 흐르면 어느 쪽을 읽어야 할지 모른다.
    b의 text-fill-color가 상속되므로 여기서 되돌린다. */
-.packHint small{-webkit-text-fill-color:rgba(255,255,255,.42)}
+.packHint small{-webkit-text-fill-color:rgba(255,255,255,.32)}
 @media (prefers-reduced-motion:reduce){
   .packHint b{animation:packHintIn .44s cubic-bezier(.16,.8,.24,1) both;
-    -webkit-text-fill-color:rgba(255,255,255,.9);color:rgba(255,255,255,.9)}
+    -webkit-text-fill-color:rgba(255,255,255,.82);color:rgba(255,255,255,.82)}
 }
 @keyframes packHintIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
 /* 텐션 루핑(PO) — 그냥 오르내리면 시계추지 '눌러라'가 아니다.
    내려가기 전에 살짝 반동을 주고, 착지에서 한 번 튀고, 마지막 4분의 1은 쉰다.
    쉬는 박자가 있어야 다음 반동이 다시 눈에 들어온다. */
-.packHint .msym{display:block;margin:10px auto 0;font-size:20px;color:rgba(255,255,255,.32);
+.packHint .msym{display:block;margin:10px auto 0;font-size:20px;color:rgba(255,255,255,.24);
   animation:packNudge 2.2s cubic-bezier(.34,1.4,.5,1) infinite}
 @keyframes packNudge{
   0%{transform:translateY(0) scaleY(1)}
@@ -388,7 +390,7 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
   100%{transform:translateY(0) scaleY(1)}}
 @media (prefers-reduced-motion:reduce){ .packHint .msym,.packHint b{animation:none} }
 .packHint small{display:block;margin-top:6px;font-size:13px;font-weight:500;
-  color:rgba(255,255,255,.42)}
+  color:rgba(255,255,255,.32)}
 .packStage[data-phase="pick"] .packHint .forPick,
 .packStage[data-phase="open"] .packHint .forOpen{display:block}
 /* 개봉 단계 — 손잡이가 화면 79% 지점에 오도록 내린다(PO).
@@ -579,8 +581,10 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
   transform:translateY(-50%)}
 /* 은박 위라 흰 글자는 묻힌다. 어두운 각인으로 눌러 찍고 아래에 흰 선을 한 줄 넣어
    눌린 자국을 만든다 — 인쇄가 아니라 찍어 낸 것으로 읽힌다. */
-.packLogo{font-family:var(--font-display);font-size:26px;font-weight:800;letter-spacing:.12em;
-  color:rgba(26,29,36,.72);text-shadow:0 1px 0 rgba(255,255,255,.5)}
+/* 워드마크는 로고 에셋 한 장으로 찍는다(PO) — 폰트로 흉내 내던 것을 실물로 바꿨다.
+   은박 위라 흰 글자는 묻히므로 어두운 각인으로 눌러 찍고, 아래 흰 그림자로 눌린 자국을 만든다. */
+.packLogo{width:132px;height:69px;margin:0 auto;color:rgba(26,29,36,.72);
+  filter:drop-shadow(0 1px 0 rgba(255,255,255,.5))}
 .packSub{margin-top:8px;font-family:var(--font-display);font-size:11px;font-weight:700;
   letter-spacing:.3em;color:rgba(26,29,36,.46);text-shadow:0 1px 0 rgba(255,255,255,.4)}
 
@@ -601,8 +605,9 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
      뜯는 순간 카드 옆으로 바깥이 비쳐 보인다는 말이 나왔다(PO).
      그렇다고 가운데를 가로지르는 사선 광택을 두면 이번엔 '표면'으로 읽힌다 —
      뚜껑이 날아갔는데 그 자리에 하얗고 투명한 면이 그대로 남아 있는 꼴이었다(PO).
-     안쪽은 면이 아니라 틈이다. 무대(#0A0B0F)와 거의 같은 어둠까지 내리고,
-     양 옆 접힘에만 아주 옅은 빛을 남긴다 — 이 두 줄이 봉투의 옆면이라 '뚫린 구멍'과
+     안쪽은 면이 아니라 틈이다. 가운데는 무대(#0A0B0F)와 사실상 같은 #0B0D12까지 내렸다 —
+     조금이라도 밝으면 하얀 반투명 판으로 읽힌다(PO 세 번 지적, 끄고 켜 보며 확인).
+     양 옆 5%의 접힘에만 아주 옅은 빛을 남긴다 — 이 두 줄이 봉투의 옆면이라 '뚫린 구멍'과
      '벌어진 틈'을 가른다. 위쪽이 가장 어둡다: 뚜껑이 들린 만큼 그늘이 깊어지는 자리다.
      아래 끝의 밝은 입술(.packSeam)이 '여기가 뜯긴 가장자리'를 말한다. */
   background:
@@ -611,8 +616,8 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
       rgba(0,0,0,.18) 62%,
       rgba(0,0,0,0) 100%),
     linear-gradient(90deg,
-      var(--pack-inside-lit) 0%, var(--pack-inside) 11%, #101218 50%,
-      var(--pack-inside) 89%, var(--pack-inside-lit) 100%)}
+      var(--pack-inside-lit) 0%, var(--pack-inside) 5%, #0b0d12 50%,
+      var(--pack-inside) 95%, var(--pack-inside-lit) 100%)}
 
 
 /* 뚜껑 — 은박 압착부. 실물 파우치의 그 부분이라 잔주름(반복 그라디언트)을 넣는다.
@@ -627,8 +632,9 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
       rgba(255,255,255,.05) 40%, rgba(255,255,255,.07) 48%, rgba(255,255,255,.03) 58%,
       rgba(0,0,0,0) 72%, rgba(0,0,0,.02) 80%, rgba(0,0,0,.07) 87%,
       rgba(0,0,0,.16) 93%, rgba(0,0,0,.27) 97%, rgba(0,0,0,.38) 100%),
+    /* 골 라인은 20% 옅게(PO) — 촘촘한 선이 진하면 압착부가 은박이 아니라 빗살이 된다 */
     repeating-linear-gradient(90deg,
-      rgba(60,66,76,.55) 0 1.5px, rgba(255,255,255,.85) 1.5px 3.5px),
+      rgba(60,66,76,.44) 0 1.5px, rgba(255,255,255,.68) 1.5px 3.5px),
     linear-gradient(180deg,#e9edf2 0%,#aab1bc 55%,#d7dce2 100%)}
 /* 압착부에도 로고가 옅게 찍힌다(레퍼런스) — 몸통과 같은 에셋을 더 흐리게 얹는다.
    골무늬 위에 겹치므로 진하면 둘 다 안 읽힌다. */
@@ -1136,7 +1142,7 @@ body.glow-hold .cardGlow{animation-play-state:paused}
 .logoMark{display:block;background-color:currentColor;
   -webkit-mask:url(assets/logo.svg) no-repeat center/contain;
           mask:url(assets/logo.svg) no-repeat center/contain}
-.brandLogo{color:var(--g-text);width:64px;height:22px;
+.brandLogo{color:var(--g-text);width:52px;height:27px;
   filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
 .gradeBadge{border-radius:100px;background:rgba(0,0,0,.4);color:var(--g-text);
   border:1px solid color-mix(in srgb,var(--g-b) 55%,transparent);
@@ -1736,7 +1742,7 @@ body.glow-hold .cardGlow{animation-play-state:paused}
 .footDivider{height:8px;background:var(--sh-bg2);margin:40px -16px 0}
 .section + .footDivider{margin-top:34px}   /* 섹션 사이에 낄 때는 위아래를 섹션 간격에 맞춘다 */
 .brandFoot{display:flex;align-items:center;justify-content:center;margin:24px auto 0}
-.brandFootName{width:88px;height:30px;color:var(--sh-on-dim, var(--on-dark-dim))}
+.brandFootName{width:77px;height:40px;color:var(--sh-on-dim, var(--on-dark-dim))}
 .copyright{text-align:center;font-size:11px;color:var(--sh-on-dim, #4a4c53);margin:8px auto 0}
 
 /* 검토 전용 미리보기 바 — 실제 서비스 화면 아님. 헤더 바로 아래 고정, 하단 탭바와 겹치지 않게 분리 */
@@ -1793,8 +1799,8 @@ body.glow-hold .cardGlow{animation-play-state:paused}
 <div class="packStage" id="packStage" data-phase="pick" hidden>
   <button type="button" class="packSkip" id="packSkip">건너뛰기</button>
   <p class="packHint" id="packHint">
-    <b class="forPick">카드팩을 눌러 열어보세요<small>첫 카드가 들어 있어요</small></b>
-    <b class="forOpen">선을 따라 쓸어서 개봉해요<small>왼쪽 고리를 오른쪽 끝까지</small></b>
+    <b class="forPick">카드팩을 눌러 열어보세요<small>카드가 들어 있어요!</small></b>
+    <b class="forOpen">선을 따라 오른쪽으로 쓸어요<small>끝까지 밀면 열려요!</small></b>
     <span class="msym" aria-hidden="true">keyboard_arrow_down</span>
   </p>
   <div class="pack" id="pack">
@@ -1805,7 +1811,7 @@ body.glow-hold .cardGlow{animation-play-state:paused}
       <div class="packGlow" aria-hidden="true"></div>
       <div class="packSheen" aria-hidden="true"></div>
       <div class="packMark">
-        <div class="packLogo">BASKET</div>
+        <span class="packLogo logoMark" role="img" aria-label="BASKET COUNT"></span>
         <div class="packSub">PLAYER CARD</div>
       </div>
     </div>
@@ -1858,7 +1864,7 @@ body.glow-hold .cardGlow{animation-play-state:paused}
               <div class="holoFoil" aria-hidden="true"></div>
               <div class="holoGrain" aria-hidden="true"></div>
               <div class="topRow">
-                <div class="brandCol"><span class="brandLogo logoMark" role="img" aria-label="BASKET"></span><span class="gradeBadge" id="fGradeChip">GOLD</span></div>
+                <div class="brandCol"><span class="brandLogo logoMark" role="img" aria-label="BASKET COUNT"></span><span class="gradeBadge" id="fGradeChip">GOLD</span></div>
                 <div class="ovrBox"><button type="button" class="lb ovrInfoBtn" id="ovrInfoBtn" aria-label="OVR 계산 방식 안내">OVR<span class="ovrInfoIcon" aria-hidden="true">?</span></button><div class="ovrVal"><span class="ovrTrendSlot" id="fOvrTrend"></span><div class="vl" id="fOvr">88</div></div></div>
               </div>
               <div class="photoLayer"><div class="avatarSil" id="fAvatar"></div></div>
@@ -2008,9 +2014,9 @@ body.glow-hold .cardGlow{animation-play-state:paused}
 
       <div class="footDivider" aria-hidden="true"></div>
       <div class="brandFoot">
-        <span class="brandFootName logoMark" role="img" aria-label="BASKET"></span>
+        <span class="brandFootName logoMark" role="img" aria-label="BASKET COUNT"></span>
       </div>
-      <p class="copyright">© 2026 BASKET. All rights reserved.</p>
+      <p class="copyright">© 2026 BASKET COUNT. All rights reserved.</p>
     </div>
   </div>
 </div>
@@ -2224,7 +2230,7 @@ function setAvatarPose(poseId){
 function sealLabel(){
   var d = new Date();
   var p = function(n){ return n < 10 ? '0'+n : ''+n; };
-  return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' · BASKET · ';
+  return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' · BASKET COUNT · ';
 }
 
 // OVR — 운영 콘솔(index.html)이 실측 스탯 기반으로 산출해 URL로 넘긴 값을 그대로 쓴다(단일 소스).
@@ -3353,7 +3359,7 @@ function lbCardFrontHTML(grade){
     '<div class="holoFoil '+holo+'" aria-hidden="true"></div>'+
     '<div class="holoGrain" aria-hidden="true"></div>'+
     '<div class="topRow">'+
-      '<div class="brandCol"><span class="brandLogo logoMark" role="img" aria-label="BASKET"></span><span class="gradeBadge">'+g.label+'</span></div>'+
+      '<div class="brandCol"><span class="brandLogo logoMark" role="img" aria-label="BASKET COUNT"></span><span class="gradeBadge">'+g.label+'</span></div>'+
       '<div class="ovrBox"><div class="lb">OVR</div><div class="vl">'+(PLAYER.hasRecord ? ovrFor(grade) : '?')+'</div></div>'+
     '</div>'+
     '<div class="photoLayer"'+(PLAYER.photo ? ' style="display:none"' : '')+'><div class="avatarSil">'+(PLAYER.photo ? '' : avatarSvgHTML())+'</div></div>'+
@@ -3481,7 +3487,7 @@ function showToast(msg){
   setTimeout(function(){ toast.classList.remove('show'); }, 3000);
 }
 function doShare(){
-  var shareData = { title:'BASKET · '+PLAYER.name+' 선수 카드', text:PLAYER.team+' · '+PLAYER.pos, url: location.href };
+  var shareData = { title:'BASKET COUNT · '+PLAYER.name+' 선수 카드', text:PLAYER.team+' · '+PLAYER.pos, url: location.href };
   if(navigator.share){ navigator.share(shareData).catch(function(){}); }
   else if(navigator.clipboard){ navigator.clipboard.writeText(location.href); showToast('링크가 복사됐습니다 (프로토타입 · 실제 공개 링크 아님)'); }
   else { showToast('이 브라우저에서는 공유를 쓸 수 없어요'); }
