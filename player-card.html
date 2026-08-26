@@ -22,7 +22,7 @@
   --on-dark:#f4f4f6; --on-dark-dim:#9a9ba3;
   /* 개봉 팩(은박) — 카드도 콘솔도 아닌 제3의 표면이라 자체 토큰을 갖는다 */
   --pack-foil-deep:#464e5c; --pack-peek:#565d70;
-  --pack-inside:#2b2f36; --pack-inside-lit:#3a3f47;
+  --pack-inside:#171a20; --pack-inside-lit:#232730;
   --pack-edge:#2b2f38;   /* 팩 옆면 — 앞면보다 어둡다. 빛을 정면으로 받지 않는 면이다 */
   --preview-h:38px;   /* 검토용 미리보기 바 — 실제 서비스에는 없는 줄이다 */
   --card-w:270px; --card-h:378px;   /* 300×420에서 10% 축소 */ --card-thick:6px;   /* 16 → 10 → 6px로 얇게(PO) */
@@ -601,17 +601,18 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
      뜯는 순간 카드 옆으로 바깥이 비쳐 보인다는 말이 나왔다(PO).
      그렇다고 가운데를 가로지르는 사선 광택을 두면 이번엔 '표면'으로 읽힌다 —
      뚜껑이 날아갔는데 그 자리에 하얗고 투명한 면이 그대로 남아 있는 꼴이었다(PO).
-     안쪽은 면이 아니라 틈이다. 양 옆 접힘만 빛을 받고 가운데로 갈수록 어두우며,
-     아래로 갈수록 깊어진다. 위쪽 1px만 뜯긴 앞면의 단면으로 밝게 남긴다. */
+     안쪽은 면이 아니라 틈이다. 무대(#0A0B0F)와 거의 같은 어둠까지 내리고,
+     양 옆 접힘에만 아주 옅은 빛을 남긴다 — 이 두 줄이 봉투의 옆면이라 '뚫린 구멍'과
+     '벌어진 틈'을 가른다. 위쪽이 가장 어둡다: 뚜껑이 들린 만큼 그늘이 깊어지는 자리다.
+     아래 끝의 밝은 입술(.packSeam)이 '여기가 뜯긴 가장자리'를 말한다. */
   background:
     linear-gradient(180deg,
-      rgba(255,255,255,.12) 0 1px,
-      rgba(0,0,0,.06) 1px 12%,
-      rgba(0,0,0,.30) 48%,
-      rgba(0,0,0,.60) 100%),
+      rgba(0,0,0,.42) 0 24%,
+      rgba(0,0,0,.18) 62%,
+      rgba(0,0,0,0) 100%),
     linear-gradient(90deg,
-      var(--pack-inside-lit) 0%, var(--pack-inside) 13%, #23262c 50%,
-      var(--pack-inside) 87%, var(--pack-inside-lit) 100%)}
+      var(--pack-inside-lit) 0%, var(--pack-inside) 11%, #101218 50%,
+      var(--pack-inside) 89%, var(--pack-inside-lit) 100%)}
 
 
 /* 뚜껑 — 은박 압착부. 실물 파우치의 그 부분이라 잔주름(반복 그라디언트)을 넣는다.
