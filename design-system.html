@@ -201,6 +201,20 @@ h3:first-of-type{margin-top:16px}
 .d-toast span{flex:1;line-height:1.5}
 .d-toast em{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:3px}
 .d-toast b{font-family:var(--font);font-size:13px;font-weight:700;color:#d95f00;flex:none;align-self:center}
+.d-shine{
+  background-image:linear-gradient(100deg,
+    var(--shine-base) 0 34%, var(--shine-mid) 43%, var(--shine-peak) 50%,
+    var(--shine-mid) 57%, var(--shine-base) 66% 100%);
+  background-size:280% 100%; background-repeat:no-repeat;
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent; color:transparent;
+  animation:dShine 3.6s linear 1s infinite}
+@keyframes dShine{ 0%{background-position:100% 0} 46%,100%{background-position:0% 0} }
+.d-shine{--shine-base:rgba(255,255,255,.72);--shine-mid:rgba(255,255,255,.9);--shine-peak:#fff}
+.dark-demo{background:#0f1116;padding:24px 16px}
+.shineDemo{margin:0;width:100%;text-align:center;font-size:16px;font-weight:600;color:rgba(255,255,255,.72)}
+.shineDemo em{display:block;font-style:normal;margin-top:6px;font-size:13px;font-weight:500;color:rgba(255,255,255,.42)}
+@media (prefers-reduced-motion:reduce){ .d-shine{animation:none;-webkit-text-fill-color:rgba(255,255,255,.9);color:rgba(255,255,255,.9)} }
 .d-page{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 .d-pg{width:36px;height:36px;border:none;border-radius:8px;background:var(--variant);
   color:var(--ink);font-family:var(--font-display);font-size:12px;font-weight:700;cursor:pointer;
@@ -235,7 +249,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
     <a href="#icon">아이콘</a><a href="#motion">모션</a><a href="#a11y">접근성</a></div>
   <div class="grp"><div class="gt">COMPONENTS</div>
     <a href="#actions">액션</a><a href="#inputs">입력</a><a href="#display">데이터 표시</a>
-    <a href="#feedback">피드백</a><a href="#skeleton">스켈레톤</a><a href="#toast">토스트</a><a href="#pagination">페이지네이션</a><a href="#nav">내비게이션</a><a href="#overlay">오버레이</a></div>
+    <a href="#feedback">피드백</a><a href="#skeleton">스켈레톤</a><a href="#toast">토스트</a><a href="#pagination">페이지네이션</a><a href="#shine">텍스트 라이팅</a><a href="#nav">내비게이션</a><a href="#overlay">오버레이</a></div>
   <div class="grp"><div class="gt">PATTERNS</div>
     <a href="#rules">이름 붙은 규칙</a><a href="#coverage">반영 현황</a>
     <a href="#roadmap">아직 없는 것</a></div>
@@ -770,6 +784,30 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
   “경기 20개 더보기”면 여기서 결정할 수 있습니다. 선수 카드 시트가 이미 그렇게 하고 있습니다.</p></div>
   <div class="warn"><p>무한 스크롤은 쓰지 않습니다 — 바닥에 닿을 수 없으면 “다 봤다”가 없고,
   아래에 있는 것(공유 · 저장)에 영영 못 닿습니다.</p></div>
+</section>
+
+<section id="shine">
+  <h2>텍스트 라이팅 — 글자 위를 지나가는 빛</h2>
+  <p class="note">눌러야 할 것 하나를 가리킬 때 씁니다. 글자 자체를 마스크 삼아 그라디언트를 비추므로
+  글 위에 덧대는 층이 없습니다 — <b>미는 것은 배경 위치 하나</b>입니다.</p>
+  <div class="demo dark-demo">
+    <p class="shineDemo"><span class="d-shine">카드팩을 눌러 열어보세요</span><em>첫 카드가 들어 있어요</em></p>
+  </div>
+  <div class="ramp">
+    <div class="r"><span class="rl">바탕 / 띠</span><span class="rs">밝은 회색 위를 흰색이 지나간다. 색을 바꾸지 않는다 — 같은 색의 밝기만 오른다</span><span class="rv">.72 → 1.0</span></div>
+    <div class="r"><span class="rl">각도 · 폭</span><span class="rs">100deg · 배경을 글상자의 2.8배로 두고 띠를 가운데 34~66%에</span><span class="rv">280%</span></div>
+    <div class="r"><span class="rl">한 바퀴</span><span class="rs">3.6초 중 앞 46%만 흐르고 나머지는 쉰다</span><span class="rv">3.6s linear</span></div>
+    <div class="r"><span class="rl">정지점</span><span class="rs"><b>반드시 100% → 0%</b>. 왼쪽에서 오른쪽이다</span><span class="rv">100 → 0</span></div>
+    <div class="r"><span class="rl">한 화면에</span><span class="rs">한 줄. 두 줄이 다 흐르면 어디를 읽어야 할지 모른다</span><span class="rv">1</span></div>
+  </div>
+  <div class="warn"><p><b>정지점이 0~100%를 벗어나면 글자가 통째로 사라집니다.</b>
+  배경이 글상자보다 넓을 때 <code>background-position:100%</code>는 “배경의 오른쪽 끝을 글상자 오른쪽에 맞춤”이라
+  그 사이가 전부 덮이지만, 밖으로 나가면 <code>no-repeat</code> 배경이 글상자를 벗어나 투명해집니다.
+  실제로 개봉 안내문 첫 줄이 매 주기 1.9초씩 안 보였습니다(2026-08-26).</p></div>
+  <div class="warn gap"><p><b>쉬는 참을 없애지 않습니다.</b> 빛이 끊임없이 흐르면 글이 안 읽힙니다.
+  그리고 <b>색을 입히지 않습니다</b> — 무지개나 브랜드색 그라디언트를 글자에 씌우는 것은 뜻 없는 장식입니다.
+  여기서 쓰는 것은 같은 색의 밝기 변화뿐이라, 멈춰 있을 때는 단색 글자와 구분되지 않습니다.
+  <code>prefers-reduced-motion</code>에서는 띠를 끄고 가장 밝은 단색으로 세웁니다.</p></div>
 </section>
 
 <section id="nav">
