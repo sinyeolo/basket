@@ -1739,8 +1739,8 @@ body.glow-hold .cardGlow{animation-play-state:paused}
    줄바꿈 대신 가로 스크롤로 두는 건 높이를 한 줄로 못박기 위해서다 —
    좁은 화면에서 두 줄이 되면 무대를 얼마나 내려야 할지가 매번 달라진다. */
 .previewBar{position:fixed;top:0;left:0;right:0;z-index:40;
-  display:flex;gap:6px;justify-content:flex-start;align-items:center;flex-wrap:nowrap;
-  height:var(--preview-h);box-sizing:border-box;padding:0 12px;
+  display:flex;gap:5px;justify-content:flex-start;align-items:center;flex-wrap:nowrap;
+  height:var(--preview-h);box-sizing:border-box;padding:0 10px;
   overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
   background:rgba(20,22,28,.94);border-bottom:1px solid #22242c}
 /* 넓은 화면에서는 내용을 가운데로 모은다(PO). 폭을 520px로 가두지는 않는다 —
@@ -1750,7 +1750,7 @@ body.glow-hold .cardGlow{animation-play-state:paused}
 .previewBar::-webkit-scrollbar{display:none}
 .previewBar span,.previewBar button{flex:none}
 .previewBar span{font-size:11px;color:var(--on-dark-dim);align-self:center;margin-right:2px}
-.previewBar button{font-size:11px;font-weight:700;padding:5px 10px;border-radius:100px;border:1px solid #2a2d36;
+.previewBar button{font-size:11px;font-weight:700;padding:5px 7px;border-radius:100px;border:1px solid #2a2d36;
   background:#15171d;color:var(--on-dark);cursor:pointer}
 .previewBar button.on{background:#fff;color:#0a0b0f;border-color:#fff}
 
@@ -1814,15 +1814,13 @@ body.glow-hold .cardGlow{animation-play-state:paused}
   </div>
 </div>
 <div class="previewBar" aria-label="등급·포즈 미리보기 (검토용, 실제 화면 아님)">
-  <span>등급 미리보기</span>
+  <span>등급</span>
   <button data-g="starter">Starter</button>
   <button data-g="bronze">Bronze</button>
   <button data-g="silver">Silver</button>
   <button data-g="gold" class="on">Gold</button>
-  <span style="margin-left:8px">실루엣 포즈</span>
-  <button id="btnPoseCycle">바꿔보기 ↻</button>
-  <span style="margin-left:8px">개봉</span>
-  <button id="btnIntroAgain">다시 보기 ↻</button>
+  <button id="btnPoseCycle">실루엣 ↻</button>
+  <button id="btnIntroAgain">개봉 ↻</button>
 </div>
 
 <div class="heroBg" aria-hidden="true"><div class="stageRays"><i></i><i></i><i></i></div></div>
