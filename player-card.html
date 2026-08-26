@@ -328,8 +328,11 @@ button{font-family:var(--font)}
   background:radial-gradient(120% 40% at 50% 63%, #1b1e26 0%, #0a0b0f 68%);
   /* 경사는 배경 층이 아니라 마스크로 준다. 배경으로 얹으면 그 아래 radial이 불투명하게
      남아, 요소의 윗변에서 어둠이 칼로 자른 듯 시작한다(실측으로 확인). */
-  -webkit-mask-image:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.5) 21%, #000 46%);
-  mask-image:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.5) 21%, #000 46%)}
+  /* 경사를 46%에서 9%로 좁혔다(PO). 넓으면 화면 전체가 서서히 밝아지는 것으로 읽혀
+     "일렁인다"가 된다 — 걷히는 것으로 보이려면 경계가 눈에 잡혀야 한다.
+     9% × 200vh = 18vh. 칼로 자른 선은 아니고, 지나가는 자리가 보이는 정도다. */
+  -webkit-mask-image:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 4%, #000 9%);
+  mask-image:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 4%, #000 9%)}
 /* 카드가 다 등장한 뒤에 배경이 온다(PO). 카드가 올라오는 데 1.2초가 걸리므로
    0.75초 늦춰 시작해(카드가 사실상 자리에 선 시점) 1.6초에 걸쳐 훑는다 —
    먼저 것보다 50% 느리다. 카드가 먼저 서고 나서 무대가 뒤따라 밝아지는 순서다. */
@@ -348,7 +351,7 @@ body.pack-wiping .packBg{animation:packBgWipe 1.6s cubic-bezier(.36,0,.2,1) .75s
 /* 안내문은 팩 바로 위에 붙는다(PO). 화면 위쪽에 고정하면 팩과 사이가 텅 빈다.
    고르기 단계의 팩 윗변 = 50vh - 239px(높이 478의 절반). 안내문 두 줄 + 화살표가 66px,
    팩과의 간격 28px을 더해 333px 위에 세운다. */
-.packHint{position:absolute;left:0;right:0;top:calc(var(--vph,100dvh) * .5 - 315px);margin:0;text-align:center;
+.packHint{position:absolute;left:0;right:0;top:calc(var(--vph,100dvh) * .5 - 265px);margin:0;text-align:center;
   pointer-events:none;font-size:16px;font-weight:600;letter-spacing:.01em;
   color:rgba(255,255,255,.72);
   /* 단계가 바뀌면 자리를 미끄러져 옮긴다(PO). top을 바꾸면 프레임마다 레이아웃을 다시 재므로
@@ -358,7 +361,26 @@ body.pack-wiping .packBg{animation:packBgWipe 1.6s cubic-bezier(.36,0,.2,1) .75s
 .packHint b{display:none;font-weight:600}
 /* 문구가 갈릴 때마다 아래에서 떠오르며 켜진다. display:none에서 돌아오는 순간
    애니메이션이 처음부터 다시 도는 성질을 그대로 쓴다 — 따로 붙일 상태 값이 없다. */
-.packHint b{animation:packHintIn .44s cubic-bezier(.16,.8,.24,1) both}
+/* 빛이 왼쪽에서 오른쪽으로 한 번 지나간다(PO). 글자 자체를 마스크 삼아
+   그라디언트를 비추므로 글 위에 덧대는 층이 없다 — 배경만 밀면 된다.
+   기본 밝기는 .72로 두고 지나가는 자리만 흰색까지 오른다.
+   한 바퀴의 뒤쪽 절반은 쉰다. 쉬는 참이 없으면 빛이 계속 흘러 글이 안 읽힌다. */
+.packHint b{
+  background-image:linear-gradient(100deg,
+    rgba(255,255,255,.72) 0 40%, #fff 47%, #fff 53%, rgba(255,255,255,.72) 60% 100%);
+  background-size:280% 100%;background-repeat:no-repeat;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:packHintIn .44s cubic-bezier(.16,.8,.24,1) both,
+            hintShine 3.6s linear 1s infinite}
+@keyframes hintShine{ 0%{background-position:180% 0} 46%,100%{background-position:-80% 0} }
+/* 둘째 줄은 빛을 받지 않는다 — 안내가 두 줄 다 흐르면 어느 쪽을 읽어야 할지 모른다.
+   b의 text-fill-color가 상속되므로 여기서 되돌린다. */
+.packHint small{-webkit-text-fill-color:rgba(255,255,255,.42)}
+@media (prefers-reduced-motion:reduce){
+  .packHint b{animation:packHintIn .44s cubic-bezier(.16,.8,.24,1) both;
+    -webkit-text-fill-color:rgba(255,255,255,.9);color:rgba(255,255,255,.9)}
+}
 @keyframes packHintIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
 /* 텐션 루핑(PO) — 그냥 오르내리면 시계추지 '눌러라'가 아니다.
    내려가기 전에 살짝 반동을 주고, 착지에서 한 번 튀고, 마지막 4분의 1은 쉰다.
@@ -387,7 +409,7 @@ body.pack-wiping .packBg{animation:packBgWipe 1.6s cubic-bezier(.36,0,.2,1) .75s
    맞춰 굳어 있었다 — 다른 높이에서는 안내문이 팩 뒤로 들어간다.
    개봉 단계 팩 윗변 = 1.22H - 520 + 0.10H. 안내문 높이 66 + 간격 28을 빼면
    옮길 거리 = 0.82H - 281이다. */
-.packStage[data-phase="open"] .packHint{transform:translateY(calc(var(--vph,100dvh) * .77 - 252px))}
+.packStage[data-phase="open"] .packHint{transform:translateY(calc(var(--vph,100dvh) * .77 - 302px))}
 
 /* 팩 — 세워 놓은 파우치. 아래는 화면 밖으로 나간다.
    배치는 bottom 하나로 고정하고 단계 차이는 transform으로만 준다 —
@@ -429,7 +451,10 @@ body.pack-wiping .packBg{animation:packBgWipe 1.6s cubic-bezier(.36,0,.2,1) .75s
    가운데 세우는 계산 — 변형 전 팩의 아랫변은 화면 밑 22vh에 있고(bottom:-22vh),
    줄인 높이는 478px다. 아랫변이 화면 밑에서 50vh-239px 위로 와야 하므로
    올려야 할 거리는 22vh + (50vh - 239px) = 72vh - 239px. */
-.packStage[data-phase="pick"] .pack{--packS:.83;--packY:calc(var(--vph,100dvh) * -.72 + 216px);cursor:pointer}
+/* 가운데 세우는 기준은 팩이 아니라 "안내문 + 팩" 한 덩어리다(PO).
+   팩만 정중앙에 두면 위에 얹힌 안내문 99px(글 71 + 간격 28)만큼 덩어리가 위로 쏠린다.
+   덩어리의 절반인 50px을 팩에 더해 내리면 둘의 가운데가 화면 가운데에 온다. */
+.packStage[data-phase="pick"] .pack{--packS:.83;--packY:calc(var(--vph,100dvh) * -.72 + 266px);cursor:pointer}
 .packStage[data-phase="pick"] .packHandle,
 .packStage[data-phase="pick"] .packTrack{opacity:0;pointer-events:none}
 /* 고르기 단계에서만 팩이 숨을 쉰다 — 눌러야 할 물건이라는 걸 말 없이 알린다.
@@ -842,13 +867,19 @@ body.pack-cover .sheetHint{opacity:0;pointer-events:none}
   margin:calc(var(--card-h) / -2) 0 0 calc(var(--card-w) / -2);
   z-index:0;pointer-events:none;border-radius:50%;filter:blur(52px);
   background:radial-gradient(ellipse at 50% 50%,var(--g-b) 0%,var(--g-a) 45%,transparent 74%);
-  animation:cardBreathe 6s ease-in-out infinite}
+  /* 등급 빛은 배어 나온 뒤에 숨쉰다 — 카드와 함께 올라오면 빛이 먼저 도착해
+     카드가 그 뒤를 따라오는 것처럼 보인다(PO). 두 애니메이션 다 opacity를 건드리므로
+     숨쉬기를 .9초 늦춰 그 전 구간은 디졸브가 온전히 갖게 한다. */
+  animation:glowIn .9s ease both, cardBreathe 6s ease-in-out .9s infinite}
+@keyframes glowIn{ from{opacity:0} to{opacity:.30} }
+/* 개봉 중에는 멈춰 세운다. 카드가 자리에 선 뒤 풀면 그때부터 디졸브가 돈다. */
+body.glow-hold .cardGlow{animation-play-state:paused}
 .cardStage .cardWrap{z-index:1}
 @keyframes cardBreathe{
   0%,100%{opacity:.30;transform:scale(.92)}
   50%    {opacity:.60;transform:scale(1.12)}
 }
-@media (prefers-reduced-motion:reduce){ .cardGlow{animation:none;opacity:.42} }
+@media (prefers-reduced-motion:reduce){ .cardGlow{animation:none;opacity:.42} body.glow-hold .cardGlow{opacity:0} }
 /* 카드+레벨행+힌트+뒤집기 버튼을 한 덩어리로 묶어, 카드 하단 1/4만 화면에 걸쳐 보이는 상태에서 시작해
    위로 슬라이드하며 전체가 드러나게 한다. 187px ≈ 헤더+카드무대 상단 여백(82px) + 카드 높이의 1/4(105px) */
 .heroContent{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;
@@ -2618,6 +2649,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
 
     stage.hidden = false;
     document.body.classList.add('pack-cover');   // 덮개는 무대 밖 층이라 따로 켠다
+    document.body.classList.add('glow-hold');    // 등급 빛은 카드가 자리에 선 뒤에
     document.body.classList.add('intro');
     var pack = document.getElementById('pack');
     var grip = document.getElementById('packGrip');
@@ -2698,6 +2730,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       document.body.classList.remove('intro');
       stage.classList.add('is-clearing');
       document.body.classList.add('pack-wiping');
+      setTimeout(function(){ document.body.classList.remove('glow-hold'); }, 780);
       setTimeout(function(){ stage.hidden = true; document.body.classList.remove('pack-cover','pack-wiping'); }, 2420);
     }
     /* 팩이 사라지는 것과 카드가 올라오는 것이 겹쳐야 한 동작으로 읽힌다.
@@ -2706,6 +2739,8 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       setTimeout(function(){
         document.body.classList.remove('intro');   // heroRiseIn이 여기서 돈다
         document.body.classList.add('pack-wiping');
+        /* 카드가 자리에 서는 시점(실측 0.75초)에 등급 빛을 푼다 — 그때부터 0.9초 디졸브 */
+        setTimeout(function(){ document.body.classList.remove('glow-hold'); }, 780);
         /* 카드는 덮개(z1)보다 위(z2)에 있으므로 여기서부터 바로 보이며 올라온다.
            덮개는 0.75초 뒤에야 흐르기 시작한다 — 카드가 먼저 서고 배경이 뒤따른다(PO).
            무대는 훑기(0.75 + 1.6초)가 다 끝난 뒤에 치운다. */
