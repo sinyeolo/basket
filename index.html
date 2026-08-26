@@ -267,8 +267,8 @@ a.nitem:visited{color:inherit}
 /* 로고 — SVG를 마스크로 깔고 background-color로 색을 준다. 운영 화면은 회색 톤,
    선수 카드는 등급 톤이라 색이 달라야 하는데 SVG 자체는 주황 고정이다. */
 .logoMark{display:block;background-color:currentColor;
-  -webkit-mask:url(assets/logo.svg) no-repeat left center/contain;
-          mask:url(assets/logo.svg) no-repeat left center/contain}
+  -webkit-mask:url(assets/logo.svg?v=1.1) no-repeat left center/contain;
+          mask:url(assets/logo.svg?v=1.1) no-repeat left center/contain}
 .brand{display:flex;align-items:center;gap:11px;padding:16px 14px 2px;border-top:1px solid var(--outline-variant)}
 .brand .logo{width:34px;height:34px;border-radius:10px;background:var(--mono-fill);display:flex;align-items:center;justify-content:center;color:var(--mono-on);font-weight:800;font-size:16px;flex:none}
 .brand .bt{color:var(--on-surface-variant)}
@@ -1578,7 +1578,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    패턴은 positioned라 그냥 두면 static인 본문을 덮는다 — 본문에 z-index를 올려 뒤로 보낸다. */
 .pdBackLogoPat{position:absolute;inset:-80%;z-index:1;pointer-events:none;opacity:.07;
   background-color:var(--g-b,#ccc);
-  -webkit-mask-image:url(assets/logo-pat.svg);mask-image:url(assets/logo-pat.svg);
+  -webkit-mask-image:url(assets/logo-pat.svg?v=1.1);mask-image:url(assets/logo-pat.svg?v=1.1);
   -webkit-mask-size:92px auto;mask-size:92px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat;
   transform:rotate(-35deg);

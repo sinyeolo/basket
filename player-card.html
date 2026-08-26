@@ -568,7 +568,7 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
    여기서 새 패턴을 그리면 같은 브랜드가 두 벌이 된다. */
 .packPat{position:absolute;inset:-40%;pointer-events:none;opacity:.13;
   background-color:var(--pack-foil-deep);
-  -webkit-mask-image:url(assets/logo-pat.svg);mask-image:url(assets/logo-pat.svg);
+  -webkit-mask-image:url(assets/logo-pat.svg?v=1.1);mask-image:url(assets/logo-pat.svg?v=1.1);
   -webkit-mask-size:78px auto;mask-size:78px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat;
   transform:rotate(-35deg)}
@@ -640,7 +640,7 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
    골무늬 위에 겹치므로 진하면 둘 다 안 읽힌다. */
 .packBandPat{position:absolute;inset:0;pointer-events:none;opacity:.14;
   background-color:#3a3f4a;
-  -webkit-mask-image:url(assets/logo-pat.svg);mask-image:url(assets/logo-pat.svg);
+  -webkit-mask-image:url(assets/logo-pat.svg?v=1.1);mask-image:url(assets/logo-pat.svg?v=1.1);
   -webkit-mask-size:42px auto;mask-size:42px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat}
 /* 지그재그 컷 — 실제 팩은 핑킹가위 날로 잘라 위아래가 톱니다(PO).
@@ -1140,8 +1140,8 @@ body.glow-hold .cardGlow{animation-play-state:paused}
 /* 로고 — SVG를 마스크로 깔고 background-color로 색을 준다. 자리마다 등급 톤·회색·흰색이
    달라야 하는데 SVG 자체는 주황 고정이라, 마스크로 써야 한 파일로 전부 커버된다. */
 .logoMark{display:block;background-color:currentColor;
-  -webkit-mask:url(assets/logo.svg) no-repeat center/contain;
-          mask:url(assets/logo.svg) no-repeat center/contain}
+  -webkit-mask:url(assets/logo.svg?v=1.1) no-repeat center/contain;
+          mask:url(assets/logo.svg?v=1.1) no-repeat center/contain}
 .brandLogo{color:var(--g-text);width:52px;height:27px;
   filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
 .gradeBadge{border-radius:100px;background:rgba(0,0,0,.4);color:var(--g-text);
@@ -1382,7 +1382,7 @@ body.glow-hold .cardGlow{animation-play-state:paused}
    패턴은 positioned라 그냥 두면 static인 본문 위를 덮는다 — 본문에 z-index를 올려 뒤로 보낸다. */
 .backLogoPat{position:absolute;inset:-80%;z-index:1;pointer-events:none;opacity:.07;
   background-color:var(--g-b);
-  -webkit-mask-image:url(assets/logo-pat.svg);mask-image:url(assets/logo-pat.svg);
+  -webkit-mask-image:url(assets/logo-pat.svg?v=1.1);mask-image:url(assets/logo-pat.svg?v=1.1);
   -webkit-mask-size:92px auto;mask-size:92px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat;
   transform:rotate(-35deg);
