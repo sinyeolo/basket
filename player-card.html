@@ -2216,6 +2216,13 @@ var POSE_SHAPES = {
     '<rect x="31" y="36" width="10" height="34" rx="5" transform="rotate(165 36 36)"/>'+
     '<rect x="59" y="36" width="10" height="34" rx="5" transform="rotate(-165 64 36)"/>'
 };
+/* 포지션 → 실루엣 포토카드. 다섯 자리(PG·SG·SF·PF·C) 밖의 값이 오면 null을 돌려
+   예전 도형 실루엣으로 떨어진다 — 없는 그림을 억지로 붙이지 않는다. */
+var POSE_IMGS = { pg:1, sg:1, sf:1, pf:1, c:1 };
+function poseImage(pos){
+  var k = String(pos || '').trim().toLowerCase();
+  return POSE_IMGS[k] ? 'assets/pose/' + k + '.jpg?v=1' : null;
+}
 function poseForId(id){
   var h = 0;
   for(var i=0;i<id.length;i++){ h = (h*31 + id.charCodeAt(i)) >>> 0; }
@@ -2490,8 +2497,15 @@ document.getElementById('recMoreBtn').addEventListener('click', function(){
 });
 document.getElementById('btnShare').innerHTML = icon('share','ic ic-sm')+'링크 공유';
 document.getElementById('btnSaveImg').innerHTML = icon('download','ic ic-sm')+'이미지 저장';
-if(PLAYER.photo){
-  document.getElementById('fPhotoBg').innerHTML = '<img class="avatarPhotoFull" draggable="false" src="'+PLAYER.photo+'" alt="">';
+/* 사진이 없으면 포지션별 실루엣 포토카드를 깐다(PO). 예전에는 도형을 조합한 실루엣을
+   그렸는데, 사람 형태를 원과 사각형으로 흉내 낸 것이라 카드가 아니라 픽토그램이 됐다.
+   포지션이 다섯이라 그림도 다섯이고, 선수 id로 무작위 배정하지 않는다 — 포지션은
+   그 선수의 사실이라 그림도 그 사실을 따라야 한다. 자리·처리는 실제 사진과 똑같이 두면
+   나중에 사진이 올라와도 카드가 달라지지 않는다. */
+var POSE_IMG = poseImage(PLAYER.pos);
+if(PLAYER.photo || POSE_IMG){
+  document.getElementById('fPhotoBg').innerHTML =
+    '<img class="avatarPhotoFull" draggable="false" src="'+(PLAYER.photo || POSE_IMG)+'" alt="">';
   document.querySelector('.photoLayer').style.display = 'none';
   document.getElementById('frontInner').classList.add('card-photo');
 } else {
@@ -3355,8 +3369,9 @@ function avatarSvgHTML(){
 function lbCardFrontHTML(grade){
   var g = GRADES[grade];
   var holo = holoSkin('front-'+grade);
-  return '<div class="inner'+(PLAYER.photo ? ' card-photo' : '')+'">'+
-    '<div class="cardPhotoBg">'+(PLAYER.photo ? '<img class="avatarPhotoFull" draggable="false" src="'+PLAYER.photo+'" alt="">' : '')+'</div>'+
+  var img = PLAYER.photo || poseImage(PLAYER.pos);
+  return '<div class="inner'+(img ? ' card-photo' : '')+'">'+
+    '<div class="cardPhotoBg">'+(img ? '<img class="avatarPhotoFull" draggable="false" src="'+img+'" alt="">' : '')+'</div>'+
     '<div class="pdAura" aria-hidden="true"></div>'+
     '<div class="holoFoil '+holo+'" aria-hidden="true"></div>'+
     '<div class="holoGrain" aria-hidden="true"></div>'+
@@ -3364,7 +3379,7 @@ function lbCardFrontHTML(grade){
       '<div class="brandCol"><span class="brandLogo logoMark" role="img" aria-label="BASKET COUNT"></span><span class="gradeBadge">'+g.label+'</span></div>'+
       '<div class="ovrBox"><div class="lb">OVR</div><div class="vl">'+(PLAYER.hasRecord ? ovrFor(grade) : '?')+'</div></div>'+
     '</div>'+
-    '<div class="photoLayer"'+(PLAYER.photo ? ' style="display:none"' : '')+'><div class="avatarSil">'+(PLAYER.photo ? '' : avatarSvgHTML())+'</div></div>'+
+    '<div class="photoLayer"'+(img ? ' style="display:none"' : '')+'><div class="avatarSil">'+(img ? '' : avatarSvgHTML())+'</div></div>'+
     '<div class="infoBlur infoBlur1" aria-hidden="true"></div>'+
     '<div class="infoBlur infoBlur2" aria-hidden="true"></div>'+
     '<div class="infoBlur infoBlur3" aria-hidden="true"></div>'+

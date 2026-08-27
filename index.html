@@ -155,11 +155,17 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 /* 검색 화면 — 화면을 덮는다. 결과 패널은 떠 있는 카드가 아니라 이 화면의 본문이 된다. */
 .mSearch{position:fixed;inset:0;z-index:80;background:var(--surface-container);display:flex;flex-direction:column}
 .mSearch[hidden]{display:none}
-.mSearch-bar{display:flex;align-items:center;gap:8px;padding:12px;background:var(--surface);box-shadow:var(--e1)}
+/* 헤더에 그림자를 두지 않는다(PO) — 아래가 스크롤되는 목록이 아니라 빈 바탕이라
+   띄울 것이 없다. 그림자는 무언가가 그 아래로 흘러갈 때만 뜻이 있다. */
+.mSearch-bar{display:flex;align-items:center;gap:8px;padding:12px;background:var(--surface)}
 .mSearch-back{width:44px;height:44px;border-radius:50%;border:none;background:transparent;color:var(--on-surface);
   display:flex;align-items:center;justify-content:center;flex:none;cursor:pointer}
 .mSearch-back:active{background:var(--surface-variant)}
-.mSearch > .searchPanel{position:static;box-shadow:none;background:transparent;max-height:none;overflow-y:auto;flex:1;padding:8px 12px;border-radius:0}
+/* 결과가 있을 때만 흰 면이 깔린다(PO) — 빈 화면과 찾은 화면이 눈으로 갈린다.
+   .open은 결과가 하나라도 있을 때만 붙으므로 따로 상태를 만들 필요가 없다. */
+.mSearch > .searchPanel{position:static;box-shadow:none;background:transparent;max-height:none;
+  overflow-y:auto;flex:1;padding:8px 12px;border-radius:0}
+.mSearch > .searchPanel.open{background:var(--surface)}
 .nav-backdrop{display:none}
 
 /* ============ Left nav (shared M3 drawer, single instance) ============ */
