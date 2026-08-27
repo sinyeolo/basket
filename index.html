@@ -1440,18 +1440,35 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    여기서 따로 그리지 않는다. 로고의 사선(skewX -15°)·브랜드 서체·5% 외곽선(PO).
    기울이는 것은 상자가 아니라 ::before의 배경이다 — 글자는 똑바로 선다. */
 .pdGradeBadge{position:relative;isolation:isolate;background:none;border:0;
-  padding:3px 12px;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.05em;
+  padding:3px 9px;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.04em;
   color:var(--g-c,#1c1b1f)}
-.pdGradeBadge::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:4px;
+.pdGradeBadge::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:5px;
   transform:skewX(-15deg);
   border:1px solid color-mix(in srgb,var(--g-c,#1c1b1f) 5%,transparent);
   background:
     linear-gradient(105deg, transparent 38%,
       rgba(255,255,255,.48) 45.8%, rgba(255,255,255,.85) 50%, rgba(255,255,255,.48) 54.2%,
       transparent 62%),
-    linear-gradient(135deg, var(--g-mid) 0%, var(--g-b) 34%, var(--g-hi) 50%, var(--g-b) 66%, var(--g-mid) 100%)}
+    linear-gradient(135deg, var(--g-mid) 0%, var(--g-b) 34%, var(--g-hi) 50%, var(--g-b) 66%, var(--g-mid) 100%);
+  /* 빛이 좌에서 우로 지나간다(PO) — 카드를 훑는 빛과 같은 박자다(6.5초 중 22%만 흐르고 쉰다).
+     움직이는 것은 첫 배경 층(사선 광택)의 위치 하나뿐이다. 금속은 제자리에 있고 빛만 지나간다 —
+     요소를 더 얹지 않으므로 뱃지가 네 곳에 흩어져 있어도 마크업이 그대로다.
+     정지점은 반드시 100 → 0% 안에 둔다: 벗어나면 no-repeat 배경이 상자를 벗어나 광택이 통째로
+     사라진다(안내문 라이팅에서 겪은 함정과 같다). 100 → 0이 좌에서 우다. */
+  background-size:300% 100%, 100% 100%;
+  background-position:100% 0, 0 0;
+  background-repeat:no-repeat;
+  animation:gradeSweep 6.5s cubic-bezier(.55,0,1,1) 1.6s infinite}
+
+@keyframes gradeSweep{
+  0%,4%    {background-position:100% 0, 0 0}
+  22%,100% {background-position:0% 0, 0 0}
+}
+@media (prefers-reduced-motion:reduce){
+  .gradeBadge::before,.ohGrade::before,.pdGradeBadge::before{animation:none}
+}
 [data-grade="starter"] .pdGradeBadge{color:var(--g-text)}
-[data-grade="starter"] .pdGradeBadge::before{background:none;
+[data-grade="starter"] .pdGradeBadge::before{background:none;animation:none;
   border-color:color-mix(in srgb,currentColor 42%,transparent)}
 .pdOvr{display:flex;flex-direction:column;align-items:flex-end;color:#fff}
 .pdOvr .lb{font-size:14px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);
