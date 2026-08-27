@@ -1251,10 +1251,10 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 선수 카드 — BASKET 플레이어 카드를 화면 중앙에 크게, 클릭하면 뒷면(시즌 평균)으로 플립.
    레퍼런스: 신한카드 상품 페이지(큰 카드 중앙 배치 + 미니멀한 주변 UI + 카드 상세/뒷면 인터랙션).
    등급 토큰은 카드 공유 화면(player-card.html)과 동일 값 — OVR을 index.html에서 산출해 URL로 전달하고, 등급은 그 OVR 구간으로 역산(ovrFor/gradeFor) */
-[data-grade="starter"]{--g-a:#4e5157; --g-b:#868b93; --g-c:#26282c; --g-text:#e4e6ea; --shine-op:.18; }
-[data-grade="bronze"]{ --g-a:#7a4a2a; --g-b:#c9905a; --g-c:#3d2412; --g-text:#f0d9c2; --shine-op:.28; }
-[data-grade="silver"]{ --g-a:#8b929b; --g-b:#e7ebef; --g-c:#3d4249; --g-text:#eef1f4; --shine-op:.4;  }
-[data-grade="gold"]{   --g-a:#9c7415; --g-b:#f4d16a; --g-c:#4a3608; --g-text:#fbedc4; --shine-op:.55; }
+[data-grade="starter"]{--g-a:#4e5157; --g-b:#868b93; --g-c:#26282c; --g-text:#e4e6ea; --g-mid:#6b6f76; --g-hi:#a9adb4; --shine-op:.18; }
+[data-grade="bronze"]{ --g-a:#7a4a2a; --g-b:#c9905a; --g-c:#3d2412; --g-text:#f0d9c2; --g-mid:#be8653; --g-hi:#deba99; --shine-op:.28; }
+[data-grade="silver"]{ --g-a:#8b929b; --g-b:#e7ebef; --g-c:#3d4249; --g-text:#eef1f4; --g-mid:#bec3c9; --g-hi:#f0f3f5; --shine-op:.4;  }
+[data-grade="gold"]{   --g-a:#9c7415; --g-b:#f4d16a; --g-c:#4a3608; --g-text:#fbedc4; --g-mid:#cca744; --g-hi:#f8e2a3; --shine-op:.55; }
 
 /* 선수 상세 상단 팀 컬러 배경은 제거 — 카드 주변 등급 오라(.pdGlow)와 색이 겹쳐 서로 탁해졌다.
    (player-card.html에서 --team-tint를 뺀 것과 같은 이유) */
@@ -1444,9 +1444,17 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .pdBrand{display:flex;flex-direction:column;align-items:center;gap:6px}
 .pdLogo{color:var(--g-text,#fff);width:52px;height:27px;
   filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
-.pdGradeBadge{border-radius:100px;background:rgba(0,0,0,.4);color:var(--g-text,#fff);
-  border:1px solid color-mix(in srgb,var(--g-b,#fff) 55%,transparent);
-  padding:3px 10px;font-size:11px;font-weight:800;letter-spacing:.05em}
+/* 등급 뱃지 — 선수 카드(.gradeBadge)와 같은 레시피다. 두 화면이 같은 물건을 보여 주므로
+   여기서 따로 그리지 않는다. 밝은 금속 면에 사선 광택 한 줄, 어두운 글자, 50% 외곽선(PO). */
+.pdGradeBadge{border-radius:100px;padding:3px 10px;font-size:11px;font-weight:800;letter-spacing:.05em;
+  color:var(--g-c,#1c1b1f);border:1px solid color-mix(in srgb,var(--g-c,#1c1b1f) 50%,transparent);
+  background:
+    linear-gradient(118deg, transparent 40%,
+      rgba(255,255,255,.48) 46.5%, rgba(255,255,255,.85) 50%, rgba(255,255,255,.48) 53.5%,
+      transparent 60%),
+    linear-gradient(135deg, var(--g-mid) 0%, var(--g-b) 34%, var(--g-hi) 50%, var(--g-b) 66%, var(--g-mid) 100%)}
+[data-grade="starter"] .pdGradeBadge{background:none;color:var(--g-text);
+  border-color:color-mix(in srgb,currentColor 42%,transparent)}
 .pdOvr{display:flex;flex-direction:column;align-items:flex-end;color:#fff}
 .pdOvr .lb{font-size:14px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);
   display:flex;align-items:center;justify-content:flex-end;gap:4px}
