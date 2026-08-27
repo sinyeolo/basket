@@ -569,8 +569,8 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
    여기서 새 패턴을 그리면 같은 브랜드가 두 벌이 된다. */
 .packPat{position:absolute;inset:-40%;pointer-events:none;opacity:.13;
   background-color:var(--pack-foil-deep);
-  -webkit-mask-image:url(assets/logo-pat.svg?v=1.1);mask-image:url(assets/logo-pat.svg?v=1.1);
-  -webkit-mask-size:78px auto;mask-size:78px auto;
+  -webkit-mask-image:url(assets/logo-pat.svg?v=1.2);mask-image:url(assets/logo-pat.svg?v=1.2);
+  -webkit-mask-size:98px auto;mask-size:98px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat;
   transform:rotate(-35deg)}
 .packSheen{position:absolute;inset:0;pointer-events:none;
@@ -641,8 +641,8 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
    골무늬 위에 겹치므로 진하면 둘 다 안 읽힌다. */
 .packBandPat{position:absolute;inset:0;pointer-events:none;opacity:.14;
   background-color:#3a3f4a;
-  -webkit-mask-image:url(assets/logo-pat.svg?v=1.1);mask-image:url(assets/logo-pat.svg?v=1.1);
-  -webkit-mask-size:42px auto;mask-size:42px auto;
+  -webkit-mask-image:url(assets/logo-pat.svg?v=1.2);mask-image:url(assets/logo-pat.svg?v=1.2);
+  -webkit-mask-size:53px auto;mask-size:53px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat}
 /* 지그재그 컷 — 실제 팩은 핑킹가위 날로 잘라 위아래가 톱니다(PO).
    삼각형을 하나씩 그리는 대신 45도 그라디언트 두 장을 한 칸(--z)씩 반복해 겹친다.
@@ -1150,9 +1150,9 @@ body.glow-hold .cardGlow{animation-play-state:paused}
    반대로 하면 브론즈에서 대비가 1.95:1로 무너진다(실측). 그라디언트의 어두운 끝은
    --g-a까지 내리지 않고 --g-mid에서 멈춘다: 등급마다 "글자 대비 4.6:1을 넘는 지점"까지만
    내린 값이다(브론즈 86% · 실버 55% · 골드 55%). 색을 흐리게 만든 게 아니라 짝을 바꾼 것이다.
-   외곽선은 50% 투명이라 있는 듯 없는 듯 금속의 끝만 잡아 준다(PO). */
+   외곽선은 10%만 남긴다(PO) — 금속판의 끝을 아주 희미하게만 잡아 준다. */
 .gradeBadge{border-radius:100px;padding:3px 10px;font-size:11px;font-weight:800;letter-spacing:.05em;
-  color:var(--g-c);border:1px solid color-mix(in srgb,var(--g-c) 50%,transparent);
+  color:var(--g-c);border:1px solid color-mix(in srgb,var(--g-c) 10%,transparent);
   background:
     linear-gradient(118deg, transparent 40%,
       rgba(255,255,255,.48) 46.5%, rgba(255,255,255,.85) 50%, rgba(255,255,255,.48) 53.5%,
@@ -1395,22 +1395,25 @@ body.glow-hold .cardGlow{animation-play-state:paused}
    앞면은 사진·오라가 덮고 있어 그대로 두고 뒷면에만 적용한다. */
 /* 뒷면 대각 로고 패턴 — 등급 톤으로 10%. 정보가 없는 넓은 면을 비워 두는 대신 브랜드로 채운다.
    패턴은 positioned라 그냥 두면 static인 본문 위를 덮는다 — 본문에 z-index를 올려 뒤로 보낸다. */
+/* 로고 사이 간격 — 타일 여백을 키워서 준다(PO). 새 워드마크는 2단에 위아래 룰까지 있어
+   예전 1단 워드마크와 같은 여백으로는 무늬가 줄무늬처럼 이어져 보였다.
+   타일에서 워드마크가 차지하는 비율을 가로 63→50%, 세로 47→34%로 낮췄다. */
 .backLogoPat{position:absolute;inset:-80%;z-index:1;pointer-events:none;opacity:.07;
   background-color:var(--g-b);
-  -webkit-mask-image:url(assets/logo-pat.svg?v=1.1);mask-image:url(assets/logo-pat.svg?v=1.1);
-  -webkit-mask-size:92px auto;mask-size:92px auto;
+  -webkit-mask-image:url(assets/logo-pat.svg?v=1.2);mask-image:url(assets/logo-pat.svg?v=1.2);
+  -webkit-mask-size:116px auto;mask-size:116px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat;
   transform:rotate(-35deg);
   animation:backPatDrift 7s linear infinite}
 /* 패턴이 제 방향으로 천천히 흐른다. rotate 뒤에 translateX를 걸면 회전된 축(=타일이 늘어선 방향)을
-   따라가므로 사선 그대로 미끄러진다. 이동량은 타일 한 칸(92px) — 딱 한 주기라 이음매가 안 보인다.
+   따라가므로 사선 그대로 미끄러진다. 이동량은 타일 한 칸(116px) — 딱 한 주기라 이음매가 안 보인다.
    transform이라 합성 단계에서만 처리된다(mask-position을 움직이면 매 프레임 다시 칠한다).
 
    inset이 -80%인 이유: 레이어를 -35도 돌리면 카드 네 귀퉁이가 레이어 안쪽 219px 지점까지 들어온다.
    여기에 흐르는 거리 92px이 더해지므로 반폭이 311px 넘게 필요하다. -40%(반폭 243px)로는 모자라서
    흐르는 동안 뒤쪽 가장자리가 카드 안으로 들어왔고, 그 띠에서 패턴이 사라졌다가 한 바퀴 돌면
    갑자기 다시 나타났다. -80%면 반폭 351px이라 전 구간을 덮는다. */
-@keyframes backPatDrift{from{transform:rotate(-35deg) translateX(0)}to{transform:rotate(-35deg) translateX(-92px)}}
+@keyframes backPatDrift{from{transform:rotate(-35deg) translateX(0)}to{transform:rotate(-35deg) translateX(-116px)}}
 @media (prefers-reduced-motion:reduce){ .backLogoPat{animation:none} }
 /* 뒷면 내용은 모두 로고 패턴(z:1)과 홀로그램 위에 선다.
    경기 목록을 감싼 .backGames가 이 목록에서 빠져 있어 그 안의 줄들만 패턴 아래로 깔렸고,
@@ -1565,7 +1568,7 @@ body.glow-hold .cardGlow{animation-play-state:paused}
 /* 시트 상단 등급도 카드와 같은 뱃지다(PO) — 등급마다 색을 따로 적어 두던 네 줄을 지웠다.
    같은 것을 두 군데에 적으면 한쪽만 고쳐지는 날이 온다. 크기만 시트 눈금에 맞춘다. */
 .ohGrade{flex:none;font-size:11px;font-weight:800;letter-spacing:.06em;padding:5px 12px;border-radius:100px;
-  color:var(--g-c);border:1px solid color-mix(in srgb,var(--g-c) 50%,transparent);
+  color:var(--g-c);border:1px solid color-mix(in srgb,var(--g-c) 10%,transparent);
   background:
     linear-gradient(118deg, transparent 40%,
       rgba(255,255,255,.48) 46.5%, rgba(255,255,255,.85) 50%, rgba(255,255,255,.48) 53.5%,
