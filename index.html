@@ -1016,22 +1016,22 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    라벨은 위 규칙(.fieldrow > div > label)에서 이미 처리해 두고 인풋만 빠져 있어서 시즌·대회 기간·경기 규칙
    입력칸이 M3 필드가 아니라 브라우저 기본 인풋으로 렌더링됐다. :is()는 특이도가 인자 중 가장 높은 값(0-1-0)이라
    기존 규칙과 우선순위가 동일하다 */
-:is(.field,.fieldrow) input,:is(.field,.fieldrow) select{width:100%;height:52px;padding:0 16px;border:none;
+:is(.field,.fieldrow,.bulk-row) input,:is(.field,.fieldrow,.bulk-row) select{width:100%;height:52px;padding:0 16px;border:none;
   border-radius:14px;background:var(--surface-variant);font-family:var(--font);font-size:16px;color:var(--on-surface);
   box-shadow:inset 0 0 0 1px var(--outline-variant);transition:box-shadow .12s,background .12s}
-:is(.field,.fieldrow) select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6a72' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px;padding-right:42px}
-:is(.field,.fieldrow) input:hover,:is(.field,.fieldrow) select:hover{background-color:#ebe4ec}
-:is(.field,.fieldrow) input:focus,:is(.field,.fieldrow) select:focus{outline:none;background-color:#ebe4ec;box-shadow:inset 0 0 0 2px var(--on-surface)}
-:is(.field,.fieldrow) input::placeholder{color:var(--on-surface-variant)}
-:is(.field,.fieldrow) input:disabled,:is(.field,.fieldrow) select:disabled{color:var(--on-surface-variant);cursor:not-allowed}
+:is(.field,.fieldrow,.bulk-row) select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6a72' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px;padding-right:42px}
+:is(.field,.fieldrow,.bulk-row) input:hover,:is(.field,.fieldrow,.bulk-row) select:hover{background-color:#ebe4ec}
+:is(.field,.fieldrow,.bulk-row) input:focus,:is(.field,.fieldrow,.bulk-row) select:focus{outline:none;background-color:#ebe4ec;box-shadow:inset 0 0 0 2px var(--on-surface)}
+:is(.field,.fieldrow,.bulk-row) input::placeholder{color:var(--on-surface-variant)}
+:is(.field,.fieldrow,.bulk-row) input:disabled,:is(.field,.fieldrow,.bulk-row) select:disabled{color:var(--on-surface-variant);cursor:not-allowed}
 /* 입력 폼 공통 규칙 — 비어있을 땐 회색, 값이 채워지면(placeholder가 더 이상 안 보이거나, select면 빈 값이 아닌 옵션이 선택되면) 흰색으로
    (select의 화살표 아이콘은 background-image라 background 단축 속성으로 덮으면 사라졌다 슬라이드로 되돌아오는 버그가 생김 — 반드시 background-color만 사용) */
-:is(.field,.fieldrow) input:not(:placeholder-shown),
-:is(.field,.fieldrow) select:has(option:checked:not([value=""])){background-color:var(--surface)}
-:is(.field,.fieldrow) input:not(:placeholder-shown):hover,
-:is(.field,.fieldrow) select:has(option:checked:not([value=""])):hover{background-color:var(--surface-variant)}
-:is(.field,.fieldrow) input:not(:placeholder-shown):focus,
-:is(.field,.fieldrow) select:has(option:checked:not([value=""])):focus{background-color:var(--surface-variant);box-shadow:inset 0 0 0 2px var(--on-surface)}
+:is(.field,.fieldrow,.bulk-row) input:not(:placeholder-shown),
+:is(.field,.fieldrow,.bulk-row) select:has(option:checked:not([value=""])){background-color:var(--surface)}
+:is(.field,.fieldrow,.bulk-row) input:not(:placeholder-shown):hover,
+:is(.field,.fieldrow,.bulk-row) select:has(option:checked:not([value=""])):hover{background-color:var(--surface-variant)}
+:is(.field,.fieldrow,.bulk-row) input:not(:placeholder-shown):focus,
+:is(.field,.fieldrow,.bulk-row) select:has(option:checked:not([value=""])):focus{background-color:var(--surface-variant);box-shadow:inset 0 0 0 2px var(--on-surface)}
 .fieldrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .fieldrow > div{margin:0}
 /* 네이티브 number 스피너는 너무 작고 브라우저마다 달라서 숨기고, 같은 버튼 스타일(.numstep)로 직접 그린다 */
@@ -1081,8 +1081,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .bulk-head,.bulk-row{display:grid;grid-template-columns:1.5fr 1fr 1fr .8fr .9fr .9fr 40px;gap:10px;align-items:center}
 .bulk-head{font-size:11px;font-weight:700;color:var(--on-surface-variant);padding:0 4px 10px}
 .bulk-row+.bulk-row{margin-top:8px}
-.bulk-row input,.bulk-row select{height:48px;padding:0 12px;border:none;border-radius:12px;background:var(--surface-variant);font-family:var(--font);font-size:13px;color:var(--on-surface);min-width:0;box-shadow:inset 0 0 0 1px var(--outline-variant);transition:box-shadow .12s,background .12s}
-.bulk-row input:focus,.bulk-row select:focus{outline:none;background:#ebe4ec;box-shadow:inset 0 0 0 2px var(--on-surface)}
+/* 배경·포커스·플레이스홀더 색은 선수 등록 폼과 같은 규칙이 맡는다(위 :is(.field,.fieldrow,.bulk-row)).
+   여기서 다시 적으면 "값이 차면 흰 면"이 이 표에서만 안 먹는다 — 실제로 그랬다(PO). */
+.bulk-row input,.bulk-row select{height:48px;min-width:0}
 .bulk-row select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6a72' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:16px;padding-right:32px}
 @media (max-width:820px){.bulk{overflow-x:auto}.bulk-head,.bulk-row{min-width:680px}}
 
@@ -1468,8 +1469,35 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   .gradeBadge::before,.ohGrade::before,.pdGradeBadge::before{animation:none}
 }
 [data-grade="starter"] .pdGradeBadge{color:var(--g-text)}
-[data-grade="starter"] .pdGradeBadge::before{background:none;animation:none;
-  border-color:color-mix(in srgb,currentColor 42%,transparent)}
+/* 스타터는 두를 금속이 없다(PO) — 면 없이 테두리와 글자만 남는다.
+   대신 그 둘을 빛이 훑고 지나간다: 금속판이 못 하는 말을 선과 글자가 대신한다.
+   테두리는 2px다(PO) — 1px로는 빛이 지나갈 자리가 안 나온다.
+
+   테두리에 그라디언트를 넣는 방법: 투명한 2px 테두리를 두고 배경을 border-box까지
+   깔아 테두리 자리를 채운 뒤, padding-box 마스크를 xor로 빼서 가운데를 도로 뚫는다.
+   border-color에는 그라디언트를 못 넣기 때문이다. */
+[data-grade="starter"] .pdGradeBadge::before{
+  border:2px solid transparent;
+  background-image:linear-gradient(105deg,
+    color-mix(in srgb,currentColor 34%,transparent) 0 32%,
+    currentColor 50%,
+    color-mix(in srgb,currentColor 34%,transparent) 68% 100%);
+  background-origin:border-box;background-clip:border-box;
+  background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
+  -webkit-mask:linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+          mask:linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:gradeSweep 6.5s cubic-bezier(.55,0,1,1) 1.6s infinite}
+/* 글자에도 같은 빛이 같은 박자로 지나간다 — 글자 자체를 마스크 삼는다(The Travelling Light Rule) */
+[data-grade="starter"] .pdGradeBadge{
+  background-image:linear-gradient(105deg,
+    color-mix(in srgb,currentColor 62%,transparent) 0 32%,
+    currentColor 50%,
+    color-mix(in srgb,currentColor 62%,transparent) 68% 100%);
+  background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:gradeSweep 6.5s cubic-bezier(.55,0,1,1) 1.6s infinite}
 .pdOvr{display:flex;flex-direction:column;align-items:flex-end;color:#fff}
 .pdOvr .lb{font-size:14px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);
   display:flex;align-items:center;justify-content:flex-end;gap:4px}
@@ -4596,28 +4624,63 @@ function initPlayerModal(){
    업로드한 엑셀의 컬럼은 제공된 '멤버_등록양식.xlsx'와 동일합니다:
    이름 / 주 포지션 / 부 포지션 / 등번호 / 신장(cm) / 체중(kg) — 이름만 필수 */
 var bulkModal, bulkRows = [];
-var BULK_COLS = ['이름 *','주 포지션','부 포지션','등번호','신장(cm)','체중(kg)',''];
+/* 필수 표시는 선수 등록 폼과 같은 모양이다 — 통짜 문자열이면 색을 입힐 수 없어
+   라벨과 같은 회색으로 묻혔다(PO). */
+var BULK_COLS = ['이름 <span style="color:var(--red)">*</span>','주 포지션','부 포지션','등번호','신장(cm)','체중(kg)',''];
 function renderBulk(){
   document.getElementById('bulkHead').innerHTML = BULK_COLS.map(function(c){ return '<span>'+c+'</span>'; }).join('');
   document.getElementById('bulkRows').innerHTML = bulkRows.map(function(r, i){
-    function sel(v){ return '<option value=""'+(!v?' selected':'')+'>선택 안 함</option>'+
-      POSITIONS.map(function(p){ return '<option value="'+p+'"'+(p===v?' selected':'')+'>'+p+'</option>'; }).join(''); }
+    function sel(v, blocked){ return '<option value=""'+(!v?' selected':'')+'>선택 안 함</option>'+
+      POSITIONS.map(function(p){
+        var off = !!blocked && p === blocked;
+        return '<option value="'+p+'"'+(p===v?' selected':'')+(off?' disabled':'')+'>'+p+(off?' (주 포지션)':'')+'</option>';
+      }).join(''); }
+    /* 숫자 칸은 선수 등록 폼과 같은 부품을 쓴다(PO) — 네이티브 스피너는 브라우저마다
+       모양이 달라서 그쪽에서 이미 걷어냈는데 이 표만 남아 있었다.
+       data-target으로 id를 가리키는 방식도 그대로라 stepNumInput 핸들러를 그대로 쓴다. */
+    function num(f, ph, label, extra){
+      var id = 'b'+i+'_'+f;
+      return '<div class="numfield">'+
+        '<input id="'+id+'" type="number" value="'+(r[f]!=null?r[f]:'')+'" placeholder="'+ph+'"'+(extra||'')+
+          ' aria-label="'+(i+1)+'행 '+label+'" data-b="'+i+'" data-f="'+f+'">'+
+        '<span class="numsteps">'+
+          '<button type="button" class="numstep up" data-target="'+id+'" aria-label="'+label+' 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button>'+
+          '<button type="button" class="numstep down" data-target="'+id+'" aria-label="'+label+' 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button>'+
+        '</span></div>';
+    }
     return '<div class="bulk-row">'+
       /* 열 제목(bulkHead)은 표 맨 위에 한 번만 있고 스크롤하면 사라진다 — 스크린리더는
          각 칸이 무엇을 묻는지 알 수 없으므로 행마다 aria-label을 붙인다. */
       '<input type="text" value="'+(r.name||'')+'" placeholder="선수 '+(i+1)+'" aria-label="'+(i+1)+'행 이름" data-b="'+i+'" data-f="name">'+
       '<select data-b="'+i+'" data-f="pos1" aria-label="'+(i+1)+'행 주 포지션">'+sel(r.pos1)+'</select>'+
-      '<select data-b="'+i+'" data-f="pos2" aria-label="'+(i+1)+'행 부 포지션">'+sel(r.pos2)+'</select>'+
-      '<input type="number" value="'+(r.no!=null?r.no:'')+'" aria-label="'+(i+1)+'행 등번호" data-b="'+i+'" data-f="no">'+
-      '<input type="number" value="'+(r.h||'')+'" aria-label="'+(i+1)+'행 키(cm)" data-b="'+i+'" data-f="h">'+
-      '<input type="number" value="'+(r.w||'')+'" aria-label="'+(i+1)+'행 몸무게(kg)" data-b="'+i+'" data-f="w">'+
+      /* 부 포지션에서는 이미 주 포지션으로 고른 것을 못 고르게 막는다 — 선수 등록 폼의
+         칩과 같은 규칙이다(PO). 한 선수가 같은 자리를 두 번 맡을 수는 없다. */
+      '<select data-b="'+i+'" data-f="pos2" aria-label="'+(i+1)+'행 부 포지션">'+sel(r.pos2, r.pos1)+'</select>'+
+      num('no','7','등번호',' min="0" max="99"')+
+      num('h','178','신장(cm)')+
+      num('w','72','체중(kg)')+
       '<button type="button" class="iconbtn danger" data-brm="'+i+'" aria-label="'+(i+1)+'행 삭제">'+icon('trash','ic ic-sm')+'</button>'+
     '</div>';
   }).join('');
   document.querySelectorAll('#bulkRows [data-b]').forEach(function(el){
     el.addEventListener('input', function(){
-      var v = el.value;
-      bulkRows[Number(el.dataset.b)][el.dataset.f] = (el.type==='number') ? (v===''?null:Number(v)) : v;
+      var v = el.value, row = bulkRows[Number(el.dataset.b)];
+      row[el.dataset.f] = (el.type==='number') ? (v===''?null:Number(v)) : v;
+      /* 주 포지션을 바꾸면 같은 값이던 부 포지션을 놓아 준다. 안 그러면 한 선수가 같은
+         자리를 두 번 맡은 채로 저장된다 — 선수 등록 폼도 같게 동작한다. */
+      if(el.dataset.f === 'pos1'){
+        if(row.pos1 && row.pos2 === row.pos1) row.pos2 = null;
+        renderBulk();
+        var again = document.getElementById(el.id) || document.querySelector('#bulkRows [data-b="'+el.dataset.b+'"][data-f="pos1"]');
+        if(again) again.focus();
+      }
+    });
+  });
+  /* 숫자 스텝 — 선수 등록 폼과 같은 핸들러(stepNumInput)를 쓴다. 행마다 id를 매겨
+     data-target으로 가리키므로 새 코드 경로가 없다. */
+  document.querySelectorAll('#bulkRows .numstep').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      stepNumInput(document.getElementById(btn.dataset.target), btn.classList.contains('up') ? 1 : -1);
     });
   });
   document.querySelectorAll('#bulkRows [data-brm]').forEach(function(b){

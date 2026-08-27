@@ -1056,6 +1056,12 @@ body.glow-hold .cardGlow{animation-play-state:paused}
 @media (prefers-reduced-motion:reduce){ .cardFace .inner::after{animation:none;opacity:0} }
 .cardFace .inner{position:relative;width:100%;height:100%;border-radius:var(--r-card);overflow:hidden;
   background:linear-gradient(175deg,#191b22,#0d0e12 70%)}
+/* 등급별 카드 바탕(PO) — 브론즈·실버·골드는 카드 면 자체가 그 금속이다.
+   스타터는 제외한다: 아직 아무것도 이루지 않은 등급이라 두를 금속이 없다(테두리·뱃지와 같은 원칙).
+   사진이나 포지션 실루엣은 이 위에 얹히므로, 이 바탕은 그것들이 덮지 않는 자리에서 드러난다. */
+[data-grade="bronze"] .cardFace .inner{background:#2b1a0e url(assets/grade/bronze.jpg) center/cover no-repeat}
+[data-grade="silver"] .cardFace .inner{background:#23262a url(assets/grade/silver.jpg) center/cover no-repeat}
+[data-grade="gold"]   .cardFace .inner{background:#2a2006 url(assets/grade/gold.jpg) center/cover no-repeat}
 
 /* 카드 두께 — 앞/뒷면과 같은 크기·같은 라운드의 면을 Z축으로 촘촘히 쌓아 만든다.
    예전엔 네 변에 직사각형 띠를 세웠는데, 띠가 라운드 구간(네 모서리)을 비워 놓는 구조라
@@ -1190,8 +1196,35 @@ body.glow-hold .cardGlow{animation-play-state:paused}
   .gradeBadge::before,.ohGrade::before,.pdGradeBadge::before{animation:none}
 }
 [data-grade="starter"] .gradeBadge{color:var(--g-text)}
-[data-grade="starter"] .gradeBadge::before{background:none;animation:none;
-  border-color:color-mix(in srgb,currentColor 42%,transparent)}
+/* 스타터는 두를 금속이 없다(PO) — 면 없이 테두리와 글자만 남는다.
+   대신 그 둘을 빛이 훑고 지나간다: 금속판이 못 하는 말을 선과 글자가 대신한다.
+   테두리는 2px다(PO) — 1px로는 빛이 지나갈 자리가 안 나온다.
+
+   테두리에 그라디언트를 넣는 방법: 투명한 2px 테두리를 두고 배경을 border-box까지
+   깔아 테두리 자리를 채운 뒤, padding-box 마스크를 xor로 빼서 가운데를 도로 뚫는다.
+   border-color에는 그라디언트를 못 넣기 때문이다. */
+[data-grade="starter"] .gradeBadge::before{
+  border:2px solid transparent;
+  background-image:linear-gradient(105deg,
+    color-mix(in srgb,currentColor 34%,transparent) 0 32%,
+    currentColor 50%,
+    color-mix(in srgb,currentColor 34%,transparent) 68% 100%);
+  background-origin:border-box;background-clip:border-box;
+  background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
+  -webkit-mask:linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+          mask:linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:gradeSweep 6.5s cubic-bezier(.55,0,1,1) 1.6s infinite}
+/* 글자에도 같은 빛이 같은 박자로 지나간다 — 글자 자체를 마스크 삼는다(The Travelling Light Rule) */
+[data-grade="starter"] .gradeBadge{
+  background-image:linear-gradient(105deg,
+    color-mix(in srgb,currentColor 62%,transparent) 0 32%,
+    currentColor 50%,
+    color-mix(in srgb,currentColor 62%,transparent) 68% 100%);
+  background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:gradeSweep 6.5s cubic-bezier(.55,0,1,1) 1.6s infinite}
 .ovrBox{display:flex;flex-direction:column;align-items:flex-end;color:#fff}
 /* 라벨은 <button>이라 display:flex를 줘도 폭이 내용만큼만 잡힌다(폼 컨트롤의 auto 폭은 fit-content).
    그래서 부모의 text-align:right가 먹지 않았다 — 부모를 flex로 세워 오른쪽에 붙인다. */
@@ -1619,8 +1652,35 @@ body.glow-hold .cardGlow{animation-play-state:paused}
   animation:gradeSweep 6.5s cubic-bezier(.55,0,1,1) 1.6s infinite}
 /* 흰 시트 위 스타터 — 회색 면을 두지 않는다(PO). 면이 없으니 글자는 시트의 먹을 쓴다. */
 [data-grade="starter"] .ohGrade{color:var(--sh-on)}
-[data-grade="starter"] .ohGrade::before{background:none;animation:none;
-  border-color:color-mix(in srgb,var(--sh-on) 34%,transparent)}
+/* 스타터는 두를 금속이 없다(PO) — 면 없이 테두리와 글자만 남는다.
+   대신 그 둘을 빛이 훑고 지나간다: 금속판이 못 하는 말을 선과 글자가 대신한다.
+   테두리는 2px다(PO) — 1px로는 빛이 지나갈 자리가 안 나온다.
+
+   테두리에 그라디언트를 넣는 방법: 투명한 2px 테두리를 두고 배경을 border-box까지
+   깔아 테두리 자리를 채운 뒤, padding-box 마스크를 xor로 빼서 가운데를 도로 뚫는다.
+   border-color에는 그라디언트를 못 넣기 때문이다. */
+[data-grade="starter"] .ohGrade::before{
+  border:2px solid transparent;
+  background-image:linear-gradient(105deg,
+    color-mix(in srgb,currentColor 34%,transparent) 0 32%,
+    currentColor 50%,
+    color-mix(in srgb,currentColor 34%,transparent) 68% 100%);
+  background-origin:border-box;background-clip:border-box;
+  background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
+  -webkit-mask:linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+          mask:linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:gradeSweep 6.5s cubic-bezier(.55,0,1,1) 1.6s infinite}
+/* 글자에도 같은 빛이 같은 박자로 지나간다 — 글자 자체를 마스크 삼는다(The Travelling Light Rule) */
+[data-grade="starter"] .ohGrade{
+  background-image:linear-gradient(105deg,
+    color-mix(in srgb,currentColor 62%,transparent) 0 32%,
+    currentColor 50%,
+    color-mix(in srgb,currentColor 62%,transparent) 68% 100%);
+  background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:gradeSweep 6.5s cubic-bezier(.55,0,1,1) 1.6s infinite}
 /* 시즌 평균 3스탯 */
 /* 카드 안에 또 박스를 넣지 않는다 — 레퍼런스들이 공통으로 지키는 것이다.
    회색 박스 세 개를 걷어내고 얇은 세로선으로만 칸을 나눈다. 겹이 하나 줄면 숫자가 앞으로 나온다. */
