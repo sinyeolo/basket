@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
 <title>BASKET COUNT · 선수 카드 (프로토타입)</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
 <!-- Tektur — 영문·숫자 전용. Google이 서브셋마다 unicode-range를 붙여 배포하므로 폰트 스택 맨 앞에 둬도
@@ -34,7 +35,7 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--stage-bg);color:var(--on-dark);font-family:var(--font);-webkit-tap-highlight-color:transparent}
-button{font-family:var(--font)}
+button{font-family:var(--font);color:inherit}
 /* 포커스 링 — 이 화면은 배경이 둘이다(어두운 무대 + 흰 시트). 한 색으로는 둘 다 못 덮는다:
    기존 하늘색은 무대에서 11.8:1이지만 흰 시트 위에서 1.67:1로 사실상 안 보였고, 브랜드 앰버 원색도
    시트 위에서는 2.26:1이라 실패한다. 표면마다 바꾼다 — 무대는 앰버 원색(8.7:1),
