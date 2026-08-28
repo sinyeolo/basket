@@ -2698,11 +2698,14 @@ document.getElementById('btnSaveImg').innerHTML = icon('download','ic ic-sm')+'�
    포지션이 다섯이라 그림도 다섯이고, 선수 id로 무작위 배정하지 않는다 — 포지션은
    그 선수의 사실이라 그림도 그 사실을 따라야 한다. 자리·처리는 실제 사진과 똑같이 두면
    나중에 사진이 올라와도 카드가 달라지지 않는다. */
-if(PLAYER.photo){
+function paintPhoto(){
   document.getElementById('fPhotoBg').innerHTML =
     '<img class="avatarPhotoFull" draggable="false" src="'+PLAYER.photo+'" alt="">';
   document.querySelector('.photoLayer').style.display = 'none';
   document.getElementById('frontInner').classList.add('card-photo');
+}
+if(PLAYER.photo){
+  paintPhoto();
 } else {
   /* 포지션 실루엣은 등급에 따라 그림이 갈리므로 paintPose가 도맡는다.
      등급을 바꿀 때마다 같은 함수가 다시 도니 초기화와 갱신이 한 길이다. */
@@ -3825,11 +3828,25 @@ document.getElementById('ovrInfoModal').addEventListener('click', function(e){
 document.querySelectorAll('.previewBar button[data-g]').forEach(function(b){
   b.addEventListener('click', function(){ setGrade(b.dataset.g); });
 });
-/* ---- 실루엣 포즈 미리보기 (검토 전용) — 실제 서비스에선 선수 id로 고정, 여기선 눌러서 4종 순환 ---- */
-var poseCycleIdx = 0;
+/* ---- 실루엣 미리보기 (검토 전용) — 다섯 포지션(PG·SG·SF·PF·C)을 눌러서 순환한다.
+   예전엔 도형 실루엣 4종을 돌렸는데, 실루엣이 포지션 사진으로 바뀌면서 그 도형은
+   포지션이 다섯 자리 밖일 때만 나오는 예비 그림이 됐다 — 버튼을 눌러도 화면이 그대로였다(PO).
+   이제 실제로 보이는 것(포지션 실루엣)을 돌린다. 사진이 올라간 선수는 사진이 우선이므로
+   잠시 비켜 두었다가 한 바퀴 돌면 원래 상태로 돌아온다. ---- */
+var POSE_CYCLE = ['PG','SG','SF','PF','C'];
+var poseCycleIdx = -1, poseCyclePhoto = null;
 document.getElementById('btnPoseCycle').addEventListener('click', function(){
-  poseCycleIdx = (poseCycleIdx + 1) % POSES.length;
-  setAvatarPose(POSES[poseCycleIdx]);
+  if(poseCycleIdx === -1){ poseCyclePhoto = PLAYER.photo; PLAYER.photo = ''; }
+  poseCycleIdx = (poseCycleIdx + 1) % (POSE_CYCLE.length + 1);
+  if(poseCycleIdx === POSE_CYCLE.length){        // 한 바퀴 — 원래 선수로 되돌린다
+    PLAYER.photo = poseCyclePhoto; poseCycleIdx = -1;
+    if(PLAYER.photo){ paintPhoto(); } else { paintPose(); }
+    return;
+  }
+  PLAYER.pos = POSE_CYCLE[poseCycleIdx];
+  paintPose();
+  var chip = document.querySelector('.cfPos');
+  if(chip){ chip.textContent = PLAYER.pos; chip.closest('.cfPosRow').style.display = ''; }
 });
 </script>
 </body>

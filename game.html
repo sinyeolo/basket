@@ -206,6 +206,19 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 .mvpCard .in{position:relative;height:100%;border-radius:12px;overflow:hidden;
   background:radial-gradient(120% 80% at 50% 0%, color-mix(in srgb,var(--g-a) 42%, transparent), transparent 66%),
              linear-gradient(175deg, color-mix(in srgb,var(--g-c) 92%, #0b0c10), #0a0b0e 84%)}
+/* 등급별 카드 바탕 — 선수 카드(player-card.html)·운영 콘솔과 같은 에셋·같은 규칙.
+   스타터는 제외한다: 아직 아무것도 이루지 않은 등급이라 두를 금속이 없다. */
+[data-grade="bronze"].mvpCard .in{background-image:url(assets/grade/bronze.jpg)}
+[data-grade="silver"].mvpCard .in{background-image:url(assets/grade/silver.jpg)}
+[data-grade="gold"].mvpCard   .in{background-image:url(assets/grade/gold.jpg)}
+:is([data-grade="bronze"],[data-grade="silver"],[data-grade="gold"]).mvpCard .in{
+  background-color:var(--g-c);background-size:cover;background-position:center;background-repeat:no-repeat}
+/* 배경을 뺀 실루엣 — 흰 바탕 JPEG를 multiply로 얹으면 흰색은 사라지고 아래 금속이 비친다 */
+.mvpCard .ph.sil{mix-blend-mode:multiply;object-fit:contain;object-position:bottom center;padding:12% 7% 5%}
+/* 위쪽 그늘 — 금속 바탕이 밝아 등급·OVR의 흰 글자가 묻힌다(PO). 카드 1/3까지만, 아주 연하게 */
+.mvpCard .topScrim{position:absolute;left:0;right:0;top:0;height:33%;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg, rgba(10,11,15,.34) 0%, rgba(10,11,15,.16) 46%, rgba(10,11,15,0) 100%)}
+[data-grade="starter"].mvpCard .topScrim{display:none}
 /* OVR — 우상단. 선수 카드처럼 라벨을 수치 위에 얹고 오른쪽으로 정렬한다 */
 .mvpCard .ovr{position:absolute;z-index:2;top:8px;right:10px;text-align:right;
   font-family:var(--font-display);font-size:22px;font-weight:900;line-height:1;color:var(--g-text)}
@@ -428,7 +441,8 @@ th:first-child,td:first-child{text-align:left;padding-left:2px;position:sticky;l
 td:first-child{font-family:var(--font);font-weight:600;font-size:13px;color:var(--on-surface)}
 td .no{font-family:var(--font-display);color:var(--on-surface-variant);font-size:11px;margin-right:6px}
 td .tmdot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:1px}
-tr.out td:first-child{color:var(--on-surface-variant);text-decoration:line-through;text-decoration-thickness:1px}
+tr.out td{color:var(--on-red-c)}
+tr.out td:first-child{color:var(--on-red-c);text-decoration:line-through;text-decoration-thickness:1px}
 tfoot td{font-weight:800;color:var(--on-surface);border-bottom:none;background:var(--head-bg)}
 /* 합계 줄만 배경색이 달라 — 늘려 덮는 색도 같이 바꾼다.
    선수 열로 정렬해도 이 칸은 흰색을 유지하므로(td:first-child가 td.sorted보다 뒤에 있다)
@@ -528,6 +542,10 @@ function cardHref(p, side){
     teamColor: t.color || '#6b6a72', season: G.tour || '', grade: gradeOf(ovr), ovr: ovr
   });
   if(p.no != null) q.set('no', p.no);
+  /* 포지션을 실어 보낸다 — 카드의 실루엣이 포지션으로 갈리는데 이걸 빼면
+     열린 카드만 예비 도형 실루엣으로 떨어져 여기 보이는 카드와 얼굴이 달라진다. */
+  var cardPos = BASKET.posOf(t.name, p.no);
+  if(cardPos) q.set('pos', cardPos);
   if(sn){
     q.set('pts', sn.pts.toFixed(1));
     q.set('reb', sn.reb.toFixed(1));
@@ -655,15 +673,23 @@ function viewSummary(){
   var hw = G.home.score > G.away.score;
   var win = hw ? G.home : G.away, lose = hw ? G.away : G.home;
   var ovr = ovrOf(p), gk = gradeOf(ovr), g = GRADES[gk];
+  /* 포지션 실루엣 — 스타터는 카드 면이 어두운 무광이라 검은 실루엣이 묻힌다(색 포토카드를 쓴다).
+     금·은·동은 면이 금속이므로 배경을 뺀 검은 실루엣만 얹어 각인처럼 둔다. */
+  var mvpPos = String(BASKET.posOf(t.name, p.no) || '').toLowerCase();
+  var mvpSil = /^(pg|sg|sf|pf|c)$/.test(mvpPos)
+    ? (gk === 'starter' ? 'assets/pose/' : 'assets/sil/') + mvpPos + '.jpg?v=2' : '';
 
   var mvp = '<div class="card"><h3>베스트 플레이어</h3><div class="mvp">'+
-    '<a class="mvpCard" href="'+cardHref(p, b.side)+'" target="_blank" rel="noopener" '+
+    '<a class="mvpCard" data-grade="'+gk+'" href="'+cardHref(p, b.side)+'" target="_blank" rel="noopener" '+
       'aria-label="'+p.name+' 선수 카드 보기 (새 창)" '+
       'style="--g-a:'+g.a+';--g-b:'+g.b+';--g-c:'+g.c+';--g-text:'+g.text+'">'+
       '<div class="in">'+
-        /* 사진을 올린 선수는 사진, 아니면 실루엣. 선수 카드(player-card.html)와 같은 규칙이라
-           같은 선수가 두 화면에서 다른 얼굴로 보이지 않는다. */
-        (p.photo ? '<img class="ph" src="'+p.photo+'" alt="">' : SIL) +
+        /* 사진을 올린 선수는 사진, 없으면 포지션 실루엣. 선수 카드(player-card.html)·운영 콘솔과
+           같은 규칙·같은 파일이라 같은 선수가 세 화면에서 다른 얼굴로 보이지 않는다.
+           포지션까지 없으면 예비 도형 실루엣(SIL)으로 떨어진다 — 없는 그림을 억지로 붙이지 않는다. */
+        (p.photo ? '<img class="ph" src="'+p.photo+'" alt="">'
+                 : (mvpSil ? '<img class="ph'+(gk==='starter'?'':' sil')+'" src="'+mvpSil+'" alt="">' : SIL)) +
+        '<div class="topScrim" aria-hidden="true"></div>'+
         /* 배치는 선수 카드와 같다 — 등급 좌상단, OVR 우상단, 등번호 우하단, 이름·팀 좌하단.
            같은 선수의 카드가 두 화면에서 다르게 생기면 같은 물건으로 안 읽힌다. */
         '<span class="badge">'+({gold:'GOLD',silver:'SILVER',bronze:'BRONZE'}[gk])+'</span>'+

@@ -422,8 +422,10 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 
 
 /* shared buttons */
+button[disabled]{box-shadow:none!important}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:var(--h-md);padding:0 24px;border:none;border-radius:var(--r-btn);font-family:var(--font);font-weight:600;font-size:13px;cursor:pointer;transition:.15s;white-space:nowrap}
 .btn[disabled]{opacity:.38;box-shadow:none;cursor:default;filter:none;pointer-events:none}
+.btn-primary[disabled]:not(.is-loading){opacity:.38;background:var(--on-surface-variant);color:var(--on-main)}
 /* 로딩 — 라벨을 지우지 않고 바꾼다("확정" → "확정 중"). 라벨이 사라지면 무엇을 눌렀는지 잊는다.
    비활성과 달리 흐려지지 않는다 — 꺼진 것이 아니라 일하고 있는 것이다. */
 .btn.is-loading[disabled]{opacity:1}
@@ -724,8 +726,8 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
   white-space:nowrap;text-align:right}
 .prow .pstat .f4{color:var(--red)}
 /* 퇴장 — 코트에 남아 보이면 안 되지만 교체 전까지는 자리가 비어 있음을 알려야 한다 */
-.prow .pstat.out{color:var(--red);font-weight:800}
-.prow.out{opacity:.55}
+.prow .pstat.out{color:var(--on-red-c);font-weight:800}
+.prow.out{opacity:1}
 .prow.out .nm{text-decoration:line-through;text-decoration-thickness:1px}
 .prow.sel .pstat{color:rgba(255,255,255,.8)}
 .prow.sel .pstat .f4{color:#ffd4d4}
@@ -737,6 +739,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .prow.just-out.fading{opacity:0;max-height:0;padding-top:0;padding-bottom:0}
 .prow.bench .nm,.prow.bench .pts,.prow.bench .no{color:var(--on-surface-variant);font-weight:600}
 .prow.bench .pts{font-weight:600}
+.prow.bench.out .no,.prow.bench.out .nm,.prow.bench.out .pstat{color:var(--on-red-c)}
 /* 코트 / 벤치 그룹 라벨 — 교체 후에도 누가 코트에 있는지 순서와 라벨로 명확히 */
 .plist-sub{display:flex;align-items:center;gap:8px;margin:12px 0 4px;padding:0 8px;font-size:11px;font-weight:700;color:var(--on-surface-variant);white-space:nowrap}
 .plist-sub::after{content:"";flex:1;height:1px;background:var(--outline-variant)}
@@ -1043,7 +1046,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .crop-stage img{position:absolute;top:50%;left:50%;user-select:none;pointer-events:none;max-width:none}
 .crop-mask{position:absolute;inset:0;border-radius:50%;box-shadow:0 0 0 9999px rgba(0,0,0,.55);pointer-events:none}
 
-/* M3 Filled text field — 배경 surface-variant + 상단 라운드 + 포커스 시 하단 인디케이터 */
+/* M3 Filled text field — 비어 있을 때 한 단계 밝은 surface-container, 값이 채워지면 surface */
 .field{margin-top:16px}
 .field > label,.fieldrow > div > label{display:block;font-size:13px;font-weight:600;color:var(--on-surface-variant);margin-bottom:6px;padding-left:4px}
 /* 하단만 각진 M3 기본형은 전체가 라운드인 우리 UI와 어긋나서, 네 모서리를 모두 라운드로 통일.
@@ -1053,7 +1056,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    입력칸이 M3 필드가 아니라 브라우저 기본 인풋으로 렌더링됐다. :is()는 특이도가 인자 중 가장 높은 값(0-1-0)이라
    기존 규칙과 우선순위가 동일하다 */
 :is(.field,.fieldrow,.bulk-row) input,:is(.field,.fieldrow,.bulk-row) select{width:100%;height:52px;padding:0 16px;border:none;
-  border-radius:14px;background:var(--surface-variant);font-family:var(--font);font-size:16px;color:var(--on-surface);
+  border-radius:14px;background:var(--surface-container);font-family:var(--font);font-size:16px;color:var(--on-surface);
   box-shadow:inset 0 0 0 1px var(--outline-variant);transition:box-shadow .12s,background .12s}
 :is(.field,.fieldrow,.bulk-row) select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6a72' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px;padding-right:42px}
 :is(.field,.fieldrow,.bulk-row) input:hover,:is(.field,.fieldrow,.bulk-row) select:hover{background-color:#ebe4ec}
@@ -1431,6 +1434,14 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 [data-grade="starter"] .pdFace::after{display:none}
 .pdFace .in{position:relative;width:100%;height:100%;border-radius:20px;overflow:hidden;color:#fff;
   background:linear-gradient(175deg,#191b22,#0d0e12 70%)}
+/* 등급별 카드 바탕 — player-card.html의 .cardFace .inner와 같은 에셋·같은 규칙.
+   스타터는 제외한다: 아직 아무것도 이루지 않은 등급이라 두를 금속이 없다(테두리·뱃지와 같은 원칙).
+   이미지가 못 뜰 때 깔리는 색은 그 등급이 이미 가진 가장 어두운 톤(--g-c)이다. */
+[data-grade="bronze"] .pdFace .in{background-image:url(assets/grade/bronze.jpg)}
+[data-grade="silver"] .pdFace .in{background-image:url(assets/grade/silver.jpg)}
+[data-grade="gold"]   .pdFace .in{background-image:url(assets/grade/gold.jpg)}
+:is([data-grade="bronze"],[data-grade="silver"],[data-grade="gold"]) .pdFace .in{
+  background-color:var(--g-c);background-size:cover;background-position:center;background-repeat:no-repeat}
 
 /* 카드 옆면(두께) — player-card.html의 .cardEdge와 동일 규칙. 평면일 땐 안 보이다가 좌우로 기울일 때만 살짝 드러남 */
 /* 카드 두께 — 앞/뒷면과 같은 크기·같은 라운드(.pdFace의 20px)의 면을 Z축으로 촘촘히 쌓아 만든다.
@@ -1587,6 +1598,19 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 실제 업로드 사진 미리보기용 — 실루엣과 달리 카드 전체를 채우는 배경으로 깔고, 그 위에 오라·홀로그램·정보 패널이 그대로 겹친다 */
 .pdPhotoBg{position:absolute;inset:0}
 .pdAvatarPhotoFull{display:block;width:100%;height:100%;object-fit:cover;object-position:top center}
+/* 배경을 뺀 실루엣 — 흰 바탕 JPEG를 multiply로 얹는다. 검정은 그대로 남고 흰색은
+   사라지므로 아래의 등급 금속이 그대로 비친다(player-card.html의 .avatarPhotoFull.sil과 동일). */
+.pdAvatarPhotoFull.sil{mix-blend-mode:multiply;object-fit:contain;object-position:bottom center;
+  padding:14% 8% 6%}
+/* 위쪽 그늘 — 등급 금속 바탕은 밝아서 로고·OVR의 흰 글자가 묻힌다(PO).
+   카드의 1/3까지만, 아주 연하게. 스타터는 바탕이 어두워 필요 없다.
+   blur를 쌓지 않고 검은 면 한 장만 얹는다 — backdrop-filter는 프레임마다 뒤를 다시 읽지만
+   이건 한 번 칠하고 끝이다. (player-card.html의 .topScrim과 같은 값) */
+.topScrim{display:none;position:absolute;left:0;right:0;top:0;height:33%;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg, rgba(10,11,15,.34) 0%, rgba(10,11,15,.16) 46%, rgba(10,11,15,0) 100%)}
+[data-grade="bronze"] .topScrim,
+[data-grade="silver"] .topScrim,
+[data-grade="gold"] .topScrim{display:block}
 
 /* 하단 딤드 구간에 점점 진해지는 블러 — player-card.html과 동일 규칙 */
 .infoBlur{position:absolute;inset:0;z-index:1;pointer-events:none}
@@ -4801,7 +4825,7 @@ function initBulkModal(){
   });
   document.getElementById('btnXlTemplate').addEventListener('click', function(){
     // 실제 구현: /api/templates/members.xlsx 다운로드
-    document.getElementById('bulkSub').textContent = '멤버_등록양식.xlsx 를 다운로드했습니다. (이름 / 주·부 포지션 / 등번호 / 신장 / 체중)';
+    document.getElementById('bulkSub').textContent = 'basketcount_선수등록양식_v1.xlsx 를 다운로드했습니다. (이름 / 주 포지션 / 부 포지션 / 등번호 / 신장(cm) / 체중(kg) — 이름만 필수)';
   });
   document.getElementById('bulkSave').addEventListener('click', function(){
     var added = 0;
@@ -5027,6 +5051,16 @@ var PLAYER_SIL_POSES = {
   rebound: '<rect x="36" y="80" width="12" height="42" rx="6" transform="rotate(-18 42 80)"/><rect x="52" y="80" width="12" height="42" rx="6" transform="rotate(18 58 80)"/>'+
            '<rect x="31" y="36" width="10" height="34" rx="5" transform="rotate(165 36 36)"/><rect x="59" y="36" width="10" height="34" rx="5" transform="rotate(-165 64 36)"/>'
 };
+/* 포지션별 실루엣 — player-card.html의 poseImage와 같은 규칙·같은 파일이다.
+   스타터는 카드 면이 어두운 무광이라 검은 실루엣이 묻힌다 — 색이 있는 포토카드를 통째로 쓴다.
+   금·은·동은 카드 면이 금속이므로 배경을 뺀 검은 실루엣만 얹어 금속에 각인된 것처럼 둔다.
+   포지션이 없거나 5종 밖이면 null을 돌려주고, 그때만 기존 SVG 실루엣이 나온다. */
+var POSE_IMGS = { pg:1, sg:1, sf:1, pf:1, c:1 };
+function poseImage(pos, grade){
+  var k = String(pos || '').trim().toLowerCase();
+  if(!POSE_IMGS[k]) return null;
+  return (grade === 'starter' ? 'assets/pose/' : 'assets/sil/') + k + '.jpg?v=2';
+}
 function playerSilhouetteSvg(playerId){
   var keys = Object.keys(PLAYER_SIL_POSES), h = 0;
   for(var i=0;i<playerId.length;i++){ h = (h*31 + playerId.charCodeAt(i)) >>> 0; }
@@ -5195,6 +5229,8 @@ function renderPlayerDetail(){
   if(s && grade !== 'starter'){ cardParams.set('pts', s.pts.toFixed(1)); cardParams.set('reb', s.reb.toFixed(1)); cardParams.set('ast', s.ast.toFixed(1)); cardParams.set('ovr', ovrScore); }
   cardLinkTop.href = 'player-card.html?' + cardParams.toString();
   var posLabel = p.pos1||'';
+  var pdSil = !p.photo && grade !== 'starter';
+  var pdImg = p.photo || poseImage(p.pos1, grade);
   /* 스타터는 '아직 잴 수 없다'는 등급이라 물음표가 아니라 00을 세운다 — 카드 공유 화면과 같은 규칙.
      스타터의 스탯은 카드로 넘기지 않는다(한 경기 평균은 평균이 아니다). */
   var ovr = grade === 'starter' ? '00' : (ovrScore != null ? ovrScore : '?');
@@ -5235,8 +5271,9 @@ function renderPlayerDetail(){
     '<div class="pdStage"><div class="pdGlow" aria-hidden="true"></div>'+
     '<div class="pdCard" id="pdCard" data-grade="'+grade+'" role="button" tabindex="0" aria-label="'+p.name+' 선수 카드 — 눌러서 뒷면 기록 보기">'+
       '<div class="pdCardInner" id="pdCardInner">'+
-        '<div class="pdFace front"><div class="in'+(p.photo ? ' card-photo' : '')+'">'+
-          '<div class="pdPhotoBg">'+(p.photo ? '<img class="pdAvatarPhotoFull" src="'+p.photo+'" alt="">' : '')+'</div>'+
+        '<div class="pdFace front"><div class="in'+(pdImg ? ' card-photo' : '')+'">'+
+          '<div class="pdPhotoBg">'+(pdImg ? '<img class="pdAvatarPhotoFull'+(pdSil ? ' sil' : '')+'" src="'+pdImg+'" alt="">' : '')+'</div>'+
+          '<div class="topScrim" aria-hidden="true"></div>'+
           '<div class="pdAura" aria-hidden="true"></div>'+
           '<div class="holoFoil '+holo+'" aria-hidden="true"></div>'+
           '<div class="holoGrain" aria-hidden="true"></div>'+
@@ -5245,7 +5282,7 @@ function renderPlayerDetail(){
             '<div class="pdOvr"><button type="button" class="lb pdOvrInfoBtn" id="pdOvrInfoBtn" aria-label="OVR 계산 방식 안내">OVR<span class="pdOvrInfoIcon" aria-hidden="true">?</span></button>'+
               '<div class="pdOvrVal">'+pdOvrTrendHtml(ovrTrend)+'<div class="vl">'+ovr+'</div></div></div>'+
           '</div>'+
-          '<div class="pdPhoto"'+(p.photo ? ' style="display:none"' : '')+'><div class="pdAvatar">'+(p.photo ? '' : playerSilhouetteSvg(p.id))+'</div></div>'+
+          '<div class="pdPhoto"'+(pdImg ? ' style="display:none"' : '')+'><div class="pdAvatar">'+(pdImg ? '' : playerSilhouetteSvg(p.id))+'</div></div>'+
           '<div class="infoBlur infoBlur1" aria-hidden="true"></div>'+
           '<div class="infoBlur infoBlur2" aria-hidden="true"></div>'+
           '<div class="infoBlur infoBlur3" aria-hidden="true"></div>'+
