@@ -1301,12 +1301,12 @@ body:not(.booting) .bootLoad{opacity:0;visibility:hidden;transition:opacity .3s 
    그래서 부모의 text-align:right가 먹지 않았다 — 부모를 flex로 세워 오른쪽에 붙인다. */
 .ovrBox .lb{font-size:14px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);
   display:flex;align-items:center;justify-content:flex-end;gap:4px}
-/* OVR 수치 — 등급색(--g-text)이 아니라 흰색에 가깝게 둔다(PO). 카드 바탕이 금속이든
+/* OVR 수치 — 등급색(--g-text)이 아니라 흰색으로 둔다(PO). 카드 바탕이 금속이든
    코트 사진이든 무늬가 있는 면이라, 등급색은 그 위에서 한 톤 묻혔다.
-   그림자는 로고(.brandLogo)가 이미 쓰는 것과 같은 처리다 — 배경에서 떼어내는 용도지
-   글자를 어둡게 만들지 않는다. */
+   그림자는 두지 않는다(PO) — 숫자 뒤에 번진 자국이 남아 어색했다.
+   위쪽은 .topScrim이 이미 눌러 주고 있어 흰색만으로 충분히 선다. */
 .ovrBox .vl{font-family:var(--font-display);font-size:43px;font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums;
-  color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55), 0 0 8px rgba(0,0,0,.28)}
+  color:#fff}
 /* OVR 라벨 전체(텍스트+아이콘)를 하나의 버튼으로 묶어 탭 영역을 넓힘. 아이콘 자체는 배경 없이 테두리만 */
 /* 아이콘의 letter-spacing:0은 장식이 아니다 — 라벨의 자간(.1em)이 상속되면 한 글자짜리 '?' 뒤에도
    1.6px가 따라붙어 글자가 원 안에서 왼쪽으로 밀려 보인다. 글리프 자체는 좌우 대칭이다. */
