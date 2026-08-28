@@ -1289,7 +1289,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 선수 카드 — BASKET 플레이어 카드를 화면 중앙에 크게, 클릭하면 뒷면(시즌 평균)으로 플립.
    레퍼런스: 신한카드 상품 페이지(큰 카드 중앙 배치 + 미니멀한 주변 UI + 카드 상세/뒷면 인터랙션).
    등급 토큰은 카드 공유 화면(player-card.html)과 동일 값 — OVR을 index.html에서 산출해 URL로 전달하고, 등급은 그 OVR 구간으로 역산(ovrFor/gradeFor) */
-[data-grade="starter"]{--g-a:#4e5157; --g-b:#868b93; --g-c:#26282c; --g-text:#e4e6ea; --g-mid:#6b6f76; --g-hi:#a9adb4; --shine-op:.18; }
+[data-grade="starter"]{--g-a:#804119; --g-b:#eb9659; --g-c:#3b1b08; --g-text:#ffe2cc; --g-mid:#b86833; --g-hi:#fcc69d; --shine-op:.18; }
 [data-grade="bronze"]{ --g-a:#7a4a2a; --g-b:#c9905a; --g-c:#3d2412; --g-text:#f0d9c2; --g-mid:#be8653; --g-hi:#deba99; --shine-op:.28; }
 [data-grade="silver"]{ --g-a:#8b929b; --g-b:#e7ebef; --g-c:#3d4249; --g-text:#eef1f4; --g-mid:#bec3c9; --g-hi:#f0f3f5; --shine-op:.4;  }
 [data-grade="gold"]{   --g-a:#9c7415; --g-b:#f4d16a; --g-c:#4a3608; --g-text:#fbedc4; --g-mid:#cca744; --g-hi:#f8e2a3; --shine-op:.55; }
@@ -1443,6 +1443,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 스타터만 배경이 4종이다 — 아직 등급이 정해지지 않은 자리라 금속 한 장으로 대표되지 않는다.
    어느 장이 걸릴지는 선수마다 고정이다(starterBg) — 홀로그램 무늬와 같은 규칙이다. */
 [data-grade="starter"] .pdFace .in{background-image:var(--starter-bg, url(assets/grade/starter-01.jpg?v=1))}
+/* 뒷면은 사진을 깔지 않는다(PO) — 선수 카드(player-card.html)와 같은 이유·같은 값. */
+[data-grade="starter"] .pdFace.pdBack .in{
+  background-image:linear-gradient(175deg, color-mix(in srgb,var(--g-a) 34%,var(--g-c)), var(--g-c) 72%)}
 .pdFace .in{
   background-color:var(--g-c);background-size:cover;background-position:center;background-repeat:no-repeat}
 
@@ -1609,8 +1612,14 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    카드의 1/3까지만, 아주 연하게. 스타터는 바탕이 어두워 필요 없다.
    blur를 쌓지 않고 검은 면 한 장만 얹는다 — backdrop-filter는 프레임마다 뒤를 다시 읽지만
    이건 한 번 칠하고 끝이다. (player-card.html의 .topScrim과 같은 값) */
+/* 그늘 색은 그 등급이 이미 가진 가장 어두운 톤(--g-c)이다. 예전엔 rgba(10,11,15)로
+   못박아 뒀는데, 그건 팔레트 밖 값이라 스타터를 주황으로 바꾸자 카드만 회색으로 눌렸다.
+   토큰을 쓰니 등급별로 규칙을 나눌 이유도 없어진다 — 금속은 제 금속의 그늘을 쓴다. */
 .topScrim{position:absolute;left:0;right:0;top:0;height:33%;z-index:1;pointer-events:none;
-  background:linear-gradient(180deg, rgba(10,11,15,.34) 0%, rgba(10,11,15,.16) 46%, rgba(10,11,15,0) 100%)}
+  background:linear-gradient(180deg,
+    color-mix(in srgb, var(--g-c) 34%, transparent) 0%,
+    color-mix(in srgb, var(--g-c) 16%, transparent) 46%,
+    transparent 100%)}
 
 /* 하단 딤드 구간에 점점 진해지는 블러 — player-card.html과 동일 규칙 */
 .infoBlur{position:absolute;inset:0;z-index:1;pointer-events:none}

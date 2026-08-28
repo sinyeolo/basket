@@ -73,7 +73,7 @@ button{font-family:var(--font);color:inherit}
 /* 스타터가 자꾸 실버로 읽힌 이유 — 밝은 쪽(#868b93)이 실버의 어두운 쪽(#8b929b)과 거의 같은 톤이었다.
    같은 재질을 흐리게 한 것으로 보일 뿐이다. 두 색의 간격 자체를 좁혀 금속 광택을 없앤다:
    위아래 밝기 차가 있어야 금속으로 읽히므로, 차이를 줄이면 무광 흑연이 된다. 등급이 아니라 재질이 다르다. */
-[data-grade="starter"]{--g-a:#33363b; --g-b:#4d5158; --g-c:#1e2024; --g-text:#c9ccd2; --g-mid:#414449; --g-hi:#6f747c; --shine-op:.108; --holo-op:.04; }
+[data-grade="starter"]{--g-a:#804119; --g-b:#eb9659; --g-c:#3b1b08; --g-text:#ffe2cc; --g-mid:#b86833; --g-hi:#fcc69d; --shine-op:.108; --holo-op:.04; }
 [data-grade="bronze"]{ --g-a:#7a4a2a; --g-b:#c9905a; --g-c:#3d2412; --g-text:#f0d9c2; --g-mid:#be8653; --g-hi:#deba99; --shine-op:.28; --holo-op:.10; }
 [data-grade="silver"]{ --g-a:#8b929b; --g-b:#e7ebef; --g-c:#3d4249; --g-text:#eef1f4; --g-mid:#bec3c9; --g-hi:#f0f3f5; --shine-op:.4;  --holo-op:.14; }
 [data-grade="gold"]{   --g-a:#9c7415; --g-b:#f4d16a; --g-c:#4a3608; --g-text:#fbedc4; --g-mid:#cca744; --g-hi:#f8e2a3; --shine-op:.55; --holo-op:.18; }
@@ -519,6 +519,23 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
     rgba(18,21,27,.52) 100%)}
 .packSweep{position:absolute;left:0;right:0;top:var(--seam);bottom:0;z-index:5;pointer-events:none;
   overflow:hidden;border-radius:12px}
+/* 기울기에 맺히는 빛 — 카드(.cardFace .inner::before)와 같은 빛·같은 공식이다.
+   카드만 기울기에 반응하고 팩은 가만히 있으면, 같은 손짓에 두 물건이 다르게 굴어
+   팩이 카드보다 납작한 종이로 읽힌다(PO).
+   층을 겹으로 나눈 이유: 빛덩이는 팩 밖 40%까지 뻗어야 가장자리에서 잘린 자국이 안 보이는데,
+   .packTilt는 3D 자식을 품고 있어 overflow를 걸 수 없다. 바깥 상자가 팩 모양으로 자르고
+   안쪽 <i>가 넉넉히 뻗는다 — .packSweep이 이미 쓰는 방식과 같다. */
+.packLit{position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden;border-radius:12px}
+.packLit i{position:absolute;top:-40%;bottom:-40%;left:-40%;right:-40%;
+  background:radial-gradient(circle at 50% 50%,
+    rgba(255,255,255,.20) 0%,
+    rgba(255,255,255,.10) 26%,
+    rgba(255,255,255,.03) 44%,
+    rgba(255,255,255,0)   62%);
+  opacity:var(--lit-op,0);
+  transform:translate(var(--lit-x,0px), var(--lit-y,0px));
+  transition:transform .05s linear}
+@media (prefers-reduced-motion:reduce){ .packLit i{opacity:0} }
 /* 카드의 빛은 앞쪽을 칼로 자른 듯 끊는다. 팩은 양쪽 다 부드럽게 둔다(PO) —
    칼단면이 지나가는 순간이 아니라 '끝나는 순간'에 잘린 자국으로 보였다.
    정지점을 요소 가장자리(0%·100%)에서 한참 물러난 20~72%에만 두는 것도 같은 이유다.
@@ -1069,6 +1086,11 @@ body.glow-hold .cardGlow{animation-play-state:paused}
    어느 장이 걸릴지는 선수마다 고정이다(starterBg) — 홀로그램 무늬와 같은 규칙이다.
    매번 다시 뽑으면 같은 카드가 접속할 때마다 다른 물건으로 보인다. */
 [data-grade="starter"] .cardFace .inner{background-image:var(--starter-bg, url(assets/grade/starter-01.jpg?v=1))}
+/* 뒷면은 사진을 깔지 않는다(PO) — 앞면과 달리 뒷면은 표와 글자가 빼곡한 면이라
+   밝은 코트 그림이 뒤에서 계속 말을 건다. 같은 등급의 어두운 톤으로만 눌러 둔다.
+   금·은·동은 금속 자체가 무늬라 뒷면에서도 읽히지만, 스타터 배경은 그림이다. */
+[data-grade="starter"] .cardFace.back .inner{
+  background-image:linear-gradient(175deg, color-mix(in srgb,var(--g-a) 34%,var(--g-c)), var(--g-c) 72%)}
 .cardFace .inner{
   background-color:var(--g-c);background-size:cover;background-position:center;background-repeat:no-repeat}
 
@@ -1135,8 +1157,14 @@ body.glow-hold .cardGlow{animation-play-state:paused}
    남의 것을 뺏는 것보다 낫다.
    blur를 쌓지 않고 검은 면 한 장만 얹는다 — backdrop-filter는 프레임마다 뒤를
    다시 읽지만 이건 한 번 칠하고 끝이다. 스타터는 바탕이 어두워 필요 없다. */
+/* 그늘 색은 그 등급이 이미 가진 가장 어두운 톤(--g-c)이다. 예전엔 rgba(10,11,15)로
+   못박아 뒀는데, 그건 팔레트 밖 값이라 스타터를 주황으로 바꾸자 카드만 회색으로 눌렸다.
+   토큰을 쓰니 등급별로 규칙을 나눌 이유도 없어진다 — 금속은 제 금속의 그늘을 쓴다. */
 .topScrim{position:absolute;left:0;right:0;top:0;height:33%;z-index:1;pointer-events:none;
-  background:linear-gradient(180deg, rgba(10,11,15,.34) 0%, rgba(10,11,15,.16) 46%, rgba(10,11,15,0) 100%)}
+  background:linear-gradient(180deg,
+    color-mix(in srgb, var(--g-c) 34%, transparent) 0%,
+    color-mix(in srgb, var(--g-c) 16%, transparent) 46%,
+    transparent 100%)}
 .infoBlur1{backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
   mask-image:linear-gradient(to bottom, transparent 52%, #000 68%);
   -webkit-mask-image:linear-gradient(to bottom, transparent 52%, #000 68%)}
@@ -1983,6 +2011,7 @@ body.glow-hold .cardGlow{animation-play-state:paused}
     <div class="packSeam" aria-hidden="true"></div>
     <div class="packCut" aria-hidden="true"></div>
     <div class="packSweep" aria-hidden="true"><i></i></div>
+    <div class="packLit" aria-hidden="true"><i></i></div>
     <div class="packTrack" aria-hidden="true"></div>
     <button type="button" class="packHandle" id="packGrip" aria-label="옆으로 쓸어서 개봉"><span class="msym" aria-hidden="true">keyboard_double_arrow_right</span></button>
     </div>
@@ -3002,10 +3031,18 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     var tgt = {x:0, y:0}, cur = {x:0, y:0}, raf = null, moved = false, pressing = false, dx0 = 0, dy0 = 0;
     var PACK_TILT = 15;      // 카드와 같은 각도(PO)
+    var PACK_LIT_SHIFT = 3;  // 카드의 LIT_SHIFT와 같은 값 — 같은 손짓에 같은 만큼 움직인다
     var EPS = 0.02;
     function paintTilt(){
       tiltEl.style.setProperty('--prx', cur.x.toFixed(2)+'deg');
       tiltEl.style.setProperty('--pry', cur.y.toFixed(2)+'deg');
+      /* 빛덩이 — 카드의 setVars와 같은 공식이다(--lit-x/--lit-y/--lit-op).
+         기울인 쪽(화면에 가까워지는 쪽)으로 옮기고, 기울기의 크기만큼 밝힌다.
+         팩의 --prx는 카드의 --rx와, --pry는 --ry와 같은 축이라 부호도 그대로 쓴다. */
+      tiltEl.style.setProperty('--lit-x', (-cur.x * PACK_LIT_SHIFT).toFixed(1)+'px');
+      tiltEl.style.setProperty('--lit-y', (cur.y * PACK_LIT_SHIFT).toFixed(1)+'px');
+      tiltEl.style.setProperty('--lit-op',
+        Math.min(1, Math.hypot(cur.x, cur.y) / (PACK_TILT * 2)).toFixed(3));
     }
     function tiltLoop(){
       cur.x += (tgt.x - cur.x) * 0.14;
