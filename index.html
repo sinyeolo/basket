@@ -2229,18 +2229,16 @@ body.modal-open{overflow:hidden}
         <div class="card-body glist" id="scheduleList"></div>
       </div>
 
-      <!-- 지난 경기 검수 — 오늘 것은 위 '오늘 일정'이 상태 태그와 함께 이미 보여 준다(PO).
-           여기는 그날을 넘긴 것만 모은다. 두 목록이 같은 경기를 두 번 말하지 않는다.
-           밀린 것이 없으면 섹션째 감춘다 — 빈 카드는 자리만 차지하고 아무 말도 하지 않는다. -->
-      <div id="reviewSection" hidden>
-        <div class="sec-head" style="margin-top:20px">
-          <div class="sec-title">지난 경기 검수<span class="cnt" id="reviewCount"></span></div>
-          <span class="card-note">날짜가 지났는데 아직 확정 전</span>
-        </div>
-        <div class="card">
-          <!-- ReviewRow[] -->
-          <div class="card-body glist" id="reviewList"></div>
-        </div>
+      <!-- 검수 대기 — 오늘 것도 함께 보여 준다(PO). 위 '오늘 일정'과 줄이 겹치지만,
+           일정은 '오늘 무슨 경기가 있나'이고 여기는 '내가 확정해야 할 게 뭐가 남았나'다.
+           같은 경기라도 묻는 질문이 다르면 두 자리에 있어도 된다. -->
+      <div class="sec-head" style="margin-top:20px">
+        <div class="sec-title">검수 대기<span class="cnt" id="reviewCount"></span></div>
+        <span class="card-note">기록 종료 → 공식 확정</span>
+      </div>
+      <div class="card">
+        <!-- ReviewRow[] -->
+        <div class="card-body glist" id="reviewList"></div>
       </div>
     </div>
   </main>
@@ -3534,19 +3532,15 @@ function emptyRow(text){
    클릭 목적지만 섹션별로 다르게 연결한다. */
 // <ReviewRow/> — ALL_GAMES에서 status:'end'(검수 대기)만 뽑아서 보여준다. 기록 검수 페이지(#review)와 동일한 데이터.
 function renderReviewQueue(){
-  /* 오늘 경기는 빼고 센다(PO). '오늘 일정'이 같은 줄을 이미 보여 주고 있어서,
-     그대로 두면 화면 하나에 같은 경기가 두 번 나온다 — 실제로 지금 데이터에서
-     검수 대기 2건이 오늘 일정 7건 안에 그대로 들어 있었다.
-     섹션이 남는 이유는 어제 끝난 경기가 아직 확정 전일 수 있기 때문이다.
-     그건 오늘 일정에 안 나오므로 여기가 아니면 화면 어디에도 없다. */
-  var todayIds = {};
-  ((ALL_GAMES[0] || {}).items || []).forEach(function(g){ todayIds[g.id] = 1; });
-  var pending = allGameItemsWithDate().filter(function(g){
-    return g.status === 'end' && !todayIds[g.id];
-  });
+  /* 오늘 것도 포함한다(PO). 오늘 일정과 줄이 겹치지만 두 목록이 묻는 질문이 다르다 —
+     일정은 '오늘 무슨 경기가 있나', 여기는 '확정해야 할 게 뭐가 남았나'다.
+     한 번 오늘을 빼 봤는데, 그러면 오늘 끝난 경기를 확정하려고 일정에서 찾아야 했다. */
+  var pending = allGameItemsWithDate().filter(function(g){ return g.status==='end'; });
   document.getElementById('reviewCount').textContent = pending.length;
-  document.getElementById('reviewSection').hidden = !pending.length;
-  if(!pending.length) return;
+  if(!pending.length){
+    document.getElementById('reviewList').innerHTML = emptyRow('검수를 기다리는 경기가 없어요');
+    return;
+  }
   document.getElementById('reviewList').innerHTML = pending.map(gameRowHtml).join('');
   // 여기서만 목적지가 다르다 — 대시보드의 '검수 대기'는 검수 페이지로 보낸다(경기 페이지는 전체 기록으로 간다)
   document.querySelectorAll('#reviewList [data-goto]').forEach(function(b){
