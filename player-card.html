@@ -1114,6 +1114,11 @@ body.glow-hold .cardGlow{animation-play-state:paused}
 /* 실제 업로드 사진 미리보기용 — 실루엣과 달리 카드 전체를 채우는 배경으로 깔고, 그 위에 오라·홀로그램·정보 패널이 그대로 겹친다 */
 .cardPhotoBg{position:absolute;inset:0}
 .avatarPhotoFull{display:block;width:100%;height:100%;object-fit:cover;object-position:top center}
+/* 배경을 뺀 실루엣 — 흰 바탕 JPEG를 multiply로 얹는다. 검정은 그대로 남고 흰색은
+   사라지므로 아래의 등급 금속이 그대로 비친다. 알파 PNG를 쓰지 않는 이유는 용량이다
+   (PNG 3MB → JPEG 200KB). 아래 여백을 조금 남겨 인물이 카드 바닥에 붙지 않게 한다. */
+.avatarPhotoFull.sil{mix-blend-mode:multiply;object-fit:contain;object-position:bottom center;
+  padding:14% 8% 6%}
 
 /* 하단 딤드 구간에 점점 진해지는 블러 — 레이어 3장을 블러 세기·마스크 시작점 다르게 겹쳐 그라데이션처럼 보이게 함 */
 .infoBlur{position:absolute;inset:0;z-index:1;pointer-events:none}
@@ -2359,9 +2364,40 @@ var POSE_SHAPES = {
 /* 포지션 → 실루엣 포토카드. 다섯 자리(PG·SG·SF·PF·C) 밖의 값이 오면 null을 돌려
    예전 도형 실루엣으로 떨어진다 — 없는 그림을 억지로 붙이지 않는다. */
 var POSE_IMGS = { pg:1, sg:1, sf:1, pf:1, c:1 };
-function poseImage(pos){
+function poseImage(pos, grade){
   var k = String(pos || '').trim().toLowerCase();
-  return POSE_IMGS[k] ? 'assets/pose/' + k + '.jpg?v=1' : null;
+  if(!POSE_IMGS[k]) return null;
+  /* 스타터는 카드 면이 어두운 무광이라 검은 실루엣을 얹으면 묻힌다 — 색이 있는
+     포토카드를 통째로 쓴다. 금·은·동은 카드 면이 금속이므로, 배경을 뺀 검은
+     실루엣만 얹어 금속에 각인된 것처럼 둔다. 배경(등급 금속)이 비쳐야 등급이 읽힌다. */
+  var g = grade || document.documentElement.getAttribute('data-grade') || 'starter';
+  return (g === 'starter' ? 'assets/pose/' : 'assets/sil/') + k + '.jpg?v=1';
+}
+/* 실루엣은 흰 바탕 JPEG다(원본 PNG는 3MB, 이건 200KB). multiply로 얹으면 흰 바탕은
+   사라지고 검은 형태만 남는다 — 알파 채널이 없어도 되고, 다섯 장 중 한 장만 배경이
+   흰색이던 불일치도 이 방식이면 문제가 되지 않는다. */
+function paintPose(){
+  if(PLAYER.photo) return;                 // 진짜 사진이 있으면 손대지 않는다
+  var box = document.getElementById('fPhotoBg');
+  var inner = document.getElementById('frontInner');
+  var layer = document.querySelector('.photoLayer');
+  if(!box || !inner) return;
+  var src = poseImage(PLAYER.pos);
+  if(!src){                                 // 포지션이 다섯 자리 밖 — 예전 도형 실루엣으로
+    box.innerHTML = ''; inner.classList.remove('card-photo');
+    if(layer) layer.style.display = '';
+    return;
+  }
+  var img = box.querySelector('img');
+  if(!img){
+    box.innerHTML = '<img class="avatarPhotoFull" draggable="false" alt="">';
+    img = box.querySelector('img');
+  }
+  img.src = src;
+  /* 파일 경로로 판단하지 않는다 — 등급이 곧 방식이다 */
+  img.classList.toggle('sil', (document.documentElement.getAttribute('data-grade')||'starter') !== 'starter');
+  if(layer) layer.style.display = 'none';
+  inner.classList.add('card-photo');
 }
 function poseForId(id){
   var h = 0;
@@ -2515,6 +2551,7 @@ function fmtUpAt(iso){
 function applyGrade(key){
   var g = GRADES[key];
   document.getElementById('fGradeChip').textContent = g.label;
+  paintPose();   // 스타터↔금·은·동은 실루엣 방식이 다르다
   var ovrEl = document.getElementById('fOvr');
   /* 스타터는 '아직 잴 수 없다'는 등급이라 물음표가 아니라 00을 세운다.
      ?는 "값을 못 불러왔나?"로도 읽히지만, 00은 출발선이라는 뜻이 분명하다. */
@@ -2642,14 +2679,16 @@ document.getElementById('btnSaveImg').innerHTML = icon('download','ic ic-sm')+'�
    포지션이 다섯이라 그림도 다섯이고, 선수 id로 무작위 배정하지 않는다 — 포지션은
    그 선수의 사실이라 그림도 그 사실을 따라야 한다. 자리·처리는 실제 사진과 똑같이 두면
    나중에 사진이 올라와도 카드가 달라지지 않는다. */
-var POSE_IMG = poseImage(PLAYER.pos);
-if(PLAYER.photo || POSE_IMG){
+if(PLAYER.photo){
   document.getElementById('fPhotoBg').innerHTML =
-    '<img class="avatarPhotoFull" draggable="false" src="'+(PLAYER.photo || POSE_IMG)+'" alt="">';
+    '<img class="avatarPhotoFull" draggable="false" src="'+PLAYER.photo+'" alt="">';
   document.querySelector('.photoLayer').style.display = 'none';
   document.getElementById('frontInner').classList.add('card-photo');
 } else {
-  setAvatarPose(poseForId(PLAYER.id));
+  /* 포지션 실루엣은 등급에 따라 그림이 갈리므로 paintPose가 도맡는다.
+     등급을 바꿀 때마다 같은 함수가 다시 도니 초기화와 갱신이 한 길이다. */
+  setAvatarPose(poseForId(PLAYER.id));   // 다섯 자리 밖일 때의 바닥값
+  paintPose();
 }
 /* 홀로그램 무늬 4종(.holoFoil.h1~h4) 중 하나를 카드에 건다 — 운영 콘솔(index.html)의 holoSkin과 동일 규칙.
    무작위로 매번 뽑지 않고 키로 정한다: 같은 선수 카드는 늘 같은 무늬여야 카드의 정체성이 유지되고,
@@ -3509,7 +3548,7 @@ function avatarSvgHTML(){
 function lbCardFrontHTML(grade){
   var g = GRADES[grade];
   var holo = holoSkin('front-'+grade);
-  var img = PLAYER.photo || poseImage(PLAYER.pos);
+  var img = PLAYER.photo || poseImage(PLAYER.pos, g.key || null);
   return '<div class="inner'+(img ? ' card-photo' : '')+'">'+
     '<div class="cardPhotoBg">'+(img ? '<img class="avatarPhotoFull" draggable="false" src="'+img+'" alt="">' : '')+'</div>'+
     '<div class="pdAura" aria-hidden="true"></div>'+
