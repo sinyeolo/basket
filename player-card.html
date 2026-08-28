@@ -2302,6 +2302,10 @@ var LINKED_PLAYER = false;
   PLAYER.teamColor = q.get('teamColor') || PLAYER.teamColor;
   if(q.get('no')) PLAYER.no = Number(q.get('no'));
   PLAYER.pos = q.get('pos') || '';
+  /* 사진도 넘어온 것만 쓴다. 예전엔 목업(김민수)의 스톡 사진이 그대로 남아, 사진을 올린
+     적 없는 선수의 카드에 남의 얼굴이 박혔다 — 위의 영문 이름·최근 경기와 같은 종류의
+     실수다. 사진이 없으면 포지션 실루엣이 그 자리를 맡는다. */
+  PLAYER.photo = q.get('photo') || '';
   PLAYER.season = q.get('season') || PLAYER.season;
   if(q.get('pts')) PLAYER.stats.pts = Number(q.get('pts'));
   if(q.get('reb')) PLAYER.stats.reb = Number(q.get('reb'));
