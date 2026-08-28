@@ -1065,7 +1065,11 @@ body.glow-hold .cardGlow{animation-play-state:paused}
 [data-grade="bronze"] .cardFace .inner{background-image:url(assets/grade/bronze.jpg)}
 [data-grade="silver"] .cardFace .inner{background-image:url(assets/grade/silver.jpg)}
 [data-grade="gold"]   .cardFace .inner{background-image:url(assets/grade/gold.jpg)}
-:is([data-grade="bronze"],[data-grade="silver"],[data-grade="gold"]) .cardFace .inner{
+/* 스타터만 배경이 4종이다 — 아직 등급이 정해지지 않은 자리라 금속 한 장으로 대표되지 않는다.
+   어느 장이 걸릴지는 선수마다 고정이다(starterBg) — 홀로그램 무늬와 같은 규칙이다.
+   매번 다시 뽑으면 같은 카드가 접속할 때마다 다른 물건으로 보인다. */
+[data-grade="starter"] .cardFace .inner{background-image:var(--starter-bg, url(assets/grade/starter-01.jpg?v=1))}
+.cardFace .inner{
   background-color:var(--g-c);background-size:cover;background-position:center;background-repeat:no-repeat}
 
 /* 카드 두께 — 앞/뒷면과 같은 크기·같은 라운드의 면을 Z축으로 촘촘히 쌓아 만든다.
@@ -1131,11 +1135,8 @@ body.glow-hold .cardGlow{animation-play-state:paused}
    남의 것을 뺏는 것보다 낫다.
    blur를 쌓지 않고 검은 면 한 장만 얹는다 — backdrop-filter는 프레임마다 뒤를
    다시 읽지만 이건 한 번 칠하고 끝이다. 스타터는 바탕이 어두워 필요 없다. */
-.topScrim{display:none;position:absolute;left:0;right:0;top:0;height:33%;z-index:1;pointer-events:none;
+.topScrim{position:absolute;left:0;right:0;top:0;height:33%;z-index:1;pointer-events:none;
   background:linear-gradient(180deg, rgba(10,11,15,.34) 0%, rgba(10,11,15,.16) 46%, rgba(10,11,15,0) 100%)}
-[data-grade="bronze"] .topScrim,
-[data-grade="silver"] .topScrim,
-[data-grade="gold"] .topScrim{display:block}
 .infoBlur1{backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
   mask-image:linear-gradient(to bottom, transparent 52%, #000 68%);
   -webkit-mask-image:linear-gradient(to bottom, transparent 52%, #000 68%)}
@@ -2386,11 +2387,11 @@ var POSE_IMGS = { pg:1, sg:1, sf:1, pf:1, c:1 };
 function poseImage(pos, grade){
   var k = String(pos || '').trim().toLowerCase();
   if(!POSE_IMGS[k]) return null;
-  /* 스타터는 카드 면이 어두운 무광이라 검은 실루엣을 얹으면 묻힌다 — 색이 있는
-     포토카드를 통째로 쓴다. 금·은·동은 카드 면이 금속이므로, 배경을 뺀 검은
-     실루엣만 얹어 금속에 각인된 것처럼 둔다. 배경(등급 금속)이 비쳐야 등급이 읽힌다. */
-  var g = grade || document.documentElement.getAttribute('data-grade') || 'starter';
-  return (g === 'starter' ? 'assets/pose/' : 'assets/sil/') + k + '.jpg?v=2';
+  /* 네 등급 모두 같은 검은 실루엣을 쓴다. 예전엔 스타터만 색이 있는 포토카드를 통째로
+     썼는데, 그때는 스타터 카드 면이 어두운 무광이라 검은 실루엣이 묻혔기 때문이다.
+     이제 스타터도 밝은 배경 4종(assets/grade/starter-01~04)을 깔므로 같은 규칙으로 묶인다.
+     배경이 비쳐야 등급이 읽히는 것도 네 등급이 같다. */
+  return 'assets/sil/' + k + '.jpg?v=2';
 }
 /* 실루엣은 흰 바탕 JPEG다(원본 PNG는 3MB, 이건 200KB). multiply로 얹으면 흰 바탕은
    사라지고 검은 형태만 남는다 — 알파 채널이 없어도 되고, 다섯 장 중 한 장만 배경이
@@ -2716,6 +2717,17 @@ if(PLAYER.photo){
    무작위로 매번 뽑지 않고 키로 정한다: 같은 선수 카드는 늘 같은 무늬여야 카드의 정체성이 유지되고,
    선수끼리는 4종이 골고루 흩어진다. 실제 홀로그램 이미지를 쓰려면 .holoFoil.hN의 background-image만
    url(...)로 교체하면 된다. */
+/* 스타터 배경 4종 중 한 장 — 홀로그램 무늬(holoSkin)와 같은 이유·같은 방식이다.
+   무작위로 매번 뽑지 않고 선수 키로 정한다: 같은 선수 카드는 늘 같은 배경이어야
+   카드의 정체성이 유지되고, 선수끼리는 4종이 골고루 흩어진다. */
+var STARTER_BGS = ['starter-01','starter-02','starter-03','starter-04'];
+function starterBg(key){
+  var s = String(key == null ? '' : key), n = 0;
+  for(var i=0; i<s.length; i++) n = (n*31 + s.charCodeAt(i)) >>> 0;
+  return 'url(assets/grade/' + STARTER_BGS[n % STARTER_BGS.length] + '.jpg?v=1)';
+}
+document.documentElement.style.setProperty('--starter-bg', starterBg(PLAYER.id || PLAYER.name));
+
 var HOLO_SKINS = ['h1','h2','h3','h4'];
 function holoSkin(key){
   var s = String(key == null ? '' : key), n = 0;

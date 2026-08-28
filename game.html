@@ -211,14 +211,16 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
 [data-grade="bronze"].mvpCard .in{background-image:url(assets/grade/bronze.jpg)}
 [data-grade="silver"].mvpCard .in{background-image:url(assets/grade/silver.jpg)}
 [data-grade="gold"].mvpCard   .in{background-image:url(assets/grade/gold.jpg)}
-:is([data-grade="bronze"],[data-grade="silver"],[data-grade="gold"]).mvpCard .in{
+/* 스타터만 배경이 4종이다 — 어느 장이 걸릴지는 선수마다 고정이다(--starter-bg) */
+[data-grade="starter"].mvpCard .in{background-image:var(--starter-bg, url(assets/grade/starter-01.jpg?v=1))}
+.mvpCard .in{
   background-color:var(--g-c);background-size:cover;background-position:center;background-repeat:no-repeat}
 /* 배경을 뺀 실루엣 — 흰 바탕 JPEG를 multiply로 얹으면 흰색은 사라지고 아래 금속이 비친다 */
 .mvpCard .ph.sil{mix-blend-mode:multiply;object-fit:contain;object-position:bottom center;padding:12% 7% 5%}
 /* 위쪽 그늘 — 금속 바탕이 밝아 등급·OVR의 흰 글자가 묻힌다(PO). 카드 1/3까지만, 아주 연하게 */
 .mvpCard .topScrim{position:absolute;left:0;right:0;top:0;height:33%;z-index:1;pointer-events:none;
   background:linear-gradient(180deg, rgba(10,11,15,.34) 0%, rgba(10,11,15,.16) 46%, rgba(10,11,15,0) 100%)}
-[data-grade="starter"].mvpCard .topScrim{display:none}
+
 /* OVR — 우상단. 선수 카드처럼 라벨을 수치 위에 얹고 오른쪽으로 정렬한다 */
 .mvpCard .ovr{position:absolute;z-index:2;top:8px;right:10px;text-align:right;
   font-family:var(--font-display);font-size:22px;font-weight:900;line-height:1;color:var(--g-text)}
@@ -673,22 +675,29 @@ function viewSummary(){
   var hw = G.home.score > G.away.score;
   var win = hw ? G.home : G.away, lose = hw ? G.away : G.home;
   var ovr = ovrOf(p), gk = gradeOf(ovr), g = GRADES[gk];
-  /* 포지션 실루엣 — 스타터는 카드 면이 어두운 무광이라 검은 실루엣이 묻힌다(색 포토카드를 쓴다).
-     금·은·동은 면이 금속이므로 배경을 뺀 검은 실루엣만 얹어 각인처럼 둔다. */
+  /* 포지션 실루엣 — 네 등급 모두 배경을 뺀 검은 실루엣을 얹어 각인처럼 둔다.
+     스타터도 밝은 배경 4종을 깔게 되면서 검은 실루엣이 묻히지 않게 됐다. */
   var mvpPos = String(BASKET.posOf(t.name, p.no) || '').toLowerCase();
-  var mvpSil = /^(pg|sg|sf|pf|c)$/.test(mvpPos)
-    ? (gk === 'starter' ? 'assets/pose/' : 'assets/sil/') + mvpPos + '.jpg?v=2' : '';
+  var mvpSil = /^(pg|sg|sf|pf|c)$/.test(mvpPos) ? 'assets/sil/' + mvpPos + '.jpg?v=2' : '';
+  /* 스타터 배경 4종 중 한 장 — 선수 키로 고정한다(선수 카드·운영 콘솔과 같은 해시).
+     같은 선수가 세 화면에서 다른 배경을 쓰면 같은 카드로 안 읽힌다. */
+  var mvpBg = '';
+  if(gk === 'starter'){
+    var bk = t.name + '|' + p.no, hn = 0;
+    for(var bi=0; bi<bk.length; bi++) hn = (hn*31 + bk.charCodeAt(bi)) >>> 0;
+    mvpBg = 'url(assets/grade/starter-0' + ((hn % 4) + 1) + '.jpg?v=1)';
+  }
 
   var mvp = '<div class="card"><h3>베스트 플레이어</h3><div class="mvp">'+
     '<a class="mvpCard" data-grade="'+gk+'" href="'+cardHref(p, b.side)+'" target="_blank" rel="noopener" '+
       'aria-label="'+p.name+' 선수 카드 보기 (새 창)" '+
-      'style="--g-a:'+g.a+';--g-b:'+g.b+';--g-c:'+g.c+';--g-text:'+g.text+'">'+
+      'style="--g-a:'+g.a+';--g-b:'+g.b+';--g-c:'+g.c+';--g-text:'+g.text+(mvpBg ? ';--starter-bg:'+mvpBg : '')+'">'+
       '<div class="in">'+
         /* 사진을 올린 선수는 사진, 없으면 포지션 실루엣. 선수 카드(player-card.html)·운영 콘솔과
            같은 규칙·같은 파일이라 같은 선수가 세 화면에서 다른 얼굴로 보이지 않는다.
            포지션까지 없으면 예비 도형 실루엣(SIL)으로 떨어진다 — 없는 그림을 억지로 붙이지 않는다. */
         (p.photo ? '<img class="ph" src="'+p.photo+'" alt="">'
-                 : (mvpSil ? '<img class="ph'+(gk==='starter'?'':' sil')+'" src="'+mvpSil+'" alt="">' : SIL)) +
+                 : (mvpSil ? '<img class="ph sil" src="'+mvpSil+'" alt="">' : SIL)) +
         '<div class="topScrim" aria-hidden="true"></div>'+
         /* 배치는 선수 카드와 같다 — 등급 좌상단, OVR 우상단, 등번호 우하단, 이름·팀 좌하단.
            같은 선수의 카드가 두 화면에서 다르게 생기면 같은 물건으로 안 읽힌다. */
