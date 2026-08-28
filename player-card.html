@@ -526,11 +526,13 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
    .packTilt는 3D 자식을 품고 있어 overflow를 걸 수 없다. 바깥 상자가 팩 모양으로 자르고
    안쪽 <i>가 넉넉히 뻗는다 — .packSweep이 이미 쓰는 방식과 같다. */
 .packLit{position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden;border-radius:12px}
+/* 세기는 카드보다 높다(PO). 카드는 무늬가 있는 면이지만 팩은 은박이라
+   실제로도 빛을 더 세게 되쏜다 — 같은 값을 쓰면 팩이 카드보다 무광으로 보인다. */
 .packLit i{position:absolute;top:-40%;bottom:-40%;left:-40%;right:-40%;
   background:radial-gradient(circle at 50% 50%,
-    rgba(255,255,255,.20) 0%,
-    rgba(255,255,255,.10) 26%,
-    rgba(255,255,255,.03) 44%,
+    rgba(255,255,255,.34) 0%,
+    rgba(255,255,255,.18) 26%,
+    rgba(255,255,255,.06) 44%,
     rgba(255,255,255,0)   62%);
   opacity:var(--lit-op,0);
   transform:translate(var(--lit-x,0px), var(--lit-y,0px));
@@ -601,10 +603,12 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
    눌린 자국을 만든다 — 인쇄가 아니라 찍어 낸 것으로 읽힌다. */
 /* 워드마크는 로고 에셋 한 장으로 찍는다(PO) — 폰트로 흉내 내던 것을 실물로 바꿨다.
    은박 위라 흰 글자는 묻히므로 어두운 각인으로 눌러 찍고, 아래 흰 그림자로 눌린 자국을 만든다. */
-.packLogo{width:132px;height:69px;margin:0 auto;color:rgba(26,29,36,.72);
-  filter:drop-shadow(0 1px 0 rgba(255,255,255,.5))}
+/* 각인의 세기를 낮췄다(PO) — .72 → .55. 눌린 자국(아래 흰 선)도 같은 비율로 함께 낮춘다:
+   각인만 연해지고 흰 선이 그대로면 자국이 글자보다 진해져 글자가 떠 보인다. */
+.packLogo{width:132px;height:69px;margin:0 auto;color:rgba(26,29,36,.55);
+  filter:drop-shadow(0 1px 0 rgba(255,255,255,.38))}
 .packSub{margin-top:8px;font-family:var(--font-display);font-size:11px;font-weight:700;
-  letter-spacing:.3em;color:rgba(26,29,36,.46);text-shadow:0 1px 0 rgba(255,255,255,.4)}
+  letter-spacing:.3em;color:rgba(26,29,36,.35);text-shadow:0 1px 0 rgba(255,255,255,.3)}
 
 /* 뜯긴 자리로 보이는 카드 윗동 — 안에 뭔가 들어 있다는 걸 여는 도중에 알려 준다 */
 /* 두께 — 카드와 같은 방식이다(PO). 같은 실루엣을 뒤로 2px씩 세 장 깔아 옆면을 만든다.
@@ -3120,7 +3124,7 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     var tgt = {x:0, y:0}, cur = {x:0, y:0}, raf = null, moved = false, pressing = false, dx0 = 0, dy0 = 0;
     var PACK_TILT = 15;      // 카드와 같은 각도(PO)
-    var PACK_LIT_SHIFT = 3;  // 카드의 LIT_SHIFT와 같은 값 — 같은 손짓에 같은 만큼 움직인다
+    var PACK_LIT_SHIFT = 4;  // 카드(3)보다 크게(PO) — 같은 손짓에 빛이 더 멀리 흐른다
     var EPS = 0.02;
     function paintTilt(){
       tiltEl.style.setProperty('--prx', cur.x.toFixed(2)+'deg');
@@ -3130,8 +3134,10 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
          팩의 --prx는 카드의 --rx와, --pry는 --ry와 같은 축이라 부호도 그대로 쓴다. */
       tiltEl.style.setProperty('--lit-x', (-cur.x * PACK_LIT_SHIFT).toFixed(1)+'px');
       tiltEl.style.setProperty('--lit-y', (cur.y * PACK_LIT_SHIFT).toFixed(1)+'px');
+      /* 카드는 최대 기울기의 두 배에서야 다 밝아지지만 팩은 1.4배에서 다 밝아진다(PO) —
+         같은 각도에서 더 환해진다. 나누는 수가 작을수록 빨리 오른다. */
       tiltEl.style.setProperty('--lit-op',
-        Math.min(1, Math.hypot(cur.x, cur.y) / (PACK_TILT * 2)).toFixed(3));
+        Math.min(1, Math.hypot(cur.x, cur.y) / (PACK_TILT * 1.4)).toFixed(3));
     }
     function tiltLoop(){
       cur.x += (tgt.x - cur.x) * 0.14;
