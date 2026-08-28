@@ -569,8 +569,8 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
    여기서 새 패턴을 그리면 같은 브랜드가 두 벌이 된다. */
 .packPat{position:absolute;inset:-40%;pointer-events:none;opacity:.13;
   background-color:var(--pack-foil-deep);
-  -webkit-mask-image:url(assets/logo-pat.svg?v=1.3);mask-image:url(assets/logo-pat.svg?v=1.3);
-  -webkit-mask-size:98px auto;mask-size:98px auto;
+  -webkit-mask-image:url(assets/logo-pat.svg?v=1.4);mask-image:url(assets/logo-pat.svg?v=1.4);
+  -webkit-mask-size:84px auto;mask-size:84px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat;
   transform:rotate(-35deg)}
 .packSheen{position:absolute;inset:0;pointer-events:none;
@@ -641,8 +641,8 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
    골무늬 위에 겹치므로 진하면 둘 다 안 읽힌다. */
 .packBandPat{position:absolute;inset:0;pointer-events:none;opacity:.14;
   background-color:#3a3f4a;
-  -webkit-mask-image:url(assets/logo-pat.svg?v=1.3);mask-image:url(assets/logo-pat.svg?v=1.3);
-  -webkit-mask-size:53px auto;mask-size:53px auto;
+  -webkit-mask-image:url(assets/logo-pat.svg?v=1.4);mask-image:url(assets/logo-pat.svg?v=1.4);
+  -webkit-mask-size:45px auto;mask-size:45px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat}
 /* 지그재그 컷 — 실제 팩은 핑킹가위 날로 잘라 위아래가 톱니다(PO).
    삼각형을 하나씩 그리는 대신 45도 그라디언트 두 장을 한 칸(--z)씩 반복해 겹친다.
@@ -1122,6 +1122,20 @@ body.glow-hold .cardGlow{animation-play-state:paused}
 
 /* 하단 딤드 구간에 점점 진해지는 블러 — 레이어 3장을 블러 세기·마스크 시작점 다르게 겹쳐 그라데이션처럼 보이게 함 */
 .infoBlur{position:absolute;inset:0;z-index:1;pointer-events:none}
+/* 위쪽 그늘 — 등급 금속 바탕은 밝아서 로고·OVR의 흰 글자가 묻힌다(PO, 링크로 확인).
+   아래는 이미 .infoBlur 세 겹이 받치고 있는데 위에는 아무것도 없었다.
+   카드의 1/3까지만, 아주 연하게(PO).
+
+   가상요소를 안 쓰고 층을 하나 둔 이유: .inner의 ::before는 기울기 반사광,
+   ::after는 훑는 빛이 이미 쓰고 있다. 셋째가 필요하면 진짜 요소를 놓는 편이
+   남의 것을 뺏는 것보다 낫다.
+   blur를 쌓지 않고 검은 면 한 장만 얹는다 — backdrop-filter는 프레임마다 뒤를
+   다시 읽지만 이건 한 번 칠하고 끝이다. 스타터는 바탕이 어두워 필요 없다. */
+.topScrim{display:none;position:absolute;left:0;right:0;top:0;height:33%;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg, rgba(10,11,15,.34) 0%, rgba(10,11,15,.16) 46%, rgba(10,11,15,0) 100%)}
+[data-grade="bronze"] .topScrim,
+[data-grade="silver"] .topScrim,
+[data-grade="gold"] .topScrim{display:block}
 .infoBlur1{backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
   mask-image:linear-gradient(to bottom, transparent 52%, #000 68%);
   -webkit-mask-image:linear-gradient(to bottom, transparent 52%, #000 68%)}
@@ -1477,20 +1491,20 @@ body.glow-hold .cardGlow{animation-play-state:paused}
    타일에서 워드마크가 차지하는 비율을 가로 63→50%, 세로 47→34%로 낮췄다. */
 .backLogoPat{position:absolute;inset:-80%;z-index:1;pointer-events:none;opacity:.07;
   background-color:var(--g-b);
-  -webkit-mask-image:url(assets/logo-pat.svg?v=1.3);mask-image:url(assets/logo-pat.svg?v=1.3);
-  -webkit-mask-size:116px auto;mask-size:116px auto;
+  -webkit-mask-image:url(assets/logo-pat.svg?v=1.4);mask-image:url(assets/logo-pat.svg?v=1.4);
+  -webkit-mask-size:99px auto;mask-size:99px auto;
   -webkit-mask-repeat:repeat;mask-repeat:repeat;
   transform:rotate(-35deg);
   animation:backPatDrift 7s linear infinite}
 /* 패턴이 제 방향으로 천천히 흐른다. rotate 뒤에 translateX를 걸면 회전된 축(=타일이 늘어선 방향)을
-   따라가므로 사선 그대로 미끄러진다. 이동량은 타일 한 칸(116px) — 딱 한 주기라 이음매가 안 보인다.
+   따라가므로 사선 그대로 미끄러진다. 이동량은 타일 한 칸(99px) — 딱 한 주기라 이음매가 안 보인다.
    transform이라 합성 단계에서만 처리된다(mask-position을 움직이면 매 프레임 다시 칠한다).
 
    inset이 -80%인 이유: 레이어를 -35도 돌리면 카드 네 귀퉁이가 레이어 안쪽 219px 지점까지 들어온다.
-   여기에 흐르는 거리 92px이 더해지므로 반폭이 311px 넘게 필요하다. -40%(반폭 243px)로는 모자라서
+   여기에 흐르는 거리 99px이 더해지므로 반폭이 318px 넘게 필요하다. -40%(반폭 243px)로는 모자라서
    흐르는 동안 뒤쪽 가장자리가 카드 안으로 들어왔고, 그 띠에서 패턴이 사라졌다가 한 바퀴 돌면
    갑자기 다시 나타났다. -80%면 반폭 351px이라 전 구간을 덮는다. */
-@keyframes backPatDrift{from{transform:rotate(-35deg) translateX(0)}to{transform:rotate(-35deg) translateX(-116px)}}
+@keyframes backPatDrift{from{transform:rotate(-35deg) translateX(0)}to{transform:rotate(-35deg) translateX(-99px)}}
 @media (prefers-reduced-motion:reduce){ .backLogoPat{animation:none} }
 /* 뒷면 내용은 모두 로고 패턴(z:1)과 홀로그램 위에 선다.
    경기 목록을 감싼 .backGames가 이 목록에서 빠져 있어 그 안의 줄들만 패턴 아래로 깔렸고,
@@ -2007,6 +2021,7 @@ body.glow-hold .cardGlow{animation-play-state:paused}
             <div class="cardEdgeGlow" aria-hidden="true"><i></i><i></i><i></i></div>
             <div class="inner" id="frontInner">
               <div class="cardPhotoBg" id="fPhotoBg"></div>
+              <div class="topScrim" aria-hidden="true"></div>
               <div class="pdAura" aria-hidden="true"></div>
               <div class="holoFoil" aria-hidden="true"></div>
               <div class="holoGrain" aria-hidden="true"></div>
@@ -2375,7 +2390,7 @@ function poseImage(pos, grade){
      포토카드를 통째로 쓴다. 금·은·동은 카드 면이 금속이므로, 배경을 뺀 검은
      실루엣만 얹어 금속에 각인된 것처럼 둔다. 배경(등급 금속)이 비쳐야 등급이 읽힌다. */
   var g = grade || document.documentElement.getAttribute('data-grade') || 'starter';
-  return (g === 'starter' ? 'assets/pose/' : 'assets/sil/') + k + '.jpg?v=1';
+  return (g === 'starter' ? 'assets/pose/' : 'assets/sil/') + k + '.jpg?v=2';
 }
 /* 실루엣은 흰 바탕 JPEG다(원본 PNG는 3MB, 이건 200KB). multiply로 얹으면 흰 바탕은
    사라지고 검은 형태만 남는다 — 알파 채널이 없어도 되고, 다섯 장 중 한 장만 배경이
