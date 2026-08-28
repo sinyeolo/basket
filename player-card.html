@@ -3834,19 +3834,26 @@ document.querySelectorAll('.previewBar button[data-g]').forEach(function(b){
    이제 실제로 보이는 것(포지션 실루엣)을 돌린다. 사진이 올라간 선수는 사진이 우선이므로
    잠시 비켜 두었다가 한 바퀴 돌면 원래 상태로 돌아온다. ---- */
 var POSE_CYCLE = ['PG','SG','SF','PF','C'];
-var poseCycleIdx = -1, poseCyclePhoto = null;
+var poseCycleIdx = -1, poseCycleSaved = null;
+function poseCycleChip(){
+  var chip = document.querySelector('.cfPos');
+  if(!chip) return;
+  chip.textContent = PLAYER.pos;
+  chip.closest('.cfPosRow').style.display = PLAYER.pos ? '' : 'none';
+}
 document.getElementById('btnPoseCycle').addEventListener('click', function(){
-  if(poseCycleIdx === -1){ poseCyclePhoto = PLAYER.photo; PLAYER.photo = ''; }
+  if(poseCycleIdx === -1){ poseCycleSaved = { photo:PLAYER.photo, pos:PLAYER.pos }; PLAYER.photo = ''; }
   poseCycleIdx = (poseCycleIdx + 1) % (POSE_CYCLE.length + 1);
-  if(poseCycleIdx === POSE_CYCLE.length){        // 한 바퀴 — 원래 선수로 되돌린다
-    PLAYER.photo = poseCyclePhoto; poseCycleIdx = -1;
+  if(poseCycleIdx === POSE_CYCLE.length){        // 한 바퀴 — 원래 선수로 그대로 되돌린다
+    PLAYER.photo = poseCycleSaved.photo; PLAYER.pos = poseCycleSaved.pos;
+    poseCycleIdx = -1;
     if(PLAYER.photo){ paintPhoto(); } else { paintPose(); }
+    poseCycleChip();
     return;
   }
   PLAYER.pos = POSE_CYCLE[poseCycleIdx];
   paintPose();
-  var chip = document.querySelector('.cfPos');
-  if(chip){ chip.textContent = PLAYER.pos; chip.closest('.cfPosRow').style.display = ''; }
+  poseCycleChip();
 });
 </script>
 </body>
