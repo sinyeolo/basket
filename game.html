@@ -246,8 +246,31 @@ main{padding:6px 6px 32px;display:flex;flex-direction:column;gap:10px}
   max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* 한 단계 작게 — 글자가 아니라 칩을 줄였다. 11px은 기능 텍스트의 하한이고, 이 뱃지는 Tektur라
    그보다 내리면 각진 획이 뭉개진다(위 Small-Number Rule). 여백과 자간을 줄여 덩어리를 작게 만든다. */
-.mvpCard .badge{position:absolute;z-index:2;top:8px;left:10px;font-family:var(--font-display);font-size:11px;
-  font-weight:800;padding:1px 6px;border-radius:5px;background:var(--g-b);color:var(--g-c);letter-spacing:.02em}
+/* 등급 뱃지 — 선수 카드(.gradeBadge)·운영 콘솔(.pdGradeBadge)과 같은 레시피다.
+   자리(카드 좌상단)만 이 화면 것이고 생김새는 정본을 그대로 따른다.
+   면은 등급 금속이고, 그 위를 사선 광택 한 줄이 좌에서 우로 지나간다. */
+.mvpCard .badge{position:absolute;z-index:2;top:8px;left:10px;isolation:isolate;
+  font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.04em;
+  padding:3px 9px;background:none;border:0;color:var(--g-c)}
+.mvpCard .badge::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:5px;box-sizing:border-box;
+  transform:skewX(-15deg);
+  border:1px solid color-mix(in srgb,var(--g-c) 5%,transparent);
+  background:
+    linear-gradient(105deg, transparent 38%,
+      rgba(255,255,255,.48) 45.8%, rgba(255,255,255,.85) 50%, rgba(255,255,255,.48) 54.2%,
+      transparent 62%),
+    linear-gradient(135deg, var(--g-mid) 0%, var(--g-b) 34%, var(--g-hi) 50%, var(--g-b) 66%, var(--g-mid) 100%);
+  /* 정지점은 반드시 100 → 0% 안에 둔다: 벗어나면 no-repeat 배경이 상자를 벗어나
+     광택이 통째로 사라진다. 100 → 0이 좌에서 우다. */
+  background-size:300% 100%, 100% 100%;
+  background-position:100% 0, 0 0;
+  background-repeat:no-repeat;
+  animation:gradeSweep 6.5s cubic-bezier(.55,0,1,1) 1.6s infinite}
+@keyframes gradeSweep{
+  0%,4%    {background-position:100% 0, 0 0}
+  22%,100% {background-position:0% 0, 0 0}
+}
+@media (prefers-reduced-motion:reduce){ .mvpCard .badge::before{animation:none} }
 /* 이 경기 기록 — 카드가 선수를, 아래 줄이 오늘 무엇을 했는지를 말한다 */
 .mvp-line{display:flex;gap:0;text-align:center;width:100%}
 .mvp-line div{flex:1;display:flex;flex-direction:column;gap:2px;position:relative}
@@ -523,10 +546,13 @@ var PBP = REC && REC.pbp ? REC.pbp : [];
 var HAS_RECORD = !!REC;
 
 /* 등급 팔레트 — player-card.html과 같은 톤. OVR 구간으로 자동 배정 */
+/* 등급 토큰 — 선수 카드(player-card.html)의 [data-grade=...] 값과 같은 값이다.
+   mid/hi는 등급 뱃지의 금속 그라디언트가 쓴다. 여기서 새 색을 지어내면
+   같은 등급이 화면마다 다른 금속으로 보인다. */
 var GRADES = {
-  gold:   { a:'#f7d774', b:'#c9982f', c:'#3a2c0d', text:'#ffe9a8' },
-  silver: { a:'#e3e6ec', b:'#9aa1ad', c:'#22252b', text:'#eef0f4' },
-  bronze: { a:'#e0a878', b:'#a9713f', c:'#2b1e14', text:'#f2d3b6' }
+  gold:   { a:'#9c7415', b:'#f4d16a', c:'#4a3608', text:'#fbedc4', mid:'#cca744', hi:'#f8e2a3' },
+  silver: { a:'#8b929b', b:'#e7ebef', c:'#3d4249', text:'#eef1f4', mid:'#bec3c9', hi:'#f0f3f5' },
+  bronze: { a:'#7a4a2a', b:'#c9905a', c:'#3d2412', text:'#f0d9c2', mid:'#be8653', hi:'#deba99' }
 };
 function gradeOf(ovr){ return ovr >= 85 ? 'gold' : ovr >= 72 ? 'silver' : 'bronze'; }
 /* 선수 카드 링크 — 운영 콘솔(index.html)과 같은 파라미터 규약으로 만든다.
@@ -691,7 +717,7 @@ function viewSummary(){
   var mvp = '<div class="card"><h3>베스트 플레이어</h3><div class="mvp">'+
     '<a class="mvpCard" data-grade="'+gk+'" href="'+cardHref(p, b.side)+'" target="_blank" rel="noopener" '+
       'aria-label="'+p.name+' 선수 카드 보기 (새 창)" '+
-      'style="--g-a:'+g.a+';--g-b:'+g.b+';--g-c:'+g.c+';--g-text:'+g.text+(mvpBg ? ';--starter-bg:'+mvpBg : '')+'">'+
+      'style="--g-a:'+g.a+';--g-b:'+g.b+';--g-c:'+g.c+';--g-text:'+g.text+';--g-mid:'+g.mid+';--g-hi:'+g.hi+(mvpBg ? ';--starter-bg:'+mvpBg : '')+'">'+
       '<div class="in">'+
         /* 사진을 올린 선수는 사진, 없으면 포지션 실루엣. 선수 카드(player-card.html)·운영 콘솔과
            같은 규칙·같은 파일이라 같은 선수가 세 화면에서 다른 얼굴로 보이지 않는다.
@@ -701,7 +727,7 @@ function viewSummary(){
         '<div class="topScrim" aria-hidden="true"></div>'+
         /* 배치는 선수 카드와 같다 — 등급 좌상단, OVR 우상단, 등번호 우하단, 이름·팀 좌하단.
            같은 선수의 카드가 두 화면에서 다르게 생기면 같은 물건으로 안 읽힌다. */
-        '<span class="badge">'+({gold:'GOLD',silver:'SILVER',bronze:'BRONZE'}[gk])+'</span>'+
+        '<span class="badge">'+gk.toUpperCase()+'</span>'+
         '<span class="ovr"><em>OVR</em>'+ovr+'</span>'+
         '<div class="foot">'+
           '<div class="idn">'+
