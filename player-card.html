@@ -3060,6 +3060,12 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       if(stage.getAttribute('data-phase') !== 'pick') return;
       if(dragging) return;                 // 뜯는 중에는 기울이지 않는다
       var r = pack.getBoundingClientRect();
+      /* 팩이 숨겨지는 찰나에 포인터가 지나가면 rect가 0×0으로 온다. 그대로 나누면
+         0/0 = NaN이 되고, 아래 정착 검사(Math.abs(NaN) < EPS)는 NaN에 늘 거짓이라
+         rAF 루프가 영영 멈추지 않는다 — 가만히 있는 화면에서 60fps를 계속 태운다.
+         게다가 NaN이 --lit-op로 흘러가면 opacity가 무효값이 되어 초기값 1로 떨어지고,
+         빛덩이가 꺼지지 않고 계속 켜져 있다(실제로 그랬다). 들어오는 자리에서 막는다. */
+      if(!r.width || !r.height) return;
       tgt.x = ((cx - r.left) / r.width - 0.5) * PACK_TILT * 2;
       tgt.y = -((cy - r.top) / r.height - 0.5) * PACK_TILT * 2;
       wakeTilt();
