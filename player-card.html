@@ -906,6 +906,20 @@ body.glow-hold .cardGlow{animation-play-state:paused}
    위로 슬라이드하며 전체가 드러나게 한다. 187px ≈ 헤더+카드무대 상단 여백(82px) + 카드 높이의 1/4(105px) */
 .heroContent{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;
   animation:heroRiseIn 1.2s cubic-bezier(.16,.8,.24,1) both}
+/* 준비되기 전에는 등장 연출을 '멈춰' 둔다 — 감추기만 하면 뒤에서 1.2초가 이미 흘러가
+   덮개를 걷었을 때 카드가 중간부터 나타난다. 팩도 같은 이유로 함께 잡아 둔다. */
+body.booting .heroContent{animation-play-state:paused}
+body.booting .packStage{visibility:hidden}
+.bootLoad{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;background:var(--stage-bg);color:rgba(255,255,255,.62);font-size:13px}
+.bootLoad p{margin:0}
+body:not(.booting) .bootLoad{opacity:0;visibility:hidden;transition:opacity .3s ease, visibility 0s .3s}
+.bootSpin{width:28px;height:28px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.14);border-top-color:rgba(255,255,255,.72);
+  animation:bootSpin .8s linear infinite}
+@keyframes bootSpin{to{transform:rotate(360deg)}}
+/* 움직임을 줄이는 설정에서도 '도는 중'은 남긴다 — 이건 장식이 아니라 상태 표시다 */
+@media (prefers-reduced-motion:reduce){ .bootSpin{animation-duration:2.6s} }
 /* 더 아래(화면 밖)에서 올라온다 — 카드가 '들어온다'는 느낌은 이동 거리에서 나온다 */
 @keyframes heroRiseIn{from{transform:translateY(calc(var(--vph,100dvh) + 60px))}to{transform:translateY(0)}}
 .cardInner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.2,.9,.25,1.1)}
@@ -1287,7 +1301,12 @@ body.glow-hold .cardGlow{animation-play-state:paused}
    그래서 부모의 text-align:right가 먹지 않았다 — 부모를 flex로 세워 오른쪽에 붙인다. */
 .ovrBox .lb{font-size:14px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.5);
   display:flex;align-items:center;justify-content:flex-end;gap:4px}
-.ovrBox .vl{font-family:var(--font-display);font-size:43px;font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--g-text)}
+/* OVR 수치 — 등급색(--g-text)이 아니라 흰색에 가깝게 둔다(PO). 카드 바탕이 금속이든
+   코트 사진이든 무늬가 있는 면이라, 등급색은 그 위에서 한 톤 묻혔다.
+   그림자는 로고(.brandLogo)가 이미 쓰는 것과 같은 처리다 — 배경에서 떼어내는 용도지
+   글자를 어둡게 만들지 않는다. */
+.ovrBox .vl{font-family:var(--font-display);font-size:43px;font-weight:900;line-height:1.2;font-variant-numeric:tabular-nums;
+  color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55), 0 0 8px rgba(0,0,0,.28)}
 /* OVR 라벨 전체(텍스트+아이콘)를 하나의 버튼으로 묶어 탭 영역을 넓힘. 아이콘 자체는 배경 없이 테두리만 */
 /* 아이콘의 letter-spacing:0은 장식이 아니다 — 라벨의 자간(.1em)이 상속되면 한 글자짜리 '?' 뒤에도
    1.6px가 따라붙어 글자가 원 안에서 왼쪽으로 밀려 보인다. 글리프 자체는 좌우 대칭이다. */
@@ -1967,7 +1986,14 @@ body.glow-hold .cardGlow{animation-play-state:paused}
 }
 </style>
 </head>
-<body>
+<body class="booting">
+<!-- 카드가 다 갖춰지기 전에는 등장시키지 않는다(PO) — 마스크로 그리는 로고, 등급 배경,
+     실루엣은 저마다 따로 도착해서, 그냥 두면 로고 자리가 빈 덩어리로 뜨거나
+     배경이 한 박자 늦게 깔린 '반쯤 된 카드'가 먼저 보인다. -->
+<div class="bootLoad" id="bootLoad" role="status" aria-live="polite">
+  <i class="bootSpin" aria-hidden="true"></i>
+  <p>카드를 준비하고 있어요</p>
+</div>
 <script>
 /* 화면에 실제로 보이는 높이를 재서 토큰으로 둔다.
    iOS Safari에서 CSS의 100vh는 "툴바가 숨겨졌을 때"의 높이(아이폰 14 Pro면 844px)로 고정인데,
@@ -2887,6 +2913,51 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
     });
     setTimeout(enterOnce, 1600);   // heroRiseIn보다 넉넉히 뒤 — 정상 경로에서는 이미 들어와 있다
   }
+
+  /* ---- 등장 전 준비 ----
+     카드가 쓰는 그림들은 저마다 따로 도착한다. 로고는 CSS 마스크라 도착 전까지 글자 없는
+     덩어리로 보이고, 등급 배경은 한 박자 늦게 깔려 '반쯤 된 카드'가 먼저 보였다(PO).
+     다 모일 때까지 등장 연출을 멈춰 두고, 그동안 안내와 스피너를 보여 준다.
+
+     주소를 손으로 적지 않고 화면에서 읽어 온다 — 실제로 그려지는 것과 미리 받는 것이
+     어긋나면 게이트가 아무것도 막지 못한다. 등급·포지션이 바뀌어도 따라온다. */
+  (function boot(){
+    var body = document.body;
+    function urlOf(v){ var m = /url\((['"]?)(.*?)\1\)/.exec(v || ''); return m ? m[2] : null; }
+    var urls = [];
+    function push(u){ if(u && urls.indexOf(u) < 0) urls.push(u); }
+
+    var mark = document.querySelector('.logoMark');
+    if(mark) push(urlOf(getComputedStyle(mark).webkitMaskImage || getComputedStyle(mark).maskImage));
+    var inner = document.getElementById('frontInner');
+    if(inner) push(urlOf(getComputedStyle(inner).backgroundImage));
+    var shot = document.querySelector('#fPhotoBg img');
+    if(shot && shot.getAttribute('src')) push(shot.getAttribute('src'));
+    var foil = document.querySelector('.cardWrap .holoFoil');
+    if(foil) push(urlOf(getComputedStyle(foil).backgroundImage));
+
+    function load(u){
+      return new Promise(function(res){
+        var im = new Image();
+        im.onload = im.onerror = function(){ res(); };
+        im.src = u;
+      });
+    }
+    var done = false;
+    function ready(){
+      if(done) return;
+      done = true;
+      body.classList.remove('booting');
+    }
+    var waits = urls.map(load);
+    /* 글꼴도 함께 기다린다 — OVR과 이름이 대체 글꼴로 한 번 그려졌다가 바뀌면
+       그것도 '반쯤 된 카드'다. document.fonts가 없는 브라우저는 그냥 통과한다. */
+    if(document.fonts && document.fonts.ready) waits.push(document.fonts.ready);
+    Promise.all(waits).then(ready);
+    /* 어떤 것도 카드를 영영 막아서는 안 된다(PO의 원칙: 자기 카드를 보러 온 사람에게
+       관문이 되면 안 된다). 느린 망에서는 덜 갖춰진 채로라도 2.5초 뒤에 연다. */
+    setTimeout(ready, 2500);
+  })();
 
   /* ---- 개봉 연출 ----
      조건: 스타터 등급 + 이 기기에서 처음(PO). 저장이 막힌 브라우저에서는 매번 나오므로
