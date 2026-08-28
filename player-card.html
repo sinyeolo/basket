@@ -2415,7 +2415,7 @@ function paintPose(){
   }
   img.src = src;
   /* 파일 경로로 판단하지 않는다 — 등급이 곧 방식이다 */
-  img.classList.toggle('sil', (document.documentElement.getAttribute('data-grade')||'starter') !== 'starter');
+  img.classList.add('sil');   // 네 등급 모두 배경을 뺀 검은 실루엣이다
   if(layer) layer.style.display = 'none';
   inner.classList.add('card-photo');
 }

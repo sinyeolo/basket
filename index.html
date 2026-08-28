@@ -5237,7 +5237,7 @@ function renderPlayerDetail(){
   if(s && grade !== 'starter'){ cardParams.set('pts', s.pts.toFixed(1)); cardParams.set('reb', s.reb.toFixed(1)); cardParams.set('ast', s.ast.toFixed(1)); cardParams.set('ovr', ovrScore); }
   cardLinkTop.href = 'player-card.html?' + cardParams.toString();
   var posLabel = p.pos1||'';
-  var pdSil = !p.photo && grade !== 'starter';
+  var pdSil = !p.photo;       // 네 등급 모두 배경을 뺀 검은 실루엣이다
   var pdImg = p.photo || poseImage(p.pos1, grade);
   /* 스타터는 '아직 잴 수 없다'는 등급이라 물음표가 아니라 00을 세운다 — 카드 공유 화면과 같은 규칙.
      스타터의 스탯은 카드로 넘기지 않는다(한 경기 평균은 평균이 아니다). */
