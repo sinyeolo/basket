@@ -215,6 +215,21 @@ h3:first-of-type{margin-top:16px}
 .shineDemo{margin:0;width:100%;text-align:center;font-size:16px;font-weight:600;color:rgba(255,255,255,.72)}
 .shineDemo em{display:block;font-style:normal;margin-top:6px;font-size:13px;font-weight:500;color:rgba(255,255,255,.42)}
 @media (prefers-reduced-motion:reduce){ .d-shine{animation:none;-webkit-text-fill-color:rgba(255,255,255,.9);color:rgba(255,255,255,.9)} }
+.empty-demo{text-align:center;color:var(--muted);padding:26px 20px;width:100%}
+.empty-demo .empty-ic{display:block;font-size:40px;line-height:1;margin:0 auto 14px;color:var(--line2)}
+.empty-demo b{display:block;color:var(--ink);font-size:16px;margin-bottom:6px}
+.empty-demo span{font-size:13px}
+.gchip{position:relative;isolation:isolate;display:inline-block;padding:3px 12px;margin-right:10px;
+  font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--gc)}
+.gchip::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:5px;box-sizing:border-box;
+  transform:skewX(-15deg);border:1px solid color-mix(in srgb,var(--gc) 5%,transparent);
+  background:
+    linear-gradient(105deg, transparent 38%, rgba(255,255,255,.48) 45.8%, rgba(255,255,255,.85) 50%,
+      rgba(255,255,255,.48) 54.2%, transparent 62%),
+    linear-gradient(135deg, var(--gm) 0%, var(--gb) 34%, var(--gh) 50%, var(--gb) 66%, var(--gm) 100%)}
+.gchip-starter::before{background:none;border:2px solid color-mix(in srgb,var(--gc) 42%,transparent)}
+.gbar{padding:20px 18px;border-radius:12px}
+.gbar.dk{background:#0a0b0f} .gbar.lt{background:var(--surface);border:1px solid var(--line)}
 .d-page{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 .d-pg{width:36px;height:36px;border:none;border-radius:8px;background:var(--variant);
   color:var(--ink);font-family:var(--font-display);font-size:12px;font-weight:700;cursor:pointer;
@@ -249,7 +264,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
     <a href="#icon">아이콘</a><a href="#motion">모션</a><a href="#a11y">접근성</a></div>
   <div class="grp"><div class="gt">COMPONENTS</div>
     <a href="#actions">액션</a><a href="#inputs">입력</a><a href="#display">데이터 표시</a>
-    <a href="#feedback">피드백</a><a href="#skeleton">스켈레톤</a><a href="#toast">토스트</a><a href="#pagination">페이지네이션</a><a href="#shine">텍스트 라이팅</a><a href="#nav">내비게이션</a><a href="#overlay">오버레이</a></div>
+    <a href="#feedback">피드백</a><a href="#empty">빈 화면</a><a href="#skeleton">스켈레톤</a><a href="#toast">토스트</a><a href="#pagination">페이지네이션</a><a href="#shine">텍스트 라이팅</a><a href="#grade">등급 뱃지</a><a href="#nav">내비게이션</a><a href="#overlay">오버레이</a></div>
   <div class="grp"><div class="gt">PATTERNS</div>
     <a href="#rules">이름 붙은 규칙</a><a href="#coverage">반영 현황</a>
     <a href="#roadmap">아직 없는 것</a></div>
@@ -712,6 +727,27 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
 </section>
 
 
+<section id="empty">
+  <h2>빈 화면 — 아직 아무것도 없을 때</h2>
+  <p class="note">빈 화면은 <b>고장으로 읽히기 쉽습니다</b>. 아이콘이 글보다 먼저 눈에 들어와
+  "망가진 게 아니라 아직 비어 있다"를 말합니다.</p>
+  <div class="demo dcol">
+    <div class="empty-demo">
+      <span class="empty-ic msym" aria-hidden="true">search</span>
+      <b>무엇을 찾을까요?</b>
+      <span>팀 이름, 선수 이름, 경기를 찾을 수 있어요</span>
+    </div>
+  </div>
+  <div class="ramp">
+    <div class="r"><span class="rl">아이콘</span><span class="rs">있으면 쓰고 없으면 그만인 자리 — 기존 빈 화면을 고치지 않고 얹기만 한다</span><span class="rv">40px · N300</span></div>
+    <div class="r"><span class="rl">첫 줄</span><span class="rs">무슨 상태인지, 또는 무엇을 할 수 있는지</span><span class="rv">16px · 700</span></div>
+    <div class="r"><span class="rl">둘째 줄</span><span class="rs">다음에 할 일이나 찾을 수 있는 범위. 사과하지 않는다</span><span class="rv">13px · 보조</span></div>
+  </div>
+  <div class="warn"><p><b>"없습니다"로 끝내지 않습니다.</b> 빈 화면은 막다른 길이 아니라
+  다음 걸음을 알려 줄 자리입니다 — 검색 화면이 "팀·선수·경기를 찾을 수 있어요"라고
+  범위를 미리 적는 것도 헛손질을 줄이기 위해서입니다.</p></div>
+</section>
+
 <section id="skeleton">
   <h2>스켈레톤 — 불러오는 동안</h2>
   <p class="note">빈 화면을 보여 주면 사람은 <b>고장</b>으로 읽습니다.
@@ -810,6 +846,29 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
   <code>prefers-reduced-motion</code>에서는 띠를 끄고 가장 밝은 단색으로 세웁니다.</p></div>
 </section>
 
+<section id="grade">
+  <h2>등급 뱃지 — 사선 금속판</h2>
+  <p class="note">선수 카드가 말하는 네 등급입니다. 카드 앞면 · 하단 시트 · 운영 콘솔 선수 상세가
+  <b>한 레시피를 물려받습니다</b> — 등급마다 색을 따로 적어 두면 한쪽만 고쳐지는 날이 옵니다.</p>
+  <div class="gbar dk"><span class="gchip gchip-starter" style="--gc:#c9ccd2"><i>STARTER</i></span><span class="gchip" style="--gb:#c9905a;--gc:#3d2412;--gm:#be8653;--gh:#deba99"><i>BRONZE</i></span><span class="gchip" style="--gb:#e7ebef;--gc:#3d4249;--gm:#bec3c9;--gh:#f0f3f5"><i>SILVER</i></span><span class="gchip" style="--gb:#f4d16a;--gc:#4a3608;--gm:#cca744;--gh:#f8e2a3"><i>GOLD</i></span></div>
+  <div class="gbar lt" style="margin-top:10px"><span class="gchip gchip-starter" style="--gc:#16171b"><i>STARTER</i></span><span class="gchip" style="--gb:#c9905a;--gc:#3d2412;--gm:#be8653;--gh:#deba99"><i>BRONZE</i></span><span class="gchip" style="--gb:#e7ebef;--gc:#3d4249;--gm:#bec3c9;--gh:#f0f3f5"><i>SILVER</i></span><span class="gchip" style="--gb:#f4d16a;--gc:#4a3608;--gm:#cca744;--gh:#f8e2a3"><i>GOLD</i></span></div>
+  <div class="ramp">
+    <div class="r"><span class="rl">형태</span><span class="rs">로고의 사선을 그대로 쓴다. 워드마크 위아래 룰의 path를 재면 Δx 7.73 / Δy 29 — 15°다</span><span class="rv">skewX −15°</span></div>
+    <div class="r"><span class="rl">반경</span><span class="rs">8까지 둥글리면 사선을 준 이유가 사라진다</span><span class="rv">4px</span></div>
+    <div class="r"><span class="rl">면 / 글자</span><span class="rs">밝은 금속에 어두운 글자. 반대로 하면 브론즈에서 1.95:1로 무너진다</span><span class="rv">--g-b / --g-c</span></div>
+    <div class="r"><span class="rl">그라디언트 끝</span><span class="rs">--g-a까지 내리지 않고 "글자 대비 4.6:1을 넘는 지점"에서 멈춘다</span><span class="rv">--g-mid</span></div>
+    <div class="r"><span class="rl">하이라이트</span><span class="rs">105° — 띠가 수직에서 15° 기울어 뱃지 모서리와 나란하다</span><span class="rv">폭 24%p</span></div>
+    <div class="r"><span class="rl">외곽선</span><span class="rs">있는지 없는지 모를 만큼만. 선은 안쪽에 긋는다 — 그래야 바깥 실루엣이 같은 반경으로 선다</span><span class="rv">5%</span></div>
+    <div class="r"><span class="rl">스타터</span><span class="rs">두를 금속이 없다. 면 없이 2px 선과 글자만, 그 둘을 빛이 훑는다</span><span class="rv">면 없음</span></div>
+    <div class="r"><span class="rl">글자</span><span class="rs">브랜드 서체. 로고와 같은 각진 블록체라 바로 아래 붙어도 결이 맞는다</span><span class="rv">Tektur 11px</span></div>
+  </div>
+  <div class="warn"><p><b>실측 최저 대비 — 브론즈 4.61 · 실버 5.71 · 골드 5.04.</b> 전부 AA입니다.
+  색을 흐리게 만든 것이 아니라 <b>밝은 면에 어두운 글자로 짝을 바꾼 것</b>입니다(The Vivid Rule).</p></div>
+  <div class="warn gap"><p><b>기울이는 것은 상자가 아니라 배경입니다.</b> <code>::before</code>에 금속을 얹고
+  그것만 기울이면 글자는 똑바로 섭니다. 상자를 기울이고 글자를 되돌리는 방식은 안쪽에 요소가 하나 더
+  필요한데, 이 뱃지는 여러 곳에서 <code>textContent</code>로 글자만 갈아 끼우는 자리라 그때마다 그 요소가 지워집니다.</p></div>
+</section>
+
 <section id="nav">
   <h2>내비게이션</h2>
   <div class="demo dcol">
@@ -853,7 +912,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
 <section id="coverage">
   <h2>반영 현황 — 문서와 코드</h2>
   <p class="note">문서에 적혀 있다고 화면에 있는 것은 아닙니다.
-  2026-08-25 기준으로 <b>운영 콘솔 · 공개 경기 상세 · 선수 카드</b> 세 화면을 직접 대조한 결과입니다.</p>
+  2026-08-28 기준으로 <b>운영 콘솔 · 공개 경기 상세 · 선수 카드</b> 세 화면을 직접 대조한 결과입니다.</p>
   <div class="ramp">
     <div class="r"><span class="rl">색 · 토큰</span><span class="rs">프리미티브 램프에서만 가져옵니다. 세 화면 모두 적용 — 램프 밖 값 0개</span><span class="rv">전부</span></div>
     <div class="r"><span class="rl">타이포 · 반경 · 고도</span><span class="rs">토큰으로 서 있습니다. 다크 월드(카드)만 그림자를 따로 씁니다 — 의도된 분리</span><span class="rv">전부</span></div>
@@ -864,6 +923,9 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
     <div class="r"><span class="rl">버튼 — LOADING</span><span class="rs">붙였습니다. <code>openConfirm</code>의 <code>onOk</code>가 인자를 받으면 서버를 기다리는 동작으로 보고 확인 버튼이 알아서 로딩으로 섭니다</span><span class="rv">전부</span></div>
     <div class="r"><span class="rl">토스트</span><span class="rs">콘솔·카드를 같은 모양으로 맞췄습니다. 되돌리기 · 오류 변형은 쓸 자리가 생길 때 붙입니다</span><span class="rv">전부</span></div>
     <div class="r"><span class="rl">스켈레톤</span><span class="rs">한 곳도 없습니다. 지금은 목업이라 기다림이 없지만 서버가 붙으면 바로 필요합니다</span><span class="rv">문서만</span></div>
+    <div class="r"><span class="rl">등급 뱃지</span><span class="rs">카드 앞면 · 하단 시트 · 운영 콘솔 선수 상세가 한 레시피를 물려받습니다</span><span class="rv">전부</span></div>
+    <div class="r"><span class="rl">빈 화면</span><span class="rs">아이콘 자리는 공통으로 열려 있고, 지금은 모바일 검색 화면 한 곳이 씁니다</span><span class="rv">절반</span></div>
+    <div class="r"><span class="rl">텍스트 라이팅</span><span class="rs">개봉 안내문 두 줄과 스타터 뱃지가 씁니다</span><span class="rv">전부</span></div>
     <div class="r"><span class="rl">페이지네이션</span><span class="rs">더보기는 있고(카드 시트·콘솔 최근 기록) 번호식은 없습니다</span><span class="rv">절반</span></div>
   </div>
   <div class="warn"><p><b>색은 다 맞췄고 부품은 절반입니다.</b> 문서가 앞서 있는 것은 나쁜 상태가 아닙니다 —
