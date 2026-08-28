@@ -1076,7 +1076,8 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 
 /* 엑셀 일괄 등록 — 6개 입력 열이 한 줄에 들어가야 하므로 넓은 시트 사용 */
 .sheet.xwide{max-width:960px;max-height:86vh;display:flex;flex-direction:column}
-.xlbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.xlbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:16px}
+.xlbar .flexspace{flex:1 1 auto;min-width:0}
 .bulk{margin-top:14px;border:1px solid var(--outline-variant);border-radius:14px;padding:12px;flex:1;min-height:0;overflow:auto}
 .bulk-head,.bulk-row{display:grid;grid-template-columns:1.5fr 1fr 1fr .8fr .9fr .9fr 40px;gap:10px;align-items:center}
 .bulk-head{font-size:11px;font-weight:700;color:var(--on-surface-variant);padding:0 4px 10px}
@@ -2496,7 +2497,7 @@ body.modal-open{overflow:hidden}
           <div class="logo-field">
             <div class="logo-preview" id="tsLogoPreview" aria-hidden="true"></div>
             <input type="file" id="tsLogoInput" accept="image/*" style="display:none">
-            <button type="button" class="btn btn-outline btn-sm" id="tsLogoBtn">로고 등록</button>
+            <button type="button" class="btn btn-outline btn-sm" id="tsLogoBtn"><span class="ic ic-sm msym" aria-hidden="true">upload</span><span class="btn-label">로고 등록</span></button>
           </div>
         </div>
         <div>
@@ -2504,7 +2505,7 @@ body.modal-open{overflow:hidden}
           <div class="logo-field">
             <div class="logo-preview" id="tsPosterPreview" style="border-radius:8px;width:80px;height:52px" aria-hidden="true"></div>
             <input type="file" id="tsPosterInput" accept="image/*" style="display:none">
-            <button type="button" class="btn btn-outline btn-sm" id="tsPosterBtn">포스터 등록</button>
+            <button type="button" class="btn btn-outline btn-sm" id="tsPosterBtn"><span class="ic ic-sm msym" aria-hidden="true">upload</span><span class="btn-label">포스터 등록</span></button>
           </div>
         </div>
       </div>
@@ -2535,7 +2536,7 @@ body.modal-open{overflow:hidden}
 
     <!-- 위험 액션은 다른 상세 화면(선수 삭제 등)과 동일하게 최하단·우측 정렬로 분리 -->
     <div class="danger-zone">
-      <button type="button" class="btn btn-danger btn-sm" id="tsDeleteBtn">대회 삭제</button>
+      <button type="button" class="btn btn-danger btn-sm" id="tsDeleteBtn"><span class="ic ic-sm msym" aria-hidden="true">delete</span><span class="btn-label">대회 삭제</span></button>
     </div>
   </main>
 
@@ -2547,7 +2548,7 @@ body.modal-open{overflow:hidden}
         <div class="sub" id="tourListSub"></div>
       </div>
       <span class="spacer"></span>
-      <button type="button" class="btn btn-main" id="btnNewTour">새 대회</button>
+      <button type="button" class="btn btn-main" id="btnNewTour"><span class="ic msym" aria-hidden="true">add</span><span class="btn-label">새 대회</span></button>
     </div>
     <div id="tourListBody" style="display:flex;flex-direction:column;gap:10px"></div>
   </main>
@@ -2611,7 +2612,7 @@ body.modal-open{overflow:hidden}
       <div class="logo-field">
         <div class="logo-preview" id="teamLogoPreview" aria-hidden="true"></div>
         <input type="file" id="teamLogoInput" accept="image/*" style="display:none">
-        <button type="button" class="btn btn-outline btn-sm" id="teamLogoBtn">사진 등록</button>
+        <button type="button" class="btn btn-outline btn-sm" id="teamLogoBtn"><span class="ic ic-sm msym" aria-hidden="true">upload</span><span class="btn-label">사진 등록</span></button>
         <button type="button" class="btn btn-tonal btn-sm" id="teamLogoRemove" style="display:none">삭제</button>
       </div>
     </div>
@@ -2682,15 +2683,18 @@ body.modal-open{overflow:hidden}
     <h2 id="bulkTitle">여러 명 한번에 등록</h2>
     <div class="sub" id="bulkSub">엑셀 양식을 내려받아 채운 뒤 업로드하거나, 아래에서 직접 입력하세요.</div>
     <div class="xlbar">
-      <button type="button" class="btn btn-tonal btn-sm" id="btnXlTemplate">엑셀 양식 다운로드</button>
-      <button type="button" class="btn btn-tonal btn-sm" id="btnXlUpload">엑셀 업로드</button>
+      <button type="button" class="btn btn-tonal btn-sm" id="btnXlTemplate"><span class="ic ic-sm msym" aria-hidden="true">download</span><span class="btn-label">엑셀 양식 다운로드</span></button>
+      <button type="button" class="btn btn-tonal btn-sm" id="btnXlUpload"><span class="ic ic-sm msym" aria-hidden="true">upload</span><span class="btn-label">엑셀 업로드</span></button>
       <input type="file" id="xlFile" accept=".xlsx,.xls,.csv" hidden>
+      <!-- 행 추가는 표의 오른쪽 위로 올린다(PO). 표 아래에 두면 행이 늘어날수록
+           버튼이 화면 밖으로 밀려나, 정작 행을 더 넣고 싶을 때 스크롤을 해야 한다. -->
+      <span class="flexspace"></span>
+      <button type="button" class="btn btn-outline btn-sm" id="btnBulkAddRow"><span class="ic ic-sm msym" aria-hidden="true">add</span><span class="btn-label">행 추가</span></button>
     </div>
     <div class="bulk">
       <div class="bulk-head" id="bulkHead"></div>
       <div id="bulkRows"></div>
     </div>
-    <div style="margin-top:10px"><button type="button" class="btn btn-outline btn-sm" id="btnBulkAddRow">행 추가</button></div>
     <div class="acts-row m3">
       <button type="button" class="btn btn-outline" id="bulkCancel">취소</button>
       <button type="button" class="btn btn-main" id="bulkSave">등록하기</button>
