@@ -932,6 +932,8 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .av-c.av-logo{position:relative;background-size:cover;background-position:center;overflow:hidden}
 .av-c.av-logo::before{content:"";position:absolute;inset:0;background:rgba(0,0,0,.4)}
 .av-c.av-logo b{position:relative;z-index:1}
+/* 목록 줄에 들어가는 작은 판 — 검색 결과처럼 한 줄 높이가 낮은 자리에서 쓴다 */
+.av-c.av-sm{width:26px;height:26px;font-size:12px}
 .lmain{flex:1;min-width:0}
 .lname{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;min-width:0}
 .lname > :first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -6851,7 +6853,12 @@ function initGlobalSearch(inputId, panelId){
     var html = '';
     if(teams.length){
       html += '<div class="sec">팀</div>' + teams.map(function(t){
-        return '<div class="row" data-team="'+t.id+'"><i class="dot" style="background:'+t.color+'"></i><span class="nm">'+esc(t.name)+'</span></div>';
+        /* 팀 목록과 같은 표식을 쓴다(PO) — 로고가 있으면 로고, 없으면 팀 색에 앞글자.
+           검색 결과에서만 점 하나로 줄이면 같은 팀이 화면마다 다른 얼굴을 갖는다. */
+        var mark = t.logo
+          ? '<span class="av-c av-sm av-logo" style="background-image:url(\''+t.logo+'\')"><b>'+esc(t.name.charAt(0))+'</b></span>'
+          : '<span class="av-c av-sm" style="background:'+t.color+'">'+esc(t.name.charAt(0))+'</span>';
+        return '<div class="row" data-team="'+t.id+'">'+mark+'<span class="nm">'+esc(t.name)+'</span></div>';
       }).join('');
     }
     if(players.length){
