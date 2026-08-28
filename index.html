@@ -161,10 +161,19 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 .mSearch-back{width:44px;height:44px;border-radius:50%;border:none;background:transparent;color:var(--on-surface);
   display:flex;align-items:center;justify-content:center;flex:none;cursor:pointer}
 .mSearch-back:active{background:var(--surface-variant)}
+/* 검색 화면의 줄은 손가락으로 짚는 자리다(PO) — 떠 있는 패널의 촘촘한 줄(9px)과 달리
+   여기서는 한 줄이 곧 목표물이라 최소 56px을 준다. 글자도 13 → 15px로 올린다.
+   화면을 통째로 내준 자리에서 줄만 작으면 왜 화면을 넘겼는지 알 수 없다. */
+.mSearch > .searchPanel .row{padding:15px 12px;min-height:56px;font-size:15px;gap:12px}
+.mSearch > .searchPanel .row .sub{font-size:13px}
+.mSearch > .searchPanel .sec{padding:14px 12px 6px;font-size:12px}
+.mSearch > .searchPanel .row:active{background:var(--surface-variant)}
 /* 결과가 있을 때만 흰 면이 깔린다(PO) — 빈 화면과 찾은 화면이 눈으로 갈린다.
    .open은 결과가 하나라도 있을 때만 붙으므로 따로 상태를 만들 필요가 없다. */
 .mSearch > .searchPanel{position:static;box-shadow:none;background:transparent;max-height:none;
-  overflow-y:auto;flex:1;padding:8px 12px;border-radius:0}
+  overflow-y:auto;flex:1;padding:8px 12px;border-radius:0;
+  /* 떠 있는 패널에 준 고정 폭(450px)은 여기선 안 쓴다 — 이 화면은 폭을 통째로 갖는다 */
+  width:auto;max-width:none}
 .mSearch > .searchPanel.open{background:var(--surface)}
 /* 안내는 화면 가운데에 선다. 결과가 뜨는 순간 사라진다 — 둘이 동시에 있을 이유가 없다. */
 .mSearch-empty{flex:1;display:flex;align-items:center;justify-content:center;padding:0 24px 15vh}
@@ -455,7 +464,12 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
    좁을 땐 줄어들 수 있게 최소값(180px)까지만 보장한다 */
 .searchTop{flex:1 1 300px;min-width:180px;max-width:300px;height:var(--h-md)}
 /* 상단 통합 검색(팀·선수·경기) 결과 패널 */
-.searchPanel{position:absolute;top:56px;left:0;right:0;background:var(--surface);border-radius:16px;box-shadow:var(--e3);
+/* 결과 패널은 검색창 폭에 묶일 이유가 없다(PO) — 입력창은 글자 한 줄이지만 결과는
+   팀·선수·경기 세 종류가 이름과 부가 정보를 함께 이고 있다. 300 → 450px(1.5배).
+   오른쪽에 붙여 왼쪽으로 자란다: 검색창 오른쪽은 버튼과 화면 끝이라 자랄 자리가 없다. */
+.searchPanel{position:absolute;top:56px;right:0;left:auto;
+  width:min(450px, calc(100vw - 32px));
+  background:var(--surface);border-radius:16px;box-shadow:var(--e3);
   max-height:380px;overflow-y:auto;z-index:50;display:none;padding:8px;text-align:left}
 .searchPanel.open{display:block}
 .searchPanel .sec{padding:8px 10px 4px;font-size:11px;font-weight:700;color:var(--on-surface-variant);letter-spacing:.02em}
@@ -472,8 +486,13 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .page-head h1{font-family:var(--font-display);font-size:26px;font-weight:700;letter-spacing:-.02em}
 .page-head .sub{color:var(--on-surface-variant);font-size:13px;margin-top:6px}
 .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:8px}
-.kpi{background:var(--surface);border-radius:var(--r-card);padding:13px 18px}
-.kpi-go{display:block;width:100%;border:none;font-family:var(--font);text-align:left;cursor:pointer;transition:.12s}
+/* 숏컷 안의 내용은 위에서부터 쌓는다(PO). <button>은 내용이 상자보다 짧으면 세로
+   가운데로 밀어 넣는데, 델타 줄이 없는 '진행 중'만 그래서 7px 내려가 있었다(실측).
+   높이는 그리드가 맞춰 주므로 정렬만 위로 고정하면 네 장이 같은 선에서 시작한다. */
+.kpi{background:var(--surface);border-radius:var(--r-card);padding:13px 18px;
+  display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start}
+/* display는 .kpi가 정한다 — 여기서 block으로 덮으면 위 정렬이 도로 풀린다(실측으로 잡음) */
+.kpi-go{width:100%;border:none;font-family:var(--font);text-align:left;cursor:pointer;transition:.12s}
 .kpi-go:hover{background:var(--surface-variant)}
 .kpi-arrow{color:var(--on-surface-variant);opacity:.45;transition:.12s}
 .kpi-go:hover .kpi-arrow{opacity:1;transform:translateX(2px)}
@@ -2978,10 +2997,10 @@ var KPIS = [
   // 대신 다른 곳의 '진행 중' 표시(.chip.live 등)와 같은 방식으로 라벨 앞에 펄스 점만 붙이고, 값이 0이면 점도 안 뜬다.
   // 델타 '실시간 기록 중'은 실제로 실시간 동기화가 아니라 수동 기록이라 부정확한 문구여서 제거.
   { label:'진행 중',   value:'3',  delta:'', pulseIfPositive:true, go:'games', tab:'live' },
-  /* '검수 대기' 지표는 뺐다(PO). 바로 아래 '오늘 일정'이 같은 경기를 상태 태그와 함께
-     이미 보여 주고 있어, 숫자만 한 번 더 세는 꼴이었다. 목록에서 상태를 읽을 수 있으면
-     그 위에 요약을 얹을 이유가 없다. 대신 일정 행이 상태에 따라 다른 바탕을 갖는다.
-     검수 대기 건수는 왼쪽 내비의 배지가 그대로 들고 있으므로 사라진 정보는 없다. */
+  /* '검수 대기'는 지표가 아니라 바로가기다(PO). 한 번 지웠다가 되살렸다 —
+     아래 목록과 숫자가 겹치는 건 맞지만, 이 줄의 값어치는 세는 것이 아니라
+     한 번 눌러 검수 화면으로 넘어가는 데 있다. 겹친다고 지우면 그 길이 사라진다. */
+  { id:'review', label:'검수 대기', value:'2',  delta:'결과 확정 필요', pulseIfPositive:true, go:'review' },
   // 숫자 줄의 '· 선수 168'과 델타의 '전원 승인 완료'(실제 승인 플로우 없이 걸려있던 문구)가 중복이라,
   // 숫자는 팀 수만 남기고 선수 인원 정보를 델타 자리로 옮겼다
   { label:'참가 팀',   value:'24', delta:'선수 168명', go:'team' }
