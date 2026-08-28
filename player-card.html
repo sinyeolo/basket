@@ -107,7 +107,13 @@ button{font-family:var(--font);color:inherit}
 .heroBg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
   /* 배경 팀 컬러 틴트는 제거 — 카드 주변 등급 오라(.cardGlow)와 색이 겹쳐 서로 탁해졌다 */
   background:radial-gradient(circle at 50% -10%,var(--stage-bg2),var(--stage-bg) 60%)}
-.heroFixed{position:fixed;top:var(--preview-h,0);left:0;right:0;height:calc(var(--vph,100dvh) - var(--preview-h,0px));padding-bottom:34px;z-index:2;overflow:hidden;display:flex;flex-direction:column;align-items:center}
+/* 아래 끝은 재서 맞추지 않고 기기 바닥에 그대로 붙인다(bottom:0).
+   예전엔 height를 --vph(=한 번 잰 window.innerHeight)로 정했는데, 그 값이 실제 화면과
+   조금이라도 어긋나면 여기 overflow:hidden이 만드는 자르는 선이 기기 바닥보다 위로 올라온다.
+   그러면 카드가 화면 맨 아래가 아니라 그 선에서 잘린 채 올라와 보인다(PO가 잡음).
+   position:fixed에 top·bottom을 함께 주면 브라우저가 실제 뷰포트로 계산하므로,
+   툴바가 접히든 펴지든 잰 값과 어긋날 일이 없다. */
+.heroFixed{position:fixed;top:var(--preview-h,0);left:0;right:0;bottom:0;padding-bottom:34px;z-index:2;overflow:hidden;display:flex;flex-direction:column;align-items:center}
 
 /* ---- 무대 배경 ----
    광선 다발(회전하는 원뿔 그라디언트 세 겹 + 큰 블러)을 걷어냈다. 화면보다 큰 레이어를 돌리며
@@ -929,7 +935,10 @@ body:not(.booting) .bootLoad{opacity:0;visibility:hidden;transition:opacity .3s 
 /* 움직임을 줄이는 설정에서도 '도는 중'은 남긴다 — 이건 장식이 아니라 상태 표시다 */
 @media (prefers-reduced-motion:reduce){ .bootSpin{animation-duration:2.6s} }
 /* 더 아래(화면 밖)에서 올라온다 — 카드가 '들어온다'는 느낌은 이동 거리에서 나온다 */
-@keyframes heroRiseIn{from{transform:translateY(calc(var(--vph,100dvh) + 60px))}to{transform:translateY(0)}}
+/* 시작점은 여유를 더 둔다(60 → 120px). --vph가 실제보다 작게 잡히면 카드가 처음부터
+   조금 걸쳐 있게 되어, 올라오는 게 아니라 툭 나타난 것으로 보인다. 어차피 화면 밖 구간이라
+   더 내려도 보이는 시간은 같다. */
+@keyframes heroRiseIn{from{transform:translateY(calc(var(--vph,100dvh) + 120px))}to{transform:translateY(0)}}
 .cardInner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.2,.9,.25,1.1)}
 .cardInner.flipped{transform:rotateY(180deg)}
 /* iOS Safari는 3D 컨텍스트(preserve-3d) 안에서 overflow:hidden + border-radius의 둥근 클립을
@@ -1222,8 +1231,14 @@ body:not(.booting) .bootLoad{opacity:0;visibility:hidden;transition:opacity .3s 
 /* 로고 — SVG를 마스크로 깔고 background-color로 색을 준다. 자리마다 등급 톤·회색·흰색이
    달라야 하는데 SVG 자체는 주황 고정이라, 마스크로 써야 한 파일로 전부 커버된다. */
 .logoMark{display:block;background-color:currentColor;
-  -webkit-mask:url(assets/logo.svg?v=1.3) no-repeat center/contain;
-          mask:url(assets/logo.svg?v=1.3) no-repeat center/contain}
+/* 로고는 파일이 아니라 문서 안에 박아 둔다. 이 프로젝트에서 CSS 마스크로 쓰는 에셋은
+   이것 하나뿐이고(나머지는 전부 background-image), 마스크는 배경 이미지보다 출처 제약이
+   빡빡하다 — 로컬 파일(file://)로 열면 다른 그림은 다 나오는데 로고만 안 나온다(PO가 잡음).
+   1.7KB짜리 워드마크 한 장이라 문서에 넣어도 무게가 없고, 요청이 하나 줄어 등장 직전에
+   마스크가 늦게 도착하는 문제도 같이 사라진다. 로고를 바꾸면 assets/logo.svg를 고친 뒤
+   이 값을 다시 만들어 넣는다. */
+  -webkit-mask:url("data:image/svg+xml,<svg%20width=%22854%22%20height=%22444%22%20viewBox=%220%200%20854%20444%22%20fill=%22none%22%20xmlns=%22http://www.w3.org/2000/svg%22><path%20d=%22M748.625%20207V100.6H714.425V67H821.625V100.6H787.425V207H748.625Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M593.209%20207V67H692.409V99H632.009V120.6H682.409V151H632.009V175H694.409V207H593.209Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M450.788%20207V67H489.588V119.2H505.188L528.588%2067H571.188L538.788%20133L574.188%20207H531.188L506.588%20152.8H489.588V207H450.788Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M314.058%20207V173.4H385.258V153.2L312.058%20146.6V92.6L337.658%2067H422.058V100.6H350.858V118.8L424.058%20125.4V181.4L398.458%20207H314.058Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M192.817%2067L164.017%20207H205.217L223.617%2097.4H232.817L251.217%20207H292.417L263.617%2067H192.817Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M70.3298%20122.8H105.53V97.4H70.3298V122.8ZM70.3298%20176.6H108.73V148.4H70.3298V176.6ZM145.13%2092.6V123.2L132.53%20133.4L149.13%20147V181.4L123.53%20207H31.5298V67H119.53L145.13%2092.6Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M681.407%20377V270.6H647.207V237H754.407V270.6H720.207V377H681.407Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M506.069%20377V237H540.069L588.869%20316V237H624.469V377H590.469L541.669%20298V377H506.069Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M365.991%20349.8V237H404.791V341.8H439.591V237H478.391V349.8L451.191%20377H393.191L365.991%20349.8Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M97.73%20349.8V264.2L124.93%20237H194.13V272.2H138.13V341.8H196.13V377H124.93L97.73%20349.8Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M219.253%20349.8V264.2L246.453%20237H312.053L339.253%20264.2V349.8L312.053%20377H246.453L219.253%20349.8ZM259.653%20270.6V343.4H298.853V270.6H259.653Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M105.73%20407L754.423%20407L746.73%20436H98L105.73%20407Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M15.7302%208L845.424%208L837.73%2037H8L15.7302%208Z%22%20fill=%22%23FE5A01%22/></svg>") no-repeat center/contain;
+          mask:url("data:image/svg+xml,<svg%20width=%22854%22%20height=%22444%22%20viewBox=%220%200%20854%20444%22%20fill=%22none%22%20xmlns=%22http://www.w3.org/2000/svg%22><path%20d=%22M748.625%20207V100.6H714.425V67H821.625V100.6H787.425V207H748.625Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M593.209%20207V67H692.409V99H632.009V120.6H682.409V151H632.009V175H694.409V207H593.209Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M450.788%20207V67H489.588V119.2H505.188L528.588%2067H571.188L538.788%20133L574.188%20207H531.188L506.588%20152.8H489.588V207H450.788Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M314.058%20207V173.4H385.258V153.2L312.058%20146.6V92.6L337.658%2067H422.058V100.6H350.858V118.8L424.058%20125.4V181.4L398.458%20207H314.058Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M192.817%2067L164.017%20207H205.217L223.617%2097.4H232.817L251.217%20207H292.417L263.617%2067H192.817Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M70.3298%20122.8H105.53V97.4H70.3298V122.8ZM70.3298%20176.6H108.73V148.4H70.3298V176.6ZM145.13%2092.6V123.2L132.53%20133.4L149.13%20147V181.4L123.53%20207H31.5298V67H119.53L145.13%2092.6Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M681.407%20377V270.6H647.207V237H754.407V270.6H720.207V377H681.407Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M506.069%20377V237H540.069L588.869%20316V237H624.469V377H590.469L541.669%20298V377H506.069Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M365.991%20349.8V237H404.791V341.8H439.591V237H478.391V349.8L451.191%20377H393.191L365.991%20349.8Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M97.73%20349.8V264.2L124.93%20237H194.13V272.2H138.13V341.8H196.13V377H124.93L97.73%20349.8Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M219.253%20349.8V264.2L246.453%20237H312.053L339.253%20264.2V349.8L312.053%20377H246.453L219.253%20349.8ZM259.653%20270.6V343.4H298.853V270.6H259.653Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M105.73%20407L754.423%20407L746.73%20436H98L105.73%20407Z%22%20fill=%22%23FE5A01%22/><path%20d=%22M15.7302%208L845.424%208L837.73%2037H8L15.7302%208Z%22%20fill=%22%23FE5A01%22/></svg>") no-repeat center/contain}
 .brandLogo{color:var(--g-text);width:52px;height:27px;
   filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
 /* ---- 등급 뱃지 — 한 곳에서 정의하고 카드 앞면·시트·미리보기가 모두 물려받는다 ----
