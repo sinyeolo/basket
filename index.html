@@ -1105,7 +1105,11 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .grow+.grow{border-top:1px solid var(--outline-variant)}
 .grow:hover{background:var(--surface-variant)}
 /* 왼쪽 색 띠는 뺐다(PO) — 상태는 이미 태그가 말한다. 같은 것을 두 번 말하면
-   목록이 색으로 뒤덮여, 정작 눈이 가야 할 "검수 대기"가 다른 색들 사이에 묻힌다. */
+   목록이 색으로 뒤덮여, 정작 눈이 가야 할 "검수 대기"가 다른 색들 사이에 묻힌다.
+
+   대신 바탕으로 말한다(PO). 손댈 일이 남았는가로 두 무리를 가른다 —
+   진행 중·예정은 흰 면 그대로, 검수 대기·확정은 한 단 내려앉는다.
+   검수 대기는 아직 할 일이 있으므로 확정보다 한 칸 덜 물러난다. */
 .gstat{display:flex;flex-direction:column;gap:2px;min-width:0}
 /* nowrap만 두고 overflow를 안 잡아서, "A코트 · 검수 대기"(72px)처럼 긴 라벨이 열 밖으로 흘러나와
    옆 팀의 컬러 점과 겹쳤다(태블릿·폰 폭). 열 폭은 아래에서 74px로 맞추고 여기선 넘칠 때 말줄임 처리 */
@@ -1150,8 +1154,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 확정된 경기는 물러난다(PO) — 손댈 일이 끝난 기록이라 흰 면을 내줄 이유가 없다.
    검수 대기는 흰 면을 지킨다: 목록에서 유일하게 '지금 해야 할 일'이라 같이 눕히면
    가장 급한 것이 가장 눈에 안 띈다. */
-.grow.is-fix{background:var(--head-bg)}
-.grow.is-fix:hover{background:var(--surface-variant)}
+.grow.is-end{background:var(--head-bg)}
+.grow.is-fix{background:var(--surface-container)}
+.grow.is-end:hover,.grow.is-fix:hover{background:var(--surface-variant)}
 .grow.is-soon .gside .gt-nm{font-weight:500;color:var(--on-surface-variant)}
 .grow.is-soon .gside .gt-sc{color:var(--outline);font-weight:700}
 .grow.is-soon .gstat .gs-t{color:var(--on-surface-variant);font-weight:600}
@@ -2320,8 +2325,8 @@ body.modal-open{overflow:hidden}
       <span class="meta" id="logMeta"></span>
       <span class="spacer"></span>
       <!-- 선수·관중이 보는 화면. 기록원이 "밖에서는 어떻게 보이나"를 바로 확인하고 링크를 넘길 수 있어야 한다 -->
-      <a class="btn btn-outline btn-sm" id="publicViewLink" href="game.html" target="_blank" rel="noopener">공개 화면</a>
-      <button class="btn btn-outline btn-sm">기록지 내보내기</button>
+      <a class="btn btn-outline btn-sm" id="publicViewLink" href="game.html" target="_blank" rel="noopener"><span class="ic ic-sm msym" aria-hidden="true">open_in_new</span><span class="btn-label">공개 화면</span></a>
+      <button class="btn btn-outline btn-sm"><span class="ic ic-sm msym" aria-hidden="true">download</span><span class="btn-label">기록지 내보내기</span></button>
     </div>
 
     <!-- <ReviewSummaryBar/> — 경기 종료 후에만 노출. 결과 확정 전/후 상태를 명시적으로 드러냅니다. -->
@@ -2345,7 +2350,7 @@ body.modal-open{overflow:hidden}
         <div class="sub" id="rosterSub"></div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-outline" id="btnBulk">여러 명 등록</button>
+        <button class="btn btn-outline" id="btnBulk"><span class="ic msym" aria-hidden="true">group_add</span><span class="btn-label">여러 명 등록</span></button>
         <button class="btn btn-primary" id="btnAdd"></button>
       </div>
     </div>
@@ -2401,7 +2406,7 @@ body.modal-open{overflow:hidden}
         <h1>기록 · 순위</h1>
         <div class="sub">정규 리그 기준</div>
       </div>
-      <button class="btn btn-outline" id="btnExportStats" aria-label="스탯 내보내기"><span class="btn-label">내보내기</span></button>
+      <button class="btn btn-outline" id="btnExportStats" aria-label="스탯 내보내기"><span class="ic msym" aria-hidden="true">download</span><span class="btn-label">내보내기</span></button>
     </div>
 
     <div class="tabs" id="statsTabs"></div>
@@ -2908,6 +2913,7 @@ var MSYM = {
   content:'image', stats:'bar_chart', cheer:'campaign', settings:'settings',
   undo:'undo', arrowLeft:'arrow_back', arrowRight:'arrow_forward',
   chevronDown:'keyboard_arrow_down', plus:'add', search:'search',
+  groupAdd:'group_add', openNew:'open_in_new',
   pause:'pause', pauseFill:'pause', play:'play_arrow', check:'check',
   edit:'edit', trash:'delete', download:'download', upload:'upload',
   camera:'photo_camera', grid:'grid_view', export:'save_alt', share:'share',
@@ -2948,9 +2954,10 @@ var KPIS = [
   // 대신 다른 곳의 '진행 중' 표시(.chip.live 등)와 같은 방식으로 라벨 앞에 펄스 점만 붙이고, 값이 0이면 점도 안 뜬다.
   // 델타 '실시간 기록 중'은 실제로 실시간 동기화가 아니라 수동 기록이라 부정확한 문구여서 제거.
   { label:'진행 중',   value:'3',  delta:'', pulseIfPositive:true, go:'games', tab:'live' },
-  // '확인' 뱃지는 델타 텍스트('결과 확정 필요')·라벨('검수 대기')과 뜻이 겹치기만 하고 새 정보가 없어 제거.
-  // 검수 대기도 진행 중과 같은 방식으로, 대기 건이 있을 때만 펄스 점이 뜬다.
-  { id:'review', label:'검수 대기', value:'2',  delta:'결과 확정 필요', pulseIfPositive:true, go:'review' },
+  /* '검수 대기' 지표는 뺐다(PO). 바로 아래 '오늘 일정'이 같은 경기를 상태 태그와 함께
+     이미 보여 주고 있어, 숫자만 한 번 더 세는 꼴이었다. 목록에서 상태를 읽을 수 있으면
+     그 위에 요약을 얹을 이유가 없다. 대신 일정 행이 상태에 따라 다른 바탕을 갖는다.
+     검수 대기 건수는 왼쪽 내비의 배지가 그대로 들고 있으므로 사라진 정보는 없다. */
   // 숫자 줄의 '· 선수 168'과 델타의 '전원 승인 완료'(실제 승인 플로우 없이 걸려있던 문구)가 중복이라,
   // 숫자는 팀 수만 남기고 선수 인원 정보를 델타 자리로 옮겼다
   { label:'참가 팀',   value:'24', delta:'선수 168명', go:'team' }
@@ -4290,7 +4297,7 @@ function renderPlayerRoster(){
   if(!PLAYERS.length){
     root.className = 'empty-box';
     root.innerHTML = '<b>등록된 선수가 없어요</b><div style="margin-bottom:16px">엑셀 양식으로 한 번에 등록하거나 직접 추가하세요.</div>'+
-      '<button type="button" class="btn btn-primary" onclick="document.getElementById(\'btnBulk\').click()">여러 명 등록</button>';
+      '<button type="button" class="btn btn-primary" onclick="document.getElementById(\'btnBulk\').click()">'+icon('groupAdd','ic')+'여러 명 등록</button>';
     return;
   }
   if(!list.length){
@@ -4552,6 +4559,7 @@ function openPlayerModal(id, trigger){
   document.getElementById('pCaptain').setAttribute('aria-checked', String(!!(pTeamForCaptain && p && pTeamForCaptain.captainId === p.id)));
   updateCaptainNote();
   playerModal.classList.add('open'); playerModal.setAttribute('aria-hidden','false');
+  snapshotModal(playerModal);   // 지금 상태가 '아직 아무것도 안 고침'의 기준
   document.getElementById('pName').focus();
 }
 // 선택된 팀에 이미 주장이 있으면(수정 중인 본인이 아닐 때) 이름을 안내 문구에 보여준다
@@ -4563,6 +4571,34 @@ function updateCaptainNote(){
   sub.textContent = (captain && captain.id !== editingPlayerId)
     ? '팀별로 한 명만 지정할 수 있어요 — 현재 주장: '+captain.name+' (체크하면 이 선수로 교체돼요)'
     : '팀별로 한 명만 지정할 수 있어요 — 다른 선수가 이미 주장이면 이 선수로 바뀌어요.';
+}
+/* ---- 쓰다 만 것을 실수로 버리지 않게 ----
+   팝업 바깥을 누르면 닫히는 게 기본인데, 한 글자라도 넣은 뒤라면 그 한 번의 실수로
+   입력이 통째로 사라진다. 바깥 클릭과 Esc에서만 되묻는다 — '취소' 버튼은 사람이
+   버리겠다고 이미 말한 것이라 묻지 않는다(물어보는 횟수가 늘면 아무도 안 읽는다). */
+/* 기준은 '열었을 때의 값'이다. defaultValue와 비교하면 폼을 채워서 여는 경우
+   (선수 수정, 팀이 미리 골라진 등록)가 열자마자 '고친 것'으로 잡힌다 — 실제로 그랬다.
+   열 때 한 번 찍어 두고 그것과 비교한다. */
+function snapshotModal(root){
+  root.__snap = [].map.call(root.querySelectorAll('input,select,textarea'), function(el){
+    return (el.type === 'checkbox' || el.type === 'radio') ? String(el.checked) : el.value;
+  });
+}
+function modalIsDirty(root){
+  var snap = root.__snap;
+  if(!snap) return false;                 // 찍어 둔 게 없으면 판단하지 않는다
+  return [].some.call(root.querySelectorAll('input,select,textarea'), function(el, i){
+    var now = (el.type === 'checkbox' || el.type === 'radio') ? String(el.checked) : el.value;
+    return now !== snap[i];
+  });
+}
+function closeIfClean(root, close, what){
+  if(!modalIsDirty(root)){ close(); return; }
+  openConfirm({
+    icon:'danger', title:(what||'입력')+'을 취소할까요?',
+    desc:'지금까지 넣은 내용은 저장되지 않습니다.',
+    ok:'취소하고 닫기', trigger:null, onOk:close
+  });
 }
 function closePlayerModal(){
   playerModal.classList.remove('open'); playerModal.setAttribute('aria-hidden','true');
@@ -4620,8 +4656,8 @@ function initPlayerModal(){
     closePlayerModal(); renderRosterPage(); renderStatsPage();
     if(document.getElementById('page-player').classList.contains('show')) renderPlayerDetail();
   });
-  playerModal.addEventListener('click', function(e){ if(e.target===playerModal) closePlayerModal(); });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && playerModal.classList.contains('open')) closePlayerModal(); });
+  playerModal.addEventListener('click', function(e){ if(e.target===playerModal) closeIfClean(playerModal, closePlayerModal, '선수 등록'); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && playerModal.classList.contains('open')) closeIfClean(playerModal, closePlayerModal, '선수 등록'); });
 }
 
 /* ---- 여러 명 한번에 등록 (엑셀 양식 · 업로드 · 직접 입력) ----
@@ -4696,6 +4732,7 @@ function openBulkModal(){
   document.getElementById('bulkSub').textContent = '엑셀 양식을 내려받아 채운 뒤 업로드하거나, 아래에서 직접 입력하세요. 이름만 있으면 돼요.';
   renderBulk();
   bulkModal.classList.add('open'); bulkModal.setAttribute('aria-hidden','false');
+  snapshotModal(bulkModal);
 }
 function closeBulkModal(){ bulkModal.classList.remove('open'); bulkModal.setAttribute('aria-hidden','true'); }
 function initBulkModal(){
@@ -4721,7 +4758,7 @@ function initBulkModal(){
     });
     closeBulkModal(); rosterTab = 'players'; renderRosterPage();
   });
-  bulkModal.addEventListener('click', function(e){ if(e.target===bulkModal) closeBulkModal(); });
+  bulkModal.addEventListener('click', function(e){ if(e.target===bulkModal) closeIfClean(bulkModal, closeBulkModal, '여러 명 등록'); });
   document.addEventListener('keydown', function(e){ if(e.key==='Escape' && bulkModal.classList.contains('open')) closeBulkModal(); });
 }
 
