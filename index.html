@@ -369,8 +369,14 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 .nav-collapsed .nitem .nlabel-s{position:relative;z-index:1;display:block;font-size:11px;font-weight:500;line-height:1.25;text-align:center;letter-spacing:-.02em;white-space:nowrap}
 .nav-collapsed .nitem.active .nlabel-s{font-weight:600}
 .nav-collapsed .nitem .badge-n{position:absolute;top:-2px;left:calc(50% + 6px);margin:0;min-width:18px;height:18px;font-size:11px;padding:0 5px;z-index:2}
+/* 접힌 GNB에서는 로고만 남긴다(PO). 버전 문구는 폭이 아이콘 레일(64px)보다 길어
+   접힌 자리에 들어가지 않고, 접힌 상태에서 알아야 할 것도 아니다.
+   .bt를 감추던 규칙이 있었는데 그 래퍼는 로고·버전을 나누면서 없앴다 —
+   선택자만 남아 아무것도 안 하고 있었다(둘 다 그대로 보였다). */
 .nav-collapsed .brand{justify-content:center;padding:16px 0 2px;width:100%}
-.nav-collapsed .brand .bt{display:none}
+.nav-collapsed .brand .btVer{display:none}
+/* 펼쳤을 때보다 한 단 작게(PO) — 69×36 → 44×23. 비율(1.92:1)은 그대로다. */
+.nav-collapsed .brand .btLogo{width:44px;height:23px}
 
 /* ---- 폰 폭(≤640px): GNB를 고정 폭 오프캔버스 드로어로 전환 — 태블릿 구간(641~1024px)의 아이콘 레일과는 다른 패턴.
    .nav의 기본 position:sticky, .nav-collapsed의 축소 규칙들과 소스 순서상 뒤에 와야 우선순위를 이긴다(동일 특이도라 나중 규칙이 이김) ---- */
@@ -401,7 +407,9 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
   .nav-collapsed .nlabel-s{display:none}
   .nav-collapsed .tourSwitch .ts-info,.nav-collapsed .tourSwitch .chev{display:inherit}
   .nav-collapsed .profile .pinfo,.nav-collapsed .profile .caret{display:inherit}
-  .nav-collapsed .brand .bt{display:inherit}
+  /* 폰에서는 드로어가 펼쳐진 모습으로 열리므로 접힘 규칙을 도로 푼다 */
+  .nav-collapsed .brand .btVer{display:inherit}
+  .nav-collapsed .brand .btLogo{width:69px;height:36px}
   .nav-collapsed .nav-label{display:block}
   .nav-collapsed #navGroups{align-items:stretch;width:100%;padding:0}
   .nav-collapsed .nitem{flex-direction:row;justify-content:flex-start;padding:10px 12px;gap:12px;border-radius:12px}
