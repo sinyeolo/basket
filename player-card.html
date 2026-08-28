@@ -802,6 +802,10 @@ body.pack-wiping .packBg{animation:packBgFade 1.6s ease .75s both}
    뒤집기 버튼·시트 안내처럼 카드가 아닌 것들이 개봉 중에 비쳤다. */
 body.intro .heroFixed{opacity:0}
 body.intro .heroContent{animation:none;opacity:0}
+/* 시트는 카드를 연 다음의 물건이다 — 팩을 뜯기 전에는 손잡이도 나오지 않는다(PO).
+   위 폴백이 시점을 맞추지만, 여기서 한 번 더 막아 타이밍이 어긋나도 새지 않게 한다. */
+body.intro .sheet, body.booting .sheet,
+body.intro .sheetHint, body.booting .sheetHint{opacity:0;pointer-events:none}
 /* 카드가 올라오는 1.2초 동안 나머지 화면 장치는 아직 오지 않는다 —
    카드만 올라와야 "카드가 나온다"로 읽힌다. 덮개가 다 걷힌 뒤에 함께 켠다. */
 .pcHeader,.flipBtn,.sheetHint{transition:opacity .35s ease .1s}
@@ -1277,9 +1281,9 @@ body:not(.booting) .bootLoad{opacity:0;visibility:hidden;transition:opacity .3s 
   box-sizing:border-box;
   border:2px solid transparent;
   background-image:linear-gradient(105deg,
-    color-mix(in srgb,currentColor 34%,transparent) 0 32%,
+    color-mix(in srgb,currentColor 41%,transparent) 0 32%,
     currentColor 50%,
-    color-mix(in srgb,currentColor 34%,transparent) 68% 100%);
+    color-mix(in srgb,currentColor 41%,transparent) 68% 100%);
   background-origin:border-box;background-clip:border-box;
   background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
   -webkit-mask:linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
@@ -1287,11 +1291,14 @@ body:not(.booting) .bootLoad{opacity:0;visibility:hidden;transition:opacity .3s 
   -webkit-mask-composite:xor;mask-composite:exclude;
   animation:gradeSweep 6.5s cubic-bezier(.55,0,1,1) 1.6s infinite}
 /* 글자에도 같은 빛이 같은 박자로 지나간다 — 글자 자체를 마스크 삼는다(The Travelling Light Rule) */
+/* 쉬고 있을 때의 세기를 20% 올렸다(테두리 34→41%, 글자 62→74%) — 카드 위에서 스타터 등급이
+   잘 안 읽혔다(PO). 최댓값은 100%(currentColor) 그대로 둔다: 여기까지 같이 올리면
+   빛이 지나가도 달라지는 게 없어져, '은은하다가 선명해진다'는 효과 자체가 사라진다. */
 [data-grade="starter"] .gradeBadge{
   background-image:linear-gradient(105deg,
-    color-mix(in srgb,currentColor 62%,transparent) 0 32%,
+    color-mix(in srgb,currentColor 74%,transparent) 0 32%,
     currentColor 50%,
-    color-mix(in srgb,currentColor 62%,transparent) 68% 100%);
+    color-mix(in srgb,currentColor 74%,transparent) 68% 100%);
   background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;
@@ -1742,9 +1749,9 @@ body:not(.booting) .bootLoad{opacity:0;visibility:hidden;transition:opacity .3s 
   box-sizing:border-box;
   border:2px solid transparent;
   background-image:linear-gradient(105deg,
-    color-mix(in srgb,currentColor 34%,transparent) 0 32%,
+    color-mix(in srgb,currentColor 41%,transparent) 0 32%,
     currentColor 50%,
-    color-mix(in srgb,currentColor 34%,transparent) 68% 100%);
+    color-mix(in srgb,currentColor 41%,transparent) 68% 100%);
   background-origin:border-box;background-clip:border-box;
   background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
   -webkit-mask:linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
@@ -1754,9 +1761,9 @@ body:not(.booting) .bootLoad{opacity:0;visibility:hidden;transition:opacity .3s 
 /* 글자에도 같은 빛이 같은 박자로 지나간다 — 글자 자체를 마스크 삼는다(The Travelling Light Rule) */
 [data-grade="starter"] .ohGrade{
   background-image:linear-gradient(105deg,
-    color-mix(in srgb,currentColor 62%,transparent) 0 32%,
+    color-mix(in srgb,currentColor 74%,transparent) 0 32%,
     currentColor 50%,
-    color-mix(in srgb,currentColor 62%,transparent) 68% 100%);
+    color-mix(in srgb,currentColor 74%,transparent) 68% 100%);
   background-size:300% 100%;background-repeat:no-repeat;background-position:100% 0;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;
@@ -2911,7 +2918,18 @@ if(!isNaN(parseInt(document.getElementById('fOvr').dataset.target, 10))) documen
       heroContent.removeEventListener('animationend', onEnd);
       enterOnce();
     });
-    setTimeout(enterOnce, 1600);   // heroRiseIn보다 넉넉히 뒤 — 정상 경로에서는 이미 들어와 있다
+    /* 시간 폴백은 등장 연출이 실제로 시작될 수 있게 된 뒤부터 센다.
+       개봉 연출(body.intro)이나 에셋 대기(body.booting) 중에는 heroRiseIn이 아직
+       멈춰 있어 animationend가 오지 않는데, 그대로 1.6초를 세면 팩을 뜯지도 않았는데
+       시트가 올라온다 — 팩 배경(.packBg, z1)이 시트(z3)보다 아래라 손잡이가 팩 위로
+       비쳤다(PO가 잡음). 문을 열어 준 뒤부터 세면 두 경로가 어긋나지 않는다. */
+    (function armFallback(){
+      var b = document.body;
+      if(b.classList.contains('intro') || b.classList.contains('booting')){
+        setTimeout(armFallback, 200); return;
+      }
+      setTimeout(enterOnce, 1600);   // heroRiseIn보다 넉넉히 뒤 — 정상 경로에서는 이미 들어와 있다
+    })();
   }
 
   /* ---- 등장 전 준비 ----
