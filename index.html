@@ -1230,12 +1230,13 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    스트라이프는 둘까지다. 셋이 되면 신호가 흔해져 아무것도 눈에 안 띈다. */
 /* 예정 — 아직 치르지 않았으니 팀명을 굵게 쓰지 않는다(볼드는 '결과가 나온 팀'의 표시다).
    전체를 한 톤 낮춰서 끝난 경기와 확실히 갈리게 한다. */
-/* 확정된 경기는 물러난다(PO) — 손댈 일이 끝난 기록이라 흰 면을 내줄 이유가 없다.
-   검수 대기는 흰 면을 지킨다: 목록에서 유일하게 '지금 해야 할 일'이라 같이 눕히면
-   가장 급한 것이 가장 눈에 안 띈다. */
-.grow.is-end{background:var(--head-bg)}
-.grow.is-fix{background:var(--surface-container)}
-.grow.is-end:hover,.grow.is-fix:hover{background:var(--surface-variant)}
+/* 행은 상태와 무관하게 흰 면이다(PO). 한때 끝난 경기를 한 톤 눕혀 상태를 말하려 했는데,
+   행이 아닌 층의 토큰을 끌어다 써서 두 곳에서 면이 사라졌다:
+   확정(is-fix)에 쓴 --surface-container는 페이지 바탕과 같은 값이라 경기 목록에서
+   지난 경기 줄이 통째로 배경에 묻혔고, 검수 대기(is-end)에 쓴 --head-bg는 목록 헤더
+   전용 색이라 기록 검수 화면에서 헤더와 줄이 구분되지 않았다.
+   상태는 이미 오른쪽 칩(진행 중·예정·검수 대기·확정)이 말한다 — 면까지 동원할 자리가 아니었다. */
+.grow.is-end:hover,.grow.is-fix:hover{background:var(--surface-container)}
 .grow.is-soon .gside .gt-nm{font-weight:500;color:var(--on-surface-variant)}
 .grow.is-soon .gside .gt-sc{color:var(--outline);font-weight:700}
 .grow.is-soon .gstat .gs-t{color:var(--on-surface-variant);font-weight:600}
