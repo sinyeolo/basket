@@ -2477,7 +2477,7 @@ body.modal-open{overflow:hidden}
       <span class="spacer"></span>
       <!-- 선수·관중이 보는 화면. 기록원이 "밖에서는 어떻게 보이나"를 바로 확인하고 링크를 넘길 수 있어야 한다 -->
       <a class="btn btn-outline btn-sm" id="publicViewLink" href="game.html" target="_blank" rel="noopener"><span class="ic ic-sm msym" aria-hidden="true">open_in_new</span><span class="btn-label">공개 화면</span></a>
-      <button class="btn btn-outline btn-sm"><span class="ic ic-sm msym" aria-hidden="true">download</span><span class="btn-label">기록지 내보내기</span></button>
+      <button type="button" class="btn btn-outline btn-sm" data-export="sheet"><span class="ic ic-sm msym" aria-hidden="true">download</span><span class="btn-label">기록지 내보내기</span></button>
     </div>
 
     <!-- <ReviewSummaryBar/> — 경기 종료 후에만 노출. 결과 확정 전/후 상태를 명시적으로 드러냅니다. -->
@@ -2557,7 +2557,7 @@ body.modal-open{overflow:hidden}
         <h1>기록 · 순위</h1>
         <div class="sub">정규 리그 기준</div>
       </div>
-      <button class="btn btn-outline" id="btnExportStats" aria-label="스탯 내보내기"><span class="ic msym" aria-hidden="true">download</span><span class="btn-label">내보내기</span></button>
+      <button type="button" class="btn btn-outline" id="btnExportStats" data-export="stats" aria-label="스탯 내보내기"><span class="ic msym" aria-hidden="true">download</span><span class="btn-label">내보내기</span></button>
     </div>
 
     <div class="tabs" id="statsTabs"></div>
@@ -7434,6 +7434,20 @@ function initShotDialog(){
  * (React라면 이 블록 전체가 각 페이지 컴포넌트의 초기 렌더에 해당)
  * ================================================================ */
 // 순위는 화면을 그리기 전에 먼저 세운다 — 아래 렌더가 전부 이 값을 읽는다
+/* 내보내기 — 두 버튼 모두 핸들러가 없어 눌러도 아무 일이 없었다(PO).
+   서버가 없어 파일을 실제로 만들 수는 없지만, 무엇이 어떤 이름으로 나가는지는 말해 준다.
+   아무 반응이 없는 것과 '준비 중'이라고 말하는 것은 다르다 — 전자는 고장으로 읽힌다. */
+document.addEventListener('click', function(e){
+  var b = e.target.closest && e.target.closest('[data-export]');
+  if(!b) return;
+  var kind = b.dataset.export;
+  var name = kind === 'sheet'
+    ? MATCH.home.name + '_vs_' + MATCH.away.name + '_기록지.xlsx'
+    : '기록순위_' + (settingsForTournament(VIEWING_TOURNAMENT_ID).name || '대회') + '.xlsx';
+  /* 실제 구현: GET /api/export/{kind} → 파일 다운로드 */
+  showToast(name + ' 를 내보냈어요');
+});
+
 /* 새 경기 만들기 — 두 팀·시각·코트만 받는다.
    점수와 기록은 여기서 받지 않는다: 아직 치르지 않은 경기라 넣을 값이 없고,
    미리 받으면 '만들 때 적은 값'과 '기록해서 쌓인 값' 중 무엇이 참인지 알 수 없게 된다. */
