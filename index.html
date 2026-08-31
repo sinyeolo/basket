@@ -372,7 +372,7 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* 활성 인디케이터 = 아이콘 + 라벨을 함께 감싸는 정사각형(72×72) */
 .nav-collapsed .nitem::before{content:"";position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
   width:64px;border-radius:18px;background:transparent;transition:background .15s}
-.nav-collapsed .nitem:hover::before{background:var(--surface-variant)}
+.nav-collapsed .nitem:hover::before{background:var(--surface-hover)}
 .nav-collapsed .nitem.active{background:transparent;color:var(--on-main)}
 .nav-collapsed .nitem.active::before{background:var(--main)}
 .nav-collapsed .nitem.disabled:hover::before{background:transparent}
@@ -1097,8 +1097,10 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   border-radius:14px;background:var(--surface-container);font-family:var(--font);font-size:16px;color:var(--on-surface);
   box-shadow:inset 0 0 0 1px var(--outline-variant);transition:box-shadow .12s,background .12s}
 :is(.field,.fieldrow,.bulk-row) select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6a72' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px;padding-right:42px}
-:is(.field,.fieldrow,.bulk-row) input:hover,:is(.field,.fieldrow,.bulk-row) select:hover{background-color:#ebe4ec}
-:is(.field,.fieldrow,.bulk-row) input:focus,:is(.field,.fieldrow,.bulk-row) select:focus{outline:none;background-color:#ebe4ec;box-shadow:inset 0 0 0 2px var(--on-surface)}
+/* 호버는 '그 칸의 바탕에서 램프 한 단 아래'다 — 비어 있으면 바탕이 N100이니 N200,
+   값이 차면 바탕이 흰색이니 N150이다. 예전엔 #ebe4ec처럼 램프 밖 값을 섞어 썼다. */
+:is(.field,.fieldrow,.bulk-row) input:hover,:is(.field,.fieldrow,.bulk-row) select:hover{background-color:var(--surface-variant)}
+:is(.field,.fieldrow,.bulk-row) input:focus,:is(.field,.fieldrow,.bulk-row) select:focus{outline:none;background-color:var(--surface-variant);box-shadow:inset 0 0 0 2px var(--on-surface)}
 :is(.field,.fieldrow,.bulk-row) input::placeholder{color:var(--on-surface-variant)}
 :is(.field,.fieldrow,.bulk-row) input:disabled,:is(.field,.fieldrow,.bulk-row) select:disabled{color:var(--on-surface-variant);cursor:not-allowed}
 /* 입력 폼 공통 규칙 — 비어있을 땐 회색, 값이 채워지면(placeholder가 더 이상 안 보이거나, select면 빈 값이 아닌 옵션이 선택되면) 흰색으로
@@ -1106,7 +1108,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 :is(.field,.fieldrow,.bulk-row) input:not(:placeholder-shown),
 :is(.field,.fieldrow,.bulk-row) select:has(option:checked:not([value=""])){background-color:var(--surface)}
 :is(.field,.fieldrow,.bulk-row) input:not(:placeholder-shown):hover,
-:is(.field,.fieldrow,.bulk-row) select:has(option:checked:not([value=""])):hover{background-color:var(--surface-variant)}
+:is(.field,.fieldrow,.bulk-row) select:has(option:checked:not([value=""])):hover{background-color:var(--surface-hover)}
 :is(.field,.fieldrow,.bulk-row) input:not(:placeholder-shown):focus,
 :is(.field,.fieldrow,.bulk-row) select:has(option:checked:not([value=""])):focus{background-color:var(--surface-variant);box-shadow:inset 0 0 0 2px var(--on-surface)}
 .fieldrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
