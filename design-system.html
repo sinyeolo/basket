@@ -164,11 +164,11 @@ h3:first-of-type{margin-top:16px}
 .d-pick{display:flex;align-items:center;gap:10px;min-height:44px;font-size:13px;font-weight:500}
 .d-box{width:18px;height:18px;flex:none;border-radius:6px;border:2px solid var(--muted);background:var(--surface);position:relative}
 .d-dot{width:18px;height:18px;flex:none;border-radius:50%;border:2px solid var(--muted);background:var(--surface);position:relative}
-.d-pick.on .d-box{background:#ad6300;border-color:#ad6300}
+.d-pick.on .d-box{background:#ff9100;border-color:#ff9100}
 .d-pick.on .d-box::after{content:"";position:absolute;inset:0;margin:auto;width:10px;height:2px;
   border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px)}
-.d-pick.on .d-dot{border-color:#ad6300}
-.d-pick.on .d-dot::after{content:"";position:absolute;inset:0;margin:auto;width:10px;height:10px;border-radius:50%;background:#ad6300}
+.d-pick.on .d-dot{border-color:#ff9100}
+.d-pick.on .d-dot::after{content:"";position:absolute;inset:0;margin:auto;width:10px;height:10px;border-radius:50%;background:#ff9100}
 /* 숫자 스텝 필드 */
 .d-num{position:relative;max-width:200px}
 .d-num .d-input{padding-right:38px}
@@ -708,10 +708,10 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
     <div class="r"><span class="rl">줄 높이</span><span class="rs">둘 다 44px — 표식만 누르게 하지 않고 줄 전체가 눌린다</span><span class="rv">44px</span></div>
     <div class="r"><span class="rl">숫자 스텝</span><span class="rs">칸 안 오른쪽에 30px 위·아래 버튼. 값이 비어 있으면 플레이스홀더를 기준값으로 쓴다</span><span class="rv">30px</span></div>
   </div>
-  <div class="warn"><p>글자·기호가 올라앉는 브랜드 면은 <code>--primary</code>(#ff9100)가 아니라
-  한 단 진한 <code>--primary-fill</code>(#ad6300)입니다 — 흰 글자를 원본에 얹으면 2.26:1로 무너지고,
-  진한 면에서는 4.60:1로 섭니다. 색을 흐린 것이 아니라 짝을 바꾼 것이라 채도는 100% 그대로입니다.
-  점·막대처럼 글자를 이지 않는 자리는 원본 <code>--primary</code>를 씁니다.</p></div>
+  <div class="warn"><p>브랜드 면 위의 글자·기호는 <b>전부 흰색</b>입니다(<code>--on-primary</code>).
+  면은 어디서도 <code>--primary</code>(#ff9100) 그대로 씁니다 — 자리마다 브랜드 컬러가 달라지는 것이
+  더 큰 손실이라는 판단입니다(PO, 2026-08-31).
+  흰 글자와의 대비는 2.26:1로 기준(3:1) 아래이며, <b>알고 고른 값</b>입니다.</p></div>
   <div class="warn"><p>라디오의 가운데 점은 <b>안쪽에 원을 하나 더 얹지 않고</b> <code>::after</code>로 그립니다 —
   채워진 원 위에 원을 얹으면 테두리가 두 겹으로 보입니다.</p></div>
   <div class="warn"><p>기본값은 <b>플레이스홀더</b>로 두고 값으로 채우지 않습니다 —
