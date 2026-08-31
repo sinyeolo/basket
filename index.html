@@ -2791,12 +2791,14 @@ body.modal-open{overflow:hidden}
       <div><label for="gnHome">홈 팀</label><select id="gnHome"></select></div>
       <div><label for="gnAway">원정 팀</label><select id="gnAway"></select></div>
     </div>
-    <div class="field fieldrow" style="grid-template-columns:1fr 1fr 1fr">
+    <!-- 날짜·시각 인풋은 브라우저가 정하는 최소 폭이 있어서 1fr 셋으로 나누면
+         세 번째 칸(코트)만 눌린다. 날짜에 더 주고 코트는 두 줄로 내린다. -->
+    <div class="field fieldrow" style="grid-template-columns:1.2fr 1fr">
       <div><label for="gnDate">날짜</label><input id="gnDate" type="date"></div>
       <div><label for="gnTime">시각</label><input id="gnTime" type="time"></div>
-      <div><label for="gnCourt">코트</label>
-        <select id="gnCourt"><option>A코트</option><option>B코트</option><option>C코트</option></select></div>
     </div>
+    <div class="field"><label for="gnCourt">코트</label>
+      <select id="gnCourt"><option>A코트</option><option>B코트</option><option>C코트</option></select></div>
     <ul class="cf-items" id="gnErrs" hidden></ul>
     <div class="acts-row">
       <button type="button" class="btn btn-outline" data-close-gamenew>취소</button>
