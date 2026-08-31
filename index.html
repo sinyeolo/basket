@@ -548,7 +548,10 @@ button[disabled]{box-shadow:none!important}
 .recent h3 .card-action{margin-left:auto}
 /* 위 4 / 아래 14로 어긋나 있던 걸 대칭으로 맞춤 — 카드 헤더를 카드 밖(.sec-title)으로 뺀 뒤로는
    card-body가 카드의 유일한 자식이라 위가 눌려 보였다 */
-.card-body{padding:6px 12px}
+/* 카드 본문 여백은 사방 16이다(PO). 예전엔 상하 6 / 좌우 12로 어긋나 있어서
+   같은 카드 안에서도 위아래가 좁고 좌우가 넓어 보였다. 행이 자체 여백을 갖는 목록 카드는
+   아래에서 0으로 덮는다(.glist / #teamList / .tour-card). */
+.card-body{padding:16px}
 /* 경기 행 목록을 담는 카드 본문 — 행(.grow)이 자체 여백(12px 18px)을 갖고 있어서 카드 본문 여백까지
    주면 좌우가 이중으로 들어간다. 경기 페이지(.daygroup)처럼 꽉 채워 같은 밀도로 맞춘다.
    행 배경(hover·진행 중 스트라이프)이 카드 모서리를 넘지 않도록 카드와 같은 라운드로 잘라 준다. */
@@ -2628,10 +2631,18 @@ body.modal-open{overflow:hidden}
     <div class="sec-title">대회 정보</div>
     <div class="card"><div class="card-body" style="display:flex;flex-direction:column;gap:16px">
       <div class="field"><label for="tsName">대회명</label><input id="tsName" type="text" placeholder="예) 2026 여름 3×3 리그"></div>
+      <!-- 시즌 칸은 뺐다(PO) — 값이 대회명 앞 두 마디를 잘라 만든 파생값이라, 고쳐도 대회명과
+           어긋나기만 하고 어디에도 쓰이지 않았다. 종목은 못 고치는 칸이 폼 한가운데 앉아 있어
+           고장난 것처럼 보였다 — 실제로 3×3과 5×5는 인원·규칙이 갈리는 값이라 고를 수 있게 열었다.
+           기간은 손으로 적는 글자였는데, 새 대회 만들기가 이미 쓰는 날짜 두 칸으로 맞췄다. -->
       <div class="fieldrow">
-        <div><label for="tsSeason">시즌</label><input id="tsSeason" type="text" placeholder="예) 2026 여름"></div>
-        <div><label for="tsSport">종목</label><input id="tsSport" type="text" value="3×3 농구" disabled></div>
-        <div><label for="tsPeriod">대회 기간</label><input id="tsPeriod" type="text" placeholder="예) 07.09 ~ 08.09"></div>
+        <div><label for="tsSport">종목</label>
+          <select id="tsSport">
+            <option value="3x3">3×3 농구</option>
+            <option value="5x5">5×5 농구</option>
+          </select></div>
+        <div><label for="tsStart">시작일</label><input id="tsStart" type="date"></div>
+        <div><label for="tsEnd">종료일</label><input id="tsEnd" type="date"></div>
       </div>
       <div class="fieldrow" style="grid-template-columns:1fr 1fr">
         <div>
@@ -2690,7 +2701,9 @@ body.modal-open{overflow:hidden}
           <div><label for="tsToSecond">작전타임 후반</label><div class="numfield"><input id="tsToSecond" type="number" min="0" max="5" placeholder="2"><span class="numsteps"><button type="button" class="numstep up" data-target="tsToSecond" aria-label="후반 작전타임 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="tsToSecond" aria-label="후반 작전타임 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
           <div><label for="tsToOt">작전타임 연장</label><div class="numfield"><input id="tsToOt" type="number" min="0" max="5" placeholder="1"><span class="numsteps"><button type="button" class="numstep up" data-target="tsToOt" aria-label="연장 작전타임 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="tsToOt" aria-label="연장 작전타임 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
         </div>
-        <div><label for="tsOvertime">연장전 규칙</label>
+        <!-- .field를 빼먹으면 인풋 스타일(:is(.field,.fieldrow,.bulk-row) select)이 안 걸려
+             기본 셀렉트로 돌아간다 — 줄을 재배치하면서 이 줄만 맨 div로 남았었다(PO). -->
+        <div class="field"><label for="tsOvertime">연장전 규칙</label>
           <select id="tsOvertime"></select></div>
       </div>
     </div></div>
@@ -5992,11 +6005,27 @@ var TOURNAMENT_SETTINGS = {
 };
 var TOURNAMENT_SETTINGS_MAP = { tour1: TOURNAMENT_SETTINGS };
 // tour1 외 대회는 실제 팀·선수 데이터가 없어, 목록에 보이는 값 기준으로 설정 객체를 처음 열 때 즉석 생성한다
+/* 'MM.DD ~ MM.DD'와 대회명 앞머리의 연도를 합쳐 ISO 날짜를 만든다.
+   저장된 값이 표시용 문자열뿐이라 첫 진입에서 한 번 풀어 준다 — 연도가 없으면 올해로 둔다. */
+function isoFromPeriod(name, period, idx){
+  var m = /(\d{2})\.(\d{2})\s*~\s*(\d{2})\.(\d{2})/.exec(period || '');
+  if(!m) return '';
+  var y = (String(name).match(/(20\d{2})/) || [])[1] || String(new Date().getFullYear());
+  return idx === 0 ? y+'-'+m[1]+'-'+m[2] : y+'-'+m[3]+'-'+m[4];
+}
+/* 목록·드롭다운이 읽는 표시값은 날짜에서 파생한다 — 두 곳에 따로 적으면 어긋난다. */
+function periodFromIso(a, b){
+  if(!a || !b) return '';
+  return a.slice(5).replace('-', '.') + ' ~ ' + b.slice(5).replace('-', '.');
+}
 function settingsForTournament(id){
   if(!TOURNAMENT_SETTINGS_MAP[id]){
     var t = TOURNAMENTS.find(function(x){ return x.id===id; });
     TOURNAMENT_SETTINGS_MAP[id] = {
-      name:t.name, season:t.name.split(' ').slice(0,2).join(' '), period:t.period,
+      /* 시즌은 두지 않는다 — 대회명 앞 두 마디를 잘라 만든 파생값이라 원본이 될 수 없다.
+         기간은 화면에서 날짜 두 개로 받으므로 ISO로 들고, period는 목록에 보이는 표시값이다. */
+      name:t.name, period:t.period, sport:t.sport || '3x3',
+      startDate:isoFromPeriod(t.name, t.period, 0), endDate:isoFromPeriod(t.name, t.period, 1),
       logo:null, poster:null, cap:t.teams,
       quarters:'10분 4쿼터', overtime:'3분 서든데스', foulOut:'개인 5파울',
       teamFoulBonus:7, teamFoulPenalty:10,
@@ -6251,8 +6280,9 @@ function renderTournamentSettingsPage(){
   var s = settingsForTournament(VIEWING_TOURNAMENT_ID);
   document.getElementById('tsTitle').textContent = s.name;
   document.getElementById('tsName').value = s.name;
-  document.getElementById('tsSeason').value = s.season;
-  document.getElementById('tsPeriod').value = s.period;
+  document.getElementById('tsSport').value = s.sport || '3x3';
+  document.getElementById('tsStart').value = s.startDate || '';
+  document.getElementById('tsEnd').value = s.endDate || '';
   /* 시합 방식은 라디오가 정한다. 아래 칸들은 '직접 입력'일 때만 펼쳐지는 자리다. */
   renderRuleSets();
   var ot = document.getElementById('tsOvertime');
@@ -6285,8 +6315,10 @@ function initTournamentSettingsPage(){
   document.getElementById('tsSaveBtn').addEventListener('click', function(){
     var s = settingsForTournament(VIEWING_TOURNAMENT_ID), btn = this;
     s.name = document.getElementById('tsName').value.trim() || s.name;
-    s.season = document.getElementById('tsSeason').value.trim();
-    s.period = document.getElementById('tsPeriod').value.trim();
+    s.sport = document.getElementById('tsSport').value;
+    s.startDate = document.getElementById('tsStart').value;
+    s.endDate = document.getElementById('tsEnd').value;
+    s.period = periodFromIso(s.startDate, s.endDate) || s.period;
     /* 시합 방식은 라디오가 정한다. '직접 입력'일 때만 아래 칸을 읽고,
        비어 있는 칸은 플레이스홀더(= 그 자리의 기본값)를 쓴다 — 손대지 않았다는 뜻이다. */
     var rs = RULE_SETS.filter(function(r){ return r.id === tourRuleId; })[0];
