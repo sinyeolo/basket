@@ -2754,8 +2754,11 @@ body.modal-open{overflow:hidden}
      팀 참가 승인·조 편성·대진은 만든 뒤 대회 상세에서 이어 간다(기획서 유저플로우 순서 그대로). -->
 <div class="modal" id="tourNewModal" role="dialog" aria-modal="true" aria-labelledby="tourNewTitle" aria-hidden="true">
   <div class="sheet">
+    <!-- 아이콘 원은 두지 않는다 — 확인 팝업(confirmIcon)은 JS가 cf-ok/cf-danger를 붙여
+         '무슨 성격의 물음인지'를 색으로 말하지만, 만들기 팝업은 성격이 하나뿐이라 말할 게 없다.
+         여기 있던 <span class="cf-icon ok">는 클래스 이름이 어긋나(cf-ok가 맞다) 배경도 아이콘도
+         없는 빈 40px 원이었고, 제목 위 52px을 그냥 차지하고 있었다(PO). -->
     <div class="cf-head">
-      <span class="cf-icon ok" aria-hidden="true"></span>
       <h2 id="tourNewTitle">새 대회 만들기</h2>
       <p class="cf-desc">대회를 만들면 팀 참가 승인부터 시작합니다. 아래 값은 만든 뒤에도 대회 설정에서 바꿀 수 있어요.</p>
     </div>
@@ -2783,7 +2786,6 @@ body.modal-open{overflow:hidden}
 <div class="modal" id="gameNewModal" role="dialog" aria-modal="true" aria-labelledby="gameNewTitle" aria-hidden="true">
   <div class="sheet">
     <div class="cf-head">
-      <span class="cf-icon ok" aria-hidden="true"></span>
       <h2 id="gameNewTitle">새 경기 만들기</h2>
       <p class="cf-desc">두 팀과 시각을 정하면 일정에 올라갑니다. 기록은 시작 시각에 맞춰 '기록 시작'으로 엽니다.</p>
     </div>
@@ -7434,6 +7436,20 @@ function initShotDialog(){
  * (React라면 이 블록 전체가 각 페이지 컴포넌트의 초기 렌더에 해당)
  * ================================================================ */
 // 순위는 화면을 그리기 전에 먼저 세운다 — 아래 렌더가 전부 이 값을 읽는다
+/* 날짜·시각 칸은 어디를 눌러도 선택창이 열린다.
+   브라우저 기본 동작은 오른쪽 끝 작은 아이콘을 정확히 눌러야만 열리는데, 그 아이콘은
+   16px 남짓이라 손가락으로는 거의 못 맞춘다 — 칸을 눌렀는데 커서만 깜빡이면 고장으로 읽힌다(PO).
+   showPicker()는 사용자 제스처 안에서만 부를 수 있고, 지원하지 않는 브라우저(구형 사파리 등)에서는
+   던지므로 삼켜 둔다 — 그때는 원래대로 아이콘을 눌러 열면 된다. */
+document.addEventListener('click', function(e){
+  var el = e.target;
+  if(!el || el.tagName !== 'INPUT') return;
+  if(el.type !== 'date' && el.type !== 'time' && el.type !== 'datetime-local') return;
+  if(el.disabled || el.readOnly) return;
+  if(typeof el.showPicker !== 'function') return;
+  try{ el.showPicker(); }catch(_){}
+});
+
 /* 내보내기 — 두 버튼 모두 핸들러가 없어 눌러도 아무 일이 없었다(PO).
    서버가 없어 파일을 실제로 만들 수는 없지만, 무엇이 어떤 이름으로 나가는지는 말해 준다.
    아무 반응이 없는 것과 '준비 중'이라고 말하는 것은 다르다 — 전자는 고장으로 읽힌다. */
