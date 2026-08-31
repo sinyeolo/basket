@@ -1008,6 +1008,11 @@ button[disabled]{box-shadow:none!important}
 .ruleRow .rr-t{font-weight:600}
 .ruleRow .rr-d{display:block;margin-top:3px;font-size:12px;font-weight:500;color:var(--on-surface-variant)}
 .ruleRow .rr-src{color:var(--on-surface-variant);font-weight:600}
+/* 직접 입력 칸 — '직접 입력' 줄에 딸린 것으로 읽혀야 한다. 왼쪽을 라디오 표식 폭만큼
+   들여쓰고 위에 선을 하나 둬서 그 줄에서 이어진 자리임을 만든다. */
+.ruleCustom{display:flex;flex-direction:column;gap:16px;
+  margin:10px 0 4px 28px;padding:16px 0 4px;border-top:1px solid var(--outline-variant)}
+.ruleCustom[hidden]{display:none}
 .check-row[aria-checked="true"] .m3check::after{opacity:1}
 /* 체크박스 밑에 붙는 설명(.sub)은 체크박스가 아니라 라벨 텍스트와 왼쪽이 맞아야 함 — 체크박스 폭(18px)+gap(10px)만큼 들여쓴다 */
 .check-row + .sub{margin-left:28px;margin-top:2px}
@@ -2635,19 +2640,36 @@ body.modal-open{overflow:hidden}
          그 안에서 경기시간·팀파울·작전타임이 함께 따라온다. 하나씩 적게 하면 셋이 어긋난 조합이
          만들어지고, 기록지로 내보낼 때 무엇이 맞는지 알 수 없다. 방식을 고르면 셋이 같이 정해진다. -->
     <div class="sec-title" style="margin-top:28px">시합 방식</div>
-    <div class="card"><div class="card-body" style="display:flex;flex-direction:column;gap:2px" id="tsRuleSet"></div></div>
-    <div class="card" id="tsRuleCustom" hidden style="margin-top:12px"><div class="card-body" style="display:flex;flex-direction:column;gap:16px">
-      <div class="fieldrow">
-        <div><label for="tsQuarters">쿼터 구성</label><input id="tsQuarters" type="text" placeholder="예) 10분 4쿼터"></div>
-        <div><label for="tsFouls">쿼터당 팀파울</label><input id="tsFouls" type="number" min="1" max="10" placeholder="5"></div>
-        <div><label for="tsFoulOut">파울아웃 기준</label><input id="tsFoulOut" type="number" min="1" max="10" placeholder="5"></div>
+    <!-- 직접 입력 칸은 별도 카드가 아니라 '직접 입력' 줄 바로 아래에서 펼쳐진다(PO) —
+         카드를 따로 두면 그 칸이 어느 선택에 딸린 것인지 화면에서 끊긴다. -->
+    <div class="card"><div class="card-body" style="display:flex;flex-direction:column;gap:2px">
+      <div id="tsRuleSet"></div>
+      <div class="ruleCustom" id="tsRuleCustom" hidden>
+        <div class="fieldrow">
+          <div><label for="tsPeriodCount">피리어드 수</label>
+            <select id="tsPeriodCount">
+              <option value="2">2피리어드 (전·후반)</option>
+              <option value="4" selected>4쿼터</option>
+            </select></div>
+          <div><label for="tsPeriodMin">피리어드당 시간</label>
+            <select id="tsPeriodMin">
+              <option value="5">5분</option><option value="6">6분</option>
+              <option value="7">7분</option><option value="8">8분</option>
+              <option value="10" selected>10분</option><option value="12">12분</option>
+            </select></div>
+          <div><label for="tsFouls">쿼터당 팀파울</label><div class="numfield"><input id="tsFouls" type="number" min="1" max="10" placeholder="5"><span class="numsteps"><button type="button" class="numstep up" data-target="tsFouls" aria-label="팀파울 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="tsFouls" aria-label="팀파울 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
+        </div>
+        <div class="fieldrow">
+          <div><label for="tsFoulOut">파울아웃 기준</label><div class="numfield"><input id="tsFoulOut" type="number" min="1" max="10" placeholder="5"><span class="numsteps"><button type="button" class="numstep up" data-target="tsFoulOut" aria-label="파울아웃 기준 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="tsFoulOut" aria-label="파울아웃 기준 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
+          <div><label for="tsToFirst">작전타임 전반</label><div class="numfield"><input id="tsToFirst" type="number" min="0" max="5" placeholder="1"><span class="numsteps"><button type="button" class="numstep up" data-target="tsToFirst" aria-label="전반 작전타임 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="tsToFirst" aria-label="전반 작전타임 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
+          <div><label for="tsToSecond">작전타임 후반</label><div class="numfield"><input id="tsToSecond" type="number" min="0" max="5" placeholder="2"><span class="numsteps"><button type="button" class="numstep up" data-target="tsToSecond" aria-label="후반 작전타임 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="tsToSecond" aria-label="후반 작전타임 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
+        </div>
+        <div class="fieldrow">
+          <div><label for="tsToOt">작전타임 연장</label><div class="numfield"><input id="tsToOt" type="number" min="0" max="5" placeholder="1"><span class="numsteps"><button type="button" class="numstep up" data-target="tsToOt" aria-label="연장 작전타임 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="tsToOt" aria-label="연장 작전타임 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
+          <div style="grid-column:span 2"><label for="tsOvertime">연장전 규칙</label>
+            <select id="tsOvertime"></select></div>
+        </div>
       </div>
-      <div class="fieldrow">
-        <div><label for="tsToFirst">작전타임 전반</label><input id="tsToFirst" type="number" min="0" max="5" placeholder="1"></div>
-        <div><label for="tsToSecond">작전타임 후반</label><input id="tsToSecond" type="number" min="0" max="5" placeholder="2"></div>
-        <div><label for="tsToOt">작전타임 연장</label><input id="tsToOt" type="number" min="0" max="5" placeholder="1"></div>
-      </div>
-      <div><label for="tsOvertime">연장전 규칙</label><input id="tsOvertime" type="text" placeholder="예) 3분 · 동점이면 반복"></div>
     </div></div>
 
     <div class="sec-title" style="margin-top:28px">운영진 권한</div>
@@ -3129,6 +3151,15 @@ var RULE_SETS = [
   { id:'custom', name:'직접 입력',
     quarters:'', fouls:null, foulOut:null, to:null, ot:'',
     src:'아래 칸에 직접 적어요' }
+];
+/* 연장전 규칙 — '여러 개'라기보다 시간(3·5분)과 끝내는 방법(반복·서든데스·없음)의 조합이다.
+   FIBA는 5분을 두고 동점이면 계속 반복한다. 아마추어 대회는 시간을 줄이거나(3분),
+   먼저 득점하면 끝내거나(서든데스), 아예 두지 않고 무승부로 남기기도 한다. */
+var OT_RULES = [
+  '5분 · 동점이면 반복',
+  '3분 · 동점이면 반복',
+  '3분 · 서든데스(먼저 득점하면 종료)',
+  '연장 없음 · 무승부로 기록'
 ];
 var tourRuleId = 'amateur7';   // 실제 구현: 대회 레코드의 ruleSet 필드
 function ruleSummary(r){
@@ -4789,6 +4820,14 @@ function closePlayerModal(){
   playerModal.classList.remove('open'); playerModal.setAttribute('aria-hidden','true');
   if(playerTrigger && document.body.contains(playerTrigger)) playerTrigger.focus();
 }
+/* 숫자 스텝 버튼은 화면 어디에 있든 동작한다. 예전엔 선수 등록 모달 안에서만 걸어 둬서,
+   같은 생김새의 버튼을 다른 화면에 두면 눌러도 아무 일이 없었다(PO). 위임으로 한 번만 건다. */
+document.addEventListener('click', function(e){
+  var btn = e.target.closest && e.target.closest('.numstep[data-target]');
+  if(!btn) return;
+  var input = document.getElementById(btn.dataset.target);
+  if(input) stepNumInput(input, btn.classList.contains('up') ? 1 : -1);
+});
 // 등번호/신장/체중 스텝 버튼 — 입력값이 비어있으면(플레이스홀더만 보이는 상태) 그 플레이스홀더 숫자를 기준으로 증감한다
 function stepNumInput(input, dir){
   var base = input.value !== '' ? Number(input.value) : Number(input.placeholder) || 0;
@@ -6191,17 +6230,18 @@ function renderTournamentSettingsPage(){
   document.getElementById('tsName').value = s.name;
   document.getElementById('tsSeason').value = s.season;
   document.getElementById('tsPeriod').value = s.period;
-  /* 시합 방식은 라디오가 정한다. 아래 칸들은 '직접 입력'일 때만 열리는 자리다 —
-     방식이 정해져 있으면 그 값이 들어가 있어야 무엇으로 기록 중인지 헷갈리지 않는다. */
+  /* 시합 방식은 라디오가 정한다. 아래 칸들은 '직접 입력'일 때만 펼쳐지는 자리다. */
   renderRuleSets();
-  var rs = RULE_SETS.filter(function(r){ return r.id === tourRuleId; })[0];
-  document.getElementById('tsQuarters').value = rs.quarters || s.quarters;
-  document.getElementById('tsOvertime').value = rs.ot || s.overtime;
-  document.getElementById('tsFoulOut').value  = rs.foulOut != null ? rs.foulOut : s.foulOut;
-  document.getElementById('tsFouls').value    = rs.fouls != null ? rs.fouls : '';
-  document.getElementById('tsToFirst').value  = rs.to ? rs.to[0] : '';
-  document.getElementById('tsToSecond').value = rs.to ? rs.to[1] : '';
-  document.getElementById('tsToOt').value     = rs.to ? rs.to[2] : '';
+  var ot = document.getElementById('tsOvertime');
+  if(!ot.options.length){
+    ot.innerHTML = OT_RULES.map(function(v){ return '<option>'+v+'</option>'; }).join('');
+  }
+  /* 값은 넣지 않고 플레이스홀더로만 둔다 — 기본값이 들어가 있으면 '내가 정한 값'과
+     '아직 안 건드린 값'이 화면에서 같아 보인다. 스텝 버튼은 비어 있을 때
+     플레이스홀더 숫자를 기준으로 올린다(stepNumInput). */
+  var pc = document.getElementById('tsPeriodCount'), pm = document.getElementById('tsPeriodMin');
+  var m = /(\d+)분\s*(\d+)(쿼터|피리어드)/.exec(s.quarters || '10분 4쿼터');
+  if(m){ pm.value = m[1]; pc.value = m[2]; }
   document.getElementById('tsLogoPreview').innerHTML = s.logo ? '<img src="'+s.logo+'" alt="">' : '';
   document.getElementById('tsPosterPreview').innerHTML = s.poster ? '<img src="'+s.poster+'" alt="">' : '';
   document.getElementById('tsRegOpen').setAttribute('aria-checked', String(s.regOpen));
@@ -6224,9 +6264,23 @@ function initTournamentSettingsPage(){
     s.name = document.getElementById('tsName').value.trim() || s.name;
     s.season = document.getElementById('tsSeason').value.trim();
     s.period = document.getElementById('tsPeriod').value.trim();
-    s.quarters = document.getElementById('tsQuarters').value.trim();
-    s.overtime = document.getElementById('tsOvertime').value.trim();
-    s.foulOut = document.getElementById('tsFoulOut').value.trim();
+    /* 시합 방식은 라디오가 정한다. '직접 입력'일 때만 아래 칸을 읽고,
+       비어 있는 칸은 플레이스홀더(= 그 자리의 기본값)를 쓴다 — 손대지 않았다는 뜻이다. */
+    var rs = RULE_SETS.filter(function(r){ return r.id === tourRuleId; })[0];
+    function numOr(id){ var el = document.getElementById(id); return el.value.trim() || el.placeholder; }
+    if(tourRuleId === 'custom'){
+      s.quarters = document.getElementById('tsPeriodMin').value + '분 ' +
+                   document.getElementById('tsPeriodCount').value +
+                   (document.getElementById('tsPeriodCount').value === '2' ? '피리어드' : '쿼터');
+      s.overtime = document.getElementById('tsOvertime').value;
+      s.foulOut  = numOr('tsFoulOut');
+      s.fouls    = numOr('tsFouls');
+      s.timeouts = [numOr('tsToFirst'), numOr('tsToSecond'), numOr('tsToOt')];
+    } else {
+      s.quarters = rs.quarters; s.overtime = rs.ot; s.foulOut = String(rs.foulOut);
+      s.fouls = String(rs.fouls); s.timeouts = rs.to.map(String);
+    }
+    s.ruleSet = tourRuleId;
     document.getElementById('tsTitle').textContent = s.name;
     var t = TOURNAMENTS.find(function(x){ return x.id===VIEWING_TOURNAMENT_ID; });
     if(t){ t.name = s.name; t.period = s.period; } // 드롭다운·전체 목록 표시에도 반영
