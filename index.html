@@ -6032,7 +6032,16 @@ function settingsForTournament(id){
       regOpen:false, isPublic:true
     };
   }
-  return TOURNAMENT_SETTINGS_MAP[id];
+  /* 미리 박아 둔 대회(tour1)는 위 생성 경로를 안 타서 새로 생긴 칸이 비어 있다.
+     읽을 때 한 번 채워 주면 씨앗 데이터든 새로 만든 대회든 같은 모양이 된다 —
+     생성 자리에만 적어 두면 다음에 칸이 늘 때 또 같은 자리가 빈다. */
+  var st = TOURNAMENT_SETTINGS_MAP[id], t0 = TOURNAMENTS.find(function(x){ return x.id===id; });
+  if(t0){
+    if(!st.sport) st.sport = t0.sport || '3x3';
+    if(!st.startDate) st.startDate = isoFromPeriod(st.name || t0.name, st.period || t0.period, 0);
+    if(!st.endDate)   st.endDate   = isoFromPeriod(st.name || t0.name, st.period || t0.period, 1);
+  }
+  return st;
 }
 function currentTeamCountFor(id){
   if(id === 'tour1') return TEAMS.length;
