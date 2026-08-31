@@ -268,7 +268,7 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 .tm-ro-btn:disabled::after{display:none}
 .tm-ro-btn.up{border-bottom:1px solid var(--outline-variant);border-radius:7px 7px 0 0}
 .tm-ro-btn.down{border-radius:0 0 7px 7px}
-.tm-ro-btn:hover:not(:disabled){background:var(--mono-fill);color:var(--on-surface)}
+.tm-ro-btn:hover:not(:disabled){background:var(--surface-hover);color:var(--on-surface)}
 .tm-ro-btn:disabled{opacity:.3;cursor:not-allowed}
 .tm-ro-btn svg{width:11px;height:11px}
 .tm-ro-btn.up svg{transform:rotate(180deg)}
@@ -454,7 +454,7 @@ button[disabled]{box-shadow:none!important}
 .btn-primary{background:var(--primary);color:var(--on-primary);box-shadow:var(--e1)}
 .btn-primary:hover{box-shadow:var(--e2);filter:brightness(1.04)}
 .btn-tonal{background:var(--surface-variant);color:var(--on-surface)}
-.btn-tonal:hover{background:#e7e1e8}
+.btn-tonal:hover{background:var(--surface-hover)}
 .btn-outline{background:var(--surface);border:1px solid var(--outline-variant);color:var(--on-surface);text-decoration:none}
 .btn-outline:hover{background:var(--surface-hover)}
 .btn-sm{height:var(--h-sm);padding:0 18px;font-size:13px}
@@ -640,7 +640,7 @@ button[disabled]{box-shadow:none!important}
 .ckbtn.run{background:var(--main);color:var(--on-main);border-color:var(--main)}
 .ckbtn.run:hover{filter:brightness(1.18)}
 .ckbtn.run.on{background:var(--surface);color:var(--on-surface-variant);border-color:var(--outline-variant)}
-.ckbtn.run.on:hover{background:var(--surface-variant);color:var(--on-surface);filter:none}
+.ckbtn.run.on:hover{background:var(--surface-hover);color:var(--on-surface);filter:none}
 .paused .clock .colon,.clock-off .clock .colon{animation:none;opacity:1}
 .paused .console-center{opacity:.5;pointer-events:none}
 /* 명단·팀 액션도 함께 잠근다 — 선수가 선택되면 입력이 열린 것처럼 보인다 */
@@ -830,7 +830,7 @@ button[disabled]{box-shadow:none!important}
 /* ---- 기타 기록: M3 Filled tonal button (round shape) ----
    기본은 완전 라운드(pill), 누르면 사각에 가깝게 morph */
 .act-stat{background:var(--surface-variant);color:var(--on-surface);padding:16px 0;font-weight:700;font-size:16px;border-radius:var(--r-btn)}
-.act-stat:hover{background:#e7e1e8}
+.act-stat:hover{background:var(--surface-hover)}
 .act-stat:active,.act-stat.morph{border-radius:14px;background:#e2dbe4}
 .act-stat small{display:block;font-size:11px;color:var(--on-surface-variant);font-weight:500;margin-top:2px}
 /* ================================================================
@@ -924,7 +924,7 @@ button[disabled]{box-shadow:none!important}
 .rechips{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 /* 기록 태그 — 태그 전체가 버튼. 누르면 수정/삭제 다이얼로그가 열림 */
 .rchip{display:inline-flex;align-items:center;gap:8px;background:var(--surface-variant);border-radius:10px;padding:9px 12px;font-size:13px;border:none;font-family:var(--font);color:var(--on-surface);cursor:pointer;transition:.12s;min-height:38px}
-.rchip:hover{background:#e7e1e8}
+.rchip:hover{background:var(--surface-hover)}
 /* 방금 들어간 기록 — 5초만 테두리로 표시한다. 연속 입력 중 "지금 내가 넣은 게 이것"을
    확인하는 용도라 계속 남아 있으면 오히려 최신이 어느 것인지 흐려진다 */
 .rchip.latest{box-shadow:inset 0 0 0 2px var(--main)}
@@ -1038,7 +1038,7 @@ button[disabled]{box-shadow:none!important}
 .pos-C{background:#fee2e2;color:#b91c1c}
 .lacts{display:flex;align-items:center;gap:2px}
 .iconbtn{width:var(--h-sm);height:var(--h-sm);border-radius:20px;border:none;background:transparent;color:var(--on-surface-variant);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.12s}
-.iconbtn:hover{background:var(--mono-fill);color:var(--on-surface)}
+.iconbtn:hover{background:var(--surface-hover);color:var(--on-surface)}
 .iconbtn.danger:hover{background:#fee2e2;color:#b91c1c}
 .empty-box{background:var(--surface);border-radius:var(--r-card);padding:48px 20px;text-align:center;color:var(--on-surface-variant)}
 .empty-box b{display:block;color:var(--on-surface);font-size:16px;margin-bottom:6px}
@@ -1099,9 +1099,10 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   border-radius:14px;background:var(--surface-container);font-family:var(--font);font-size:16px;color:var(--on-surface);
   box-shadow:inset 0 0 0 1px var(--outline-variant);transition:box-shadow .12s,background .12s}
 :is(.field,.fieldrow,.bulk-row) select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6a72' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px;padding-right:42px}
-/* 호버는 '그 칸의 바탕에서 램프 한 단 아래'다 — 비어 있으면 바탕이 N100이니 N200,
-   값이 차면 바탕이 흰색이니 N150이다. 예전엔 #ebe4ec처럼 램프 밖 값을 섞어 썼다. */
-:is(.field,.fieldrow,.bulk-row) input:hover,:is(.field,.fieldrow,.bulk-row) select:hover{background-color:var(--surface-variant)}
+/* 호버는 바탕이 무엇이든 같은 값이다 — 비어 있는 칸(N100 바탕)이든 값이 찬 칸(흰 바탕)이든
+   --surface-hover 하나를 쓴다. 예전엔 바탕에서 '한 단 아래'로 잡았는데, 그러면 칸마다
+   호버 색이 달라져 같은 동작이 다른 일처럼 보였다(PO). 호버는 상태이지 층이 아니다. */
+:is(.field,.fieldrow,.bulk-row) input:hover,:is(.field,.fieldrow,.bulk-row) select:hover{background-color:var(--surface-hover)}
 :is(.field,.fieldrow,.bulk-row) input:focus,:is(.field,.fieldrow,.bulk-row) select:focus{outline:none;background-color:var(--surface-variant);box-shadow:inset 0 0 0 2px var(--on-surface)}
 :is(.field,.fieldrow,.bulk-row) input::placeholder{color:var(--on-surface-variant)}
 :is(.field,.fieldrow,.bulk-row) input:disabled,:is(.field,.fieldrow,.bulk-row) select:disabled{color:var(--on-surface-variant);cursor:not-allowed}
@@ -1130,7 +1131,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .numstep{flex:1;display:flex;align-items:center;justify-content:center;border:none;background:var(--surface);color:var(--on-surface-variant);cursor:pointer;padding:0}
 .numstep.up{border-bottom:1px solid var(--outline-variant)}
 .numstep svg{width:15px;height:15px}
-.numstep:hover{background:var(--surface-variant);color:var(--on-surface)}
+.numstep:hover{background:var(--surface-hover);color:var(--on-surface)}
 .numstep:active{background:var(--outline-variant)}
 
 /* M3 Filter chip — 선택 시 컨테이너 톤 + 체크 아이콘 (버튼처럼 solid로 채우지 않음) */
@@ -2114,7 +2115,7 @@ body.modal-open{overflow:hidden}
 .subs-item.on .subs-tag.in{background:rgba(255,255,255,.22);color:#fff}
 .subs-list{max-height:240px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
 .subs-item{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:8px;padding:11px 10px;border:none;border-radius:12px;background:var(--surface-variant);font-family:var(--font);font-size:13px;font-weight:600;color:var(--on-surface);text-align:left;cursor:pointer;transition:.12s}
-.subs-item:hover{background:#e7e1e8}
+.subs-item:hover{background:var(--surface-hover)}
 .subs-item.on{background:var(--main);color:var(--on-main)}
 .subs-item .no{font-weight:700;font-size:13px;color:var(--on-surface-variant);text-align:center}
 .subs-item.on .no{color:var(--on-main);opacity:.75}
@@ -2161,7 +2162,7 @@ body.modal-open{overflow:hidden}
 .pbp-time{font-size:13px;font-weight:700;color:var(--on-surface-variant);font-variant-numeric:tabular-nums}
 .pbp-score{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;background:var(--surface-variant);border-radius:6px;padding:2px 8px}
 .pbp-evt{display:inline-flex;align-items:center;gap:9px;max-width:100%;padding:10px 14px;border:none;border-radius:12px;background:var(--surface-variant);font-family:var(--font);font-size:13px;color:var(--on-surface);text-align:left;cursor:pointer;transition:.12s}
-.pbp-evt:hover{background:#e7e1e8}
+.pbp-evt:hover{background:var(--surface-hover)}
 
 .pbp-cell{display:flex;min-width:0}
 .pbp-cell.home{justify-content:flex-end}
