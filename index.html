@@ -56,13 +56,12 @@
      강조가 아니라 카드에 구멍이 뚫린 것처럼 보인다(PO). 역할이 둘이면 값도 둘이다. */
   --surface:#ffffff; --surface-container:#f4eef2; --surface-variant:#e6e2ea;
   --head-bg:#f8f7f9; /* 표·목록 헤더 영역 전용 — surface-container보다 밝은 톤, 전체 페이지 통일 적용 */
-  /* 호버 전용 면 — 중립이 아니라 브랜드 틴트다(brand-50, 흰색에 --primary 15%).
-     중립 램프로는 두 조건을 함께 만족할 수 없었다: N200은 어둡고, N150은 아직 칙칙하고,
-     그보다 밝히면 페이지 바탕(N100)과 겹친다. 세 단이 전부 같은 회보라 계열이라
-     '강조'가 아니라 '바랜 것'으로 읽힌 게 원인이다(PO).
-     따뜻한 쪽으로 옮기면 색상 자체가 달라 차가운 바탕과 겹칠 수가 없다 —
-     흰 행 기준 밝기차 12.6(N150은 18.1로 더 어두웠다), 바탕과의 RGB 총차 36(N150은 17). */
-  --surface-hover:#ffeed9;
+  /* 호버 전용 면 — 중립 램프의 가장 밝은 단(N50)이다(PO).
+     N100은 페이지 바탕과 같은 값이라 카드에 구멍이 뚫린 것처럼 보이고, N200은 어둡고 칙칙하다.
+     남는 밝은 회색은 N50 하나다 — 흰 행과 밝기차 6.7, 페이지 바탕과 6.5로 양쪽에서 갈린다.
+     --head-bg와 같은 프리미티브를 가리키지만 토큰은 따로 둔다: 목록 헤더와 호버는 뜻이 다르고,
+     한쪽만 바꿔야 할 날이 오면 값을 공유하고 있다는 이유로 둘이 묶여 버린다. */
+  --surface-hover:#f8f7f9;
   --on-surface:#1c1b1f; --on-surface-variant:#6b6a72;
   --outline:#c9c6cf; --outline-variant:#e6e2ea;
   --mono-fill:#e6e2ea; --mono-on:#5b5a61;
@@ -1103,7 +1102,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    --surface-hover 하나를 쓴다. 예전엔 바탕에서 '한 단 아래'로 잡았는데, 그러면 칸마다
    호버 색이 달라져 같은 동작이 다른 일처럼 보였다(PO). 호버는 상태이지 층이 아니다. */
 :is(.field,.fieldrow,.bulk-row) input:hover,:is(.field,.fieldrow,.bulk-row) select:hover{background-color:var(--surface-hover)}
-:is(.field,.fieldrow,.bulk-row) input:focus,:is(.field,.fieldrow,.bulk-row) select:focus{outline:none;background-color:var(--surface-variant);box-shadow:inset 0 0 0 2px var(--on-surface)}
+/* 포커스 배경은 호버와 같다(PO) — 둘이 다르면 마우스를 올렸다가 클릭하는 사이에 면이 두 번 바뀐다.
+   포커스를 알리는 것은 배경이 아니라 2px 안쪽 링이다. 배경은 '이 칸을 건드리는 중'만 말한다. */
+:is(.field,.fieldrow,.bulk-row) input:focus,:is(.field,.fieldrow,.bulk-row) select:focus{outline:none;background-color:var(--surface-hover);box-shadow:inset 0 0 0 2px var(--on-surface)}
 :is(.field,.fieldrow,.bulk-row) input::placeholder{color:var(--on-surface-variant)}
 :is(.field,.fieldrow,.bulk-row) input:disabled,:is(.field,.fieldrow,.bulk-row) select:disabled{color:var(--on-surface-variant);cursor:not-allowed}
 /* 입력 폼 공통 규칙 — 비어있을 땐 회색, 값이 채워지면(placeholder가 더 이상 안 보이거나, select면 빈 값이 아닌 옵션이 선택되면) 흰색으로
@@ -1113,7 +1114,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 :is(.field,.fieldrow,.bulk-row) input:not(:placeholder-shown):hover,
 :is(.field,.fieldrow,.bulk-row) select:has(option:checked:not([value=""])):hover{background-color:var(--surface-hover)}
 :is(.field,.fieldrow,.bulk-row) input:not(:placeholder-shown):focus,
-:is(.field,.fieldrow,.bulk-row) select:has(option:checked:not([value=""])):focus{background-color:var(--surface-variant);box-shadow:inset 0 0 0 2px var(--on-surface)}
+:is(.field,.fieldrow,.bulk-row) select:has(option:checked:not([value=""])):focus{background-color:var(--surface-hover);box-shadow:inset 0 0 0 2px var(--on-surface)}
 .fieldrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .fieldrow > div{margin:0}
 /* 다섯 칸 줄 — 뜻으로 묶인 값이라 한 줄에 세운다(반칙 둘 + 작전타임 셋).
