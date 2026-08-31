@@ -991,6 +991,23 @@ button[disabled]{box-shadow:none!important}
 .m3check::after{content:"";position:absolute;inset:0;margin:auto;width:12px;height:12px;opacity:0;transition:opacity .1s;
   background:no-repeat center/12px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1200' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5 5L20 6.5'/%3E%3C/svg%3E")}
 .check-row[aria-checked="true"] .m3check{background:var(--primary);border-color:var(--primary)}
+/* 라디오 — 체크박스와 같은 규격이다(44px 줄, 같은 토큰). 다른 건 모양뿐이라 따로 만들지 않고
+   .check-row를 그대로 쓰고 표식만 원형으로 바꾼다. 여럿 중 하나를 고르는 자리에 쓴다.
+   가운데 점은 배경이 아니라 안쪽 그림자로 그린다 — 채워진 원 위에 또 원을 얹으면
+   테두리가 두 겹으로 보인다. */
+.m3radio{position:relative;width:18px;height:18px;flex:none;border-radius:50%;border:2px solid var(--outline);
+  background:var(--surface);transition:border-color .12s}
+.m3radio::after{content:"";position:absolute;inset:0;margin:auto;width:10px;height:10px;border-radius:50%;
+  background:var(--primary);opacity:0;transform:scale(.4);transition:opacity .12s,transform .12s}
+.check-row[aria-checked="true"] .m3radio{border-color:var(--primary)}
+.check-row[aria-checked="true"] .m3radio::after{opacity:1;transform:scale(1)}
+/* 방식 한 줄 — 이름 아래에 그 방식이 정하는 값이 붙는다. 이름만 두면 무엇이 달라지는지
+   고르는 자리에서 알 수 없어, 고른 뒤에 아래 칸을 확인해야 한다. */
+.ruleRow{align-items:flex-start;min-height:0;padding:10px 0}
+.ruleRow .m3radio{margin-top:2px}
+.ruleRow .rr-t{font-weight:600}
+.ruleRow .rr-d{display:block;margin-top:3px;font-size:12px;font-weight:500;color:var(--on-surface-variant)}
+.ruleRow .rr-src{color:var(--on-surface-variant);font-weight:600}
 .check-row[aria-checked="true"] .m3check::after{opacity:1}
 /* 체크박스 밑에 붙는 설명(.sub)은 체크박스가 아니라 라벨 텍스트와 왼쪽이 맞아야 함 — 체크박스 폭(18px)+gap(10px)만큼 들여쓴다 */
 .check-row + .sub{margin-left:28px;margin-top:2px}
@@ -2274,7 +2291,7 @@ body.modal-open{overflow:hidden}
     <div class="profile-wrap" id="profileWrap">
       <button class="profile" id="profile" aria-haspopup="true" aria-expanded="false" type="button">
         <div class="av">신</div>
-        <div class="pinfo"><div class="pn">김신열</div><div class="pr">대회 관리자</div></div>
+        <div class="pinfo"><div class="pn" id="gnbUserName">김신열</div><div class="pr" id="gnbUserRole">대회 관리자</div></div>
         <span class="ic ic-sm caret msym" aria-hidden="true">keyboard_arrow_down</span>
       </button>
       <div class="pmenu" role="menu" aria-label="계정 메뉴">
@@ -2614,13 +2631,23 @@ body.modal-open{overflow:hidden}
       <span class="m3check" aria-hidden="true"></span><span>참가팀 등록 접수 중</span>
     </button>
 
-    <div class="sec-title" style="margin-top:28px">경기 규칙</div>
-    <div class="card"><div class="card-body" style="display:flex;flex-direction:column;gap:16px">
+    <!-- 시합 방식 — 자유 입력 세 칸이었는데, 대회마다 쓰는 방식은 사실 몇 가지로 정해져 있고
+         그 안에서 경기시간·팀파울·작전타임이 함께 따라온다. 하나씩 적게 하면 셋이 어긋난 조합이
+         만들어지고, 기록지로 내보낼 때 무엇이 맞는지 알 수 없다. 방식을 고르면 셋이 같이 정해진다. -->
+    <div class="sec-title" style="margin-top:28px">시합 방식</div>
+    <div class="card"><div class="card-body" style="display:flex;flex-direction:column;gap:2px" id="tsRuleSet"></div></div>
+    <div class="card" id="tsRuleCustom" hidden style="margin-top:12px"><div class="card-body" style="display:flex;flex-direction:column;gap:16px">
       <div class="fieldrow">
         <div><label for="tsQuarters">쿼터 구성</label><input id="tsQuarters" type="text" placeholder="예) 10분 4쿼터"></div>
-        <div><label for="tsOvertime">연장전 규칙</label><input id="tsOvertime" type="text" placeholder="예) 3분 서든데스"></div>
-        <div><label for="tsFoulOut">파울아웃 기준</label><input id="tsFoulOut" type="text" placeholder="예) 개인 5파울"></div>
+        <div><label for="tsFouls">쿼터당 팀파울</label><input id="tsFouls" type="number" min="1" max="10" placeholder="5"></div>
+        <div><label for="tsFoulOut">파울아웃 기준</label><input id="tsFoulOut" type="number" min="1" max="10" placeholder="5"></div>
       </div>
+      <div class="fieldrow">
+        <div><label for="tsToFirst">작전타임 전반</label><input id="tsToFirst" type="number" min="0" max="5" placeholder="1"></div>
+        <div><label for="tsToSecond">작전타임 후반</label><input id="tsToSecond" type="number" min="0" max="5" placeholder="2"></div>
+        <div><label for="tsToOt">작전타임 연장</label><input id="tsToOt" type="number" min="0" max="5" placeholder="1"></div>
+      </div>
+      <div><label for="tsOvertime">연장전 규칙</label><input id="tsOvertime" type="text" placeholder="예) 3분 · 동점이면 반복"></div>
     </div></div>
 
     <div class="sec-title" style="margin-top:28px">운영진 권한</div>
@@ -2669,10 +2696,7 @@ body.modal-open{overflow:hidden}
     <div class="field fieldrow" style="grid-template-columns:1fr 1fr">
       <div><label for="tnCap">참가 팀 수</label><input id="tnCap" type="number" min="2" max="64" value="8"></div>
       <div><label for="tnQuarters">경기 방식</label>
-        <select id="tnQuarters">
-          <option>10분 4쿼터</option><option>8분 4쿼터</option>
-          <option>12분 4쿼터</option><option>10분 2피리어드</option>
-        </select></div>
+        <select id="tnQuarters"></select></div>
     </div>
     <ul class="cf-items" id="tnErrs" hidden></ul>
     <div class="acts-row">
@@ -3085,6 +3109,63 @@ var LIVE_GAMES = [
 var ALL_GAMES = BASKET_DAYS;
 
 // 대시보드 '오늘 일정'은 ALL_GAMES[0](오늘 날짜 그룹)을 그대로 사용합니다 — 아래 renderSchedule() 참고
+
+/* ---- 시합 방식 ----
+   대회마다 쓰는 방식은 몇 가지로 정해져 있고, 그 안에서 경기시간·팀파울·작전타임이 함께 온다.
+   값을 따로 적게 하면 서로 어긋난 조합이 만들어지고 기록지로 내보낼 때 무엇이 맞는지 알 수 없다.
+
+   출처가 있는 것만 값을 채운다 — 지어낸 숫자가 '이 대회의 규칙'으로 굳으면 되돌릴 방법이 없다.
+   src에 근거를 적어 두고 화면에도 그대로 보여 준다. 근거가 없는 방식을 쓰려면 '직접 입력'이다. */
+var RULE_SETS = [
+  { id:'fiba10', name:'FIBA 표준 · 10분 4쿼터',
+    quarters:'10분 4쿼터', fouls:5, foulOut:5, to:[2,3,1], ot:'5분 · 동점이면 반복',
+    src:'FIBA 공식 경기 규칙' },
+  { id:'amateur7', name:'아마추어 · 7분 4쿼터',
+    quarters:'7분 4쿼터', fouls:5, foulOut:5, to:[1,2,1], ot:'3분 · 동점이면 반복',
+    src:'보은 전국의료인농구대회 기록지' },
+  { id:'half10', name:'전·후반 · 10분 2피리어드',
+    quarters:'10분 2피리어드', fouls:5, foulOut:5, to:[1,1,1], ot:'3분 · 동점이면 반복',
+    src:'FIBA 팀파울·파울아웃 기준' },
+  { id:'custom', name:'직접 입력',
+    quarters:'', fouls:null, foulOut:null, to:null, ot:'',
+    src:'아래 칸에 직접 적어요' }
+];
+var tourRuleId = 'amateur7';   // 실제 구현: 대회 레코드의 ruleSet 필드
+function ruleSummary(r){
+  if(r.id === 'custom') return r.src;
+  return r.quarters + ' · 팀파울 ' + r.fouls + '개 · 작전타임 전반' + r.to[0] +
+         '·후반' + r.to[1] + '·연장' + r.to[2] + ' · 파울아웃 ' + r.foulOut + '개';
+}
+/* 새 대회 만들기의 방식 목록도 같은 표에서 나온다 — 여기만 따로 적어 두면
+   대회를 만들 때와 설정에서 고를 수 있는 방식이 서로 달라진다. */
+(function(){
+  var sel = document.getElementById('tnQuarters');
+  if(!sel) return;
+  sel.innerHTML = RULE_SETS.filter(function(r){ return r.id !== 'custom'; })
+    .map(function(r){ return '<option value="'+r.id+'">'+r.name+'</option>'; }).join('');
+  sel.value = 'amateur7';
+})();
+function renderRuleSets(){
+  var host = document.getElementById('tsRuleSet');
+  if(!host) return;
+  host.innerHTML = RULE_SETS.map(function(r){
+    return '<button type="button" class="check-row ruleRow" role="radio" data-rule="' + r.id + '"' +
+      ' aria-checked="' + (r.id === tourRuleId) + '">' +
+      '<span class="m3radio" aria-hidden="true"></span>' +
+      '<span><span class="rr-t">' + r.name + '</span>' +
+      '<span class="rr-d">' + ruleSummary(r) +
+      (r.id === 'custom' ? '' : ' <span class="rr-src">· ' + r.src + '</span>') +
+      '</span></span></button>';
+  }).join('');
+  document.getElementById('tsRuleCustom').hidden = (tourRuleId !== 'custom');
+}
+document.addEventListener('click', function(e){
+  var row = e.target.closest && e.target.closest('#tsRuleSet [data-rule]');
+  if(!row) return;
+  tourRuleId = row.dataset.rule;
+  renderTournamentSettingsPage();   // 아래 칸도 새 방식의 값으로 함께 바뀐다
+  showToast('시합 방식을 바꿨어요 · ' + RULE_SETS.filter(function(r){ return r.id === tourRuleId; })[0].name);
+});
 
 // ---- 경기 기록 콘솔: 팀 + 쿼터 상태 (Game 상세) ----
 var MATCH = {
@@ -5782,6 +5863,17 @@ function renderTournamentPage(){
  * 확정 후에도 착오가 있으면 검수 대기로 되돌릴 수 있게 한다.
  * ================================================================ */
 var CURRENT_USER = '김신열'; // 좌측 GNB 프로필과 동일 — 실 서버 연동 전까지 단일 로그인 사용자로 고정
+/* 기록자 — 종이 기록지에는 사람이 손으로 적는 칸이지만, 여기서는 지금 로그인해서 기록하고 있는
+   사람이 곧 기록자다(PO). 따로 묻지 않는다 — 물어봐야 하는 값이면 빈 채로 남고, 나중에
+   "이 경기 누가 적었나"를 되짚을 수 없다. 실제 구현에서는 첫 기록 이벤트가 들어간 시점의
+   세션 사용자를 경기 레코드에 박아 두고, 그 뒤로는 바뀌지 않는다. */
+var MATCH_SCORER = CURRENT_USER;
+/* 이름은 세 곳(좌측 프로필·설정 화면·기록자)에 나온다 — HTML에 세 번 적어 두면 하나만 고치게 된다 */
+(function(){
+  var n = document.getElementById('gnbUserName'), r = document.getElementById('gnbUserRole');
+  if(n) n.textContent = CURRENT_USER;
+  if(r) r.textContent = '대회 관리자';
+})();
 
 function formatDateTime(d){
   var p = function(n){ return String(n).length<2 ? '0'+n : String(n); };
@@ -6099,9 +6191,17 @@ function renderTournamentSettingsPage(){
   document.getElementById('tsName').value = s.name;
   document.getElementById('tsSeason').value = s.season;
   document.getElementById('tsPeriod').value = s.period;
-  document.getElementById('tsQuarters').value = s.quarters;
-  document.getElementById('tsOvertime').value = s.overtime;
-  document.getElementById('tsFoulOut').value = s.foulOut;
+  /* 시합 방식은 라디오가 정한다. 아래 칸들은 '직접 입력'일 때만 열리는 자리다 —
+     방식이 정해져 있으면 그 값이 들어가 있어야 무엇으로 기록 중인지 헷갈리지 않는다. */
+  renderRuleSets();
+  var rs = RULE_SETS.filter(function(r){ return r.id === tourRuleId; })[0];
+  document.getElementById('tsQuarters').value = rs.quarters || s.quarters;
+  document.getElementById('tsOvertime').value = rs.ot || s.overtime;
+  document.getElementById('tsFoulOut').value  = rs.foulOut != null ? rs.foulOut : s.foulOut;
+  document.getElementById('tsFouls').value    = rs.fouls != null ? rs.fouls : '';
+  document.getElementById('tsToFirst').value  = rs.to ? rs.to[0] : '';
+  document.getElementById('tsToSecond').value = rs.to ? rs.to[1] : '';
+  document.getElementById('tsToOt').value     = rs.to ? rs.to[2] : '';
   document.getElementById('tsLogoPreview').innerHTML = s.logo ? '<img src="'+s.logo+'" alt="">' : '';
   document.getElementById('tsPosterPreview').innerHTML = s.poster ? '<img src="'+s.poster+'" alt="">' : '';
   document.getElementById('tsRegOpen').setAttribute('aria-checked', String(s.regOpen));
@@ -6886,7 +6986,8 @@ function renderReviewBar(){
   var valid = playEvents().filter(function(e){ return !e.deleted; }).length;
   var deleted = playEvents().length - valid;
   var summary = MATCH.home.name+' '+MATCH.home.score+' : '+MATCH.away.score+' '+MATCH.away.name+
-    ' · 기록 '+valid+'건'+(deleted ? ' (삭제 '+deleted+'건)' : '');
+    ' · 기록 '+valid+'건'+(deleted ? ' (삭제 '+deleted+'건)' : '')+
+    ' · 기록자 '+MATCH_SCORER;
   if(matchConfirmed){
     bar.className = 'review-bar confirmed';
     bar.innerHTML = '<span class="rb-text">✓ <b>결과 확정됨</b> · '+summary+'</span>'+
