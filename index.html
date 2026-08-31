@@ -1106,6 +1106,12 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 :is(.field,.fieldrow,.bulk-row) select:has(option:checked:not([value=""])):focus{background-color:var(--surface-variant);box-shadow:inset 0 0 0 2px var(--on-surface)}
 .fieldrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .fieldrow > div{margin:0}
+/* 다섯 칸 줄 — 뜻으로 묶인 값이라 한 줄에 세운다(반칙 둘 + 작전타임 셋).
+   세 칸 기본 격자로는 두 줄로 갈라져 '작전타임 연장'만 다음 줄에 남는다.
+   좁아지면 셋 → 둘로 접는다: 숫자 칸에 스텝 버튼(30px)이 들어 있어 더 좁히면 값이 안 보인다. */
+.fieldrow.rf5{grid-template-columns:repeat(5,1fr)}
+@media (max-width:1180px){ .fieldrow.rf5{grid-template-columns:repeat(3,1fr)} }
+@media (max-width:720px){ .fieldrow.rf5{grid-template-columns:repeat(2,1fr)} }
 /* 네이티브 number 스피너는 너무 작고 브라우저마다 달라서 숨기고, 같은 버튼 스타일(.numstep)로 직접 그린다 */
 .numfield{position:relative}
 .numfield input{padding-right:38px}
@@ -2650,6 +2656,8 @@ body.modal-open{overflow:hidden}
     <div class="card"><div class="card-body" style="display:flex;flex-direction:column;gap:2px">
       <div id="tsRuleSet"></div>
       <div class="ruleCustom" id="tsRuleCustom" hidden>
+        <!-- 줄은 뜻으로 나눈다(PO): 시간 구성 / 반칙·작전타임 / 연장 규칙.
+             예전엔 세 칸씩 기계적으로 끊어서 "작전타임 연장"과 "연장전 규칙"이 서로 다른 줄에 걸렸다. -->
         <div class="fieldrow">
           <div><label for="tsPeriodCount">피리어드 수</label>
             <select id="tsPeriodCount">
@@ -2662,18 +2670,16 @@ body.modal-open{overflow:hidden}
               <option value="7">7분</option><option value="8">8분</option>
               <option value="10" selected>10분</option><option value="12">12분</option>
             </select></div>
-          <div><label for="tsFouls">쿼터당 팀파울</label><div class="numfield"><input id="tsFouls" type="number" min="1" max="10" placeholder="5"><span class="numsteps"><button type="button" class="numstep up" data-target="tsFouls" aria-label="팀파울 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="tsFouls" aria-label="팀파울 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
         </div>
-        <div class="fieldrow">
+        <div class="fieldrow rf5">
+          <div><label for="tsFouls">쿼터당 팀파울</label><div class="numfield"><input id="tsFouls" type="number" min="1" max="10" placeholder="5"><span class="numsteps"><button type="button" class="numstep up" data-target="tsFouls" aria-label="팀파울 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="tsFouls" aria-label="팀파울 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
           <div><label for="tsFoulOut">파울아웃 기준</label><div class="numfield"><input id="tsFoulOut" type="number" min="1" max="10" placeholder="5"><span class="numsteps"><button type="button" class="numstep up" data-target="tsFoulOut" aria-label="파울아웃 기준 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="tsFoulOut" aria-label="파울아웃 기준 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
           <div><label for="tsToFirst">작전타임 전반</label><div class="numfield"><input id="tsToFirst" type="number" min="0" max="5" placeholder="1"><span class="numsteps"><button type="button" class="numstep up" data-target="tsToFirst" aria-label="전반 작전타임 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="tsToFirst" aria-label="전반 작전타임 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
           <div><label for="tsToSecond">작전타임 후반</label><div class="numfield"><input id="tsToSecond" type="number" min="0" max="5" placeholder="2"><span class="numsteps"><button type="button" class="numstep up" data-target="tsToSecond" aria-label="후반 작전타임 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="tsToSecond" aria-label="후반 작전타임 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
-        </div>
-        <div class="fieldrow">
           <div><label for="tsToOt">작전타임 연장</label><div class="numfield"><input id="tsToOt" type="number" min="0" max="5" placeholder="1"><span class="numsteps"><button type="button" class="numstep up" data-target="tsToOt" aria-label="연장 작전타임 늘리기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="2.4"/></svg></button><button type="button" class="numstep down" data-target="tsToOt" aria-label="연장 작전타임 줄이기"><svg viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4"/></svg></button></span></div></div>
-          <div style="grid-column:span 2"><label for="tsOvertime">연장전 규칙</label>
-            <select id="tsOvertime"></select></div>
         </div>
+        <div><label for="tsOvertime">연장전 규칙</label>
+          <select id="tsOvertime"></select></div>
       </div>
     </div></div>
 
