@@ -73,7 +73,7 @@ button{font-family:var(--font);color:inherit}
 /* 스타터가 자꾸 실버로 읽힌 이유 — 밝은 쪽(#868b93)이 실버의 어두운 쪽(#8b929b)과 거의 같은 톤이었다.
    같은 재질을 흐리게 한 것으로 보일 뿐이다. 두 색의 간격 자체를 좁혀 금속 광택을 없앤다:
    위아래 밝기 차가 있어야 금속으로 읽히므로, 차이를 줄이면 무광 흑연이 된다. 등급이 아니라 재질이 다르다. */
-[data-grade="starter"]{--g-a:#804119; --g-b:#eb9659; --g-c:#3b1b08; --g-text:#ffe2cc; --g-mid:#b86833; --g-hi:#fcc69d; --shine-op:.108; --holo-op:.04; }
+[data-grade="starter"]{--g-a:#804119; --g-b:#eb9659; --g-c:#3b1b08; --g-text:#ffe2cc; --g-mid:#b86833; --g-hi:#fcc69d; --shine-op:.28; --holo-op:.04; }
 [data-grade="bronze"]{ --g-a:#7a4a2a; --g-b:#c9905a; --g-c:#3d2412; --g-text:#f0d9c2; --g-mid:#be8653; --g-hi:#deba99; --shine-op:.28; --holo-op:.10; }
 [data-grade="silver"]{ --g-a:#8b929b; --g-b:#e7ebef; --g-c:#3d4249; --g-text:#eef1f4; --g-mid:#bec3c9; --g-hi:#f0f3f5; --shine-op:.4;  --holo-op:.14; }
 [data-grade="gold"]{   --g-a:#9c7415; --g-b:#f4d16a; --g-c:#4a3608; --g-text:#fbedc4; --g-mid:#cca744; --g-hi:#f8e2a3; --shine-op:.55; --holo-op:.18; }
@@ -229,7 +229,15 @@ button{font-family:var(--font);color:inherit}
    차오르므로, 판이 먼저 서고 글자가 뒤늦게 나타나는 어색함이 없다.
    opacity만 움직이므로 합성 단계에서 끝난다. */
 .sheetHead,
-.sheetBody{opacity:var(--sheet-in,0)}
+.sheetBody{opacity:var(--sheet-in,0);
+  /* 손가락으로 끌 때는 --sheet-in이 매 프레임 바뀌므로 전환이 필요 없다. 문제는 탭으로 열 때다:
+     판은 transform으로 .8초에 걸쳐 올라오는데 내용은 아래 .sheet-expanded 규칙이 한 번에
+     1로 올려서, 판이 다 올라온 뒤에 글자가 따로 디졸브되는 두 동작으로 보였다(PO).
+     판과 같은 시간·같은 곡선을 주면 올라오는 동안 함께 차오른다. */
+  transition:opacity .8s cubic-bezier(.16,.8,.24,1)}
+/* 끄는 중에는 전환을 뺀다 — 손가락을 따라와야 하는 값에 .8초가 걸리면 뒤늦게 따라온다 */
+.sheet.sheet-dragging .sheetHead,
+.sheet.sheet-dragging .sheetBody{transition:none}
 .sheet.sheet-expanded .sheetHead,
 .sheet.sheet-expanded .sheetBody{opacity:1}
 /* 접힌 상태에서 보이는 건 이 헤더뿐이다 — 검정이면 시트가 아니라 검은 띠로 보인다.
@@ -1012,9 +1020,9 @@ body:not(.booting) .bootLoad{opacity:0;visibility:hidden;transition:opacity .3s 
      전 등급을 같은 값으로 고정하면 등급을 읽을 단서가 테두리 하나로 줄어든다. */
   opacity:calc(var(--shine-op,.4) * 2.2)}
 /* 빛덩이 둘이 카드 둘레를 돌면서 서로 정반대 지점을 지킨다(PO, getlayers.ai 참고).
-   레퍼런스도 정확히 두 개다 — 하나면 '한 점이 지나간다'로 읽히고, 셋이 넘으면 테두리가
-   늘 밝아 움직임이 안 보인다. 둘이 마주보고 돌면 어느 순간에도 밝은 곳과 어두운 곳이
-   함께 있어 '빛이 돈다'가 된다.
+   레퍼런스도 정확히 두 개다 — 셋이 넘으면 테두리가 늘 밝아 움직임이 안 보인다.
+   둘이 마주보고 돌면 어느 순간에도 밝은 곳과 어두운 곳이 함께 있어 '빛이 돈다'가 된다.
+   개수는 등급이 말하는 것 중 하나다 — 스타터 하나 / 브론즈·실버 둘 / 골드 셋.
    blur는 쓰지 않는다 — 그라디언트가 이미 부드럽게 흩어지므로 값만 비싸진다.
    번짐 정도는 레퍼런스의 정지점을 그대로 옮겼다(5% 불투명 → 16% .7 → 34% .22 → 58% 소멸). */
 .cardEdgeGlow i{position:absolute;display:block;border-radius:50%;
@@ -1030,6 +1038,9 @@ body:not(.booting) .bootLoad{opacity:0;visibility:hidden;transition:opacity .3s 
   animation:edgeOrbit 7s linear infinite}
 /* 반 바퀴 앞선 자리에서 출발한다 — 둘이 항상 둘레의 정반대에 선다 */
 .cardEdgeGlow i:nth-child(2){animation-delay:-3.5s}
+/* 스타터는 하나만 돈다(PO) — 대신 그 하나를 브론즈와 같은 세기로 올렸다(--shine-op .108 → .28).
+   개수를 줄이면서 세기까지 낮은 채로 두면 테두리에서 빛이 사실상 사라진다. */
+[data-grade="starter"] .cardEdgeGlow i:nth-child(2){display:none}
 /* 골드만 셋이 돈다(PO) — 7초를 삼등분해 셋이 항상 둘레의 정삼각 위치를 지킨다.
    셋이 상한이다. 넷을 넘기면 테두리가 늘 밝아 '돈다'가 아니라 '켜져 있다'가 된다.
    다른 등급은 셋째를 그리지 않는다 — 골드가 가장 밝고 가장 붐비는 게 등급 차이다. */
@@ -2740,6 +2751,22 @@ function animateOvrCountUp(){
   var target = parseInt(el.dataset.target, 10);
   if(isNaN(target)) return; // 기록이 없어 '?'로 표시되는 경우는 애니메이션하지 않는다
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ el.textContent = pad2(target); return; }
+  /* 기록이 없는 카드(스타터)는 목표가 0이라 셀 것이 없다 — 0에서 0으로 가니 아무 일도
+     일어나지 않고 00이 그냥 박혀 있다. 그런데 그 자리가 말해야 하는 건 '아직 값이 없다'다.
+     숫자를 굴리다 00에 멈추면 '재는 중이었는데 아직 나올 게 없다'로 읽힌다(PO).
+     굴리는 간격을 점점 늘려 멈추는 순간이 보이게 한다 — 일정한 속도로 굴리다 뚝 끊으면
+     멈춘 게 아니라 꺼진 것으로 보인다. */
+  if(target === 0){
+    var t0 = performance.now(), DUR = 900;
+    (function roll(ts){
+      var p = (ts - t0) / DUR;
+      if(p >= 1){ el.textContent = pad2(0); return; }
+      el.textContent = pad2(Math.floor(Math.random() * 100));
+      /* 간격: 55ms에서 시작해 끝으로 갈수록 220ms까지 늘어난다 */
+      setTimeout(function(){ requestAnimationFrame(roll); }, 55 + p * p * 165);
+    })(t0);
+    return;
+  }
   var seen = (PLAYER.seen && PLAYER.seen.ovr != null) ? PLAYER.seen.ovr : null;
   var legs = (seen != null && seen !== target)
     ? [{ from:0, to:seen, ms:760 }, { from:seen, to:target, ms:520, delay:420 }]
