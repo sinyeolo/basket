@@ -1295,7 +1295,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 선수 카드 — BASKET 플레이어 카드를 화면 중앙에 크게, 클릭하면 뒷면(시즌 평균)으로 플립.
    레퍼런스: 신한카드 상품 페이지(큰 카드 중앙 배치 + 미니멀한 주변 UI + 카드 상세/뒷면 인터랙션).
    등급 토큰은 카드 공유 화면(player-card.html)과 동일 값 — OVR을 index.html에서 산출해 URL로 전달하고, 등급은 그 OVR 구간으로 역산(ovrFor/gradeFor) */
-[data-grade="starter"]{--g-a:#993a0b; --g-b:#fa8541; --g-c:#5c2307; --g-text:#ffe8d6; --g-mid:#d15c1d; --g-hi:#ffbc8f; --shine-op:.28; }
+[data-grade="starter"]{--g-a:#bd5a04; --g-b:#ff8f1f; --g-c:#803c00; --g-text:#ffedd6; --g-mid:#d66800; --g-hi:#ffba6b; --shine-op:.28; }
 [data-grade="bronze"]{ --g-a:#7a4a2a; --g-b:#c9905a; --g-c:#3d2412; --g-text:#f0d9c2; --g-mid:#be8653; --g-hi:#deba99; --shine-op:.28; }
 [data-grade="silver"]{ --g-a:#8b929b; --g-b:#e7ebef; --g-c:#3d4249; --g-text:#eef1f4; --g-mid:#bec3c9; --g-hi:#f0f3f5; --shine-op:.4;  }
 [data-grade="gold"]{   --g-a:#9c7415; --g-b:#f4d16a; --g-c:#4a3608; --g-text:#fbedc4; --g-mid:#cca744; --g-hi:#f8e2a3; --shine-op:.55; }
@@ -1444,6 +1444,14 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    스타터는 제외한다: 아직 아무것도 이루지 않은 등급이라 두를 금속이 없다(테두리·뱃지와 같은 원칙).
    이미지가 못 뜰 때 깔리는 색은 그 등급이 이미 가진 가장 어두운 톤(--g-c)이다. */
 [data-grade="bronze"] .pdFace .in{background-image:url(assets/grade/bronze.jpg)}
+/* 스타터는 --g-c가 네 등급 중 가장 밝다 — 오렌지 카드라 그렇다. 같은 34%로는 위쪽이
+   충분히 눌리지 않아 로고·OVR의 흰 글자가 2.96:1까지 떨어졌다(측정). 색을 어둡게 되돌리는
+   대신 그늘만 진하게 한다 — 대비를 맞추자고 색을 흐리지 않는다. 52%면 3.84:1이다. */
+[data-grade="starter"] .topScrim{
+  background:linear-gradient(180deg,
+    color-mix(in srgb, var(--g-c) 52%, transparent) 0%,
+    color-mix(in srgb, var(--g-c) 26%, transparent) 46%,
+    transparent 100%)}
 [data-grade="silver"] .pdFace .in{background-image:url(assets/grade/silver.jpg)}
 [data-grade="gold"]   .pdFace .in{background-image:url(assets/grade/gold.jpg)}
 /* 스타터만 배경이 4종이다 — 아직 등급이 정해지지 않은 자리라 금속 한 장으로 대표되지 않는다.

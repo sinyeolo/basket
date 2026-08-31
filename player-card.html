@@ -77,7 +77,7 @@ button{font-family:var(--font);color:inherit}
    색상을 23° → 20°로 내리고 채도를 브론즈보다 19~30%p 올려 벌려 뒀다.
    --g-c(딤·뒷면 바탕)도 명도를 23 → 36으로 올렸다: 너무 어두우면 색이 아니라 그늘로만 읽힌다.
    스타터의 --shine-op은 브론즈와 같은 .28이다 — 원래 .108이라 테두리 빛이 거의 안 보였다. */
-[data-grade="starter"]{--g-a:#993a0b; --g-b:#fa8541; --g-c:#5c2307; --g-text:#ffe8d6; --g-mid:#d15c1d; --g-hi:#ffbc8f; --shine-op:.28; --holo-op:.04; }
+[data-grade="starter"]{--g-a:#bd5a04; --g-b:#ff8f1f; --g-c:#803c00; --g-text:#ffedd6; --g-mid:#d66800; --g-hi:#ffba6b; --shine-op:.28; --holo-op:.04; }
 [data-grade="bronze"]{ --g-a:#7a4a2a; --g-b:#c9905a; --g-c:#3d2412; --g-text:#f0d9c2; --g-mid:#be8653; --g-hi:#deba99; --shine-op:.28; --holo-op:.10; }
 [data-grade="silver"]{ --g-a:#8b929b; --g-b:#e7ebef; --g-c:#3d4249; --g-text:#eef1f4; --g-mid:#bec3c9; --g-hi:#f0f3f5; --shine-op:.4;  --holo-op:.14; }
 [data-grade="gold"]{   --g-a:#9c7415; --g-b:#f4d16a; --g-c:#4a3608; --g-text:#fbedc4; --g-mid:#cca744; --g-hi:#f8e2a3; --shine-op:.55; --holo-op:.18; }
@@ -1144,6 +1144,14 @@ body:not(.booting) .bootLoad{opacity:0;visibility:hidden;transition:opacity .3s 
    여기서 새 색을 지어내면 팔레트 밖 값이 셋 늘어난다 — 실제로 그렇게 했다가 잡혔다.
    토큰을 쓰니 등급별로 규칙을 나눌 이유도 없어져 세 줄이 한 줄이 된다. */
 [data-grade="bronze"] .cardFace .inner{background-image:url(assets/grade/bronze.jpg)}
+/* 스타터는 --g-c가 네 등급 중 가장 밝다 — 오렌지 카드라 그렇다. 같은 34%로는 위쪽이
+   충분히 눌리지 않아 로고·OVR의 흰 글자가 2.96:1까지 떨어졌다(측정). 색을 어둡게 되돌리는
+   대신 그늘만 진하게 한다 — 대비를 맞추자고 색을 흐리지 않는다. 52%면 3.84:1이다. */
+[data-grade="starter"] .topScrim{
+  background:linear-gradient(180deg,
+    color-mix(in srgb, var(--g-c) 52%, transparent) 0%,
+    color-mix(in srgb, var(--g-c) 26%, transparent) 46%,
+    transparent 100%)}
 [data-grade="silver"] .cardFace .inner{background-image:url(assets/grade/silver.jpg)}
 [data-grade="gold"]   .cardFace .inner{background-image:url(assets/grade/gold.jpg)}
 /* 스타터만 배경이 4종이다 — 아직 등급이 정해지지 않은 자리라 금속 한 장으로 대표되지 않는다.
