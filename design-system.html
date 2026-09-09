@@ -6,7 +6,6 @@
 <title>BASKET COUNT · 디자인 시스템</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tektur:wght@400..900&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@24,400,0,0&display=block">
 <style>
 :root{
   --font:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
@@ -115,8 +114,7 @@ h3:first-of-type{margin-top:16px}
 .sh b{display:block;font-family:var(--font-display);font-size:11px;color:var(--ink);margin-bottom:5px}
 .icons{display:flex;flex-wrap:wrap;gap:8px}
 .icons span{width:44px;height:44px;border-radius:10px;background:var(--variant);display:flex;align-items:center;justify-content:center}
-.msym{font-family:'Material Symbols Sharp';font-weight:400;font-style:normal;font-size:20px;line-height:1;
-  display:inline-block;font-feature-settings:'liga';font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+.cbi{width:24px;height:24px;fill:currentColor;display:block}
 
 .demo{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:16px;border-radius:12px;background:var(--canvas);margin:14px 0 10px}
 .demo.dcol{display:block}
@@ -189,8 +187,7 @@ h3:first-of-type{margin-top:16px}
 .d-tbl tfoot td{font-weight:800;color:var(--ink);background:var(--head);border-bottom:none}
 .d-mark{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;color:#fff;font-weight:800;font-size:14px}
 .d-empty{text-align:center;padding:26px 16px;background:var(--variant);border-radius:12px;max-width:340px}
-.d-empty .msym{font-size:20px;color:var(--muted);display:block;margin-bottom:8px}
-.d-empty p{margin:0;font-size:13px;color:var(--muted);line-height:1.6}
+.d-empty .d-empty p{margin:0;font-size:13px;color:var(--muted);line-height:1.6}
 .d-tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);width:100%}
 .d-tab{flex:1;text-align:center;padding:12px 0;font-size:13px;font-weight:600;color:var(--muted)}
 .d-tab.on{color:var(--ink);font-weight:700;box-shadow:inset 0 -2px 0 var(--ink)}
@@ -214,10 +211,7 @@ h3:first-of-type{margin-top:16px}
   background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(18px) saturate(1.7);backdrop-filter:blur(18px) saturate(1.7);
   border:1px solid var(--line);border-radius:12px;padding:13px 15px;font-size:13px;max-width:420px;
   box-shadow:0 4px 10px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);margin-bottom:10px}
-.d-toast .msym{font-size:20px;flex:none;color:#1cae5a}
-.d-toast.is-err .msym{color:#a41e1e}
-.d-toast.is-undo .msym{color:var(--muted)}
-.d-toast span{flex:1;line-height:1.5}
+.d-toast .d-toast.is-err .d-toast.is-undo .d-toast span{flex:1;line-height:1.5}
 .d-toast em{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:3px}
 .d-toast b{font-family:var(--font);font-size:13px;font-weight:700;color:#d95f00;flex:none;align-self:center}
 .d-shine{
@@ -255,8 +249,7 @@ h3:first-of-type{margin-top:16px}
   display:inline-flex;align-items:center;justify-content:center}
 .d-pg.on{background:#1c1b1f;color:#fff}
 .d-pg[disabled]{opacity:.38;cursor:default;box-shadow:none}
-.d-pg .msym{font-size:16px}
-.d-pg-gap{font-family:var(--font);font-size:12px;color:var(--muted);padding:0 3px}
+.d-pg .d-pg-gap{font-family:var(--font);font-size:12px;color:var(--muted);padding:0 3px}
 .rule{padding:13px 15px;border-radius:12px;background:var(--variant);margin-bottom:9px}
 .rule b{display:block;font-family:var(--font-display);font-size:12px;font-weight:800;letter-spacing:.04em;margin-bottom:5px}
 .rule span{font-size:13px;color:var(--muted);line-height:1.72}
@@ -450,7 +443,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
 <section id="type">
   <h2>타이포그래피</h2>
   <p class="note">본문은 <b>Pretendard</b>, 숫자를 물건처럼 세우는 자리에만 <b>Tektur</b>를 켭니다.
-  아이콘은 Material Symbols Sharp — 로고의 각진 인상과 맞습니다.</p>
+  아이콘은 IBM Carbon — 32 그리드에 직선·직각으로 그려져 로고의 각진 인상과 맞습니다.</p>
 
   <h3>텍스트 램프 — 다섯 단</h3>
   <div class="ramp">
@@ -549,15 +542,15 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
 
 <section id="icon">
   <h2>아이콘</h2>
-  <p class="note"><b>Material Symbols Sharp</b>(Google, Apache 2.0). 각진 획이 로고의 인상과 맞습니다.
+  <p class="note"><b>IBM Carbon</b>(Apache 2.0, 2026-09-09 전환). 폰트가 아니라 인라인 SVG입니다 — 폰트는 도착 전까지 아이콘 이름이 글자로 보입니다. 두께는 상자가 정합니다: 상자 × 2/32 (20px → 1.25px). 농구 특화 아이콘은 우리 것(24 그리드)을 그대로 씁니다.
   획 굵기 2 · 24 그리드 · <code>butt</code> 끝 · <code>miter</code> 모서리 · 색은 언제나 <code>currentColor</code>.</p>
   <div class="icons">
-    <span><i class="msym">dashboard</i></span><span><i class="msym">emoji_events</i></span>
-    <span><i class="msym">group</i></span><span><i class="msym">calendar_month</i></span>
-    <span><i class="msym">radio_button_checked</i></span><span><i class="msym">fact_check</i></span>
-    <span><i class="msym">bar_chart</i></span><span><i class="msym">campaign</i></span>
-    <span><i class="msym">settings</i></span><span><i class="msym">autorenew</i></span>
-    <span><i class="msym">workspace_premium</i></span><span><i class="msym">share</i></span>
+    <span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/></svg></span><span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M26,7H24V6a2.0023,2.0023,0,0,0-2-2H10A2.0023,2.0023,0,0,0,8,6V7H6A2.0023,2.0023,0,0,0,4,9v3a4.0045,4.0045,0,0,0,4,4h.322A8.1689,8.1689,0,0,0,15,21.9341V26H10v2H22V26H17V21.9311A7.9661,7.9661,0,0,0,23.74,16H24a4.0045,4.0045,0,0,0,4-4V9A2.0023,2.0023,0,0,0,26,7ZM8,14a2.0023,2.0023,0,0,1-2-2V9H8Zm14,0a6,6,0,0,1-6.1855,5.9971A6.1991,6.1991,0,0,1,10,13.7065V6H22Zm4-2a2.0023,2.0023,0,0,1-2,2V9h2Z"/></svg></span>
+    <span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M30,30H28V25a5.0057,5.0057,0,0,0-5-5V18a7.0078,7.0078,0,0,1,7,7Z"/><path d="M22,30H20V25a5.0059,5.0059,0,0,0-5-5H9a5.0059,5.0059,0,0,0-5,5v5H2V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/><path d="M20,2V4a5,5,0,0,1,0,10v2A7,7,0,0,0,20,2Z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/></svg></span><span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M26,4h-4V2h-2v2h-8V2h-2v2H6C4.9,4,4,4.9,4,6v20c0,1.1,0.9,2,2,2h20c1.1,0,2-0.9,2-2V6C28,4.9,27.1,4,26,4z M26,26H6V12h20 V26z M26,10H6V6h4v2h2V6h8v2h2V6h4V10z"/></svg></span>
+    <span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="4"/><path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2z M16,22c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6 S19.3,22,16,22z"/></svg></span><span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><circle cx="22" cy="24" r="2"/><path fill="none" d="M22,28a4,4,0,1,1,4-4A4.0039,4.0039,0,0,1,22,28Zm0-6a2,2,0,1,0,2,2A2.0027,2.0027,0,0,0,22,22Z"/><path d="M29.7769,23.4785A8.64,8.64,0,0,0,22,18a8.64,8.64,0,0,0-7.7769,5.4785L14,24l.2231.5215A8.64,8.64,0,0,0,22,30a8.64,8.64,0,0,0,7.7769-5.4785L30,24ZM22,28a4,4,0,1,1,4-4A4.0045,4.0045,0,0,1,22,28Z"/><path d="M12,28H7V7h3v3H22V7h3v9h2V7a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2V5H7A2,2,0,0,0,5,7V28a2,2,0,0,0,2,2h5ZM12,4h8V8H12Z"/></svg></span>
+    <span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M27,28V6H19V28H15V14H7V28H4V2H2V28a2,2,0,0,0,2,2H30V28ZM13,28H9V16h4Zm12,0H21V8h4Z"/></svg></span><span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M26,6V8.17L5.64,11.87a2,2,0,0,0-1.64,2v4.34a2,2,0,0,0,1.64,2L8,20.56V24a2,2,0,0,0,2,2h8a2,2,0,0,0,2-2V22.74l6,1.09V26h2V6ZM18,24H10V20.93l8,1.45ZM6,18.17V13.83L26,10.2V21.8Z"/></svg></span>
+    <span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M27,16.76c0-.25,0-.5,0-.76s0-.51,0-.77l1.92-1.68A2,2,0,0,0,29.3,11L26.94,7a2,2,0,0,0-1.73-1,2,2,0,0,0-.64.1l-2.43.82a11.35,11.35,0,0,0-1.31-.75l-.51-2.52a2,2,0,0,0-2-1.61H13.64a2,2,0,0,0-2,1.61l-.51,2.52a11.48,11.48,0,0,0-1.32.75L7.43,6.06A2,2,0,0,0,6.79,6,2,2,0,0,0,5.06,7L2.7,11a2,2,0,0,0,.41,2.51L5,15.24c0,.25,0,.5,0,.76s0,.51,0,.77L3.11,18.45A2,2,0,0,0,2.7,21L5.06,25a2,2,0,0,0,1.73,1,2,2,0,0,0,.64-.1l2.43-.82a11.35,11.35,0,0,0,1.31.75l.51,2.52a2,2,0,0,0,2,1.61h4.72a2,2,0,0,0,2-1.61l.51-2.52a11.48,11.48,0,0,0,1.32-.75l2.42.82a2,2,0,0,0,.64.1,2,2,0,0,0,1.73-1L29.3,21a2,2,0,0,0-.41-2.51ZM25.21,24l-3.43-1.16a8.86,8.86,0,0,1-2.71,1.57L18.36,28H13.64l-.71-3.55a9.36,9.36,0,0,1-2.7-1.57L6.79,24,4.43,20l2.72-2.4a8.9,8.9,0,0,1,0-3.13L4.43,12,6.79,8l3.43,1.16a8.86,8.86,0,0,1,2.71-1.57L13.64,4h4.72l.71,3.55a9.36,9.36,0,0,1,2.7,1.57L25.21,8,27.57,12l-2.72,2.4a8.9,8.9,0,0,1,0,3.13L27.57,20Z"/><path d="M16,22a6,6,0,1,1,6-6A5.94,5.94,0,0,1,16,22Zm0-10a3.91,3.91,0,0,0-4,4,3.91,3.91,0,0,0,4,4,3.91,3.91,0,0,0,4-4A3.91,3.91,0,0,0,16,12Z"/></svg></span><span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z"/><path d="M20,22h5.22A11,11,0,0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z"/></svg></span>
+    <span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M26,7H24V6a2.0023,2.0023,0,0,0-2-2H10A2.0023,2.0023,0,0,0,8,6V7H6A2.0023,2.0023,0,0,0,4,9v3a4.0045,4.0045,0,0,0,4,4h.322A8.1689,8.1689,0,0,0,15,21.9341V26H10v2H22V26H17V21.9311A7.9661,7.9661,0,0,0,23.74,16H24a4.0045,4.0045,0,0,0,4-4V9A2.0023,2.0023,0,0,0,26,7ZM8,14a2.0023,2.0023,0,0,1-2-2V9H8Zm18-2a2.0023,2.0023,0,0,1-2,2V9h2Z"/></svg></span><span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M23,20a5,5,0,0,0-3.89,1.89L11.8,17.32a4.46,4.46,0,0,0,0-2.64l7.31-4.57A5,5,0,1,0,18,7a4.79,4.79,0,0,0,.2,1.32l-7.31,4.57a5,5,0,1,0,0,6.22l7.31,4.57A4.79,4.79,0,0,0,18,25a5,5,0,1,0,5-5ZM23,4a3,3,0,1,1-3,3A3,3,0,0,1,23,4ZM7,19a3,3,0,1,1,3-3A3,3,0,0,1,7,19Zm16,9a3,3,0,1,1,3-3A3,3,0,0,1,23,28Z"/></svg></span>
   </div>
   <div class="ramp">
     <div class="r"><span class="rl">SM · 16</span><span class="rs">칩 안 · 표 안 · 라벨 옆</span><span class="rv">16px</span></div>
@@ -636,7 +629,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
     <button class="d-btn d-sm d-outline">작게 40</button>
     <button class="d-btn d-tonal">기본 44</button>
     <button class="d-btn d-lg d-primary">크게 52</button>
-    <button class="d-btn d-icon d-tonal"><i class="msym">share</i></button>
+    <button class="d-btn d-icon d-tonal"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M23,20a5,5,0,0,0-3.89,1.89L11.8,17.32a4.46,4.46,0,0,0,0-2.64l7.31-4.57A5,5,0,1,0,18,7a4.79,4.79,0,0,0,.2,1.32l-7.31,4.57a5,5,0,1,0,0,6.22l7.31,4.57A4.79,4.79,0,0,0,18,25a5,5,0,1,0,5-5ZM23,4a3,3,0,1,1-3,3A3,3,0,0,1,23,4ZM7,19a3,3,0,1,1,3-3A3,3,0,0,1,7,19Zm16,9a3,3,0,1,1,3-3A3,3,0,0,1,23,28Z"/></svg></button>
   </div>
   <div class="ramp">
     <div class="r"><span class="rl">SM · 40</span><span class="rs">표 안 · 칩 옆 · 목록 행 끝 — 좁은 자리</span><span class="rv">13px · 좌우 18</span></div>
@@ -764,7 +757,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
 <section id="feedback">
   <h2>피드백</h2>
   <div class="demo">
-    <div class="d-empty"><i class="msym">bar_chart</i><p>아직 뛴 경기가 없어요<br>첫 경기를 마치면 기록이 채워져요</p></div>
+    <div class="d-empty"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M27,28V6H19V28H15V14H7V28H4V2H2V28a2,2,0,0,0,2,2H30V28ZM13,28H9V16h4Zm12,0H21V8h4Z"/></svg><p>아직 뛴 경기가 없어요<br>첫 경기를 마치면 기록이 채워져요</p></div>
     <div style="flex:1;min-width:200px"><div class="d-bar"><i></i></div>
       <p style="font-size:11px;color:var(--muted);margin:8px 0 0">진행 표시 — 높이 9 · 반경 Pill</p></div>
   </div>
@@ -786,7 +779,7 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
   "망가진 게 아니라 아직 비어 있다"를 말합니다.</p>
   <div class="demo dcol">
     <div class="empty-demo">
-      <span class="empty-ic msym" aria-hidden="true">search</span>
+      <svg class="empty-ic cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>
       <b>무엇을 찾을까요?</b>
       <span>팀 이름, 선수 이름, 경기를 찾을 수 있어요</span>
     </div>
@@ -831,9 +824,9 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
   콘솔과 선수 카드가 서로 다른 어두운 알약을 쓰고 있던 것을 아래 모양으로 맞췄습니다(2026-08-25).
   카드 화면에서도 토스트는 흰 시트가 올라와 있을 때만 뜹니다 — 어두운 무대 위에 얹힐 일이 없습니다(PO 확인).</p>
   <div class="demo dcol">
-    <div class="d-toast"><i class="msym">check_circle</i><span>기록이 확정됐어요</span></div>
-    <div class="d-toast is-undo"><i class="msym">delete</i><span>기록을 지웠어요</span><b>되돌리기</b></div>
-    <div class="d-toast is-err"><i class="msym">error</i><span>저장하지 못했어요<em>연결을 확인하고 다시 시도해 주세요</em></span></div>
+    <div class="d-toast"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/><path fill="none" d="M14 21.591 9 16.591 10.591 15 14 18.409 21.41 11 23.005 12.585 14 21.591z" data-icon-path="inner-path"/></svg><span>기록이 확정됐어요</span></div>
+    <div class="d-toast is-undo"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M12 12H14V24H12z"/><path d="M18 12H20V24H18z"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><path d="M12 2H20V4H12z"/></svg><span>기록을 지웠어요</span><b>되돌리기</b></div>
+    <div class="d-toast is-err"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14C30,8.3,23.7,2,16,2z M14.9,8h2.2v11h-2.2V8z M16,25 c-0.8,0-1.5-0.7-1.5-1.5S15.2,22,16,22c0.8,0,1.5,0.7,1.5,1.5S16.8,25,16,25z"/><path fill="none" d="M17.5,23.5c0,0.8-0.7,1.5-1.5,1.5c-0.8,0-1.5-0.7-1.5-1.5S15.2,22,16,22 C16.8,22,17.5,22.7,17.5,23.5z M17.1,8h-2.2v11h2.2V8z" data-icon-path="inner-path" opacity="0"/></svg><span>저장하지 못했어요<em>연결을 확인하고 다시 시도해 주세요</em></span></div>
   </div>
   <div class="ramp">
     <div class="r"><span class="rl">자리</span><span class="rs">화면 아래 중앙 · 안전영역 위 16 · 최대 폭 420</span><span class="rv">bottom</span></div>
@@ -855,10 +848,10 @@ footer{margin-top:26px;font-size:11px;color:var(--muted);line-height:1.9;text-al
   나누는 방법이 둘인데, <b>어느 쪽인지에 따라 사람이 하는 일이 달라집니다</b>.</p>
   <div class="demo dcol">
     <div class="d-page">
-      <button class="d-pg" disabled><i class="msym">chevron_left</i></button>
+      <button class="d-pg" disabled><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M10 16 20 6 21.4 7.4 12.8 16 21.4 24.6 20 26z"/></svg></button>
       <button class="d-pg on">1</button><button class="d-pg">2</button><button class="d-pg">3</button>
       <span class="d-pg-gap">···</span><button class="d-pg">12</button>
-      <button class="d-pg"><i class="msym">chevron_right</i></button>
+      <button class="d-pg"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M22 16 12 26 10.6 24.6 19.2 16 10.6 7.4 12 6z"/></svg></button>
     </div>
     <div style="margin-top:14px"><button class="d-btn d-tonal" style="width:100%;max-width:360px">경기 20개 더보기</button></div>
   </div>
