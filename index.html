@@ -330,7 +330,14 @@ svg.ni path,svg.ni circle,svg.ni rect,svg.ni line{stroke:currentColor}
 /* 아이콘 스타일 = Material Symbols의 Sharp 계열(PO 확정 2026-08-21).
    끝과 모서리를 둥글리지 않는다 — BASKET 워드마크가 모서리 없는 블록 서체라
    round cap 아이콘과는 성격이 반대다. 직접 그린 아이콘도 이 규칙을 따른다. */
+/* 우리가 그린 아이콘(24 그리드·선)의 기본값. Carbon(32 그리드·면)은 아래 svg.cb가 덮는다. */
 .ic{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter}
+/* Carbon은 32 그리드에 여백을 두고 그려 같은 상자에서 잉크가 작게 나온다.
+   Material 폰트일 때 .msym.ic가 font-size 20px였으므로 광학 크기를 그 값에 맞춘다 —
+   상자만 바꾸고 두께는 상자 × 2/32로 따라온다(20px → 1.25px). */
+svg.cb.ic{width:20px;height:20px}
+svg.cb.ic-sm{width:17px;height:17px}
+svg.cb.ic-lg{width:22px;height:22px}
 /* ---- 아이콘 = IBM Carbon (PO 확정 2026-09-09) ----
    Material Symbols(합자 폰트)에서 Carbon SVG로 옮겼다. 폰트는 요청이 하나 더 들고,
    도착 전까지 아이콘 이름("search")이 글자로 그대로 보인다. SVG는 문서 안에 있어 그 순간이 없다.
