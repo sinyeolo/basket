@@ -3275,6 +3275,15 @@ document.addEventListener('click', function(e){
   var row = e.target.closest && e.target.closest('#tsRuleSet [data-rule]');
   if(!row) return;
   tourRuleId = row.dataset.rule;
+  /* 고른 즉시 대회 설정에 반영한다 — '저장'을 눌러야만 경기에 닿으면, 방식을 바꿔 놓고
+     경기를 열었을 때 옛 규칙으로 도는 시간이 생긴다. */
+  var st0 = settingsForTournament(VIEWING_TOURNAMENT_ID);
+  var rs0 = RULE_SETS.filter(function(r){ return r.id === tourRuleId; })[0];
+  st0.ruleSet = tourRuleId;
+  if(rs0 && rs0.id !== 'custom'){
+    st0.quarters = rs0.quarters; st0.overtime = rs0.ot;
+    st0.foulOut = String(rs0.foulOut); st0.fouls = rs0.fouls; st0.timeouts = rs0.to.map(String);
+  }
   renderTournamentSettingsPage();   // 아래 칸도 새 방식의 값으로 함께 바뀐다
   showToast('시합 방식을 바꿨어요 · ' + RULE_SETS.filter(function(r){ return r.id === tourRuleId; })[0].name);
 });
@@ -3857,7 +3866,7 @@ function renderSchedule(){
 /* 팀 파울 — 숫자만 보여주면 기록자가 규칙을 외워 세고 있어야 한다.
    보너스 구간에 들어가는 순간 색과 배지로 알린다. 임계값은 대회 설정에서 가져온다. */
 function teamFoulHtml(n){
-  var st = TOURNAMENT_SETTINGS;
+  var st = activeRules();
   var cls = '', tag = '';
   if(n >= st.teamFoulPenalty){ cls = ' penalty'; tag = '<span class="fbadge">페널티</span>'; }
   else if(n >= st.teamFoulBonus){ cls = ' bonus'; tag = '<span class="fbadge">보너스</span>'; }
@@ -3869,17 +3878,17 @@ function teamFoulHtml(n){
    기록자가 매 경기 하는 일이라 스코어보드 안, 시계 바로 아래에 둔다. */
 var clockTimer = null;
 function quarterSeconds(){
-  var m = /(\d+)\s*분/.exec(TOURNAMENT_SETTINGS.quarters || '');
+  var m = /(\d+)\s*분/.exec(activeRules().quarters || '');
   return (m ? Number(m[1]) : 10) * 60;
 }
 /* 개인 파울 한도 — 대회 설정("개인 5파울")에서 읽는다. 값이 없으면 퇴장 규정이 없는 것으로 본다
    (순수 FIBA 3×3은 개인 파울 누적 퇴장이 없고 팀 파울만 센다). */
 function foulOutLimit(){
-  var m = /(\d+)/.exec(TOURNAMENT_SETTINGS.foulOut || '');
+  var m = /(\d+)/.exec(activeRules().foulOut || '');
   return m ? Number(m[1]) : 0;
 }
 function quarterTotal(){
-  var m = /(\d+)\s*쿼터/.exec(TOURNAMENT_SETTINGS.quarters || '');
+  var m = /(\d+)\s*(?:쿼터|피리어드)/.exec(activeRules().quarters || '');
   return m ? Number(m[1]) : 4;
 }
 function syncClockFields(){
@@ -3923,7 +3932,7 @@ function onQuarterTimeUp(){
     title: tied ? MATCH.qTotal + '쿼터 종료 · 동점이에요' : MATCH.qTotal + '쿼터 종료',
     desc: MATCH.home.name + ' ' + MATCH.home.score + ' : ' + MATCH.away.score + ' ' + MATCH.away.name,
     foot: tied
-      ? '연장을 진행하려면 취소를 누르고 대회 규정(' + (TOURNAMENT_SETTINGS.overtime || '연장') + ')에 따라 이어서 기록하세요.'
+      ? '연장을 진행하려면 취소를 누르고 대회 규정(' + (activeRules().overtime || '연장') + ')에 따라 이어서 기록하세요.'
       : '남은 기록이 없으면 경기를 끝내고 검수로 넘겨요.',
     ok: tied ? '그래도 종료' : '경기 종료',
     onOk: function(){ document.getElementById('btnFinish').click(); }
@@ -6039,16 +6048,29 @@ var VIEWING_TOURNAMENT_ID = CURRENT_TOURNAMENT_ID;
 /* ---- 대회 관리 페이지 — 대회 정보·참가 설정·경기 규칙·운영진 권한·공개 설정.
    실 서버 연동 전까지는 대회별 설정 객체(세션 메모리)에만 저장됩니다.
    로고·포스터는 팀 로고와 달리 원형/배너 등 쓰임새가 달라 크롭 없이 바로 미리보기로 등록합니다. */
-var TOURNAMENT_SETTINGS = {
-  name:'2026 여름 3×3 리그', season:'2026 여름', period:'07.09 ~ 08.09',
-  logo:null, poster:null, cap:8,
-  quarters:'10분 4쿼터', overtime:'3분 서든데스', foulOut:'개인 5파울',
-  /* 팀 파울 보너스 임계 — 3×3은 7번째부터 상대 자유투 2개, 10번째부터 자유투 2개 + 공격권.
-     5×5(FIBA·KBL)로 운영하는 대회는 쿼터당 5, 페널티 단계 없음으로 바꿔 쓴다. */
-  teamFoulBonus:7, teamFoulPenalty:10,
-  regOpen:true, isPublic:true
-};
-var TOURNAMENT_SETTINGS_MAP = { tour1: TOURNAMENT_SETTINGS };
+/* 경기 콘솔이 읽는 '지금 이 대회의 규칙'.
+   예전엔 여기에 값을 통째로 박아 두었다 — 그래서 대회 설정에서 시합 방식을 골라도
+   시계·파울아웃·팀파울에 아무 효과가 없었다(PO가 잡음). 설정 화면과 경기 콘솔이
+   이름만 비슷한 서로 다른 객체를 보고 있었던 것이다.
+   지금은 운영 중인 대회의 설정을 그대로 읽는다 — 원본은 한 곳뿐이다. */
+function activeRules(){
+  var s = settingsForTournament(CURRENT_TOURNAMENT_ID);
+  var fouls = Number(s.fouls) || 5;
+  /* 팀 파울 임계는 종목이 정한다.
+     3×3은 7번째부터 상대 자유투 2개, 10번째부터 자유투 2개 + 공격권으로 단계가 둘이다.
+     5×5(FIBA·KBL)는 쿼터당 팀 파울을 넘기면 그때부터 자유투이고 페널티 단계가 따로 없다 —
+     그래서 penalty를 도달할 수 없는 값으로 두어 뱃지가 뜨지 않게 한다. */
+  var is3x3 = (s.sport || '3x3') === '3x3';
+  return {
+    quarters: s.quarters, overtime: s.overtime, foulOut: s.foulOut,
+    fouls: fouls, timeouts: s.timeouts, sport: s.sport || '3x3',
+    teamFoulBonus:  is3x3 ? 7  : fouls,
+    teamFoulPenalty:is3x3 ? 10 : Infinity
+  };
+}
+/* 씨앗 대회도 다른 대회와 같은 경로로 만들어진다 — 아래 settingsForTournament가 채운다.
+   예전엔 여기에 하드코딩 객체를 하나 물려 두었는데, 그것 때문에 tour1만 다른 값을 들고 있었다. */
+var TOURNAMENT_SETTINGS_MAP = {};
 // tour1 외 대회는 실제 팀·선수 데이터가 없어, 목록에 보이는 값 기준으로 설정 객체를 처음 열 때 즉석 생성한다
 /* 'MM.DD ~ MM.DD'와 대회명 앞머리의 연도를 합쳐 ISO 날짜를 만든다.
    저장된 값이 표시용 문자열뿐이라 첫 진입에서 한 번 풀어 준다 — 연도가 없으면 올해로 둔다. */
@@ -6072,8 +6094,7 @@ function settingsForTournament(id){
       name:t.name, period:t.period, sport:t.sport || '3x3',
       startDate:isoFromPeriod(t.name, t.period, 0), endDate:isoFromPeriod(t.name, t.period, 1),
       logo:null, poster:null, cap:t.teams, roster:8,
-      quarters:'10분 4쿼터', overtime:'3분 서든데스', foulOut:'개인 5파울',
-      teamFoulBonus:7, teamFoulPenalty:10,
+      ruleSet:'amateur7',
       regOpen:false, isPublic:true
     };
   }
@@ -6084,6 +6105,19 @@ function settingsForTournament(id){
   if(t0){
     if(!st.sport) st.sport = t0.sport || '3x3';
     if(st.roster == null) st.roster = 8;
+    /* 시합 방식 값도 여기서 채운다 — 이게 없으면 방식을 골라도 '저장'을 누르기 전까지
+       경기 콘솔이 옛 기본값(10분 4쿼터)으로 돈다. 원본은 RULE_SETS 한 곳이다. */
+    if(!st.ruleSet) st.ruleSet = 'amateur7';
+    if(st.fouls == null || !st.timeouts){
+      var rs0 = RULE_SETS.filter(function(r){ return r.id === st.ruleSet; })[0];
+      if(rs0 && rs0.id !== 'custom'){
+        st.quarters = st.quarters || rs0.quarters;
+        st.overtime = st.overtime || rs0.ot;
+        st.foulOut  = st.foulOut  || String(rs0.foulOut);
+        st.fouls    = rs0.fouls;
+        st.timeouts = rs0.to.map(String);
+      }
+    }
     if(!st.startDate) st.startDate = isoFromPeriod(st.name || t0.name, st.period || t0.period, 0);
     if(!st.endDate)   st.endDate   = isoFromPeriod(st.name || t0.name, st.period || t0.period, 1);
   }
@@ -6339,6 +6373,7 @@ function renderTournamentSettingsPage(){
   document.getElementById('tsStart').value = s.startDate || '';
   document.getElementById('tsEnd').value = s.endDate || '';
   /* 시합 방식은 라디오가 정한다. 아래 칸들은 '직접 입력'일 때만 펼쳐지는 자리다. */
+  tourRuleId = s.ruleSet || tourRuleId;
   renderRuleSets();
   var ot = document.getElementById('tsOvertime');
   if(!ot.options.length){
