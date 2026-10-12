@@ -6390,6 +6390,10 @@ function syncTourSwitchDisplay(){
 var TOUR_SCOPED_PAGES = ['dashboard','team','tournament','games','review','stats','tsettings','tourlist'];
 function switchTournament(id){
   if(id === CURRENT_TOURNAMENT_ID) return;
+  // 대회 설정에서 고치던 중이면 먼저 묻는다 — 아래 showPage 가 설정 화면을 다시 그려 입력을 지운다 (덱스 검토 REQ-154 A)
+  tsConfirmLeave(function(){ switchTournamentNow(id); }, document.getElementById('tourSwitchBtn'));
+}
+function switchTournamentNow(id){
   CURRENT_TOURNAMENT_ID = id;
   syncTourSwitchDisplay();
   renderTourMenu();
@@ -6403,9 +6407,19 @@ function switchTournament(id){
 }
 // 설정 화면 진입 — 운영 중인 대회를 바꾸지 않고 그 대회의 정보만 보여준다(과거 대회 조회 포함)
 function viewTournamentSettings(id){
-  VIEWING_TOURNAMENT_ID = id;
   closeTourMenu();
-  location.hash = '#tsettings';
+  // 확인 전에 보는 대회를 바꾸지 않는다 — 바꾼 뒤 묻거나 안 묻고 바꾸면, 화면엔 앞 대회 입력이 남은 채
+  // 저장 대상만 다른 대회가 되어 **다른 대회에 저장됐다** (덱스 검토 REQ-154 B, 재현함)
+  tsConfirmLeave(function(){
+    VIEWING_TOURNAMENT_ID = id;
+    if(location.hash === '#tsettings'){
+      // 같은 주소라 hashchange 가 일지 않는다 — 직접 새로 그린다
+      renderTournamentSettingsPage();
+      window.scrollTo(0, 0);
+    } else {
+      location.hash = '#tsettings';
+    }
+  }, document.getElementById('tourSwitchBtn'));
 }
 function reorderTournament(id, dir){
   var i = TOURNAMENTS.findIndex(function(x){ return x.id===id; });
@@ -6709,17 +6723,47 @@ function tsState(){
 function tsDirty(){
   return tsSnap != null && document.getElementById('page-tsettings').classList.contains('show') && tsState() !== tsSnap;
 }
-window.addEventListener('hashchange', function(e){
-  if(tsLeaving){ tsLeaving = false; return; }
-  var from = new URL(e.oldURL).hash, to = new URL(e.newURL).hash;
-  if(from !== '#tsettings' || to === '#tsettings' || !tsDirty()) return;
-  e.stopImmediatePropagation();           // 화면을 아직 바꾸지 않는다
-  history.pushState(null, '', e.oldURL);  // 주소를 대회 설정으로 되돌린다(hashchange 는 다시 일지 않는다)
+/* 이력 자리 번호 — 뒤로·앞으로를 되돌릴 때 **이력을 새로 쌓지 않으려고** 쓴다 (덱스 검토 REQ-154).
+   앞판은 pushState 로 주소를 되돌려 이력이 한 칸씩 늘고 앞으로 이력이 사라졌다.
+   지금은 각 이력 자리에 번호를 붙여 두고, 막을 때는 history.go(-차이) 로 원래 자리에 돌아간다. */
+var tsHistIdx = 0, tsReverting = false;
+(function(){ var st = history.state;
+  if(st && st.bcIdx != null) tsHistIdx = st.bcIdx; else history.replaceState({ bcIdx:0 }, ''); })();
+function tsStamp(){
+  var st = history.state;
+  if(st && st.bcIdx != null){ tsHistIdx = st.bcIdx; return; }
+  tsHistIdx += 1;                                   // 링크·해시 대입으로 새로 쌓인 자리
+  history.replaceState({ bcIdx:tsHistIdx }, '');
+}
+/* 대회 설정을 떠나거나 **보는 대회가 바뀌기 전에** 묻는 공통 절차. 고친 것이 없으면 바로 한다.
+   확인 전에는 대회 ID·주소·입력을 하나도 바꾸지 않는다 — proceed 안에서만 바꾼다. */
+function tsConfirmLeave(proceed, trigger){
+  if(!tsDirty()){ proceed(); return; }
+  if(confirmModal && confirmModal.classList.contains('open')) return;   // 이미 묻는 중 — 겹쳐 묻지 않는다
   openConfirm({
     icon:'danger', title:'저장하지 않은 변경',
     desc:'저장하지 않은 변경이 있어요. 나가면 고친 내용이 사라져요.',
-    ok:'나가기', trigger:document.activeElement,
-    onOk:function(){ tsLeaving = true; location.href = e.newURL; }
+    ok:'나가기', trigger:trigger || document.activeElement,
+    onOk:proceed
+  });
+}
+window.addEventListener('hashchange', function(e){
+  // 막으려고 되돌린 이동 — 화면을 다시 그리지 않는다(다시 그리면 저장 전 입력이 지워진다)
+  if(tsReverting){ tsReverting = false; e.stopImmediatePropagation(); return; }
+  if(tsLeaving){ tsLeaving = false; tsStamp(); return; }
+  var from = new URL(e.oldURL).hash, to = new URL(e.newURL).hash;
+  if(from !== '#tsettings' || to === '#tsettings' || !tsDirty()){ tsStamp(); return; }
+  e.stopImmediatePropagation();           // 화면을 아직 바꾸지 않는다
+  var st = history.state, delta = (st && st.bcIdx != null) ? st.bcIdx - tsHistIdx : null;
+  tsReverting = true;
+  // 이 이벤트가 끝난 뒤에 되돌린다 — 스크립트가 시작한 이동(← 의 history.back 등) 도중에 부르면 브라우저가 무시했다
+  setTimeout(function(){
+    if(delta === null) history.back();    // 새로 쌓인 자리(링크·메뉴) → 한 칸 뒤가 대회 설정
+    else history.go(-delta);              // 뒤로·앞으로 → 그만큼 되돌아감 (이력은 그대로)
+  }, 0);
+  tsConfirmLeave(function(){
+    tsLeaving = true;
+    if(delta === null) location.href = e.newURL; else history.go(delta);
   });
 }, true);
 window.addEventListener('beforeunload', function(e){
@@ -7326,6 +7370,15 @@ var entryHistoryLen = history.length;
 function initBackLinks(){
   document.querySelectorAll('a.back').forEach(function(a){
     a.addEventListener('click', function(e){
+      // 대회 설정에서 고치던 중이면 이동 전에 먼저 묻는다 — 이동한 뒤 되돌리는 것보다 확실하다 (덱스 검토 REQ-154)
+      if(tsDirty()){
+        e.preventDefault();
+        tsConfirmLeave(function(){
+          tsLeaving = true;
+          if(history.length > entryHistoryLen) history.back(); else location.hash = a.getAttribute('href');
+        }, a);
+        return;
+      }
       if(history.length > entryHistoryLen){ e.preventDefault(); history.back(); }
     });
   });
