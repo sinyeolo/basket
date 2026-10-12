@@ -68,6 +68,25 @@
   --clock:#d81d1d;  /* 경기 시계 → red-600. 전광판의 붉은 7세그먼트 */
   --green-c:#d9f4e6; --on-green-c:#0c5c37;
   --red-c:#fde2e2; --on-red-c:#a41e1e;
+  /* ── 완료·위험 색 계약 (2026-09-17 PO 확정, 서비스 공통) ────────────────────
+     한 뜻을 네 층으로 나눠 쓴다. 자세한 근거는 DESIGN.md "완료·위험 색 계약" 과
+     design-system.html 색 섹션에 있다. 여기서 값을 새로 만들지 않는다.
+
+       마크(아이콘 글리프)  --icon-on-green green-600 / --icon-on-red  red-600
+       제목·짧은 라벨       --title-on-green green-700 / --title-on-red red-700
+       읽는 글자            --on-green-c    green-900 / --on-red-c     red-700
+       부품 면(칩·배지·버튼·아이콘 원)  --green-c green-200 / --red-c red-100
+       섹션·행 배경         (초록 없음)              / --red-c-soft    red-50
+
+     초록 제목 green-700 은 기록된 예외다(패널 위 2.71:1, 기준 3:1). 마크는 대비
+     기준의 대상이 아니다 — 접근성 표 "대비 · 마크 — 해당 없음".
+     지금 프로토타입에서 아이콘 원을 쓰는 자리는 일시정지 카드 하나뿐이고,
+     제목·섹션 배경 토큰을 쓰는 자리는 없다. 앱과 값이 갈리지 않도록 정의를 맞춰 둔다. */
+  --icon-on-green:#22c55e; --icon-on-red:#d81d1d;
+  /* ⑥ 입력 오류 — 틀린 칸 테두리 · 오류 글자 (2026-10-12 PO, red-600). 실제 앱 globals.css 와 같은 값 */
+  --on-error:#d81d1d;
+  --title-on-green:#1cae5a; --title-on-red:#a41e1e;
+  --red-c-soft:#feeeee;
   /* 승리 뱃지 — 밝은 초록 + 흰 글씨. 대비는 2.28:1로 WCAG AA(작은 텍스트 4.5:1) 미달이지만,
      밝은 초록 배경을 유지하는 쪽을 PO가 선택했다. 접근성이 필요해지면 글씨를 #052e16으로
      뒤집으면 배경 톤 그대로 6.5:1이 나온다. */
@@ -512,6 +531,15 @@ button[disabled]{box-shadow:none!important}
 .page-head{display:flex;flex-wrap:wrap;row-gap:12px;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
 .page-head h1{font-family:var(--font-display);font-size:26px;font-weight:700;letter-spacing:-.02em}
 .page-head .sub{color:var(--on-surface-variant);font-size:13px;margin-top:6px}
+/* 입력 화면의 맨 아래 줄 — 안내 + 취소·저장. 실제 앱 .tset-acts 와 같은 값 (2026-10-12 PO "최종 저장은 항상 하단") */
+.ts-acts{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:12px 16px;margin-top:24px}
+.ts-acts-note{flex:1 1 260px;margin:0;padding-left:4px;font-size:13px;line-height:20px;color:var(--on-surface-variant)}
+.ts-acts-buttons{display:flex;gap:8px}
+.ts-acts-buttons > .btn{min-width:112px}
+@media (max-width:640px){
+  .ts-acts-buttons{flex:1 1 100%}
+  .ts-acts-buttons > .btn{flex:1 1 0;min-width:0;padding:0 16px}
+}
 .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:8px}
 /* 숏컷 안의 내용은 위에서부터 쌓는다(PO). <button>은 내용이 상자보다 짧으면 세로
    가운데로 밀어 넣는데, 델타 줄이 없는 '진행 중'만 그래서 7px 내려가 있었다(실측).
@@ -666,7 +694,7 @@ button[disabled]{box-shadow:none!important}
   width:min(320px,calc(100vw - 40px));padding:26px 24px;
   background:var(--surface);border-radius:20px;box-shadow:0 18px 44px rgba(0,0,0,.22)}
 .pauseCard .pcIcon{display:flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;
-  background:var(--red-c);color:var(--on-red-c)}
+  background:var(--red-c);color:var(--icon-on-red)}
 .pauseCard .pcIcon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:butt}
 .pauseCard h2{font-size:16px;font-weight:800;letter-spacing:-.02em}
 .pauseCard p{font-size:13px;line-height:1.55;color:var(--on-surface-variant)}
@@ -988,13 +1016,20 @@ button[disabled]{box-shadow:none!important}
 .lname{display:flex;align-items:center;gap:8px;font-weight:700;font-size:16px;min-width:0}
 .lname > :first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lname .sub{font-weight:500;font-size:13px;color:var(--on-surface-variant)}
+/* 자리가 모자라면 팀 이름이 먼저 줄어든다 — 같은 비율로 줄면 320 화면에서 선수 이름이 "김…"으로 잘리고
+   팀 이름이 두 줄로 접혔다(2026-10-07). 선수 이름이 이 줄의 주인이다 */
+/* 비율 10000 — 100 이어도 이름이 0.1px 줄어 말줄임이 붙었다. 이름 쪽을 1 미만으로 낮추면 줄어드는 비율 합이 1 미만이 돼
+   모자란 폭의 일부만 줄어 긴 이름이 버튼 위로 넘친다 */
+.lname .sub{flex:0 10000 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lname .tag-captain{flex:none}
 .lmeta{display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap;font-size:13px;color:var(--on-surface-variant)}
 /* 주장 서클 — 진한 주황 면에 흰 글자로 C, 이름 옆에 붙는다 */
 .tag-captain{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;
   background:var(--primary);color:var(--on-primary);font-size:11px;font-weight:800;flex:none}
 /* 네이티브 <input type="checkbox">는 브라우저/OS마다 렌더링이 달라 체크 전후 모양이 미묘하게 어긋나고
    정렬도 어긋나서, 이 파일의 다른 커스텀 컨트롤(.chipsel, .sw)과 같은 방식으로 버튼 기반 M3 체크박스를 직접 그린다 */
-/* min-height:44px — 체크박스(18px)+라벨만으로는 탭 영역이 18px밖에 안 돼 접근성 최소 기준(44px)에 못 미쳤다.
+/* min-height:44px — 체크박스(18px)+라벨만으로는 탭 영역이 18px밖에 안 돼 접근성 최소 기준에 못 미쳤다.
+   기준은 2026-09-21 PO 지시로 40px 이 됐지만 이 줄은 44 를 유지한다 — 이미 넉넉한 자리를 좁힐 이유가 없다.
    박스와 글자는 그대로 세로 중앙에 놓이므로 보이는 모양은 바뀌지 않고 눌리는 범위만 넓어진다 */
 .check-row{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;font-size:13px;color:var(--on-surface);font-weight:500;
   border:none;background:transparent;padding:0;font-family:var(--font);text-align:left}
@@ -1155,10 +1190,16 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .chipsel:disabled{opacity:.4;cursor:not-allowed}
 .chipsel:disabled:hover{background:transparent}
 
-/* M3 다이얼로그 액션 — 우측 정렬 (전폭 분할은 '동등한 선택지'로 읽혀 확인 액션이 강조되지 않음) */
-.acts-row.m3{justify-content:flex-end}
-.acts-row.m3 .btn{flex:0 0 auto;min-width:96px}
-@media (max-width:520px){.acts-row.m3{flex-direction:column-reverse}.acts-row.m3 .btn{width:100%}}
+/* 모달 행동 버튼 줄 — 2026-09-30 PO 지시, 덱스 REQ-099 검토로 좁힘. 규칙 원문은 DESIGN.md.
+   - 기준은 **설계 크기 티어**(시트 클래스·data-size)다. 화면에서 잰 폭이 아니다.
+   - **480px 이상 티어**(.subs 520 · .xwide 960 · data-size md/lg/xl/2xl): 데스크톱(641px 이상)에서
+     우측 정렬, 버튼은 글자 폭 + 최소 96px.
+   - 그 밖(작은 모달·모든 모바일): 두 버튼이 반씩 나눈다(아래 .acts-row .btn).
+   예전에는 모달마다 .m3 를 붙여 폭과 상관없이 정렬이 갈렸다. */
+@media (min-width:641px){
+  :is(.sheet.subs,.sheet.xwide,.sheet[data-size="md"],.sheet[data-size="lg"],.sheet[data-size="xl"],.sheet[data-size="2xl"]) .acts-row{--acts-split:0;justify-content:flex-end}
+  :is(.sheet.subs,.sheet.xwide,.sheet[data-size="md"],.sheet[data-size="lg"],.sheet[data-size="xl"],.sheet[data-size="2xl"]) .acts-row .btn{flex:0 0 auto;min-width:96px;padding:0 24px}
+}
 /* 폰에서 선수 등록 폼은 화면보다 길어서(약 946px) 저장하려면 매번 끝까지 스크롤해야 했다.
    액션 줄을 시트 하단에 고정해 항상 닿게 한다. 위 520px 규칙의 세로 쌓기는 되돌려
    가로 한 줄로 두는데, 세로로 쌓으면 고정 바가 화면의 1/8을 잡아먹기 때문이다. */
@@ -1169,8 +1210,6 @@ table.dt tbody tr.me{background:var(--mono-fill)}
     background:var(--surface);border-radius:0 0 20px 20px}
   /* 그림자는 실제로 스크롤이 생길 때만 — 다 보이는데도 그림자가 있으면 '아래에 더 있다'는 거짓말이 된다 */
   .modal.has-scroll .acts-row{box-shadow:0 -10px 18px -10px rgba(0,0,0,.14)}
-  .modal .acts-row.m3{flex-direction:row}
-  .modal .acts-row.m3 .btn{flex:1;width:auto;min-width:0}
 }
 
 /* 엑셀 일괄 등록 — 6개 입력 열이 한 줄에 들어가야 하므로 넓은 시트 사용 */
@@ -2010,8 +2049,21 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 /* 삭제는 카드 없이 평평하게 — 파괴적 액션이지만 자주 쓰지 않으므로 시선을 뺏지 않음 */
 /* 위험 액션은 위 내용과 붙어 있으면 안 된다 — 실수로 누르는 걸 막는 건 확인 팝업이지만,
    그 전에 '여기서부터는 다른 성격'이라는 게 간격으로 읽혀야 한다. 섹션 간격과 같은 값. */
-.danger-zone{margin-top:28px;padding:10px 4px 4px;display:flex;align-items:center;justify-content:flex-end;gap:16px;flex-wrap:wrap}
-.btn-danger{background:transparent;border:1px solid #f1b7b7;color:#a41e1e}
+/* 왼쪽 정렬 (2026-10-08 PO "삭제 버튼 위치가 우측 정렬로 있는데, 좌측정렬로 전체 수정해줘", REQ-135) — 저장(오른쪽)과 반대편에 두어
+   저장을 누르려다 삭제를 누르는 일을 줄인다. 대회 설정·선수 상세·팀 수정·선수 수정 네 곳이 같다 */
+.danger-zone{margin-top:28px;padding:10px 4px 4px;display:flex;align-items:center;justify-content:flex-start;gap:16px;flex-wrap:wrap}
+/* 수정 창 안 — 구분선은 두지 않는다(2026-10-08 PO "구분 라인도 필요 없어"). 빨간 글자·휴지통만으로 다른 종류의 동작으로 읽힌다.
+   [hidden] 은 display:flex 를 이긴다 */
+.modal-danger{margin-top:20px;padding:0}
+.modal-danger[hidden]{display:none}
+/* 위험 동작 줄의 버튼은 휴지통이 칸 왼쪽 끝에 맞게 좌우 여백만큼 바깥으로 뺀다 — 테두리가 없어 여백이 보이지 않는다 */
+.danger-zone .btn-danger{padding:0 12px;margin-left:-12px}
+/* 폰은 저장 줄이 시트 바닥에 붙도록 20px 당겨져 바로 위 내용과 2px 겹친다. 바깥 여백은 저장 줄 여백(18)과 합쳐져
+   효과가 없어 안쪽 여백으로 띄운다 */
+@media (max-width:640px){.modal-danger{padding-bottom:10px}}
+/* 위험 버튼 = 테두리 없는 휴지통+빨간 글자 (2026-10-08 PO "스타일을 맞추기위해서 공통적용"). 대회 설정·선수 상세·
+   팀 수정·선수 수정 네 곳이 같은 모양이다. 누를 자리 40px 은 그대로, 마우스를 올리면 옅은 빨간 바탕 */
+.btn-danger{background:transparent;border:1px solid transparent;color:#a41e1e}
 .btn-danger:hover{background:#fee2e2}
 
 /* 목록 검색 · 필터 바 */
@@ -2021,6 +2073,24 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 .searchbox{flex:1;min-width:200px;display:flex;align-items:center;gap:10px;height:44px;padding:10px 16px;box-sizing:border-box;background:var(--surface);border-radius:var(--r-btn);color:var(--on-surface-variant)}
 /* 팀·선수 페이지 검색창 — 탭 줄 오른쪽 끝에 붙으므로 꽉 채우지 않고 적당한 너비로 고정 */
 .rosterSearch{flex:none;width:280px}
+/* 휴대폰 검색 (2026-10-07 PO) — 탭 줄 오른쪽 끝에 돋보기만, 누르면 탭 자리에 검색창이 나온다.
+   앞판(2026-10-02)은 검색창을 탭 아래 줄로 내렸는데, 그 한 줄만큼 화면이 세로로 길어졌다. */
+.rosterSearchBtn,.rosterSearchClose{display:none}
+.rosterSearchBtn{flex:none;width:44px;padding:0;gap:0}
+.rosterSearchClose{flex:none;width:40px;height:40px;margin:-8px -12px -8px 0;border:0;border-radius:50%;background:none;
+  color:var(--on-surface-variant);align-items:center;justify-content:center;cursor:pointer}
+.rosterSearchClose:hover{background:var(--surface-hover)}
+@media (max-width:640px){
+  .rosterBar{flex-wrap:nowrap}
+  .rosterBar .tabs{flex:1 1 auto;min-width:0;margin-right:0;padding-right:0}
+  .rosterSearch{display:none}
+  .rosterSearchBtn{display:inline-flex}
+  .rosterBar.is-searching .tabs,.rosterBar.is-searching .rosterSearchBtn{display:none}
+  .rosterBar.is-searching .rosterSearch{display:flex;flex:1 1 auto;width:auto;min-width:0}
+  .rosterBar.is-searching .rosterSearchClose{display:inline-flex}
+  /* 브라우저 기본 지우기(×)는 숨긴다 — 닫기(×)와 나란히 서면 헷갈린다. 닫기가 검색어도 지운다 */
+  .rosterSearch input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+}
 .searchbox input{flex:1;min-width:0;border:none;background:transparent;outline:none;font:inherit;font-size:13px;color:var(--on-surface)}
 .fchip{height:var(--h-sm);padding:0 15px;border:1px solid var(--outline-variant);border-radius:var(--r-btn);background:var(--surface);font-family:var(--font);font-size:13px;font-weight:500;color:var(--on-surface-variant);cursor:pointer;transition:.12s;display:inline-flex;align-items:center;gap:6px}
 .fchip:hover{background:var(--surface-hover)}
@@ -2036,6 +2106,8 @@ body.modal-open{overflow:hidden}
    컨테이너는 flex-start로 두고 시트에 margin:auto를 줘서 — 공간이 남으면 상하 중앙, 모자라면 위에서부터
    쌓이고 모달 레이어가 스크롤되게 한다 */
 .modal{position:fixed;inset:0;z-index:100;display:flex;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;overscroll-behavior:contain;background:rgba(0,0,0,.32);opacity:0;visibility:hidden;transition:opacity .15s}
+/* 확인 창은 어느 창 위에서 열려도 맨 위 — 문서 순서상 뒤에 있는 창(프로필·계정·설정) 위에서도 (2026-10-12) */
+#confirmModal{z-index:110}
 .modal.open{opacity:1;visibility:visible}
 .sheet{width:100%;max-width:380px;margin:auto;background:var(--surface);border-radius:20px;box-shadow:var(--e3);padding:20px;transform:translateY(8px) scale(.98);transition:transform .16s ease}
 .modal.open .sheet{transform:none}
@@ -2076,6 +2148,37 @@ body.modal-open{overflow:hidden}
   background:#faf7fa;
   display:flex;flex-direction:column;gap:7px}
 .cf-items[hidden]{display:none}   /* display:flex가 hidden 기본값을 덮어 빈 박스가 남는다 */
+/* ---- 「새 대회 만들기」 세 층 구조 — 2026-09-21 PO 승인. **이 모달에만** 적용한다 ----
+   제목(.cf-head) / 본문(.sheet-body) / 행동(.acts-row). 본문만 스크롤해서 제목과 만들기 버튼이
+   늘 보이게 한다. 전에는 320×568 에서 열자마자 버튼이 화면 밖이고, 끝까지 내리면 제목이 사라졌다.
+   높이 상한의 40px 은 .modal 의 padding(20px) 위아래 합이다 — 여백을 바꾸면 여기도 바꾼다.
+   dvh 를 쓰고 못 읽는 브라우저를 위해 vh 를 먼저 둔다. 고정 height 가 아니라 상한이다. */
+#tourNewModal .sheet{max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);display:flex;flex-direction:column}
+#tourNewModal .sheet-body{min-height:0;overflow-y:auto}
+/* 아주 낮은 화면 — 제목·버튼을 붙잡아 두면 본문(한 칸 + 오류 한 줄)이 들어갈 자리가 없다.
+   그때는 붙잡지 않고 **모달 전체가 스크롤**하게 되돌린다. 본문 스크롤을 풀어 두 겹이 되지 않게 한다.
+   임계값은 이 모달에서 실측한 값이다 — 다른 모달에 옮기지 않는다. (DESIGN.md 「모달 크기 계약」) */
+@media (max-height:440px){
+  #tourNewModal .sheet{max-height:none;display:block}
+  #tourNewModal .sheet-body{overflow:visible}
+}
+/* 제출이 막히면 초점이 여기로 온다. 본문 스크롤 영역에 테가 잘리지 않게 안쪽으로 그린다. */
+/* 입력 오류 — 2026-10-01 PO: **위 요약은 개수와 한 줄 안내만**, 무엇이 왜 틀렸는지는 **그 칸 바로 아래**에.
+   요약에 같은 목록을 늘어놓으면 칸을 밀어낼 뿐이다. 색은 위험 색 계약 ③ red-700(읽는 글자·테두리). */
+/* 입력 중 안내 상자 — 선수 등록 모달(React `.sheet .save-state`)과 같은 작은 모양 (2026-10-02 PO).
+   44px 원 아이콘을 두지 않는다. 17px 마크(①) + 제목(② red-700) + 안내(중립색), 면은 ⑤ red-50. */
+.form-alert{display:grid;grid-template-columns:17px minmax(0,1fr);gap:8px;align-items:start;margin:14px 0 0;
+  padding:12px 14px;border-radius:12px;background:var(--red-c-soft)}
+.form-alert[hidden]{display:none}
+.form-alert > svg{margin-top:1.5px;color:var(--icon-on-red);fill:currentColor}
+.form-alert p{margin:0}
+.form-alert-title{font-size:13px;font-weight:700;line-height:20px;color:var(--on-error)}
+.form-alert .form-alert-body{margin-top:2px;font-size:12.5px;line-height:1.55;color:var(--on-surface-variant)}
+.field-err{margin:6px 0 0;padding-left:4px;font-size:12.5px;font-weight:600;line-height:1.45;color:var(--on-error)}
+:is(.field,.fieldrow) :is(input,select)[aria-invalid="true"]{box-shadow:inset 0 0 0 1.5px var(--on-error)}
+/* 초점 규칙은 값이 찬 select 의 초점 규칙(select:has(option:checked…):focus)보다 세야 한다 — 같은 무게를 맞추려고
+   :is() 안에 select:has(option:checked) 를 둔다(뒤에 오므로 이긴다). 없으면 고칠 칸에 초점이 가는 순간 검은 테로 바뀌었다(실측). */
+:is(.field,.fieldrow) :is(input,select:has(option:checked))[aria-invalid="true"]:focus{box-shadow:inset 0 0 0 2px var(--on-error)}
 .cf-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;font-weight:600;color:var(--on-surface);line-height:1.5}
 .cf-item i{flex:none;width:7px;height:7px;border-radius:50%;margin-top:6px;background:var(--outline)}
 .cf-item.lv-high i{background:var(--red)}
@@ -2104,12 +2207,24 @@ body.modal-open{overflow:hidden}
 /* 흰 글자를 얹는 붉은 면은 한 단계 어둡게 — #ef4444는 3.8:1로 AA 미달이다 */
 .opt.miss:hover{background:#b91c1c;color:#fff}
 .opt small{font-size:11px;font-weight:500;opacity:.7}
-.sheet .cancel{width:100%;height:44px;border:none;border-radius:var(--r-btn);background:transparent;color:var(--on-surface-variant);font-family:var(--font);font-weight:500;font-size:13px;cursor:pointer}
-.sheet .cancel:hover{background:var(--surface-hover)}
 
 /* 다이얼로그 하단 액션 (취소 / 확인) */
-.acts-row{display:flex;gap:8px;margin-top:18px}
-.acts-row .btn{flex:1}
+/* 두 버튼은 반씩 나눈다. **한 줄에 안 들어가면(긴 문구·글자 확대) 세로로 쌓인다** — 각 버튼이
+   제 글자 폭보다 좁아지지 않으므로(min-width:max-content) 반을 넘는 순간 줄이 바뀐다.
+   글자를 줄이거나 문구를 자르지 않는다.
+   좌우 안쪽 여백은 16px — 24px 이면 글자는 반에 들어가는데 여백 때문에 쌓였다("취소하고 닫기"
+   가 320 화면에서 1~2px 차이로). **글자 크기는 그대로다.**
+   버튼이 1개면 한 줄을 다 쓴다. 1개·3개 이상 구성은 따로 확인한다.
+   **쌓이면 주 버튼이 위, 취소가 아래다** (2026-10-01 PO). wrap-reverse 라서 나란할 때는 그대로
+   (취소 왼쪽·주 버튼 오른쪽)이고, 줄이 바뀔 때만 둘째 줄(주 버튼)이 위로 올라간다.
+   Tab 순서까지 맞추는 것은 JS(initStackedActions)가 한다. 이 wrap-reverse 는 JS 가 없을 때의 대비다. */
+/* --acts-split: 이 줄이 '반씩 나누는 줄'(1)인지 '우측 정렬 줄'(0)인지 JS 에 알려 준다. 버튼의 flex 값으로
+   읽으면 안 된다 — 쌓일 때 flex 를 바꾸므로 판단이 쌓임↔나란함을 끝없이 오간다(실측: 페이지가 멈췄다). */
+.acts-row{--acts-split:1;display:flex;flex-wrap:wrap-reverse;gap:8px;margin-top:18px}
+/* 쌓일 때는 JS(initStackedActions)가 주 버튼을 DOM 앞으로 옮기고 이 클래스를 붙인다 → 보이는 순서 = Tab 순서 */
+.acts-row.is-stacked{flex-direction:column;flex-wrap:nowrap}
+.acts-row.is-stacked .btn{flex:none;width:100%}
+.acts-row .btn{flex:1 1 calc(50% - 4px);min-width:max-content;padding:0 16px}
 
 /* 선수 교체 다이얼로그 — 나갈 선수(코트) / 들어올 선수(벤치)를 좌우로 나란히 선택 */
 .sheet.subs{max-width:520px}
@@ -2200,14 +2315,22 @@ body.modal-open{overflow:hidden}
   #page-record{padding-top:70px}
   /* 제목과 주요 동작은 어떤 폭에서도 한 줄에 둔다(PO). 세로로 쌓으면 버튼이 제목과
      상관없는 자리에 홀로 떠서 "무엇에 대한 버튼인지"가 사라진다. */
-  .page-head{flex-direction:row;align-items:center;gap:10px}
+  .page-head{flex-direction:row;flex-wrap:nowrap;align-items:center;gap:10px}
   .page-head h1{font-size:20px}
   .page-head > div:first-child{flex:1 1 auto;min-width:0}
-  .page-head > div:last-child{display:contents}
+  /* 버튼 묶음만 푼다. 제목 묶음 하나뿐인 화면(대회 설정 — 버튼이 div 밖에 있다)에서 :last-child 가
+     제목 묶음까지 풀어 제목·설명·버튼이 따로 줄을 바꿨다 (2026-10-07 발견) */
+  .page-head > div:last-child:not(:first-child){display:contents}
   /* 검색은 제목 줄에서 내려와 제 줄을 갖는다 — 제목에 딸린 동작이 아니라 화면의 도구다 */
   /* 제목 줄의 검색창은 내린다 — 상단바 돋보기가 그 일을 받는다(PO) */
   .page-head .searchTop{display:none}
   .page-head .btn{flex:none}
+  /* 제목 줄 버튼은 휴대폰에서 **아이콘만** (2026-10-07 PO) — 제목과 한 줄, 오른쪽 끝. 이름은 aria-label 로 읽힌다 */
+  .page-head .btn{width:44px;padding:0;gap:0}
+  .page-head .btn .btn-label{display:none}
+  /* 목록 행 버튼은 휴대폰에서 **수정만** 남긴다 (2026-10-07 PO). 삭제는 행 안에서 빼고, 화살표는 행을 누르는 것과
+     같은 동작이라 넓은 화면에서도 없앴다. 수정은 프로토타입대로 행 오른쪽 끝, 이름과 같은 줄 */
+  .lacts .iconbtn.danger{display:none}
   .searchTop{width:auto;flex:1 1 180px;min-width:0}
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stiles{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -2503,16 +2626,19 @@ body.modal-open{overflow:hidden}
         <div class="sub" id="rosterSub"></div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-outline" id="btnBulk"><svg class="ic cb" viewBox="0 0 32 32" aria-hidden="true"><path d="M32 14 28 14 28 10 26 10 26 14 22 14 22 16 26 16 26 20 28 20 28 16 32 16 32 14z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/><path d="M22,30H20V25a5,5,0,0,0-5-5H9a5,5,0,0,0-5,5v5H2V25a7,7,0,0,1,7-7h6a7,7,0,0,1,7,7Z"/></svg><span class="btn-label">여러 명 등록</span></button>
-        <button class="btn btn-primary" id="btnAdd"></button>
+        <button type="button" class="btn btn-outline" id="btnBulk" aria-label="여러 명 등록"><svg class="ic cb" viewBox="0 0 32 32" aria-hidden="true"><path d="M32 14 28 14 28 10 26 10 26 14 22 14 22 16 26 16 26 20 28 20 28 16 32 16 32 14z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/><path d="M22,30H20V25a5,5,0,0,0-5-5H9a5,5,0,0,0-5,5v5H2V25a7,7,0,0,1,7-7h6a7,7,0,0,1,7,7Z"/></svg><span class="btn-label">여러 명 등록</span></button>
+        <button type="button" class="btn btn-primary" id="btnAdd"></button>
       </div>
     </div>
 
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px">
+    <div class="rosterBar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px">
       <div class="tabs" id="rosterTabs" style="margin-bottom:0"></div>
+      <!-- 휴대폰: 탭 줄 오른쪽 끝의 돋보기 → 누르면 이 줄이 검색창으로 바뀐다 (2026-10-07 PO). 넓은 화면에서는 숨긴다. -->
+      <button type="button" class="btn btn-outline rosterSearchBtn" id="btnRosterSearch" aria-label="선수 검색" aria-expanded="false" aria-controls="rosterSearchWrap"><svg class="ic cb" viewBox="0 0 32 32" aria-hidden="true"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg></button>
       <div class="searchbox rosterSearch" id="rosterSearchWrap">
         <svg class="ic ic-sm cb" viewBox="0 0 32 32" aria-hidden="true"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>
         <input type="search" id="playerSearch" placeholder="선수 이름 · 등번호 검색" aria-label="선수 검색">
+        <button type="button" class="rosterSearchClose" id="btnRosterSearchClose" aria-label="검색 닫기"><svg class="ic ic-sm cb" viewBox="0 0 32 32" aria-hidden="true"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></button>
       </div>
     </div>
 
@@ -2632,7 +2758,6 @@ body.modal-open{overflow:hidden}
         <h1 id="tsTitle">대회 관리</h1>
         <div class="sub">대회 정보·참가 설정·경기 규칙·운영진 권한·공개 설정을 관리해요</div>
       </div>
-      <button type="button" class="btn btn-main" id="tsSaveBtn" aria-label="변경사항 저장">저장</button>
     </div>
 
     <div class="sec-title">대회 정보</div>
@@ -2732,9 +2857,20 @@ body.modal-open{overflow:hidden}
       <span class="m3check" aria-hidden="true"></span><span>대회 페이지 공개 — 참가팀·기록·순위를 외부에서 볼 수 있어요</span>
     </button>
 
-    <!-- 위험 액션은 다른 상세 화면(선수 삭제 등)과 동일하게 최하단·우측 정렬로 분리 -->
+    <!-- 위험 액션은 다른 상세 화면(선수 삭제 등)과 동일하게 최하단·왼쪽 정렬로 분리 (REQ-135) -->
     <div class="danger-zone">
       <button type="button" class="btn btn-danger btn-sm" id="tsDeleteBtn"><svg class="ic ic-sm cb" viewBox="0 0 32 32" aria-hidden="true"><path d="M12 12H14V24H12z"/><path d="M18 12H20V24H18z"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><path d="M12 2H20V4H12z"/></svg><span class="btn-label">대회 삭제</span></button>
+    </div>
+
+    <!-- 최종 저장은 항상 맨 아래 (2026-10-12 PO "최종 저장하기는 항상 하단에 넣어줘. 우측 상단은 입력에 대한 정보이고,
+         입력하는 정보는 저장할 때는 하단에 버튼을 위치해야 해"). 실제 앱 대회 설정의 아래 줄(.tset-acts)과 같은 짜임 —
+         안내 한 줄 + 취소 · 저장. 위험 동작(대회 삭제) 아래, 화면의 마지막. -->
+    <div class="ts-acts">
+      <p class="ts-acts-note">대회 정보·참가 설정·직접 입력 칸을 저장해요. 시합 방식·접수·공개·로고·포스터는 고를 때 바로 저장돼요.</p>
+      <div class="ts-acts-buttons">
+        <button type="button" class="btn btn-outline" id="tsCancelBtn">취소</button>
+        <button type="button" class="btn btn-main" id="tsSaveBtn">저장</button>
+      </div>
     </div>
   </main>
 
@@ -2746,7 +2882,7 @@ body.modal-open{overflow:hidden}
         <div class="sub" id="tourListSub"></div>
       </div>
       <span class="spacer"></span>
-      <button type="button" class="btn btn-main" id="btnNewTour"><svg class="ic cb" viewBox="0 0 32 32" aria-hidden="true"><path d="M17 15 17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"/></svg><span class="btn-label">새 대회</span></button>
+      <button type="button" class="btn btn-main" id="btnNewTour" aria-label="새 대회 만들기"><svg class="ic cb" viewBox="0 0 32 32" aria-hidden="true"><path d="M17 15 17 8 15 8 15 15 8 15 8 17 15 17 15 24 17 24 17 17 24 17 24 15z"/></svg><span class="btn-label">새 대회</span></button>
     </div>
     <div id="tourListBody" style="display:flex;flex-direction:column;gap:10px"></div>
   </main>
@@ -2764,18 +2900,25 @@ body.modal-open{overflow:hidden}
       <h2 id="tourNewTitle">새 대회 만들기</h2>
       <p class="cf-desc">대회를 만들면 팀 참가 승인부터 시작합니다. 아래 값은 만든 뒤에도 대회 설정에서 바꿀 수 있어요.</p>
     </div>
-    <div class="field"><label for="tnName">대회 이름</label>
-      <input id="tnName" type="text" placeholder="예) 2026 가을 정기 리그" autocomplete="off"></div>
-    <div class="field fieldrow" style="grid-template-columns:1fr 1fr">
-      <div><label for="tnStart">시작일</label><input id="tnStart" type="date"></div>
-      <div><label for="tnEnd">종료일</label><input id="tnEnd" type="date"></div>
+    <!-- 세 층 — 제목(.cf-head) / 본문(.sheet-body) / 행동(.acts-row). 2026-09-21 PO 승인.
+         본문만 스크롤해서 제목과 만들기 버튼이 늘 보이게 한다. 낮은 화면 예외는 CSS 쪽 주석.
+         오류 요약은 **본문 맨 위**다. 제목 층에 고정하면 오류가 늘수록 본문을 밀어낸다. -->
+    <div class="sheet-body">
+      <!-- 두 칸은 minmax(0,1fr) — 날짜 입력은 기본 너비(174px) 밑으로 줄지 않아 1fr 이면 칸 밖으로 18px 나갔다.
+           예전에는 모달 안쪽 여백에 묻혀 안 보였고, 본문이 스크롤 영역이 되면서 잘려 보였다. -->
+      <div class="form-alert" id="tnErrs" role="alert" hidden></div>
+      <div class="field"><label for="tnName">대회 이름</label>
+        <input id="tnName" type="text" placeholder="예) 2026 가을 정기 리그" autocomplete="off"></div>
+      <div class="field fieldrow" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
+        <div><label for="tnStart">시작일</label><input id="tnStart" type="date"></div>
+        <div><label for="tnEnd">종료일</label><input id="tnEnd" type="date"></div>
+      </div>
+      <div class="field fieldrow" style="grid-template-columns:minmax(0,1fr) minmax(0,1fr)">
+        <div><label for="tnCap">참가 팀 수</label><input id="tnCap" type="number" min="2" max="64" value="8"></div>
+        <div><label for="tnQuarters">경기 방식</label>
+          <select id="tnQuarters"></select></div>
+      </div>
     </div>
-    <div class="field fieldrow" style="grid-template-columns:1fr 1fr">
-      <div><label for="tnCap">참가 팀 수</label><input id="tnCap" type="number" min="2" max="64" value="8"></div>
-      <div><label for="tnQuarters">경기 방식</label>
-        <select id="tnQuarters"></select></div>
-    </div>
-    <ul class="cf-items" id="tnErrs" hidden></ul>
     <div class="acts-row">
       <button type="button" class="btn btn-outline" data-close-tournew>취소</button>
       <button type="button" class="btn btn-main" id="tnCreate">만들고 팀 모집 시작</button>
@@ -2791,6 +2934,9 @@ body.modal-open{overflow:hidden}
       <h2 id="gameNewTitle">새 경기 만들기</h2>
       <p class="cf-desc">두 팀과 시각을 정하면 일정에 올라갑니다. 기록은 시작 시각에 맞춰 '기록 시작'으로 엽니다.</p>
     </div>
+    <!-- 오류 요약은 **제목 바로 아래, 개수와 한 줄 안내만** (2026-10-01 PO). 이유는 각 칸 아래에 붙는다.
+         앞판은 맨 아래(버튼 위)에 목록으로 있었다. -->
+    <div class="form-alert" id="gnErrs" role="alert" hidden></div>
     <div class="field fieldrow" style="grid-template-columns:1fr 1fr">
       <div><label for="gnHome">홈 팀</label><select id="gnHome"></select></div>
       <div><label for="gnAway">원정 팀</label><select id="gnAway"></select></div>
@@ -2803,7 +2949,6 @@ body.modal-open{overflow:hidden}
     </div>
     <div class="field"><label for="gnCourt">코트</label>
       <select id="gnCourt"><option>A코트</option><option>B코트</option><option>C코트</option></select></div>
-    <ul class="cf-items" id="gnErrs" hidden></ul>
     <div class="acts-row">
       <button type="button" class="btn btn-outline" data-close-gamenew>취소</button>
       <button type="button" class="btn btn-main" id="gnCreate">일정에 추가</button>
@@ -2817,7 +2962,7 @@ body.modal-open{overflow:hidden}
     <h2 id="subTitle">리바운드</h2>
     <div class="sub" id="subDesc">선수 이름</div>
     <div class="opts" id="subOpts"></div>
-    <button type="button" class="cancel" id="subCancel">취소</button>
+    <div class="acts-row"><button type="button" class="btn btn-outline" id="subCancel">취소</button></div>
   </div>
 </div>
 
@@ -2842,7 +2987,12 @@ body.modal-open{overflow:hidden}
         <button type="button" class="btn btn-tonal btn-sm" id="teamLogoRemove" style="display:none">삭제</button>
       </div>
     </div>
-    <div class="acts-row m3">
+    <!-- 수정할 때만 보인다. 휴대폰 목록에서 삭제 버튼을 뺐으므로 여기서 지운다 (2026-10-08 PO).
+         대회 설정·선수 상세의 위험 동작과 같은 모양(.danger-zone, 왼쪽 정렬 — REQ-135) — 구분선 없이 간격으로 저장 줄과 뗀다 -->
+    <div class="danger-zone modal-danger" id="teamDangerZone" hidden>
+      <button type="button" class="btn btn-danger btn-sm" id="teamDeleteBtn"><svg class="ic ic-sm cb" viewBox="0 0 32 32" aria-hidden="true"><path d="M12 12H14V24H12z"/><path d="M18 12H20V24H18z"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><path d="M12 2H20V4H12z"/></svg>팀 삭제</button>
+    </div>
+    <div class="acts-row">
       <button type="button" class="btn btn-outline" id="teamCancel">취소</button>
       <button type="button" class="btn btn-main" id="teamSave">만들기</button>
     </div>
@@ -2858,7 +3008,7 @@ body.modal-open{overflow:hidden}
       <label>확대/축소</label>
       <input type="range" id="cropZoom" min="100" max="300" value="100">
     </div>
-    <div class="acts-row m3">
+    <div class="acts-row">
       <button type="button" class="btn btn-outline" id="cropCancel">취소</button>
       <button type="button" class="btn btn-main" id="cropApply">적용</button>
     </div>
@@ -2896,7 +3046,11 @@ body.modal-open{overflow:hidden}
       </button>
       <div class="sub" id="pCaptainSub">팀별로 한 명만 지정할 수 있어요 — 다른 선수가 이미 주장이면 이 선수로 바뀌어요.</div>
     </div>
-    <div class="acts-row m3">
+    <!-- 수정할 때만 보인다 (2026-10-08 PO) — 팀 수정 창과 같은 규칙 -->
+    <div class="danger-zone modal-danger" id="playerDangerZone" hidden>
+      <button type="button" class="btn btn-danger btn-sm" id="playerDeleteBtn"><svg class="ic ic-sm cb" viewBox="0 0 32 32" aria-hidden="true"><path d="M12 12H14V24H12z"/><path d="M18 12H20V24H18z"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><path d="M12 2H20V4H12z"/></svg>선수 삭제</button>
+    </div>
+    <div class="acts-row">
       <button type="button" class="btn btn-outline" id="playerCancel">취소</button>
       <button type="button" class="btn btn-main" id="playerSave">등록하기</button>
     </div>
@@ -2921,7 +3075,7 @@ body.modal-open{overflow:hidden}
       <div class="bulk-head" id="bulkHead"></div>
       <div id="bulkRows"></div>
     </div>
-    <div class="acts-row m3">
+    <div class="acts-row">
       <button type="button" class="btn btn-outline" id="bulkCancel">취소</button>
       <button type="button" class="btn btn-main" id="bulkSave">등록하기</button>
     </div>
@@ -2963,7 +3117,7 @@ body.modal-open{overflow:hidden}
       <button type="button" class="opt made" data-res="made">성공<small id="shotMadeLb"></small></button>
       <button type="button" class="opt miss" data-res="miss">실패<small>노골</small></button>
     </div>
-    <button type="button" class="cancel" id="shotCancel">취소</button>
+    <div class="acts-row"><button type="button" class="btn btn-outline" id="shotCancel">취소</button></div>
   </div>
 </div>
 
@@ -3019,7 +3173,7 @@ body.modal-open{overflow:hidden}
     </div>
     <div class="field"><label for="pfName">이름</label><input id="pfName" type="text" placeholder="이름"></div>
     <div class="field"><label for="pfEmail">이메일</label><input id="pfEmail" type="email" placeholder="you@example.com"></div>
-    <div class="acts-row m3">
+    <div class="acts-row">
       <button type="button" class="btn btn-outline" id="profileCancel">닫기</button>
       <button type="button" class="btn btn-main" id="profileSave">저장</button>
     </div>
@@ -3035,7 +3189,7 @@ body.modal-open{overflow:hidden}
     <button type="button" class="check-row" id="acNotify" role="checkbox" aria-checked="true" style="margin-top:4px">
       <span class="m3check" aria-hidden="true"></span><span>중요 알림 이메일 수신</span>
     </button>
-    <div class="acts-row m3">
+    <div class="acts-row">
       <button type="button" class="btn btn-outline" id="accountCancel">닫기</button>
       <button type="button" class="btn btn-main" id="accountSave">저장</button>
     </div>
@@ -3052,7 +3206,7 @@ body.modal-open{overflow:hidden}
     <button type="button" class="check-row" id="asPushNotify" role="checkbox" aria-checked="true" style="margin-top:4px">
       <span class="m3check" aria-hidden="true"></span><span>브라우저 푸시 알림 받기</span>
     </button>
-    <div class="acts-row m3">
+    <div class="acts-row">
       <button type="button" class="btn btn-outline" id="appSettingsCancel">닫기</button>
       <button type="button" class="btn btn-main" id="appSettingsSave">저장</button>
     </div>
@@ -3065,7 +3219,7 @@ body.modal-open{overflow:hidden}
     <h2 id="evtTitle">기록 관리</h2>
     <div class="sub" id="evtDesc"></div>
     <div class="acts" id="evtActs"></div>
-    <button type="button" class="cancel" id="evtCancel">닫기</button>
+    <div class="acts-row"><button type="button" class="btn btn-outline" id="evtCancel">닫기</button></div>
   </div>
 </div>
 
@@ -3074,7 +3228,7 @@ body.modal-open{overflow:hidden}
   <div class="sheet">
     <h2 id="ovrInfoTitle">OVR은 어떻게 정해지나요?</h2>
     <div class="sub">경기당 득점·리바운드·어시스트·스틸·블록 생산력과 슈팅 성공률(2점·3점·자유투)을 함께 반영해 계산돼요. 생산력과 효율이 높을수록 점수가 올라가고, 최대 99까지 올라가요. 선수 등급(브론즈·실버·골드)은 이렇게 산출된 OVR 구간에 따라 자동으로 매겨져요.<br><br>* 정식 랭킹 로직이 확정되기 전까지 사용하는 임시 산출 방식이에요.</div>
-    <button type="button" class="cancel" id="ovrInfoClose">닫기</button>
+    <div class="acts-row"><button type="button" class="btn btn-outline" id="ovrInfoClose">닫기</button></div>
   </div>
 </div>
 
@@ -3181,6 +3335,7 @@ var CARBON = {
   crown:'<path d="M26,7H24V6a2.0023,2.0023,0,0,0-2-2H10A2.0023,2.0023,0,0,0,8,6V7H6A2.0023,2.0023,0,0,0,4,9v3a4.0045,4.0045,0,0,0,4,4h.322A8.1689,8.1689,0,0,0,15,21.9341V26H10v2H22V26H17V21.9311A7.9661,7.9661,0,0,0,23.74,16H24a4.0045,4.0045,0,0,0,4-4V9A2.0023,2.0023,0,0,0,26,7ZM8,14a2.0023,2.0023,0,0,1-2-2V9H8Zm18-2a2.0023,2.0023,0,0,1-2,2V9h2Z"/>',
   more:'<circle cx="8" cy="16" r="2"/><circle cx="16" cy="16" r="2"/><circle cx="24" cy="16" r="2"/>',
   flip:'<path d="M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z"/><path d="M20,22h5.22A11,11,0,0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z"/>',
+  save:'<path d="M27.71,9.29l-5-5A1,1,0,0,0,22,4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V10A1,1,0,0,0,27.71,9.29ZM12,6h8v4H12Zm8,20H12V18h8Zm2,0V18a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2v8H6V6h4v4a2,2,0,0,0,2,2h8a2,2,0,0,0,2-2V6.41l4,4V26Z"/>',
   close:'<path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/>',
   verified:'<path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/><path fill="none" d="M14 21.591 9 16.591 10.591 15 14 18.409 21.41 11 23.005 12.585 14 21.591z" data-icon-path="inner-path"/>'
 };
@@ -3323,7 +3478,8 @@ document.addEventListener('click', function(e){
     st0.quarters = rs0.quarters; st0.overtime = rs0.ot;
     st0.foulOut = String(rs0.foulOut); st0.fouls = rs0.fouls; st0.timeouts = rs0.to.map(String);
   }
-  renderTournamentSettingsPage();   // 아래 칸도 새 방식의 값으로 함께 바뀐다
+  // 아래 직접 입력 칸은 새 방식의 값으로 바뀌고, 대회명·기간·정원 등 저장 전 입력은 남는다
+  renderTournamentSettingsPage(TS_DRAFT_BASIC);
   showToast('시합 방식을 바꿨어요 · ' + RULE_SETS.filter(function(r){ return r.id === tourRuleId; })[0].name);
 });
 
@@ -4196,7 +4352,9 @@ function openConfirm(opt){
   confirmCb = opt.onOk; confirmTrigger = opt.trigger || null;
   confirmModal.classList.add('open');
   confirmModal.setAttribute('aria-hidden','false');
-  yes.focus();
+  /* 한 박자 늦춘다 — .btn 의 transition:.15s 가 visibility 까지 옮겨서, 여는 그 순간엔 버튼이 아직
+     '숨김'으로 계산돼 focus() 가 무시됐다(초점이 뒤에 남음, 2026-10-08 발견). 다른 창의 setTimeout 초점과 같은 방식 */
+  setTimeout(function(){ if(confirmModal.classList.contains('open')) yes.focus(); }, 30);
 }
 function closeConfirm(){
   confirmModal.classList.remove('open');
@@ -4218,7 +4376,10 @@ function initConfirm(){
   });
   document.getElementById('confirmNo').addEventListener('click', closeConfirm);
   confirmModal.addEventListener('click', function(e){ if(e.target === confirmModal) closeConfirm(); });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && confirmModal.classList.contains('open')) closeConfirm(); });
+  // 먼저 받는다(capture) — 아래 깔린 창의 Esc 처리가 같은 Esc 로 함께 움직이지 않게 (2026-10-12)
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && confirmModal.classList.contains('open')){ e.stopImmediatePropagation(); e.preventDefault(); closeConfirm(); }
+  }, true);
 }
 
 /* ---- 선수 교체 다이얼로그 ----
@@ -4561,13 +4722,19 @@ function renderRosterTabs(){
     b.addEventListener('click', function(){ rosterTab = b.dataset.rtab; renderRosterPage(); });
   });
   // 탭에 따라 상단 CTA 라벨이 달라짐 (지금 무엇을 추가하는지 명확히)
-  document.getElementById('btnAdd').innerHTML = icon('plus','ic') + (rosterTab==='teams' ? '팀 만들기' : '선수 등록');
+  // 휴대폰에서는 글자를 숨기고 아이콘만 보인다 — 이름은 aria-label 로 읽힌다 (2026-10-07 PO)
+  var addLabel = rosterTab==='teams' ? '팀 만들기' : '선수 등록';
+  var btnAdd = document.getElementById('btnAdd');
+  btnAdd.innerHTML = icon('plus','ic') + '<span class="btn-label">' + addLabel + '</span>';
+  btnAdd.setAttribute('aria-label', addLabel);
   document.getElementById('btnBulk').style.display = rosterTab==='teams' ? 'none' : '';
   document.getElementById('rosterSub').textContent = TEAMS.length + '개 팀 · 선수 ' + PLAYERS.length + '명 등록됨';
   document.getElementById('pane-teams').classList.toggle('show', rosterTab==='teams');
   document.getElementById('pane-players').classList.toggle('show', rosterTab==='players');
   // 선수 검색은 선수 탭에서만 의미가 있으므로 팀 탭에서는 숨긴다
   document.getElementById('rosterSearchWrap').style.display = rosterTab==='players' ? '' : 'none';
+  document.getElementById('btnRosterSearch').style.display = rosterTab==='players' ? '' : 'none';
+  if(rosterTab !== 'players') document.querySelector('.rosterBar').classList.remove('is-searching');
 }
 
 // <TeamRow/>
@@ -4597,7 +4764,6 @@ function renderTeamList(){
       '<div class="lacts">'+
         '<button type="button" class="iconbtn" data-edit-team="'+t.id+'" aria-label="'+t.name+' 수정">'+icon('edit','ic ic-sm')+'</button>'+
         '<button type="button" class="iconbtn danger" data-del-team="'+t.id+'" aria-label="'+t.name+' 삭제">'+icon('trash','ic ic-sm')+'</button>'+
-        '<button type="button" class="iconbtn" data-open-team="'+t.id+'" aria-label="'+t.name+' 선수 보기">'+icon('arrowRight','ic ic-sm')+'</button>'+
       '</div>'+
     '</div></div></div>';
   }).join('');
@@ -4664,7 +4830,7 @@ function renderPlayerRoster(){
       '<button type="button" class="lmain" data-open-player="'+p.id+'" style="display:flex;align-items:center;gap:14px;border:none;background:transparent;font-family:var(--font);text-align:left;cursor:pointer;padding:0">'+
         avatar+
         '<span style="min-width:0">'+
-          '<span class="lname">'+p.name+(isCaptain?'<span class="tag-captain">C</span>':'')+
+          '<span class="lname"><span>'+p.name+'</span>'+(isCaptain?'<span class="tag-captain">C</span>':'')+
             '<span class="sub">'+(t?t.name:'미배정')+'</span></span>'+
           '<span class="lmeta">'+posTag(p.pos1)+posTag(p.pos2,true)+(body?'<span>'+body+'</span>':'')+'</span>'+
         '</span>'+
@@ -4672,7 +4838,6 @@ function renderPlayerRoster(){
       '<div class="lacts">'+
         '<button type="button" class="iconbtn" data-edit-player="'+p.id+'" aria-label="'+p.name+' 수정">'+icon('edit','ic ic-sm')+'</button>'+
         '<button type="button" class="iconbtn danger" data-del-player="'+p.id+'" aria-label="'+p.name+' 삭제">'+icon('trash','ic ic-sm')+'</button>'+
-        '<button type="button" class="iconbtn" data-open-player="'+p.id+'" aria-label="'+p.name+' 상세 보기">'+icon('arrowRight','ic ic-sm')+'</button>'+
       '</div>'+
     '</div>';
   }).join('');
@@ -4706,28 +4871,42 @@ function bindRosterActions(){
     b.addEventListener('click', function(){ openTeamModal(b.dataset.editTeam, b); });
   });
   document.querySelectorAll('[data-del-team]').forEach(function(b){
-    b.addEventListener('click', function(){
-      var t = teamById(b.dataset.delTeam); if(!t) return;
-      var n = playersOf(t.id).length;
-      openConfirm({ icon:'danger', title:'팀 삭제', trigger:b,
-        desc: t.name + ' 팀을 삭제해요.' + (n ? ' 소속 선수 '+n+'명은 미배정으로 바뀌어요.' : ''),
-        ok:'삭제', onOk:function(){
-          PLAYERS.forEach(function(p){ if(p.teamId===t.id) p.teamId = null; });
-          TEAMS = TEAMS.filter(function(x){ return x.id!==t.id; });
-          renderRosterPage(); renderStatsPage();
-        }});
-    });
+    b.addEventListener('click', function(){ confirmDeleteTeam(b.dataset.delTeam, b); });
   });
   document.querySelectorAll('[data-edit-player]').forEach(function(b){
     b.addEventListener('click', function(){ openPlayerModal(b.dataset.editPlayer, b); });
   });
   document.querySelectorAll('[data-del-player]').forEach(function(b){
-    b.addEventListener('click', function(){
-      var p = PLAYERS.find(function(x){ return x.id===b.dataset.delPlayer; }); if(!p) return;
-      openConfirm({ icon:'danger', title:'선수 삭제', desc:p.name+' 선수를 명단에서 삭제해요.', ok:'삭제', trigger:b,
-        onOk:function(){ PLAYERS = PLAYERS.filter(function(x){ return x.id!==p.id; }); renderRosterPage(); renderStatsPage(); }});
-    });
+    b.addEventListener('click', function(){ confirmDeletePlayer(b.dataset.delPlayer, b); });
   });
+}
+
+/* 팀·선수 삭제 확인 — 목록 행의 삭제(PC)와 수정 창 안 삭제(모든 폭) 두 곳에서 부른다.
+   onDone 은 지운 뒤 할 일(수정 창 닫기 등). 문구를 한 곳에 둬야 두 자리에서 다르게 묻지 않는다. */
+function confirmDeleteTeam(id, trigger, onDone){
+  var t = teamById(id); if(!t) return;
+  var n = playersOf(t.id).length;
+  openConfirm({ icon:'danger', title:'팀 삭제', trigger:trigger,
+    desc: t.name + ' 팀을 삭제해요.' + (n ? ' 소속 선수 '+n+'명은 미배정으로 바뀌어요.' : ''),
+    ok:'삭제', onOk:function(){
+      PLAYERS.forEach(function(p){ if(p.teamId===t.id) p.teamId = null; });
+      TEAMS = TEAMS.filter(function(x){ return x.id!==t.id; });
+      renderRosterPage(); renderStatsPage();
+      if(onDone) onDone();
+    }});
+}
+function confirmDeletePlayer(id, trigger, onDone){
+  var p = PLAYERS.find(function(x){ return x.id===id; }); if(!p) return;
+  openConfirm({ icon:'danger', title:'선수 삭제', desc:p.name+' 선수를 명단에서 삭제해요.', ok:'삭제', trigger:trigger,
+    onOk:function(){
+      PLAYERS = PLAYERS.filter(function(x){ return x.id!==p.id; }); renderRosterPage(); renderStatsPage();
+      if(onDone) onDone();
+    }});
+}
+/* 수정 창에서 지운 뒤 — 창을 닫고, 열었던 행은 사라졌으니 지금 탭으로 포커스를 돌린다 */
+function focusRosterTab(){
+  var on = document.querySelector('#rosterTabs [aria-pressed="true"]');
+  if(on) on.focus();
 }
 
 function renderRosterPage(){ renderRosterTabs(); renderTeamList(); renderTeamFilter(); renderPlayerRoster(); }
@@ -4751,12 +4930,14 @@ function openTeamModal(id, trigger){
   var t = id ? teamById(id) : null;
   document.getElementById('teamModalTitle').textContent = t ? '팀 수정' : '팀 만들기';
   document.getElementById('teamSave').textContent = t ? '저장' : '만들기';
+  document.getElementById('teamDangerZone').hidden = !t;
   document.getElementById('teamNameInput').value = t ? t.name : '';
   pickedColor = t ? t.color : TEAM_COLORS[TEAMS.length % TEAM_COLORS.length];
   pickedLogo = t ? (t.logo || null) : null;
   renderPalette();
   renderLogoPreview();
   teamModal.classList.add('open'); teamModal.setAttribute('aria-hidden','false');
+  snapshotModal(teamModal, function(){ return pickedColor + '|' + (pickedLogo || ''); });
   document.getElementById('teamNameInput').focus();
 }
 function closeTeamModal(){
@@ -4840,7 +5021,10 @@ function initLogoCrop(){
 
 function initTeamModal(){
   teamModal = document.getElementById('teamModal');
-  document.getElementById('teamCancel').addEventListener('click', closeTeamModal);
+  document.getElementById('teamCancel').addEventListener('click', function(){ closeIfClean(teamModal, closeTeamModal); });
+  document.getElementById('teamDeleteBtn').addEventListener('click', function(){
+    confirmDeleteTeam(editingTeamId, this, function(){ teamTrigger = null; closeTeamModal(); focusRosterTab(); });
+  });
   document.getElementById('teamSave').addEventListener('click', function(){
     var name = document.getElementById('teamNameInput').value.trim();
     if(!name){ document.getElementById('teamNameInput').focus(); return; }
@@ -4851,8 +5035,9 @@ function initTeamModal(){
     }
     closeTeamModal(); renderRosterPage(); renderStatsPage();
   });
-  teamModal.addEventListener('click', function(e){ if(e.target===teamModal) closeTeamModal(); });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && teamModal.classList.contains('open')) closeTeamModal(); });
+  teamModal.addEventListener('click', function(e){ if(e.target===teamModal) closeIfClean(teamModal, closeTeamModal); });
+  // 로고 자르기 창이 위에 떠 있으면 그 창 일이다 — 팀 창은 움직이지 않는다
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && teamModal.classList.contains('open') && !logoCropModal.classList.contains('open')) closeIfClean(teamModal, closeTeamModal); });
   initLogoCrop();
 }
 
@@ -4893,6 +5078,7 @@ function openPlayerModal(id, trigger){
   var p = id ? PLAYERS.find(function(x){ return x.id===id; }) : null;
   document.getElementById('playerModalTitle').textContent = p ? '선수 수정' : '선수 등록';
   document.getElementById('playerSave').textContent = p ? '저장' : '등록하기';
+  document.getElementById('playerDangerZone').hidden = !p;
   document.getElementById('pName').value = p ? p.name : '';
   document.getElementById('pNo').value = p && p.no!=null ? p.no : '';
   document.getElementById('pH').value = p && p.h ? p.h : '';
@@ -4918,31 +5104,40 @@ function updateCaptainNote(){
     : '팀별로 한 명만 지정할 수 있어요 — 다른 선수가 이미 주장이면 이 선수로 바뀌어요.';
 }
 /* ---- 쓰다 만 것을 실수로 버리지 않게 ----
-   팝업 바깥을 누르면 닫히는 게 기본인데, 한 글자라도 넣은 뒤라면 그 한 번의 실수로
-   입력이 통째로 사라진다. 바깥 클릭과 Esc에서만 되묻는다 — '취소' 버튼은 사람이
-   버리겠다고 이미 말한 것이라 묻지 않는다(물어보는 횟수가 늘면 아무도 안 읽는다). */
+   적은 것이 있으면 닫기 전에 묻는다 — **Esc · 취소 · 바깥 누르기 모두** (2026-10-12 PO "프로토타입에도 확인창 넣어줘").
+   예전에는 '취소' 버튼은 묻지 않았다(버리겠다고 이미 말한 것). 실제 앱(REQ-143·144)과 같게 취소도 묻는다 —
+   PO 가 "저장하지 않고 나가면 확인 창"을 정했고, 앱과 프로토타입이 갈리면 안 된다.
+   문구도 앱의 `DISCARD_CONFIRM`(src/components/confirm-dialog.tsx)과 같다. */
 /* 기준은 '열었을 때의 값'이다. defaultValue와 비교하면 폼을 채워서 여는 경우
    (선수 수정, 팀이 미리 골라진 등록)가 열자마자 '고친 것'으로 잡힌다 — 실제로 그랬다.
-   열 때 한 번 찍어 두고 그것과 비교한다. */
-function snapshotModal(root){
-  root.__snap = [].map.call(root.querySelectorAll('input,select,textarea'), function(el){
-    return (el.type === 'checkbox' || el.type === 'radio') ? String(el.checked) : el.value;
-  });
+   열 때 한 번 찍어 두고 그것과 비교한다. 칸 값 + 켜고 끄는 단추(aria-checked·aria-pressed) +
+   칸이 아닌 상태(팀 색·로고 등)는 `extra` 로 받는다. */
+function modalState(root){
+  return [].map.call(root.querySelectorAll('input,select,textarea,[aria-checked],[aria-pressed]'), function(el){
+    if(el.matches('input,select,textarea')){
+      if(el.type === 'checkbox' || el.type === 'radio') return String(el.checked);
+      return el.type === 'file' ? '' : el.value;   // 파일 칸은 고른 뒤 비운다 — 결과는 extra 가 본다
+    }
+    return el.getAttribute('aria-checked') || el.getAttribute('aria-pressed');
+  }).join('\u0001') + '\u0002' + (root.__extra ? root.__extra() : '');
+}
+function snapshotModal(root, extra){
+  root.__extra = extra || null;
+  root.__snap = modalState(root);
 }
 function modalIsDirty(root){
-  var snap = root.__snap;
-  if(!snap) return false;                 // 찍어 둔 게 없으면 판단하지 않는다
-  return [].some.call(root.querySelectorAll('input,select,textarea'), function(el, i){
-    var now = (el.type === 'checkbox' || el.type === 'radio') ? String(el.checked) : el.value;
-    return now !== snap[i];
-  });
+  if(root.__dirty) return root.__dirty();      // 줄을 더하고 빼는 창(여러 명 등록)은 자기 기준으로
+  if(root.__snap == null) return false;        // 찍어 둔 게 없으면 판단하지 않는다
+  return modalState(root) !== root.__snap;
 }
-function closeIfClean(root, close, what){
+function closeIfClean(root, close){
+  // 확인 창이 이미 떠 있으면 같은 Esc 로 다시 묻지 않는다
+  if(confirmModal && confirmModal.classList.contains('open')) return;
   if(!modalIsDirty(root)){ close(); return; }
   openConfirm({
-    icon:'danger', title:(what||'입력')+'을 취소할까요?',
-    desc:'지금까지 넣은 내용은 저장되지 않습니다.',
-    ok:'취소하고 닫기', trigger:null, onOk:close
+    icon:'danger', title:'저장하지 않은 변경',
+    desc:'입력한 내용이 있어요. 닫으면 사라져요.',
+    ok:'닫기', trigger:document.activeElement, onOk:close
   });
 }
 function closePlayerModal(){
@@ -4968,7 +5163,10 @@ function stepNumInput(input, dir){
 }
 function initPlayerModal(){
   playerModal = document.getElementById('playerModal');
-  document.getElementById('playerCancel').addEventListener('click', closePlayerModal);
+  document.getElementById('playerCancel').addEventListener('click', function(){ closeIfClean(playerModal, closePlayerModal); });
+  document.getElementById('playerDeleteBtn').addEventListener('click', function(){
+    confirmDeletePlayer(editingPlayerId, this, function(){ playerTrigger = null; closePlayerModal(); focusRosterTab(); });
+  });
   document.querySelectorAll('#playerModal .numstep').forEach(function(btn){
     btn.addEventListener('click', function(){
       stepNumInput(document.getElementById(btn.dataset.target), btn.classList.contains('up') ? 1 : -1);
@@ -5009,8 +5207,8 @@ function initPlayerModal(){
     closePlayerModal(); renderRosterPage(); renderStatsPage();
     if(document.getElementById('page-player').classList.contains('show')) renderPlayerDetail();
   });
-  playerModal.addEventListener('click', function(e){ if(e.target===playerModal) closeIfClean(playerModal, closePlayerModal, '선수 등록'); });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && playerModal.classList.contains('open')) closeIfClean(playerModal, closePlayerModal, '선수 등록'); });
+  playerModal.addEventListener('click', function(e){ if(e.target===playerModal) closeIfClean(playerModal, closePlayerModal); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && playerModal.classList.contains('open')) closeIfClean(playerModal, closePlayerModal); });
 }
 
 /* ---- 여러 명 한번에 등록 (엑셀 양식 · 업로드 · 직접 입력) ----
@@ -5085,12 +5283,15 @@ function openBulkModal(){
   document.getElementById('bulkSub').textContent = '엑셀 양식을 내려받아 채운 뒤 업로드하거나, 아래에서 직접 입력하세요. 이름만 있으면 돼요.';
   renderBulk();
   bulkModal.classList.add('open'); bulkModal.setAttribute('aria-hidden','false');
-  snapshotModal(bulkModal);
+  // 줄을 더하고 지우는 창이라 칸 순서로 견주면 빈 줄만 더해도 '고친 것'이 된다 — 적은 값이 있는지로 본다
+  bulkModal.__dirty = function(){
+    return bulkRows.some(function(r){ return Object.keys(r).some(function(k){ return r[k] != null && String(r[k]).trim() !== ''; }); });
+  };
 }
 function closeBulkModal(){ bulkModal.classList.remove('open'); bulkModal.setAttribute('aria-hidden','true'); }
 function initBulkModal(){
   bulkModal = document.getElementById('bulkModal');
-  document.getElementById('bulkCancel').addEventListener('click', closeBulkModal);
+  document.getElementById('bulkCancel').addEventListener('click', function(){ closeIfClean(bulkModal, closeBulkModal); });
   document.getElementById('btnBulkAddRow').addEventListener('click', function(){ bulkRows.push({}); renderBulk(); });
   document.getElementById('btnXlUpload').addEventListener('click', function(){ document.getElementById('xlFile').click(); });
   document.getElementById('xlFile').addEventListener('change', function(){
@@ -5111,8 +5312,8 @@ function initBulkModal(){
     });
     closeBulkModal(); rosterTab = 'players'; renderRosterPage();
   });
-  bulkModal.addEventListener('click', function(e){ if(e.target===bulkModal) closeIfClean(bulkModal, closeBulkModal, '여러 명 등록'); });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && bulkModal.classList.contains('open')) closeBulkModal(); });
+  bulkModal.addEventListener('click', function(e){ if(e.target===bulkModal) closeIfClean(bulkModal, closeBulkModal); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && bulkModal.classList.contains('open')) closeIfClean(bulkModal, closeBulkModal); });
 }
 
 /* ================================================================
@@ -5668,7 +5869,7 @@ function renderPlayerDetail(){
       return '<div class="badge"><span class="badgeCircle"><i></i></span><span class="badgeLabel">'+b+'</span></div>';
     }).join('')+'</div></div>';
 
-  // ③ 위험 액션은 최하단에 분리 — 설명 없이 버튼만 우측 정렬로 노출
+  // ③ 위험 액션은 최하단에 분리 — 설명 없이 버튼만 왼쪽 정렬로 노출 (REQ-135)
   var danger = '<div class="danger-zone">'+
     '<button type="button" class="btn btn-danger btn-sm" id="pdDelete">'+icon('trash','ic ic-sm')+'선수 삭제</button></div>';
 
@@ -6251,7 +6452,8 @@ function tourMenuRowHtml(t, idx, total, full){
         '<span class="tm-info"><span class="tm-name">'+t.name+'</span><span class="tm-sub"><span class="chip '+statusCls+' tm-status-badge">'+t.status+'</span>'+t.period+'</span></span>'+
       '</button>'+
       reorder +
-      '<button type="button" class="iconbtn" data-settings-tour="'+t.id+'" aria-label="'+t.name+' 수정">'+icon('settings','ic ic-sm')+'</button>'+
+      // 대회 수정은 톱니가 아니라 팀·선수 수정과 같은 연필이다 (2026-10-08 PO "톱니바퀴보다 수정이기 때문에…같은 아이콘으로 통일")
+      '<button type="button" class="iconbtn" data-settings-tour="'+t.id+'" aria-label="'+t.name+' 수정">'+icon('edit','ic ic-sm')+'</button>'+
       del +
     '</div>';
 }
@@ -6325,7 +6527,11 @@ function initTourSwitcher(){
    기획서 유저플로우: 대회 생성 → 참가 승인 → 조 편성 → 대진/일정 → 기록.
    여기서 만드는 건 첫 칸(대회 껍데기)까지다. 만든 뒤 참가 모집 상태로 두고,
    팀·조·대진은 대회 상세에서 이어 간다 — 한 다이얼로그에 다 넣으면 아무도 끝까지 못 채운다. */
+/* 닫을 때 **부른 자리로 초점을 돌려준다.** 전에는 문서 맨 앞(body)으로 떨어져 키보드 사용자가
+   "새 대회" 버튼을 다시 찾아야 했다 — 세 층 구조 적용 전부터 있던 결함이다(2026-09-21 확인). */
+var tourNewOpener = null;
 function openNewTournament(){
+  tourNewOpener = document.activeElement;
   var today = new Date(), pad = function(n){ return n < 10 ? '0'+n : ''+n; };
   var iso = function(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); };
   var later = new Date(today.getTime() + 30*24*3600*1000);
@@ -6337,26 +6543,69 @@ function openNewTournament(){
   showErrs([]);
   var m = document.getElementById('tourNewModal');
   m.classList.add('open'); m.setAttribute('aria-hidden','false');
+  snapshotModal(m);
   setTimeout(function(){ document.getElementById('tnName').focus(); }, 60);
 }
 function closeNewTournament(){
   var m = document.getElementById('tourNewModal');
   m.classList.remove('open'); m.setAttribute('aria-hidden','true');
+  var back = tourNewOpener; tourNewOpener = null;
+  if(back && back !== document.body && document.contains(back)) back.focus();
 }
-function showErrs(list){
-  var box = document.getElementById('tnErrs');
-  box.innerHTML = list.map(function(t){ return '<li class="cf-item lv-high"><i aria-hidden="true"></i>'+t+'</li>'; }).join('');
+/* 폼 오류 표시 — 2026-10-01 PO: **위 요약은 개수와 한 줄 안내만**, 무엇이 왜 틀렸는지는 **그 칸 바로 아래**.
+   요약에 같은 목록을 늘어놓으면 칸을 밀어낼 뿐이다. 칸은 aria-invalid 와 aria-describedby 로 아래 안내를
+   가리켜, 초점이 가면 읽기 프로그램이 이유를 읽는다. 새 대회·새 경기 모달이 함께 쓴다.
+   list: [{ field: 칸 id, text: 이유 }] — **칸 순서대로** 넣는다. 첫 항목으로 초점이 간다. */
+function showFormErrs(box, fields, list){
+  // 앞선 표시를 먼저 걷는다. 고친 칸에 옛 오류가 남으면 읽기 프로그램이 거짓말을 한다.
+  fields.forEach(function(id){
+    var el = document.getElementById(id);
+    el.removeAttribute('aria-invalid');
+    el.removeAttribute('aria-describedby');
+    var note = document.getElementById(id + 'Err');
+    if(note) note.remove();
+  });
+  list.forEach(function(e){
+    var el = document.getElementById(e.field);
+    var note = document.getElementById(e.field + 'Err');
+    if(note){ note.textContent += ' ' + e.text; }
+    else {
+      note = document.createElement('p');
+      note.className = 'field-err'; note.id = e.field + 'Err'; note.textContent = e.text;
+      el.insertAdjacentElement('afterend', note);
+    }
+    el.setAttribute('aria-invalid', 'true');
+    el.setAttribute('aria-describedby', note.id);
+  });
+  // 선수 등록 모달(React)의 안내 상자와 같은 모양 — 17px 마크 + 제목 한 줄 + 안내 한 줄 (2026-10-02 PO "공통 적용")
+  box.innerHTML = list.length
+    ? '<svg class="ic ic-sm cb" viewBox="0 0 32 32" aria-hidden="true">'+CARBON.alert+'</svg>'+
+      '<div><p class="form-alert-title">고쳐야 할 것이 '+list.length+'가지 있어요.</p>'+
+      '<p class="form-alert-body">빨간 칸 아래 안내를 보고 고쳐 주세요.</p></div>'
+    : '';
   box.hidden = !list.length;
 }
+/* 제출이 막혔을 때만 부른다 — **첫 빨간 칸으로** 스크롤하고 초점을 준다.
+   고치는 동안에는 부르지 않는다. 칸을 치는 사람의 초점을 빼앗지 않는다. */
+function focusFirstFormErr(list){
+  if(!list.length) return;
+  var el = document.getElementById(list[0].field);
+  el.scrollIntoView({ block:'nearest' });
+  el.focus({ preventScroll:true });
+}
+var TN_FIELDS = ['tnName','tnStart','tnEnd','tnCap'];
+var GN_FIELDS = ['gnHome','gnAway','gnDate','gnTime'];
+function showErrs(list){ showFormErrs(document.getElementById('tnErrs'), TN_FIELDS, list); }
 /* 검증은 '못 만들게 막는 것'만 본다 — 이름이 없으면 목록에서 찾을 수 없고, 기간이 거꾸로면
-   일정을 못 짜고, 팀이 둘 미만이면 대진이 안 나온다. 나머지는 나중에 고치면 되는 값이다. */
+   일정을 못 짜고, 팀이 둘 미만이면 대진이 안 나온다. 나머지는 나중에 고치면 되는 값이다.
+   각 오류는 **어느 칸의 것인지**를 함께 든다 — 요약에서 그 칸으로 보내야 한다. */
 function validateNewTournament(v){
   var errs = [];
-  if(!v.name) errs.push('대회 이름을 입력해 주세요');
-  else if(TOURNAMENTS.some(function(t){ return t.name === v.name; })) errs.push('같은 이름의 대회가 이미 있어요');
-  if(!v.start || !v.end) errs.push('대회 기간을 지정해 주세요');
-  else if(v.start > v.end) errs.push('종료일이 시작일보다 빨라요');
-  if(!(v.cap >= 2)) errs.push('참가 팀이 2팀 이상이어야 대진이 나와요');
+  if(!v.name) errs.push({ field:'tnName', text:'대회 이름을 입력해 주세요' });
+  else if(TOURNAMENTS.some(function(t){ return t.name === v.name; })) errs.push({ field:'tnName', text:'같은 이름의 대회가 이미 있어요' });
+  if(!v.start || !v.end) errs.push({ field: v.start ? 'tnEnd' : 'tnStart', text:'대회 기간을 지정해 주세요' });
+  else if(v.start > v.end) errs.push({ field:'tnEnd', text:'종료일이 시작일보다 빨라요' });
+  if(!(v.cap >= 2)) errs.push({ field:'tnCap', text:'참가 팀이 2팀 이상이어야 대진이 나와요' });
   return errs;
 }
 function createTournament(){
@@ -6369,7 +6618,7 @@ function createTournament(){
   };
   var errs = validateNewTournament(v);
   showErrs(errs);
-  if(errs.length) return;
+  if(errs.length){ focusFirstFormErr(errs); return; }
 
   var id = 'tour' + (Date.now().toString(36));
   var md = function(d){ return d.slice(5).replace('-', '.'); };
@@ -6404,7 +6653,13 @@ function renderTourListPage(){
   wireTourRowEvents(wrap, 'full');
 }
 
-function renderTournamentSettingsPage(){
+/* 저장 단추로만 저장되는 칸. 바로 저장되는 것(시합 방식·로고·포스터)을 바꿔 화면을 다시 그릴 때,
+   여기 적힌 칸의 **저장 전 값을 지우지 않고 되살린다** (2026-10-12 PO "응 고쳐줘" — 다시 그리면서 입력이 말없이 사라졌다) */
+var TS_DRAFT_BASIC = ['tsName','tsSport','tsStart','tsEnd','tsCap','tsRoster'];
+var TS_DRAFT_CUSTOM = ['tsPeriodMin','tsPeriodCount','tsOvertime','tsFoulOut','tsFouls','tsToFirst','tsToSecond','tsToOt'];
+function renderTournamentSettingsPage(keep){
+  // keep: 다시 그린 뒤에도 지금 값을 남길 칸 id 목록. 없으면(화면에 처음 들어올 때) 저장된 값으로 새로 그린다
+  var draft = (keep || []).map(function(id){ var el = document.getElementById(id); return [el, el.value]; });
   var s = settingsForTournament(VIEWING_TOURNAMENT_ID);
   document.getElementById('tsTitle').textContent = s.name;
   document.getElementById('tsName').value = s.name;
@@ -6438,8 +6693,42 @@ function renderTournamentSettingsPage(){
     return '<div class="recRow"'+(i>0?' style="margin-top:8px"':'')+'><span class="op">'+m.name+'</span><b>'+m.role+'</b></div>';
   }).join('');
   document.getElementById('tsDeleteBtn').disabled = TOURNAMENTS.length <= 1;
+  tsSnap = tsState();   // 지금 그린 값(= 저장된 값)이 '고치지 않음'의 기준 — 되살리기 전에 찍는다
+  draft.forEach(function(d){ d[0].value = d[1]; });   // 저장 전 입력은 그대로 — 기준과 달라 '저장하지 않은 변경'으로 남는다
 }
+/* ---- 저장하지 않고 떠날 때 묻기 (2026-10-12 PO "프로토타입 대회 설정에도 넣어줘") ----
+   실제 앱(REQ-143)과 같은 문구. 저장 단추로만 저장되는 칸(대회 정보·참가 설정·시합 방식)만 본다 —
+   접수·공개 토글과 로고·포스터는 누르는 순간 저장되므로 떠나도 잃는 게 없다.
+   화면 이동은 전부 해시(#…)라 hashchange 를 **capture 로 먼저** 받아 막고 주소를 되돌린 뒤 묻는다.
+   새로고침·탭 닫기는 브라우저 기본 창(beforeunload). */
+var tsSnap = null, tsLeaving = false;
+function tsState(){
+  return [].map.call(document.querySelectorAll('#page-tsettings input:not([type=file]), #page-tsettings select, #page-tsettings textarea'),
+    function(el){ return el.value; }).join('\u0001') + '\u0002' + tourRuleId;
+}
+function tsDirty(){
+  return tsSnap != null && document.getElementById('page-tsettings').classList.contains('show') && tsState() !== tsSnap;
+}
+window.addEventListener('hashchange', function(e){
+  if(tsLeaving){ tsLeaving = false; return; }
+  var from = new URL(e.oldURL).hash, to = new URL(e.newURL).hash;
+  if(from !== '#tsettings' || to === '#tsettings' || !tsDirty()) return;
+  e.stopImmediatePropagation();           // 화면을 아직 바꾸지 않는다
+  history.pushState(null, '', e.oldURL);  // 주소를 대회 설정으로 되돌린다(hashchange 는 다시 일지 않는다)
+  openConfirm({
+    icon:'danger', title:'저장하지 않은 변경',
+    desc:'저장하지 않은 변경이 있어요. 나가면 고친 내용이 사라져요.',
+    ok:'나가기', trigger:document.activeElement,
+    onOk:function(){ tsLeaving = true; location.href = e.newURL; }
+  });
+}, true);
+window.addEventListener('beforeunload', function(e){
+  if(!tsDirty()) return;
+  e.preventDefault(); e.returnValue = '';
+});
 function initTournamentSettingsPage(){
+  // 취소 = 전체 대회 목록으로. 고친 것이 있으면 떠나기 확인 창이 먼저 묻는다(hashchange 가드)
+  document.getElementById('tsCancelBtn').addEventListener('click', function(){ location.hash = '#tourlist'; });
   document.getElementById('tsSaveBtn').addEventListener('click', function(){
     var s = settingsForTournament(VIEWING_TOURNAMENT_ID), btn = this;
     s.name = document.getElementById('tsName').value.trim() || s.name;
@@ -6476,6 +6765,7 @@ function initTournamentSettingsPage(){
       syncTourSwitchDisplay();
     }
     renderTourMenu();
+    tsSnap = tsState();   // 저장했으니 지금이 새 기준
     btn.textContent = '저장됨';
     setTimeout(function(){ btn.textContent = '저장'; }, 1500);
   });
@@ -6491,7 +6781,8 @@ function initTournamentSettingsPage(){
     document.getElementById(inputId).addEventListener('change', function(e){
       var file = e.target.files[0]; if(!file) return;
       var reader = new FileReader();
-      reader.onload = function(ev){ settingsForTournament(VIEWING_TOURNAMENT_ID)[key] = ev.target.result; renderTournamentSettingsPage(); };
+      // 그림만 바뀐다 — 저장 전 입력(직접 입력 칸 포함)은 남긴다
+      reader.onload = function(ev){ settingsForTournament(VIEWING_TOURNAMENT_ID)[key] = ev.target.result; renderTournamentSettingsPage(TS_DRAFT_BASIC.concat(TS_DRAFT_CUSTOM)); };
       reader.readAsDataURL(file);
       e.target.value = '';
     });
@@ -6500,7 +6791,8 @@ function initTournamentSettingsPage(){
   bindImageUpload('tsPosterBtn', 'tsPosterInput', 'poster');
   document.getElementById('tsDeleteBtn').innerHTML = icon('trash','ic ic-sm')+'대회 삭제';
   document.getElementById('tsDeleteBtn').addEventListener('click', function(){
-    deleteTournament(VIEWING_TOURNAMENT_ID, this, function(){ location.hash = '#tourlist'; });
+    // 지운 대회의 설정 화면을 떠나는 것 — 묻지 않는다
+    deleteTournament(VIEWING_TOURNAMENT_ID, this, function(){ tsLeaving = true; location.hash = '#tourlist'; });
   });
 }
 /* 검수는 결국 "숫자가 맞는가"를 보는 일이다. 사람이 눈으로 훑는 대신 어긋난 곳을 먼저 짚어 준다.
@@ -6794,6 +7086,47 @@ function initPauseButton(){
    ① 열려 있는 동안 배경 스크롤 잠금
    ② Tab이 다이얼로그 밖으로 나가지 않도록 포커스 트랩
    (각 다이얼로그가 open/close 클래스를 직접 토글하므로, MutationObserver로 일괄 처리) */
+/* 모달 행동 버튼 2개 — 쌓일 때 **주 버튼이 위**(2026-10-01 PO)이면서 **Tab 순서도 위→아래**가 되게
+   한다(WCAG 2.4.3, 덱스 REQ-099). CSS 만으로는 둘을 같이 못 맞춘다 — wrap-reverse 는 보이는 것만
+   뒤집는다. 그래서 쌓일 때만 DOM 순서를 바꾼다(주 버튼 먼저), 나란할 때는 원래대로(취소 먼저).
+   쌓일지는 **글자 폭으로** 판단한다 — 지금 배치에 기대지 않으므로 바꾼 뒤에 다시 재도 같은 답이다.
+   JS 가 없을 때는 CSS 의 wrap-reverse 가 보이는 순서만이라도 맞춘다. */
+function actsNeedStack(row){
+  var btns = [].filter.call(row.children, function(el){ return el.tagName === 'BUTTON'; });
+  if(btns.length !== 2) return false;
+  var cs = getComputedStyle(row);
+  var gap = parseFloat(cs.columnGap) || 0;
+  var width = row.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+  var need = btns.map(function(b){
+    var r = document.createRange(); r.selectNodeContents(b);
+    var bs = getComputedStyle(b);
+    var w = r.getBoundingClientRect().width + parseFloat(bs.paddingLeft) + parseFloat(bs.paddingRight)
+          + parseFloat(bs.borderLeftWidth) + parseFloat(bs.borderRightWidth);
+    return Math.max(w, parseFloat(bs.minWidth) || 0);
+  });
+  var split = cs.getPropertyValue('--acts-split').trim() !== '0';   // 반씩 나누는 줄인가, 우측 정렬 줄인가
+  return split ? Math.max(need[0], need[1]) > (width - gap) / 2 + 0.5
+               : need[0] + need[1] + gap > width + 0.5;
+}
+function initStackedActions(){
+  [].forEach.call(document.querySelectorAll('.modal .acts-row'), function(row){
+    var btns = [].filter.call(row.children, function(el){ return el.tagName === 'BUTTON'; });
+    if(btns.length !== 2) return;
+    var cancel = btns[0], main = btns[1];               // 마크업 순서 = 나란할 때의 순서
+    function apply(){
+      var stack = actsNeedStack(row);
+      row.classList.toggle('is-stacked', stack);
+      var first = stack ? main : cancel;
+      if(row.firstElementChild === first) return;      // 이미 맞으면 건드리지 않는다
+      var had = document.activeElement;
+      row.insertBefore(first, row.firstElementChild);
+      if(had === cancel || had === main) had.focus({ preventScroll: true });   // 옮기다 초점을 잃지 않게
+    }
+    new ResizeObserver(apply).observe(row);
+    // 확인 창처럼 버튼 글자가 열 때마다 바뀌는 곳이 있다
+    new MutationObserver(apply).observe(row, { subtree:true, characterData:true, childList:true });
+  });
+}
 function initModalBehavior(){
   var modals = document.querySelectorAll('.modal');
 
@@ -6881,11 +7214,14 @@ function initProfileMenu(){
 var CURRENT_USER_PROFILE = { name:CURRENT_USER, role:'대회 관리자', email:'', notifyEmail:true, pushNotify:true, lang:'ko' };
 function makeSimpleModal(modalId){
   var modal = document.getElementById(modalId);
-  function open(){ modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); }
+  // 여는 쪽이 값을 채운 **뒤에** 기준을 찍는다 — open() 은 값 채우기 다음에 불린다
+  function open(){ modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); snapshotModal(modal); }
   function close(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
-  modal.addEventListener('click', function(e){ if(e.target===modal) close(); });
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && modal.classList.contains('open')) close(); });
-  return { open:open, close:close };
+  // 닫기 단추·배경·Esc — 고친 것이 있으면 먼저 묻는다 (2026-10-12 PO). 저장은 close 를 바로 부른다
+  function request(){ closeIfClean(modal, close); }
+  modal.addEventListener('click', function(e){ if(e.target===modal) request(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && modal.classList.contains('open')) request(); });
+  return { open:open, close:close, request:request };
 }
 function initProfileSubModals(){
   var u = CURRENT_USER_PROFILE;
@@ -6901,7 +7237,7 @@ function initProfileSubModals(){
     document.getElementById('pfEmail').value = u.email;
     profileM.open();
   });
-  document.getElementById('profileCancel').addEventListener('click', profileM.close);
+  document.getElementById('profileCancel').addEventListener('click', profileM.request);
   document.getElementById('profileSave').addEventListener('click', function(){
     u.name = document.getElementById('pfName').value.trim() || u.name;
     u.email = document.getElementById('pfEmail').value.trim();
@@ -6916,7 +7252,7 @@ function initProfileSubModals(){
     document.getElementById('acNotify').setAttribute('aria-checked', String(u.notifyEmail));
     accountM.open();
   });
-  document.getElementById('accountCancel').addEventListener('click', accountM.close);
+  document.getElementById('accountCancel').addEventListener('click', accountM.request);
   document.getElementById('acNotify').addEventListener('click', function(){
     var next = this.getAttribute('aria-checked') !== 'true';
     this.setAttribute('aria-checked', String(next));
@@ -6932,7 +7268,7 @@ function initProfileSubModals(){
     document.getElementById('asPushNotify').setAttribute('aria-checked', String(u.pushNotify));
     settingsM.open();
   });
-  document.getElementById('appSettingsCancel').addEventListener('click', settingsM.close);
+  document.getElementById('appSettingsCancel').addEventListener('click', settingsM.request);
   document.getElementById('asPushNotify').addEventListener('click', function(){
     var next = this.getAttribute('aria-checked') !== 'true';
     this.setAttribute('aria-checked', String(next));
@@ -7558,8 +7894,9 @@ document.addEventListener('click', function(e){
     var d = new Date(), p = function(n){ return String(n).padStart(2,'0'); };
     document.getElementById('gnDate').value = d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
     document.getElementById('gnTime').value = '';
-    document.getElementById('gnErrs').hidden = true;
+    showFormErrs(document.getElementById('gnErrs'), GN_FIELDS, []);
     m.classList.add('open'); m.setAttribute('aria-hidden','false');
+    snapshotModal(m);
     document.getElementById('gnHome').focus();
   }
   function close(){
@@ -7569,15 +7906,13 @@ document.addEventListener('click', function(e){
   function create(){
     var home = document.getElementById('gnHome'), away = document.getElementById('gnAway');
     var date = document.getElementById('gnDate').value, time = document.getElementById('gnTime').value;
+    // 칸 순서대로 — 첫 항목으로 초점이 간다
     var errs = [];
-    if(home.value === away.value) errs.push('같은 팀끼리는 경기를 만들 수 없어요');
-    if(!date) errs.push('날짜를 정해 주세요');
-    if(!time) errs.push('시각을 정해 주세요');
-    var box = document.getElementById('gnErrs');
-    if(errs.length){
-      box.innerHTML = errs.map(function(t){ return '<li class="cf-item lv-warn"><i></i>'+t+'</li>'; }).join('');
-      box.hidden = false; return;
-    }
+    if(home.value === away.value) errs.push({ field:'gnAway', text:'같은 팀끼리는 경기를 만들 수 없어요' });
+    if(!date) errs.push({ field:'gnDate', text:'날짜를 정해 주세요' });
+    if(!time) errs.push({ field:'gnTime', text:'시각을 정해 주세요' });
+    showFormErrs(document.getElementById('gnErrs'), GN_FIELDS, errs);
+    if(errs.length){ focusFirstFormErr(errs); return; }
     /* 실제 구현: POST /api/games — 여기서는 안내만 하고 닫는다.
        일정 배열에 밀어 넣는 것까지 흉내 내면 새로고침에 사라져 '만들었는데 없어졌다'가 된다. */
     var hn = TEAMS.filter(function(t){ return t.id===home.value; })[0].name;
@@ -7587,10 +7922,12 @@ document.addEventListener('click', function(e){
   }
   document.querySelectorAll('[data-new-game]').forEach(function(b){ b.addEventListener('click', open); });
   document.getElementById('gnCreate').addEventListener('click', create);
-  m.querySelectorAll('[data-close-gamenew]').forEach(function(b){ b.addEventListener('click', close); });
-  m.addEventListener('click', function(e){ if(e.target === m) close(); });
+  // 적은 것이 있으면 닫기 전에 묻는다 — 취소·배경·Esc 모두 (2026-10-12 PO)
+  var ask = function(){ closeIfClean(m, close); };
+  m.querySelectorAll('[data-close-gamenew]').forEach(function(b){ b.addEventListener('click', ask); });
+  m.addEventListener('click', function(e){ if(e.target === m) ask(); });
   document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape' && m.classList.contains('open')) close();
+    if(e.key === 'Escape' && m.classList.contains('open')) ask();
   });
 })();
 
@@ -7599,11 +7936,13 @@ document.addEventListener('click', function(e){
   var m = document.getElementById('tourNewModal');
   document.getElementById('btnNewTour').addEventListener('click', openNewTournament);
   document.getElementById('tnCreate').addEventListener('click', createTournament);
-  m.querySelectorAll('[data-close-tournew]').forEach(function(b){ b.addEventListener('click', closeNewTournament); });
+  // 적은 것이 있으면 닫기 전에 묻는다 — 취소·배경·Esc 모두 (2026-10-12 PO)
+  var ask = function(){ closeIfClean(m, closeNewTournament); };
+  m.querySelectorAll('[data-close-tournew]').forEach(function(b){ b.addEventListener('click', ask); });
   // 배경을 눌러도 닫는다. 시트 안쪽 클릭이 올라와 닫히지 않게 target이 배경일 때만.
-  m.addEventListener('click', function(e){ if(e.target === m) closeNewTournament(); });
+  m.addEventListener('click', function(e){ if(e.target === m) ask(); });
   document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape' && m.classList.contains('open')) closeNewTournament();
+    if(e.key === 'Escape' && m.classList.contains('open')) ask();
   });
   // 이름 칸에서 Enter로 바로 만들 수 있게 — 날짜·팀 수는 기본값이 이미 채워져 있다
   document.getElementById('tnName').addEventListener('keydown', function(e){
@@ -7664,6 +8003,7 @@ initTourSwitcher();
 initTournamentSettingsPage();
 initBulkModal();
 initModalBehavior();
+initStackedActions();
 initPauseButton();
 document.getElementById('btnAdd').addEventListener('click', function(){
   if(rosterTab === 'teams') openTeamModal(null, this); else openPlayerModal(null, this);
@@ -7693,6 +8033,22 @@ document.getElementById('btnFinish').addEventListener('click', function(){
 
 document.getElementById('playerSearch').addEventListener('input', function(){
   playerQuery = this.value; resetPlayerPaging(); renderPlayerRoster();
+});
+/* 휴대폰 검색 — 탭 줄 오른쪽 끝의 돋보기를 누르면 그 줄이 검색창으로 바뀌고 바로 입력할 수 있다 (2026-10-07 PO).
+   넓은 화면에서는 검색창이 늘 보이고 돋보기·닫기는 숨는다(CSS). */
+function setRosterSearching(on){
+  var bar = document.querySelector('.rosterBar'), btn = document.getElementById('btnRosterSearch'), input = document.getElementById('playerSearch');
+  bar.classList.toggle('is-searching', on);
+  btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+  if(on){ input.focus(); return; }
+  // 닫으면 검색어를 비운다 — 보이지 않는 검색어가 목록을 계속 거르면 "선수가 사라졌다"가 된다
+  if(input.value){ input.value = ''; playerQuery = ''; resetPlayerPaging(); renderPlayerRoster(); }
+  if(getComputedStyle(btn).display !== 'none') btn.focus();
+}
+document.getElementById('btnRosterSearch').addEventListener('click', function(){ setRosterSearching(true); });
+document.getElementById('btnRosterSearchClose').addEventListener('click', function(){ setRosterSearching(false); });
+document.getElementById('playerSearch').addEventListener('keydown', function(e){
+  if(e.key === 'Escape' && document.querySelector('.rosterBar').classList.contains('is-searching')){ e.stopPropagation(); setRosterSearching(false); }
 });
 renderRosterPage();
 renderStatsPage();

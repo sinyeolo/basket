@@ -37,6 +37,24 @@
   --green:#22c55e; --red:#ef4444; --amber:#f59e0b;
   --win:#22c55e; --on-win:#ffffff;   /* 승리 — 밝은 초록 하나로 통일(운영 콘솔과 같은 값) */
   --green-c:#d9f4e6; --on-green-c:#0c5c37; --red-c:#fde2e2; --on-red-c:#a41e1e;
+  /* ── 완료·위험 색 계약 (2026-09-17 PO 확정, 서비스 공통) ────────────────────
+     한 뜻을 네 층으로 나눠 쓴다. 자세한 근거는 DESIGN.md "완료·위험 색 계약" 과
+     design-system.html 색 섹션에 있다. 여기서 값을 새로 만들지 않는다.
+
+       마크(아이콘 글리프)  --icon-on-green green-600 / --icon-on-red  red-600
+       제목·짧은 라벨       --title-on-green green-700 / --title-on-red red-700
+       읽는 글자            --on-green-c    green-900 / --on-red-c     red-700
+       부품 면(칩·배지·버튼·아이콘 원)  --green-c green-200 / --red-c red-100
+       섹션·행 배경         (초록 없음)              / --red-c-soft    red-50
+
+     초록 제목 green-700 은 기록된 예외다(패널 위 2.71:1, 기준 3:1). 마크는 대비
+     기준의 대상이 아니다 — 접근성 표 "대비 · 마크 — 해당 없음".
+     이 화면에는 아이콘 원·상태 제목·오류 면을 쓰는 자리가 아직 없다.
+     앱과 값이 갈리지 않도록 정의만 맞춰 둔다. */
+  --icon-on-green:#22c55e; --icon-on-red:#d81d1d;
+  --on-error:#d81d1d; /* ⑥ 입력 오류 (2026-10-12 PO) — index.html 과 같은 :root 를 유지 */
+  --title-on-green:#1cae5a; --title-on-red:#a41e1e;
+  --red-c-soft:#feeeee;
   --home:#3b82f6; --away:#ef4444;
   --r-card:16px; --r-btn:100px;
   --e1:0 1px 2px rgba(0,0,0,.10),0 1px 3px rgba(0,0,0,.06);
