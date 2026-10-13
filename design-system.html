@@ -214,13 +214,23 @@ h3:first-of-type{margin-top:16px}
 .sk-s{height:9px}
 .sk-n{width:52px;height:13px;flex:none}
 @media (prefers-reduced-motion:reduce){ .sk::after{animation:none;opacity:0} }
-.d-toast{display:flex;align-items:flex-start;gap:9px;color:var(--ink);
+.d-toast{display:flex;align-items:center;gap:12px;color:var(--ink);width:fit-content;min-width:240px;max-width:504px;box-sizing:border-box;
   background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(18px) saturate(1.7);backdrop-filter:blur(18px) saturate(1.7);
-  border:1px solid var(--line);border-radius:12px;padding:13px 15px;font-size:13px;max-width:420px;
+  border:1px solid var(--line);border-radius:12px;padding:12px 16px;
   box-shadow:0 4px 10px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);margin-bottom:10px}
-.d-toast .d-toast.is-err .d-toast.is-undo .d-toast span{flex:1;line-height:1.5}
-.d-toast em{display:block;font-style:normal;font-size:12px;color:var(--muted);margin-top:3px}
-.d-toast b{font-family:var(--font);font-size:13px;font-weight:700;color:#d95f00;flex:none;align-self:center}
+.d-toast > .cbi{flex:none;width:20px;height:20px}
+.d-toast.is-done > .cbi{color:#22c55e}.d-toast.is-info > .cbi{color:#5b5a61}.d-toast.is-err > .cbi{color:#d81d1d}
+.d-toast span{flex:1;min-width:0;font-size:13px;font-weight:500;line-height:20px}
+.d-toast em{display:block;font-style:normal;font-size:12px;font-weight:400;line-height:18px;color:var(--muted);margin-top:2px}
+.d-toast b{flex:none;height:32px;margin:-6px -8px -6px 4px;padding:0 10px;display:inline-flex;align-items:center;border-radius:8px;
+  font-family:var(--font);font-size:13px;font-weight:600;color:#d95f00;cursor:pointer}
+.d-toast b:hover{background:#ffe7cf}
+.d-toast i{flex:none;width:32px;height:32px;margin:-6px -10px -6px 0;display:grid;place-items:center;border-radius:8px;color:var(--muted)}
+.d-toast i .cbi{width:16px;height:16px}
+.d-toast-stage{position:relative;height:120px;overflow:hidden;border-radius:12px;background:var(--line);margin-top:8px}
+.d-toast-stage .d-toast{position:absolute;left:0;right:0;bottom:16px;margin:0 auto;transform:translateY(calc(100% + 32px));transition:transform .2s cubic-bezier(.4,0,1,1)}
+.d-toast-stage .d-toast.on{transform:translateY(0);transition:transform .32s cubic-bezier(.2,.8,.25,1)}
+@media (prefers-reduced-motion:reduce){.d-toast-stage .d-toast{transform:none;opacity:0;transition:opacity .18s}.d-toast-stage .d-toast.on{opacity:1}}
 .d-shine{
   background-image:linear-gradient(100deg,
     var(--shine-base) 0 34%, var(--shine-mid) 43%, var(--shine-peak) 50%,
@@ -881,12 +891,14 @@ aside a.on{background:var(--variant);color:var(--ink)}
     <span class="b-s b-live">진행중</span><span class="b-s b-notice">준비 중</span><span class="b-s b-neutral">종료</span>
     <span class="b-m b-notice">접수 중</span><span class="b-m b-outline">초대 보냄</span><span class="b-m b-error">입력 횟수 초과</span><span class="b-m b-strong">지금</span><span class="b-m" style="background:#ede9fe;color:#6d28d9">SF</span>
     <span class="b-c b-brand">2</span><span class="b-c b-mono">12</span><span class="d-mark" style="background:#ff9100;width:18px;height:18px;font-size:11px">C</span>
+    <span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)"><b style="color:var(--ink);font-size:16px">이현수</b>서울 타이탄스<span style="width:6px;height:6px;border-radius:100px;background:#ff9100" role="img" aria-label="최근 등록"></span></span>
   </div>
   <div class="ramp">
     <div class="r"><span class="rl">상태 배지 S</span><span class="rs">높이 16 · 10px/700 · 좌우 6 · 반경 6 · 줄 높이 1 · 목록 줄 안 (상태 배지에 한해 10px 허용)</span><span class="rv">.tm-status · .badge-s</span></div>
     <div class="r"><span class="rl">상태 배지 M</span><span class="rs">높이 20 · 11px/700 · 좌우 8 · 반경 6 · 제목 옆·단독 (접수 중 · 검토 사유 · 포지션 · 연결 단계)</span><span class="rv">.badge-m</span></div>
     <div class="r"><span class="rl">숫자 배지</span><span class="rs">높이 18 · 최소 폭 18 · 11px/700 · 좌우 6 · 알약 · 주황 바탕 + 흰 글자(할 일) / 회색(정보)</span><span class="rv">.count</span></div>
     <div class="r"><span class="rl">마크</span><span class="rs">18 원 · 11px/800 · 주장 C · 팀 첫 글자</span><span class="rv">.tag-captain</span></div>
+    <div class="r"><span class="rl">점</span><span class="rs">6 원 · 브랜드색 · 글자·숫자 없음 · 알림 안 읽음 · 명단의 최근 등록(등록 후 24시간, 팀 이름 뒤) — 이름표 "최근 등록"을 붙인다</span><span class="rv">.new-dot</span></div>
     <div class="r"><span class="rl">톤 7</span><span class="rs">진행(주황+흰) · 주목(연주황+#d95f00) · 기본(회색) · 완료(초록) · 오류(#fde2e2+#d81d1d) · 대기(테두리) · 현재 위치(검정)</span><span class="rv">뜻이 색을 정한다</span></div>
   </div>
 
@@ -975,26 +987,37 @@ aside a.on{background:var(--variant);color:var(--ink)}
 
 <section id="toast">
   <h2>토스트 — 끝났다는 신호</h2>
-  <p class="note">동작이 끝난 것을 알리는 가장 가벼운 방법입니다.
-  콘솔과 선수 카드가 서로 다른 어두운 알약을 쓰고 있던 것을 아래 모양으로 맞췄습니다(2026-08-25).
+  <p class="note">동작이 끝난 것을 알리는 가장 가벼운 방법입니다. <b>2026-10-13 다듬음(PO, REQ-179·180)</b> —
+  상태 색 아이콘(Carbon 원 채움 하나로) · 아이콘 상하 가운데 · 제목 500 · 화면 아래 밖에서 올라옴 · 최대 폭 504 · 되돌리기는 오른쪽 끝 버튼 · 오류는 닫기.
   카드 화면에서도 토스트는 흰 시트가 올라와 있을 때만 뜹니다 — 어두운 무대 위에 얹힐 일이 없습니다(PO 확인).</p>
   <div class="demo dcol">
-    <div class="d-toast"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/><path fill="none" d="M14 21.591 9 16.591 10.591 15 14 18.409 21.41 11 23.005 12.585 14 21.591z" data-icon-path="inner-path"/></svg><span>기록이 확정됐어요</span></div>
-    <div class="d-toast is-undo"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M12 12H14V24H12z"/><path d="M18 12H20V24H18z"/><path d="M4,6V8H6V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V8h2V6ZM8,28V8H24V28Z"/><path d="M12 2H20V4H12z"/></svg><span>기록을 지웠어요</span><b>되돌리기</b></div>
-    <div class="d-toast is-err"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14C30,8.3,23.7,2,16,2z M14.9,8h2.2v11h-2.2V8z M16,25 c-0.8,0-1.5-0.7-1.5-1.5S15.2,22,16,22c0.8,0,1.5,0.7,1.5,1.5S16.8,25,16,25z"/><path fill="none" d="M17.5,23.5c0,0.8-0.7,1.5-1.5,1.5c-0.8,0-1.5-0.7-1.5-1.5S15.2,22,16,22 C16.8,22,17.5,22.7,17.5,23.5z M17.1,8h-2.2v11h2.2V8z" data-icon-path="inner-path" opacity="0"/></svg><span>저장하지 못했어요<em>연결을 확인하고 다시 시도해 주세요</em></span></div>
+    <div class="d-toast is-done"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/><path fill="none" d="M14 21.591 9 16.591 10.591 15 14 18.409 21.41 11 23.005 12.585 14 21.591z" data-icon-path="inner-path"/></svg><span>기록이 확정됐어요</span></div>
+    <div class="d-toast is-done"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/><path fill="none" d="M14 21.591 9 16.591 10.591 15 14 18.409 21.41 11 23.005 12.585 14 21.591z" data-icon-path="inner-path"/></svg><span>기록을 지웠어요</span><b role="button" tabindex="0">되돌리기</b></div>
+    <div class="d-toast is-info"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path fill="none" d="M16,8a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,13.875H17.125v-8H13v2.25h1.875v5.75H12v2.25h8Z" data-icon-path="inner-path"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,6a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,16.125H12v-2.25h2.875v-5.75H13v-2.25h4.125v8H20Z"/></svg><span>선수 수정 화면은 아직 준비 중이에요</span></div>
+    <div class="d-toast is-err"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14C30,8.3,23.7,2,16,2z M14.9,8h2.2v11h-2.2V8z M16,25 c-0.8,0-1.5-0.7-1.5-1.5S15.2,22,16,22c0.8,0,1.5,0.7,1.5,1.5S16.8,25,16,25z"/><path fill="none" d="M17.5,23.5c0,0.8-0.7,1.5-1.5,1.5c-0.8,0-1.5-0.7-1.5-1.5S15.2,22,16,22 C16.8,22,17.5,22.7,17.5,23.5z M17.1,8h-2.2v11h2.2V8z" data-icon-path="inner-path" opacity="0"/></svg><span>저장하지 못했어요<em>연결을 확인하고 다시 시도해 주세요</em></span><i aria-label="닫기"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></i></div>
+    <div class="d-toast is-done"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/><path fill="none" d="M14 21.591 9 16.591 10.591 15 14 18.409 21.41 11 23.005 12.585 14 21.591z" data-icon-path="inner-path"/></svg><span>서울 타이탄스에 2명을 등록했어요<em>초대는 아직 보내지 않았어요</em></span></div>
+  </div>
+  <p class="note">들고 남 — 아래 칸을 누르면 화면 아래 밖에서 올라옵니다.</p>
+  <div class="d-toast-stage" id="toastStage" role="button" tabindex="0" aria-label="토스트 올라오는 모습 보기">
+    <div class="d-toast is-done"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/><path fill="none" d="M14 21.591 9 16.591 10.591 15 14 18.409 21.41 11 23.005 12.585 14 21.591z" data-icon-path="inner-path"/></svg><span>시합 종류를 저장했어요</span></div>
   </div>
   <div class="ramp">
-    <div class="r"><span class="rl">자리</span><span class="rs">화면 아래 중앙 · 안전영역 위 16 · 최대 폭 420</span><span class="rv">bottom</span></div>
-    <div class="r"><span class="rl">모양</span><span class="rs">흰 면 78% + 배경 블러 18 · N200 테두리 1px · 반경 12 · e3</span><span class="rv">blur(18)</span></div>
+    <div class="r"><span class="rl">자리</span><span class="rs">화면 아래 가운데 · 아래에서 84 (모달 안 12) · 최소 240 · 최대 폭 504 (420 의 1.2배)</span><span class="rv">bottom</span></div>
+    <div class="r"><span class="rl">모양</span><span class="rs">흰 면 78% + 배경 블러 18 · N200 테두리 1px · 반경 12 · e3 · 안쪽 12·16 · 간격 12</span><span class="rv">blur(18)</span></div>
+    <div class="r"><span class="rl">뜻 3가지</span><span class="rs">완료 ✓ 초록 #22c55e · 안내 ⓘ 회색 #5b5a61 · 오류 ! 빨강 #d81d1d — Carbon *--filled 원 채움 하나로</span><span class="rv">tone</span></div>
+    <div class="r"><span class="rl">아이콘 · 글자</span><span class="rs">아이콘 20 상하 가운데 · 제목 13/500 줄 20 · 아래 줄 12/400 회색</span><span class="rv">20 · 500</span></div>
+    <div class="r"><span class="rl">되돌리기 · 닫기</span><span class="rs">오른쪽 끝 · 되돌리기 13/600 #d95f00 글자 버튼 · 오류에는 × · 누르는 칸 32</span><span class="rv">32</span></div>
     <div class="r"><span class="rl">머무는 시간</span><span class="rs">기본 3초 · 되돌리기가 붙으면 6초 · 오류는 사람이 닫을 때까지</span><span class="rv">3 / 6 / ∞</span></div>
-    <div class="r"><span class="rl">동시에</span><span class="rs">한 번에 하나. 새것이 오면 앞의 것을 밀어낸다</span><span class="rv">1</span></div>
-    <div class="r"><span class="rl">들고 남</span><span class="rs">아래에서 12px 올라오며 켜지고, 그대로 꺼진다 · 0.24초</span><span class="rv">transform · opacity</span></div>
+    <div class="r"><span class="rl">동시에</span><span class="rs">한 번에 하나. 새것이 오면 앞의 것을 바꾼다</span><span class="rv">1</span></div>
+    <div class="r"><span class="rl">들고 남</span><span class="rs">화면 아래 밖에서 올라옴 0.32초 감속 · 내려갈 때 0.2초 · 움직임 줄이기에서는 흐려지기만</span><span class="rv">transform</span></div>
   </div>
-  <div class="warn"><p><b>되돌릴 수 있는 동작에는 되돌리기를 붙입니다.</b> 그러면 삭제 앞에 확인 대화를
-  세우지 않아도 됩니다 — 물어보고 지우는 것보다, 지우고 되돌릴 수 있게 하는 쪽이 손이 덜 갑니다.</p></div>
-  <div class="warn"><p>토스트는 <b>사라지는 것</b>이라 꼭 알아야 하는 정보를 담지 않습니다.
-  검수 반려처럼 남아야 하는 것은 인라인 배너로 화면에 붙입니다.
-  스크린리더에는 <code>role="status"</code>로 알리고, 오류는 <code>role="alert"</code>로 올립니다.</p></div>
+  <div class="warn"><p><b>안내와 오류를 가릅니다.</b> "준비 중이에요"·"고칠 칸이 2개 있어요"는 안내입니다 — 틀린 칸은 그 자리에서 이미 빨갛게 말합니다.
+  오류는 저장 실패처럼 닫을 때까지 남겨야 하는 것에만 씁니다. 제목에 " · "로 두 말을 잇지 말고 뒷말은 아래 줄로 내립니다.</p></div>
+  <script>
+  (function(){var st=document.getElementById('toastStage'),t=st.querySelector('.d-toast'),tm;
+   function play(){clearTimeout(tm);t.classList.remove('on');void t.offsetWidth;setTimeout(function(){t.classList.add('on');tm=setTimeout(function(){t.classList.remove('on');},3000);},60);}
+   st.addEventListener('click',play);st.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();play();}});})();
+  </script>
 </section>
 
 <section id="pagination">
