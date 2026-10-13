@@ -269,8 +269,10 @@ html,body{background:var(--surface-container);color:var(--on-surface);font-famil
 .tm-info{min-width:0;flex:1}
 .tm-name{display:block;font-weight:600;font-size:13px;color:var(--on-surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tm-sub{display:block;font-size:11px;color:var(--on-surface-variant);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tm-status-badge{padding:1px 5px;font-size:11px;font-weight:700;margin-right:4px;vertical-align:1px}
-.tm-status-badge.live::before{width:4px;height:4px;margin-right:3px}
+/* 대회 상태 태그 크기 — 앱 .tm-status 와 같은 Label S 11/700/16 (2026-10-13 PO, REQ-170).
+   예전에는 .chip(13px · 5px 11px)이 뒤에 선언돼 이 크기를 덮어 25px 높이로 크게 보였다 — .chip 을 붙여 우선순위를 올린다 */
+.chip.tm-status-badge{display:inline-flex;align-items:center;justify-content:center;height:16px;padding:0 6px;border-radius:6px;font-size:10px;font-weight:700;line-height:1;margin-right:4px;vertical-align:1px} /* 상태 배지 S (REQ-171) */
+.chip.tm-status-badge.live::before{width:4px;height:4px;margin-right:4px}
 /* 대회 상태 태그 — 앱 .tm-status 와 같은 색 (2026-10-12 PO, REQ-166). .chip.live 는 경기 화면도 쓰므로 여기서만 덮는다 */
 .chip.tm-status-badge.live{background:var(--primary);color:#fff}
 .chip.tm-status-badge.live::before{background:#fff}
@@ -326,7 +328,7 @@ a.nitem:visited{color:inherit}
 .nitem.active{background:var(--main);color:var(--on-main);font-weight:600}
 .nitem .ni{width:18px;height:18px;flex:none;opacity:.9}
 .nitem.active .ni{opacity:1}
-.nitem .badge-n{margin-left:auto;background:var(--primary);color:var(--on-primary);font-size:11px;font-weight:700;min-width:22px;height:22px;border-radius:11px;display:flex;align-items:center;justify-content:center;padding:0 6px}
+.nitem .badge-n{margin-left:auto;background:var(--primary);color:var(--on-primary);font-size:11px;font-weight:700;line-height:1;min-width:18px;height:18px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 6px;box-sizing:border-box} /* 숫자 배지 18 (REQ-171·173) */
 .nitem.active .badge-n{background:var(--primary);color:var(--on-primary)}
 .nitem.disabled{cursor:default;opacity:.55}
 .nitem.disabled:hover{background:transparent}
@@ -620,7 +622,7 @@ button[disabled]{box-shadow:none!important}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .chip.neutral,.chip.info{background:var(--surface-variant);color:var(--on-surface-variant)}
 .chip.confirmed{background:var(--green-c);color:var(--on-green-c)}
-.chip.review{background:var(--red-c);color:var(--on-red-c)}
+.chip.review{background:var(--red-c);color:var(--on-error)} /* 검수 필요 — 오류 글자색 red-600 (REQ-171) */
 /* 검수 점검 결과 — high(빨강)는 확정 전에 봐야 하는 것, mid(노랑)는 사유가 있으면 넘어가도 되는 것 */
 .chip.caution{background:#fdf0d5;color:#8a5a00}
 .chip.ok{background:var(--green-c);color:var(--on-green-c)}
@@ -1266,7 +1268,7 @@ table.dt tbody tr.me{background:var(--mono-fill)}
   font-size:11px;font-weight:800;letter-spacing:-.01em}
 .gs-badge.st-live{background:var(--primary-container);color:var(--on-primary-container)}
 .gs-badge.st-soon{background:var(--surface-variant);color:var(--on-surface-variant)}
-.gs-badge.st-end{background:var(--red-c);color:var(--on-red-c)}
+.gs-badge.st-end{background:var(--red-c);color:var(--on-error)}
 .gs-badge.st-fix{background:var(--green-c);color:var(--on-green-c)}
 /* 흰 배경 위 텍스트에 순수 --primary(#ff9100)를 쓰면 대비가 2.26:1로 WCAG AA(4.5:1)에 크게 못 미친다.
    '진행중'을 브랜드컬러로 표시한다는 규칙은 유지하되, 다른 진행중 표시(.chip.live/.st-live)의 글자색과
