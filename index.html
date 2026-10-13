@@ -3070,8 +3070,8 @@ body.modal-open{overflow:hidden}
     <h2 id="bulkTitle">여러 명 한번에 등록</h2>
     <div class="sub" id="bulkSub">엑셀 양식을 내려받아 채운 뒤 업로드하거나, 아래에서 직접 입력하세요.</div>
     <div class="xlbar">
-      <button type="button" class="btn btn-tonal btn-sm" id="btnXlTemplate"><svg class="ic ic-sm cb" viewBox="0 0 32 32" aria-hidden="true"><path d="M26,24v4H6V24H4v4H4a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2h0V24Z"/><path d="M26 14 24.59 12.59 17 20.17 17 2 15 2 15 20.17 7.41 12.59 6 14 16 24 26 14z"/></svg><span class="btn-label">엑셀 양식 다운로드</span></button>
-      <button type="button" class="btn btn-tonal btn-sm" id="btnXlUpload"><svg class="ic ic-sm cb" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 18 7.41 19.41 15 11.83 15 30 17 30 17 11.83 24.59 19.41 26 18 16 8 6 18z"/><path d="M6,8V4H26V8h2V4a2,2,0,0,0-2-2H6A2,2,0,0,0,4,4V8Z"/></svg><span class="btn-label">엑셀 업로드</span></button>
+      <button type="button" class="btn btn-tonal btn-sm" id="btnXlTemplate"><svg class="ic ic-sm cb" viewBox="0 0 32 32" aria-hidden="true"><path d="M26,24v4H6V24H4v4H4a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2h0V24Z"/><path d="M26 14 24.59 12.59 17 20.17 17 2 15 2 15 20.17 7.41 12.59 6 14 16 24 26 14z"/></svg><span class="btn-label">양식 다운로드</span></button>
+      <button type="button" class="btn btn-tonal btn-sm" id="btnXlUpload"><svg class="ic ic-sm cb" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 18 7.41 19.41 15 11.83 15 30 17 30 17 11.83 24.59 19.41 26 18 16 8 6 18z"/><path d="M6,8V4H26V8h2V4a2,2,0,0,0-2-2H6A2,2,0,0,0,4,4V8Z"/></svg><span class="btn-label">업로드</span></button>
       <input type="file" id="xlFile" accept=".xlsx,.xls,.csv" hidden>
       <!-- 행 추가는 표의 오른쪽 위로 올린다(PO). 표 아래에 두면 행이 늘어날수록
            버튼이 화면 밖으로 밀려나, 정작 행을 더 넣고 싶을 때 스크롤을 해야 한다. -->
@@ -5318,6 +5318,8 @@ function initBulkModal(){
         teamId:null, pos1:r.pos1||null, pos2:r.pos2||null, h:r.h||null, w:r.w||null });
     });
     closeBulkModal(); rosterTab = 'players'; renderRosterPage();
+    // 저장되면 창을 닫고 알림으로 알린다 (2026-10-13 PO, REQ-176)
+    if(added) showToast(added+'명을 등록했어요 · 초대는 아직 안 보냈어요');
   });
   bulkModal.addEventListener('click', function(e){ if(e.target===bulkModal) closeIfClean(bulkModal, closeBulkModal); });
   document.addEventListener('keydown', function(e){ if(e.key==='Escape' && bulkModal.classList.contains('open')) closeIfClean(bulkModal, closeBulkModal); });
