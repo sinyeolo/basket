@@ -1998,18 +1998,28 @@ body.sheet-in .sheetHint{animation:sheetHintLoop 6s ease-in-out infinite}
 /* 이미지 저장 — 화이트 라운드(보조 액션). 흰 시트 위라 테두리로 형태를 잡아 준다 */
 .sheet .btn-white{background:#fff;color:var(--sh-on);border:1px solid var(--sh-border)}
 .sheet .btn-white:hover{background:var(--sh-bg2)}
-/* 토스트 — 운영 콘솔과 같은 모양. 이 화면에서도 토스트는 흰 시트가 올라와 있을 때만 뜬다
-   (공유·저장은 시트 안 버튼이라) 어두운 무대 위에 얹힐 일이 없다(PO 확인 2026-08-25). */
-.toast{position:fixed;bottom:24px;z-index:70;
-  left:0;right:0;margin:0 auto;width:-webkit-fit-content;width:fit-content;
-  transform:translateY(12px) scale(.98);transform-origin:50% 100%;
-  max-width:min(420px, calc(100vw - 32px));padding:13px 16px;border-radius:12px;
+/* 토스트 — 운영 콘솔과 같은 모양(DESIGN.md 토스트, 2026-10-13 PO 다듬기 REQ-179·180). 이 화면에서도 토스트는
+   흰 시트가 올라와 있을 때만 뜬다 (공유·저장은 시트 안 버튼이라) 어두운 무대 위에 얹힐 일이 없다(PO 확인 2026-08-25).
+   카드는 디자인 시스템 밖이지만 토스트는 카드가 아니라 공용 부품이라 같은 값을 쓴다. */
+.toast{--toast-bottom:24px;position:fixed;bottom:var(--toast-bottom);z-index:70;
+  left:0;right:0;margin:0 auto;width:-webkit-fit-content;width:fit-content;min-width:288px;max-width:min(504px, calc(100vw - 32px));box-sizing:border-box;
+  display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;
   background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(18px) saturate(1.7);backdrop-filter:blur(18px) saturate(1.7);
-  border:1px solid #e6e2ea;color:#1c1b1f;
-  font-size:13px;font-weight:600;box-shadow:0 4px 10px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);
-  opacity:0;pointer-events:none;transition:transform .24s cubic-bezier(.2,.8,.25,1),opacity .18s}
-.toast.show{transform:translateY(0) scale(1);opacity:1}
-@media (prefers-reduced-motion:reduce){.toast{transition:opacity .18s}}
+  border:1px solid #e6e2ea;color:#1c1b1f;box-shadow:0 4px 10px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);
+  transform:translateY(calc(100% + var(--toast-bottom) + 16px));visibility:hidden;pointer-events:none;
+  transition:transform .2s cubic-bezier(.4,0,1,1),visibility 0s .2s}
+.toast.show{transform:translateY(0);visibility:visible;pointer-events:auto;transition:transform .32s cubic-bezier(.2,.8,.25,1),visibility 0s}
+@media (prefers-reduced-motion:reduce){
+  .toast{transform:none;opacity:0;transition:opacity .18s,visibility 0s .18s}
+  .toast.show{opacity:1;transition:opacity .18s,visibility 0s}}
+.toast .toast-icon{flex:none;display:flex}
+.toast .toast-icon svg{width:20px;height:20px;fill:currentColor}
+.toast[data-tone="done"] .toast-icon{color:#22c55e}
+.toast[data-tone="info"] .toast-icon{color:#8d8c94}
+.toast[data-tone="error"] .toast-icon{color:#d81d1d}
+.toast .toast-text{flex:1;min-width:0}
+.toast .toast-title{display:block;font-size:13px;font-weight:500;line-height:20px}
+.toast .toast-sub{display:block;margin-top:2px;font-size:12px;line-height:18px;color:#6b6a72}
 
 /* ---------------- 하단 브랜드 푸터 ---------------- */
 /* 브랜드 푸터 앞 굵은 구분선 — 위쪽 안내문까지가 '내용'이고 여기부터는 서비스 표기라 성격이 다르다.
@@ -3932,20 +3942,34 @@ document.addEventListener('keydown', function(e){
 
 /* ---- 공유 (모의) ---- */
 var toast = document.getElementById('toast');
-function showToast(msg){
-  toast.textContent = msg; toast.classList.add('show');
-  setTimeout(function(){ toast.classList.remove('show'); }, 3000);
+/* 토스트 아이콘 — @carbon/icons checkmark--filled · information--filled (원 채움 하나로, REQ-180) */
+var TOAST_ICON = {
+  done:'<path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/><path fill="none" d="M14 21.591 9 16.591 10.591 15 14 18.409 21.41 11 23.005 12.585 14 21.591z" data-icon-path="inner-path"/>',
+  info:'<path fill="none" d="M16,8a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,13.875H17.125v-8H13v2.25h1.875v5.75H12v2.25h8Z" data-icon-path="inner-path"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,6a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,16.125H12v-2.25h2.875v-5.75H13v-2.25h4.125v8H20Z"/>'
+};
+var toastTimer = null;
+function showToast(msg, opts){
+  opts = opts || {};
+  var tone = opts.tone || 'done';
+  toast.dataset.tone = tone;
+  toast.innerHTML = '<span class="toast-icon"><svg viewBox="0 0 32 32" aria-hidden="true">'+TOAST_ICON[tone]+'</svg></span>'+
+    '<span class="toast-text"><span class="toast-title"></span>'+(opts.sub ? '<span class="toast-sub"></span>' : '')+'</span>';
+  toast.querySelector('.toast-title').textContent = msg;
+  if(opts.sub) toast.querySelector('.toast-sub').textContent = opts.sub;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 3000);
 }
 function doShare(){
   var shareData = { title:'BASKET COUNT · '+PLAYER.name+' 선수 카드', text:PLAYER.team+' · '+PLAYER.pos, url: location.href };
   if(navigator.share){ navigator.share(shareData).catch(function(){}); }
-  else if(navigator.clipboard){ navigator.clipboard.writeText(location.href); showToast('링크가 복사됐습니다 (프로토타입 · 실제 공개 링크 아님)'); }
-  else { showToast('이 브라우저에서는 공유를 쓸 수 없어요'); }
+  else if(navigator.clipboard){ navigator.clipboard.writeText(location.href); showToast('링크를 복사했어요', { sub:'프로토타입이라 실제 공개 링크는 아니에요' }); }
+  else { showToast('이 브라우저에서는 공유를 쓸 수 없어요', { tone:'info' }); }
 }
 document.getElementById('btnShare').addEventListener('click', doShare);
 document.getElementById('btnShareTop').addEventListener('click', doShare);
 document.getElementById('btnSaveImg').addEventListener('click', function(){
-  showToast('이미지 저장은 실제 구현 단계에서 서버 생성 방식으로 연결돼요');
+  showToast('이미지 저장은 아직 준비 중이에요', { tone:'info', sub:'실제 구현 단계에서 서버가 만들어 줘요' });
 });
 
 /* ---- OVR 계산 방식 안내 팝업 ---- */

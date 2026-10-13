@@ -835,18 +835,36 @@ button[disabled]{box-shadow:none!important}
 /* 조종석은 화면 맨 아래가 최근 기록 바다 — 그 위로 띄워야 가려지지 않는다 */
 /* 토스트 — 흰 바탕 화면에 어두운 알약을 띄우면 그것만 보인다. 흰 면에 배경 블러를 얹어
    아래 내용이 비치게 두면 "지나가는 말"로 읽힌다. 알약이 아니라 반경 12인 이유는
-   The Pill-Means-Press Rule — 누를 수 없는 것은 알약을 쓰지 않는다. */
-.toast{position:fixed;bottom:84px;z-index:200;
-  left:0;right:0;margin:0 auto;width:-webkit-fit-content;width:fit-content;
-  transform:translateY(12px) scale(.98);transform-origin:50% 100%;
-  display:flex;align-items:center;gap:9px;max-width:min(420px, calc(100vw - 32px));
-  padding:13px 16px;border-radius:12px;
+   The Pill-Means-Press Rule — 누를 수 없는 것은 알약을 쓰지 않는다.
+   2026-10-13 PO 다듬기(REQ-179·180): 상태 색 아이콘 · 아이콘 상하 가운데 · 제목 500 · 화면 아래 밖에서 올라옴 ·
+   최대 폭 504 · 되돌리기는 오른쪽 끝 글자 버튼 · 오류는 닫기. 앱 globals.css 의 .toast 와 같은 값 */
+.toast{--toast-bottom:84px;position:fixed;bottom:var(--toast-bottom);z-index:200;
+  left:0;right:0;margin:0 auto;width:-webkit-fit-content;width:fit-content;min-width:288px;max-width:min(504px, calc(100vw - 32px));box-sizing:border-box;
+  display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;
   background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(18px) saturate(1.7);backdrop-filter:blur(18px) saturate(1.7);
-  border:1px solid var(--outline-variant);color:var(--on-surface);
-  font-size:13px;font-weight:600;box-shadow:var(--e3);
-  opacity:0;pointer-events:none;transition:transform .24s cubic-bezier(.2,.8,.25,1),opacity .18s}
-.toast.on{transform:translateY(0) scale(1);opacity:1}
-@media (prefers-reduced-motion:reduce){.toast{transition:opacity .18s}}
+  border:1px solid var(--outline-variant);color:var(--on-surface);box-shadow:var(--e3);
+  transform:translateY(calc(100% + var(--toast-bottom) + 16px));visibility:hidden;pointer-events:none;
+  transition:transform .2s cubic-bezier(.4,0,1,1),visibility 0s .2s}
+.toast.on{transform:translateY(0);visibility:visible;pointer-events:auto;transition:transform .32s cubic-bezier(.2,.8,.25,1),visibility 0s}
+@media (prefers-reduced-motion:reduce){
+  .toast{transform:none;opacity:0;transition:opacity .18s,visibility 0s .18s}
+  .toast.on{opacity:1;transition:opacity .18s,visibility 0s}}
+.toast .toast-icon{flex:none;display:flex}
+.toast .toast-icon svg{width:20px;height:20px;fill:currentColor}
+.toast[data-tone="done"] .toast-icon{color:var(--icon-on-green)}
+.toast[data-tone="info"] .toast-icon{color:#8d8c94} /* N500 — 안내는 한 단 더 연하게 (REQ-181) */
+.toast[data-tone="error"] .toast-icon{color:var(--icon-on-red)}
+.toast .toast-text{flex:1;min-width:0}
+.toast .toast-title{display:block;font-size:13px;font-weight:500;line-height:20px}
+.toast .toast-sub{display:block;margin-top:2px;font-size:12px;font-weight:400;line-height:18px;color:var(--on-surface-variant)}
+.toast .toast-action{flex:none;height:32px;margin:-6px -8px -6px 4px;padding:0 10px;border:0;border-radius:8px;background:none;
+  font:inherit;font-size:13px;font-weight:600;color:var(--primary-strong-text);cursor:pointer}
+.toast .toast-action:hover{background:var(--primary-container)}
+.toast .toast-close{flex:none;display:grid;place-items:center;width:32px;height:32px;margin:-6px -10px -6px 0;border:0;border-radius:8px;
+  background:none;color:var(--on-surface-variant);cursor:pointer}
+.toast .toast-close:hover{background:var(--surface-container)}
+.toast .toast-close svg{width:16px;height:16px;fill:currentColor}
+.toast .toast-action:focus-visible,.toast .toast-close:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 .act.cooling{pointer-events:none;opacity:.5}
 .act.cooling::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:currentColor;opacity:.55;transform-origin:left;animation:cool var(--cool-ms,1000ms) linear forwards}
 @keyframes cool{from{transform:scaleX(1)}to{transform:scaleX(0)}}
@@ -1029,6 +1047,8 @@ button[disabled]{box-shadow:none!important}
    모자란 폭의 일부만 줄어 긴 이름이 버튼 위로 넘친다 */
 .lname .sub{flex:0 10000 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lname .tag-captain{flex:none}
+/* 최근 등록 점 — 알림의 안 읽음 점과 같은 6px 브랜드색 (REQ-177) */
+.new-dot{flex:none;width:6px;height:6px;border-radius:100px;background:var(--primary)}
 .lmeta{display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap;font-size:13px;color:var(--on-surface-variant)}
 /* 주장 서클 — 진한 주황 면에 흰 글자로 C, 이름 옆에 붙는다 */
 .tag-captain{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;
@@ -3343,6 +3363,7 @@ var CARBON = {
   more:'<circle cx="8" cy="16" r="2"/><circle cx="16" cy="16" r="2"/><circle cx="24" cy="16" r="2"/>',
   flip:'<path d="M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z"/><path d="M20,22h5.22A11,11,0,0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z"/>',
   save:'<path d="M27.71,9.29l-5-5A1,1,0,0,0,22,4H6A2,2,0,0,0,4,6V26a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V10A1,1,0,0,0,27.71,9.29ZM12,6h8v4H12Zm8,20H12V18h8Zm2,0V18a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2v8H6V6h4v4a2,2,0,0,0,2,2h8a2,2,0,0,0,2-2V6.41l4,4V26Z"/>',
+  informationFilled:'<path fill="none" d="M16,8a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,13.875H17.125v-8H13v2.25h1.875v5.75H12v2.25h8Z" data-icon-path="inner-path"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,6a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,16.125H12v-2.25h2.875v-5.75H13v-2.25h4.125v8H20Z"/>', // 안내 토스트 — @carbon/icons information--filled (REQ-180)
   close:'<path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/>',
   verified:'<path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/><path fill="none" d="M14 21.591 9 16.591 10.591 15 14 18.409 21.41 11 23.005 12.585 14 21.591z" data-icon-path="inner-path"/>'
 };
@@ -3487,7 +3508,7 @@ document.addEventListener('click', function(e){
   }
   // 아래 직접 입력 칸은 새 방식의 값으로 바뀌고, 대회명·기간·정원 등 저장 전 입력은 남는다
   renderTournamentSettingsPage(TS_DRAFT_BASIC);
-  showToast('시합 방식을 바꿨어요 · ' + RULE_SETS.filter(function(r){ return r.id === tourRuleId; })[0].name);
+  showToast('시합 방식을 바꿨어요', { sub: RULE_SETS.filter(function(r){ return r.id === tourRuleId; })[0].name });
 });
 
 // ---- 경기 기록 콘솔: 팀 + 쿼터 상태 (Game 상세) ----
@@ -3800,7 +3821,8 @@ var PLAYERS = [
     photo:'https://images.pexels.com/photos/20615486/pexels-photo-20615486.jpeg?auto=compress&cs=tinysrgb&w=900' },
   { id:'p2',  name:'박정우', en:'PARK JUNG WOO', no:11, teamId:'t1', pos1:'PG', pos2:'SG', h:178, w:72,
     photo:'https://images.pexels.com/photos/31747054/pexels-photo-31747054.jpeg?auto=compress&cs=tinysrgb&w=900' },
-  { id:'p3',  name:'이현수', en:'LEE HYUN SOO',  no:23, teamId:'t1', pos1:'C',  pos2:'PF', h:198, w:96 },
+  { id:'p3',  name:'이현수', en:'LEE HYUN SOO',  no:23, teamId:'t1', pos1:'C',  pos2:'PF', h:198, w:96,
+    addedAt: Date.now() - 2*3600e3 }, // 예시: 2시간 전에 등록 → 최근 등록 점 (REQ-177)
   { id:'p4',  name:'최영호', en:'CHOI YOUNG HO', no:15, teamId:'t1', pos1:'SG', h:181, w:75 },
   { id:'p5',  name:'한지훈', en:'HAN JI HOON',   no:32, teamId:'t1', pos1:'PF', h:190, w:88 },
   { id:'p6',  name:'이정호', en:'LEE JUNG HO',   no:3,  teamId:'t2', pos1:'SG', pos2:'SF', h:184, w:78 },
@@ -4127,7 +4149,7 @@ function setClockRunning(on){
 /* 시간이 다 됐을 때 — 중간 쿼터면 알리기만 하고, 마지막 쿼터면 무엇을 해야 하는지까지 말한다.
    자동으로 종료하지는 않는다: 버저비터 판정이나 미입력 기록이 남아 있을 수 있다. */
 function onQuarterTimeUp(){
-  if(MATCH.qNow < MATCH.qTotal){ showToast(MATCH.qNow + '쿼터 종료'); return; }
+  if(MATCH.qNow < MATCH.qTotal){ showToast(MATCH.qNow + '쿼터 종료', { tone:'info' }); return; }
   var tied = MATCH.home.score === MATCH.away.score;
   openConfirm({
     icon: tied ? 'alert' : 'ask',
@@ -4486,7 +4508,7 @@ function initJustInRelease(){
     if(!act) return;
     if(!selectedPlayer){
       e.stopImmediatePropagation();
-      showToast('선수를 먼저 선택해주세요');
+      showToast('선수를 먼저 선택해 주세요', { tone:'info' });
       return;
     }
     clearJustIn(selectedPlayer.team);
@@ -4609,12 +4631,29 @@ function btnLoading(el, on, label){
     if(el.dataset.label) el.textContent = el.dataset.label;
   }
 }
-function showToast(msg){
+/* 토스트 — opts: { tone:'done'|'info'|'error', sub:'아래 줄', action:{ label, onClick } }
+   머무는 시간: 기본 3초 · 되돌리기가 붙으면 6초 · 오류는 닫을 때까지 (DESIGN.md 토스트, REQ-180) */
+var TOAST_ICON = { done:'verified', info:'informationFilled', error:'alert' };
+/* icon() 은 손으로 그린 ICONS 를 먼저 고른다('alert' 가 두 벌) — 토스트는 Carbon 원 채움만 쓰므로 CARBON 에서 바로 그린다 */
+function toastIcon(key){ return '<svg class="cb" viewBox="0 0 32 32" aria-hidden="true">'+CARBON[key]+'</svg>'; }
+function hideToast(){ document.getElementById('toast').classList.remove('on'); clearTimeout(toastTimer); }
+function showToast(msg, opts){
+  opts = opts || {};
+  var tone = opts.tone || 'done';
   var t = document.getElementById('toast');
-  t.textContent = msg;
+  t.dataset.tone = tone;
+  t.innerHTML = '<span class="toast-icon">'+toastIcon(TOAST_ICON[tone])+'</span>'+
+    '<span class="toast-text"><span class="toast-title"></span>'+(opts.sub ? '<span class="toast-sub"></span>' : '')+'</span>'+
+    (opts.action ? '<button type="button" class="toast-action"></button>' : '')+
+    (tone === 'error' ? '<button type="button" class="toast-close" aria-label="닫기">'+toastIcon('close')+'</button>' : '');
+  t.querySelector('.toast-title').textContent = msg;
+  if(opts.sub) t.querySelector('.toast-sub').textContent = opts.sub;
+  if(opts.action){ var a = t.querySelector('.toast-action'); a.textContent = opts.action.label;
+    a.addEventListener('click', function(){ opts.action.onClick(); hideToast(); }); }
+  if(tone === 'error') t.querySelector('.toast-close').addEventListener('click', hideToast);
   t.classList.add('on');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(function(){ t.classList.remove('on'); }, 3000);
+  if(tone !== 'error') toastTimer = setTimeout(hideToast, opts.action ? 6000 : 3000);
 }
 
 // <SelectedPlayerBar/>
@@ -4698,7 +4737,7 @@ function initUndo(){
     var last = RECENT_EVENTS.filter(function(e){ return !e.deleted && !e.sys; })[0];
     if(!last) return;
     setEventDeleted(last, true);
-    showToast('되돌렸습니다 · ' + eventDesc(last));
+    showToast('되돌렸어요', { sub: eventDesc(last) });
   });
 }
 
@@ -4838,7 +4877,8 @@ function renderPlayerRoster(){
         avatar+
         '<span style="min-width:0">'+
           '<span class="lname"><span>'+p.name+'</span>'+(isCaptain?'<span class="tag-captain">C</span>':'')+
-            '<span class="sub">'+(t?t.name:'미배정')+'</span></span>'+
+            '<span class="sub">'+(t?t.name:'미배정')+'</span>'+
+            (p.addedAt && Date.now()-p.addedAt < 864e5 ? '<span class="new-dot" role="img" aria-label="최근 등록" title="최근 24시간 안에 등록"></span>' : '')+'</span>'+
           '<span class="lmeta">'+posTag(p.pos1)+posTag(p.pos2,true)+(body?'<span>'+body+'</span>':'')+'</span>'+
         '</span>'+
       '</button>'+
@@ -5203,7 +5243,7 @@ function initPlayerModal(){
       Object.keys(data).forEach(function(k){ p[k] = data[k]; });
       pid = p.id;
     } else {
-      data.id = 'p'+Date.now(); PLAYERS.push(data); pid = data.id;
+      data.id = 'p'+Date.now(); data.addedAt = Date.now(); PLAYERS.push(data); pid = data.id;
     }
     // 주장은 팀당 한 명 — 체크했으면 이 선수로 교체하고, 체크 해제했는데 자신이 주장이었다면 비운다
     if(newTeamId){
@@ -5314,12 +5354,12 @@ function initBulkModal(){
     var added = 0;
     bulkRows.forEach(function(r){
       if(!r.name || !String(r.name).trim()) return; // 이름 없는 행은 건너뜀
-      PLAYERS.push({ id:'p'+Date.now()+'_'+(added++), name:String(r.name).trim(), no:r.no!=null?r.no:null,
+      PLAYERS.push({ id:'p'+Date.now()+'_'+(added++), addedAt:Date.now(), name:String(r.name).trim(), no:r.no!=null?r.no:null,
         teamId:null, pos1:r.pos1||null, pos2:r.pos2||null, h:r.h||null, w:r.w||null });
     });
     closeBulkModal(); rosterTab = 'players'; renderRosterPage();
     // 저장되면 창을 닫고 알림으로 알린다 (2026-10-13 PO, REQ-176)
-    if(added) showToast(added+'명을 등록했어요 · 초대는 아직 안 보냈어요');
+    if(added) showToast(added+'명을 등록했어요', { sub:'초대는 아직 보내지 않았어요' });
   });
   bulkModal.addEventListener('click', function(e){ if(e.target===bulkModal) closeIfClean(bulkModal, closeBulkModal); });
   document.addEventListener('keydown', function(e){ if(e.key==='Escape' && bulkModal.classList.contains('open')) closeIfClean(bulkModal, closeBulkModal); });
@@ -6657,7 +6697,7 @@ function createTournament(){
   };
   closeNewTournament();
   switchTournament(id);
-  showToast('"'+v.name+'" 대회를 만들었어요 · 팀 모집이 열렸어요');
+  showToast('"'+v.name+'" 대회를 만들었어요', { sub:'팀 모집이 열렸어요' });
 }
 function renderTourListPage(){
   document.getElementById('tourListSub').textContent = '전체 '+TOURNAMENTS.length+'개';
@@ -7534,7 +7574,7 @@ function openEventDialog(index, trigger){
       if(b.dataset.act === 'restore') setEventDeleted(e, false);
       if(b.dataset.edit !== undefined){
         editEvent(e, opts2[Number(b.dataset.edit)].patch);
-        showToast('수정했습니다 · ' + eventDesc(e));
+        showToast('수정했어요', { sub: eventDesc(e) });
       }
       closeEventDialog();
       refreshConsole();
@@ -7645,7 +7685,7 @@ function renderReviewBar(){
         onOk: function(done){ /* 실제 구현: POST /api/games/:id/confirm → status end→fix */
           setTimeout(function(){          /* 프로토타입이라 서버가 없다 — 기다림만 흉내낸다 */
             matchConfirmed = true; renderReviewBar(); done();
-            showToast('결과를 확정했어요 · 공식 결과로 공개됩니다');
+            showToast('결과를 확정했어요', { sub:'공식 결과로 공개돼요' });
           }, 900);
         }
       });
@@ -7980,7 +8020,7 @@ document.addEventListener('click', function(e){
     var hn = TEAMS.filter(function(t){ return t.id===home.value; })[0].name;
     var an = TEAMS.filter(function(t){ return t.id===away.value; })[0].name;
     close();
-    showToast(date.slice(5).replace('-','.')+' '+time+' · '+hn+' vs '+an+' 경기를 만들었어요');
+    showToast('경기를 만들었어요', { sub: date.slice(5).replace('-','.')+' '+time+' · '+hn+' vs '+an });
   }
   document.querySelectorAll('[data-new-game]').forEach(function(b){ b.addEventListener('click', open); });
   document.getElementById('gnCreate').addEventListener('click', create);
