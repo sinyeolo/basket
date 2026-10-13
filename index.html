@@ -1209,11 +1209,12 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 
 /* M3 Filter chip — 선택 시 컨테이너 톤 + 체크 아이콘 (버튼처럼 solid로 채우지 않음) */
 .chipset{display:flex;flex-wrap:wrap;gap:8px}
-.chipsel{display:inline-flex;align-items:center;gap:6px;height:44px;padding:0 18px;border:1px solid var(--outline);border-radius:12px;background:transparent;font-family:var(--font);font-weight:500;font-size:13px;color:var(--on-surface);cursor:pointer;transition:.12s}
+/* 좌우 여백은 입력 칸과 같은 16(테두리 1 + 15). 간격은 고른 칩의 체크에만 — 숨은 체크에 gap 을 주면 글자가 왼쪽으로 6 쏠렸다 (2026-10-13 PO) */
+.chipsel{display:inline-flex;align-items:center;height:44px;padding:0 15px;border:1px solid var(--outline);border-radius:12px;background:transparent;font-family:var(--font);font-weight:500;font-size:13px;color:var(--on-surface);cursor:pointer;transition:.12s}
 .chipsel:hover{background:var(--surface-hover)}
 .chipsel.on{background:var(--main);color:var(--on-main);border-color:transparent;font-weight:700}
-.chipsel .ck{width:0;overflow:hidden;transition:width .14s}
-.chipsel.on .ck{width:16px}
+.chipsel .ck{width:0;overflow:hidden;transition:width .14s,margin .14s}
+.chipsel.on .ck{width:16px;margin-right:6px}
 .chipsel:disabled{opacity:.4;cursor:not-allowed}
 .chipsel:disabled:hover{background:transparent}
 
