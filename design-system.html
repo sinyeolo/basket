@@ -11,7 +11,7 @@
   --font:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
   --font-display:'Tektur',var(--font);
   --primary:#ff9100; --surface:#fff; --canvas:#f4eef2; --variant:#f4eef2; --head:#f8f7f9;
-  --ink:#1c1b1f; --muted:#6b6a72; --mono-on:#5b5a61; --on-red-c:#a41e1e;
+  --ink:#1c1b1f; --muted:#6b6a72; --mono-on:#5b5a61; --on-red-c:#a41e1e; --on-error:#d81d1d;
   --line:#e6e2ea; --line2:#c9c6cf;
 }
 *{box-sizing:border-box}
@@ -165,8 +165,23 @@ h3:first-of-type{margin-top:16px}
 .d-input.is-focus{outline:2px solid var(--ink);outline-offset:2px}
 .d-input.is-err{box-shadow:inset 0 0 0 2px #a41e1e}
 .d-input.is-dis{opacity:.38}
-.d-input.is-lock{background:var(--variant);color:var(--muted);box-shadow:none;cursor:not-allowed}
-.d-readout{padding-left:4px;font-size:16px;font-weight:600;line-height:24px;color:var(--ink)}
+/* 폼 입력 칸 — 실제 앱 .tset 과 같은 값 (REQ-231: 옛 검색 칸 모양 48·알약·13 을 쓰던 것을 바로잡음) */
+.tgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 12px}
+@media(max-width:640px){.tgrid{grid-template-columns:minmax(0,1fr)}}
+.tf{min-width:0}
+.tf label{display:block;padding-left:4px;margin-bottom:8px;font-size:13px;font-weight:600;color:var(--muted)}
+.tf .hint{display:block;margin-top:8px;padding-left:4px;font-size:13px;line-height:20px;color:var(--muted);font-style:normal}
+.tf .hint.er{color:var(--on-error);font-weight:600}
+.tf .req{color:var(--on-error)}
+.t-in{display:flex;align-items:center;height:52px;padding:0 16px;border-radius:14px;background:var(--surface);
+  box-shadow:inset 0 0 0 1px var(--line);font-size:16px;font-weight:500;color:var(--ink)}
+.t-in.ph{background:var(--variant);color:var(--muted)}
+.t-in.is-focus{background:var(--head);box-shadow:inset 0 0 0 2px var(--ink)}
+.t-in.is-err{box-shadow:inset 0 0 0 2px var(--on-error)}
+.t-in.is-lock{background:var(--variant);color:var(--muted);box-shadow:none;cursor:not-allowed}
+.t-readout{padding-left:4px;font-family:var(--font);font-size:16px;font-weight:500;line-height:24px;color:var(--ink)}
+/* 검색 칸 — 폼 칸과 다른 부품 (프로토타입 .input, 대시보드 통합 검색) */
+.t-search{display:flex;align-items:center;gap:10px;height:48px;padding:0 18px;border-radius:100px;background:var(--variant);color:var(--muted);font-size:13px;max-width:300px}
 /* 고르는 칸 — 콘솔의 .check-row/.m3check/.m3radio와 같은 값 */
 .d-pick{display:flex;align-items:center;gap:10px;min-height:44px;font-size:13px;font-weight:500}
 .d-chipset{display:flex;flex-wrap:wrap;gap:8px}
@@ -824,27 +839,36 @@ aside a.on{background:var(--variant);color:var(--ink)}
 
 <section id="inputs">
   <h2>입력</h2>
-  <p class="note">사람이 값을 넣는 곳이라 <b>무엇이 잘못됐는지</b>를 그 자리에서 말해 줘야 합니다.</p>
-  <div class="demo dcol">
-    <div class="f"><label>선수 이름</label><span class="d-input ph">이름을 입력하세요</span><em>비어 있음 — 무엇을 넣는 칸인지 알린다</em></div>
-    <div class="f"><label>선수 이름</label><span class="d-input">김민수</span></div>
-    <div class="f"><label>선수 이름</label><span class="d-input is-focus">김민수</span><em>대회 참가 신청서의 이름과 같아야 해요</em></div>
-    <div class="f"><label>등번호</label><span class="d-input is-err">99</span><em class="er">이미 같은 팀에 99번이 있어요</em></div>
-    <div class="f"><label>이름</label><span class="d-input is-lock">이현수</span><em>잠김 — 선수 본인 계정과 연결돼 이름은 바꿀 수 없어요</em></div>
-    <div class="f"><label>소속 팀</label><span class="d-readout">서울 타이탄스</span><em>읽기 값 — 바꾸지 않는 값은 상자 없이 글자로</em></div>
+  <p class="note">사람이 값을 넣는 곳이라 <b>무엇이 잘못됐는지</b>를 그 자리에서 말해 줘야 합니다.
+  아래 예시는 실제 앱의 폼 칸(<code>.tset</code>)과 같은 값입니다 — 선수 등록·수정 창, 대회 설정.</p>
+  <div class="demo paper">
+    <div class="tgrid" style="width:100%">
+      <div class="tf"><label>이름 <span class="req">*</span></label><span class="t-in ph">홍길동</span><span class="hint">비어 있음 — 무엇을 넣는 칸인지 알린다</span></div>
+      <div class="tf"><label>이름 <span class="req">*</span></label><span class="t-in">김민수</span><span class="hint">값이 참 — 흰 바탕</span></div>
+      <div class="tf"><label>영문 이름 (선택)</label><span class="t-in is-focus">Kim Min Su</span><span class="hint">포커스 — 안내 글은 그대로 둔다</span></div>
+      <div class="tf"><label>영문 이름 (선택)</label><span class="t-in is-err">Lee 현수</span><span class="hint er">영문 이름은 영문 알파벳으로 60자까지 적어 주세요</span></div>
+      <div class="tf"><label>이름 <span class="req">*</span></label><span class="t-in is-lock">이현수</span><span class="hint">선수 본인 계정과 연결돼 이름은 바꿀 수 없어요</span></div>
+      <div class="tf"><label>소속 팀</label><span class="t-readout">서울 타이탄스</span><span class="hint">읽기 값 — 바꾸지 않는 값은 상자 없이 글자로</span></div>
+    </div>
   </div>
   <div class="ramp">
-    <div class="r"><span class="rl">기본</span><span class="rs">높이 48 · 좌우 18 · 반경 Pill · 비어 있으면 N100, 값이 차면 Paper · 테두리 없음</span><span class="rv">13px</span></div>
-    <div class="r"><span class="rl">비어 있음</span><span class="rs">무엇을 넣는 칸인지 알린다. 라벨을 대신하지 않는다</span><span class="rv">N600</span></div>
-    <div class="r"><span class="rl">포커스</span><span class="rs">2px 링 · 도움말은 그대로 둔다</span><span class="rv">N950</span></div>
-    <div class="r"><span class="rl">오류</span><span class="rs">2px 빨간 테두리 + 아래 문장. 색만으로 말하지 않는다</span><span class="rv">red-700</span></div>
-    <div class="r"><span class="rl">잠김</span><span class="rs">값은 보이지만 바꿀 수 없는 칸 — 회색 바탕 · 테두리 없음 · 흐린 글자 · 금지 커서. 이유는 칸 아래 글로 (선수 수정 창의 본인 연결 이름, REQ-229)</span><span class="rv">N100 · N600</span></div>
-    <div class="r"><span class="rl">읽기 값</span><span class="rs">바꾸지 않는 값은 칸을 그리지 않는다 — 상자 없이 16/600 글자, 라벨 시작점(4)에 맞춤. 입력 칸으로 오해하지 않게 (선수 수정 창의 소속 팀, REQ-229)</span><span class="rv">16 · 600</span></div>
+    <div class="r"><span class="rl">기본</span><span class="rs">높이 52 · 좌우 16 · 반경 14 · 글자 16/500(휴대폰 확대 방지) · 1px 안쪽 선 · 비어 있으면 N100, 값이 차면 Paper</span><span class="rv">.tset input</span></div>
+    <div class="r"><span class="rl">칸 이름 · 안내</span><span class="rs">칸 이름 13/600 회색 · 왼쪽 4 · 아래 8 — 안내·오류는 위 8 · 13/20 · 같은 4 들여쓰기 · 칸 사이 가로 12 · 세로 16</span><span class="rv">13</span></div>
+    <div class="r"><span class="rl">비어 있음</span><span class="rs">자리 표시 글자는 무엇을 넣는 칸인지 알린다. 라벨을 대신하지 않는다</span><span class="rv">N600</span></div>
+    <div class="r"><span class="rl">포커스</span><span class="rs">바탕이 hover 톤 + 칸 <b>안쪽</b> 2px 검정 선(그림자 — 바깥 선이 아니라 자리가 밀리지 않는다)</span><span class="rv">N950</span></div>
+    <div class="r"><span class="rl">오류</span><span class="rs">안쪽 2px 빨간 선 + 칸 아래 문장 13/600. 색만으로 말하지 않는다 (2026-10-12 PO "700은 너무 찐해")</span><span class="rv">red-600</span></div>
+    <div class="r"><span class="rl">잠김</span><span class="rs">값은 보이지만 바꿀 수 없는 칸 — 회색 바탕 · 안쪽 선 없음 · 흐린 글자 · 금지 커서. 이유는 칸 아래 글로 (선수 수정 창의 본인 연결 이름, REQ-229)</span><span class="rv">N100 · N600</span></div>
+    <div class="r"><span class="rl">읽기 값</span><span class="rs">바꾸지 않는 값은 칸을 그리지 않는다 — 상자 없이, 글자는 입력 칸 값과 같은 16/500, 라벨 시작점(4)에 맞춤. 입력 칸으로 오해하지 않게 (선수 수정 창의 소속 팀, REQ-229)</span><span class="rv">16 · 500</span></div>
   </div>
-  <div class="warn"><p>검증은 <b>칸을 떠날 때</b> 알립니다 — 타이핑 중에 빨간 줄이 뜨면
-  아직 다 쓰지도 않았는데 틀렸다고 하는 셈이고, 제출할 때 한 번에 몰아 보여 주면 어디를 고칠지 찾아야 합니다.</p></div>
+  <h3>검색 칸 — 폼 칸과 다른 부품</h3>
+  <div class="demo paper"><span class="t-search">선수·팀·경기 검색</span></div>
+  <div class="ramp">
+    <div class="r"><span class="rl">검색 칸</span><span class="rs">높이 48 · 알약 · 13px · 테두리 없음 — 대시보드 통합 검색(프로토타입 <code>.input</code>). 폼 입력에는 쓰지 않는다</span><span class="rv">48 · Pill</span></div>
+  </div>
+  <div class="warn"><p>검사는 <b>저장을 누를 때</b> 한 번에 하고, <b>첫 오류 칸으로 초점</b>을 옮깁니다 — 오류는 칸마다 바로 아래에 붙습니다.
+  칸을 고치기 시작하면 그 칸의 오류는 바로 사라집니다(타이핑 중에 새 빨간 줄을 띄우지 않습니다). DB 가 판단하는 문제(같은 등번호 등)는 창 아래 안내 줄에 나옵니다.</p></div>
   <div class="warn"><p>오류 문장은 <b>무엇을 하면 되는지</b>를 씁니다 — “잘못된 값”이 아니라
-  “이미 같은 팀에 99번이 있어요”처럼 씁니다.</p></div>
+  “영문 이름은 영문 알파벳으로 60자까지 적어 주세요”처럼 씁니다.</p></div>
 </section>
 
 <section id="pick">
