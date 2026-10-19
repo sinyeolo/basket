@@ -12,7 +12,7 @@
   --font-display:'Tektur',var(--font);
   --primary:#ff9100; --surface:#fff; --canvas:#f4eef2; --variant:#f4eef2; --head:#f8f7f9;
   --ink:#1c1b1f; --muted:#6b6a72; --mono-on:#5b5a61; --on-red-c:#a41e1e; --on-error:#d81d1d;
-  --line:#e6e2ea; --line2:#c9c6cf; --on-surface-placeholder:#8d8c94;
+  --line:#e6e2ea; --line2:#c9c6cf; --on-surface-placeholder:#aeadb3;
   --outline:#c9c6cf; --main:#1c1b1f; --on-main:#fff;
 }
 *{box-sizing:border-box}
@@ -446,7 +446,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
     <div class="s"><span class="chip" style="background:#e6e2ea"></span><span class="meta"><span class="nm">Outline Faint</span><span class="tok">--outline-variant → N200</span><span class="hex">#E6E2EA</span><span class="use">머리카락 굵기 구분선</span></span></div>
     <div class="s"><span class="chip" style="background:#c9c6cf"></span><span class="meta"><span class="nm">Outline</span><span class="tok">--outline → N300</span><span class="hex">#C9C6CF</span><span class="use">테두리</span></span></div>
     <div class="s"><span class="chip" style="background:#6b6a72"></span><span class="meta"><span class="nm">Muted Ink</span><span class="tok">--on-surface-variant → N600</span><span class="hex">#6B6A72</span><span class="use">보조 텍스트·라벨·하위 수치</span></span></div>
-    <div class="s"><span class="chip" style="background:#8d8c94"></span><span class="meta"><span class="nm">Placeholder</span><span class="tok">--on-surface-placeholder → N500</span><span class="hex">#8D8C94</span><span class="use">모든 입력 칸의 자리 표시 글자 (REQ-233)</span></span></div>
+    <div class="s"><span class="chip" style="background:#aeadb3"></span><span class="meta"><span class="nm">Placeholder</span><span class="tok">--on-surface-placeholder → N400</span><span class="hex">#AEADB3</span><span class="use">모든 입력 칸의 자리 표시 글자 (REQ-233)</span></span></div>
     <div class="s"><span class="chip" style="background:#1c1b1f"></span><span class="meta"><span class="nm">Ink Text</span><span class="tok">--on-surface → N950</span><span class="hex">#1C1B1F</span><span class="use">본문·세운 수치</span></span></div>
   </div>
 
@@ -850,7 +850,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
   <div class="ramp">
     <div class="r"><span class="rl">기본</span><span class="rs">높이 52 · 좌우 16 · 반경 14 · 글자 16/500(휴대폰 확대 방지) · 1px 안쪽 선 · 비어 있으면 N100, 값이 차면 Paper</span><span class="rv">.tset input</span></div>
     <div class="r"><span class="rl">칸 이름 · 안내</span><span class="rs">칸 이름 13/600 회색 · 왼쪽 4 · 아래 8 — 안내·오류는 위 8 · 13/20 · 같은 4 들여쓰기 · 칸 사이 가로 12 · 세로 16</span><span class="rv">13</span></div>
-    <div class="r"><span class="rl">비어 있음</span><span class="rs">자리 표시 글자는 무엇을 넣는 칸인지 알린다. 라벨을 대신하지 않는다 · <b>모든 입력 칸 공통 색</b> — 라벨·안내(N600)보다 한 단 밝게. 대비 기준보다 낮은 것은 알고 고른 값 (PO 2026-10-19, REQ-233)</span><span class="rv">N500</span></div>
+    <div class="r"><span class="rl">비어 있음</span><span class="rs">자리 표시 글자는 무엇을 넣는 칸인지 알린다. 라벨을 대신하지 않는다 · <b>모든 입력 칸 공통 색</b> — 라벨·안내·잠긴 칸 글자(N600)보다 두 단 밝게, 잠긴 칸과 갈리게. 대비 기준보다 낮은 것은 알고 고른 값 (PO 2026-10-19 "회색400", REQ-233)</span><span class="rv">N400</span></div>
     <div class="r"><span class="rl">포커스</span><span class="rs">바탕이 hover 톤 + 칸 <b>안쪽</b> 2px 검정 선(그림자 — 바깥 선이 아니라 자리가 밀리지 않는다)</span><span class="rv">N950</span></div>
     <div class="r"><span class="rl">오류</span><span class="rs">안쪽 2px 빨간 선 + 칸 아래 문장 13/600. 색만으로 말하지 않는다 (2026-10-12 PO "700은 너무 찐해")</span><span class="rv">red-600</span></div>
     <div class="r"><span class="rl">잠김</span><span class="rs">값은 보이지만 바꿀 수 없는 칸 — 회색 바탕 · 안쪽 선 없음 · 흐린 글자 · 금지 커서. 이유는 칸 아래 글로 (선수 수정 창의 본인 연결 이름, REQ-229)</span><span class="rv">N100 · N600</span></div>
