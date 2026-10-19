@@ -169,7 +169,7 @@ h3:first-of-type{margin-top:16px}
 .t-in.ph{background:var(--variant);color:var(--on-surface-placeholder)}
 .t-in.is-focus{background:var(--head);box-shadow:inset 0 0 0 2px var(--ink)}
 .t-in.is-err{box-shadow:inset 0 0 0 2px var(--on-error)}
-.t-in.is-lock{background:var(--variant);color:var(--muted);box-shadow:none;cursor:not-allowed}
+.t-in.is-lock{background:var(--variant);color:var(--ink);box-shadow:none;cursor:not-allowed}
 .t-readout{padding-left:4px;font-family:var(--font);font-size:16px;font-weight:500;line-height:24px;color:var(--ink)}
 /* 검색 칸 — 폼 칸과 다른 부품 (프로토타입 .input, 대시보드 통합 검색) */
 .t-search{display:flex;align-items:center;gap:10px;height:48px;padding:0 18px;border-radius:100px;background:var(--variant);color:var(--on-surface-placeholder);font-size:13px;max-width:300px}
@@ -853,7 +853,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
     <div class="r"><span class="rl">비어 있음</span><span class="rs">자리 표시 글자는 무엇을 넣는 칸인지 알린다. 라벨을 대신하지 않는다 · <b>모든 입력 칸 공통 색</b> — 라벨·안내·잠긴 칸 글자(N600)보다 두 단 밝게, 잠긴 칸과 갈리게. 대비 기준보다 낮은 것은 알고 고른 값 (PO 2026-10-19 "회색400", REQ-233)</span><span class="rv">N400</span></div>
     <div class="r"><span class="rl">포커스</span><span class="rs">바탕이 hover 톤 + 칸 <b>안쪽</b> 2px 검정 선(그림자 — 바깥 선이 아니라 자리가 밀리지 않는다)</span><span class="rv">N950</span></div>
     <div class="r"><span class="rl">오류</span><span class="rs">안쪽 2px 빨간 선 + 칸 아래 문장 13/600. 색만으로 말하지 않는다 (2026-10-12 PO "700은 너무 찐해")</span><span class="rv">red-600</span></div>
-    <div class="r"><span class="rl">잠김</span><span class="rs">값은 보이지만 바꿀 수 없는 칸 — 회색 바탕 · 안쪽 선 없음 · 흐린 글자 · 금지 커서. 이유는 칸 아래 글로 (선수 수정 창의 본인 연결 이름, REQ-229)</span><span class="rv">N100 · N600</span></div>
+    <div class="r"><span class="rl">잠김</span><span class="rs">값은 보이지만 바꿀 수 없는 칸 — 회색 바탕 · 안쪽 선 없음 · 글자는 입력한 값과 같은 색(REQ-234) · 금지 커서. 이유는 칸 아래 글로 (선수 수정 창의 본인 연결 이름, REQ-229)</span><span class="rv">N100 · N950</span></div>
     <div class="r"><span class="rl">읽기 값</span><span class="rs">바꾸지 않는 값은 칸을 그리지 않는다 — 상자 없이, 글자는 입력 칸 값과 같은 16/500, 라벨 시작점(4)에 맞춤. 입력 칸으로 오해하지 않게 (선수 수정 창의 소속 팀, REQ-229)</span><span class="rv">16 · 500</span></div>
   </div>
   <h3>검색 칸 — 폼 칸과 다른 부품</h3>
