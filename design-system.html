@@ -879,13 +879,13 @@ aside a.on{background:var(--variant);color:var(--ink)}
     <div style="height:12px"></div>
     <div class="tf"><label>쿼터당 팀파울</label>
       <div class="d-num"><span class="t-in ph">5</span><span class="d-numsteps"><i><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 22 6 12 7.4 10.6 16 19.2 24.6 10.6 26 12z"/></svg></i><i><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 22 6 12 7.4 10.6 16 19.2 24.6 10.6 26 12z"/></svg></i></span></div>
-      <span class="hint">칸이 비면 단추는 최솟값부터 센다</span></div>
+      <span class="hint">빈 칸이면 단추·↑↓는 흐린 기본값에서 하나씩 늘고 준다</span></div>
   </div>
   <div class="ramp">
     <div class="r"><span class="rl">체크박스</span><span class="rs">여럿을 켜고 끄는 자리. 20 · 반경 6 · 2px <code>--outline</code> 테두리 · 켜지면 Primary 면에 흰 체크 12</span><span class="rv">20px</span></div>
     <div class="r"><span class="rl">라디오</span><span class="rs">여럿 중 하나. 20 원형 · 켜지면 테두리만 Primary가 되고 안에 10 점이 찍힌다</span><span class="rv">20px</span></div>
     <div class="r"><span class="rl">줄 높이</span><span class="rs">둘 다 44px — 표식만 누르게 하지 않고 줄 전체가 눌린다 · 표식과 글자 사이 8 · 글자 13/500</span><span class="rv">44px</span></div>
-    <div class="r"><span class="rl">숫자 스텝</span><span class="rs">칸은 입력 칸과 같다(52 · 반경 14). 칸 안 오른쪽 여백 4에 폭 32 단추 묶음 · 반경 10(= 14 − 4) · 1px 연한 선 · Carbon 화살표 16. 숫자 글자는 오른쪽 44에서 멈춘다. 키보드는 칸에서 ↑↓</span><span class="rv">32px</span></div>
+    <div class="r"><span class="rl">숫자 스텝</span><span class="rs">칸은 입력 칸과 같다(52 · 반경 14). 칸 안 오른쪽 여백 4에 폭 32 단추 묶음 · 반경 10(= 14 − 4) · 1px 연한 선 · Carbon 화살표 16. 숫자 글자는 오른쪽 44에서 멈춘다. 키보드는 칸에서 ↑↓. 처음 값은 빈 칸의 흐린 자리 표시로 두고, 빈 칸에서 단추나 키보드 ↑↓를 누르면 그 값에서 하나씩 늘고 준다 · 비운 채 저장하면 그 값을 쓴다 (PO 2026-10-19, REQ-232)</span><span class="rv">32px</span></div>
   </div>
   <h3>선택 칩 — 정해진 몇 개 중 고르기 (2026-10-13, REQ-184·188)</h3>
   <div class="demo dcol paper">
