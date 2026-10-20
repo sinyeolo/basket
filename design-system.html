@@ -169,7 +169,20 @@ h3:first-of-type{margin-top:16px}
 .t-in.ph{background:var(--surface-input);color:var(--on-surface-placeholder)}
 .t-in.is-focus{background:var(--head);box-shadow:inset 0 0 0 2px var(--ink)}
 .t-in.is-err{box-shadow:inset 0 0 0 2px var(--on-error)}
-.t-in.is-lock{background:var(--variant);color:var(--ink);box-shadow:none;cursor:not-allowed}
+.t-in.is-lock{background:var(--variant);color:var(--ink);box-shadow:none;cursor:not-allowed;justify-content:space-between}
+/* 잠김 공통 표시 — Carbon locked · N600 · 장식 (REQ-238) */
+.lock-ic{display:inline-flex;flex:none;color:var(--muted)}
+.lock-ic svg{width:16px;height:16px;fill:currentColor}
+.t-seg{display:flex;height:52px;padding:4px;box-sizing:border-box;border-radius:14px;background:#e6e2ea;max-width:340px}
+.t-seg>span{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border-radius:10px;font-size:16px;font-weight:500;color:var(--muted);cursor:not-allowed}
+.t-seg>span.off{opacity:.5}
+.t-seg>span.on{background:var(--surface);color:var(--ink);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.t-sw{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;cursor:not-allowed}
+.t-sw i{position:relative;width:48px;height:24px;border-radius:12px;background:color-mix(in srgb,color-mix(in srgb,#6b6a72 72%,#fff) 40%,#fff)}
+.t-sw.on i{background:color-mix(in srgb,#ff9100 40%,#fff)}
+.t-sw b{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px var(--line);display:grid;place-items:center}
+.t-sw.on b{transform:translateX(24px)}
+.t-sw b svg{width:12px;height:12px;fill:var(--muted)}
 .t-readout{padding-left:4px;font-family:var(--font);font-size:16px;font-weight:500;line-height:24px;color:var(--ink)}
 /* 검색 칸 — 폼 칸과 다른 부품 (프로토타입 .input, 대시보드 통합 검색) */
 .t-search{display:flex;align-items:center;gap:10px;height:48px;padding:0 18px;border-radius:100px;background:var(--variant);color:var(--on-surface-placeholder);font-size:13px;max-width:300px}
@@ -844,7 +857,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
       <div class="tf"><label>이름 <span class="req">*</span></label><span class="t-in">김민수</span><span class="hint">값이 참 — 흰 바탕</span></div>
       <div class="tf"><label>영문 이름 (선택)</label><span class="t-in is-focus">Kim Min Su</span><span class="hint">포커스 — 안내 글은 그대로 둔다</span></div>
       <div class="tf"><label>영문 이름 (선택)</label><span class="t-in is-err">Lee 현수</span><span class="hint er">영문 이름은 영문 알파벳으로 60자까지 적어 주세요</span></div>
-      <div class="tf"><label>이름 <span class="req">*</span></label><span class="t-in is-lock">이현수</span><span class="hint">선수 본인 계정과 연결돼 이름은 바꿀 수 없어요</span></div>
+      <div class="tf"><label>이름 <span class="req">*</span></label><span class="t-in is-lock">이현수<span class="lock-ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M24,14H22V8A6,6,0,0,0,10,8v6H8a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V16A2,2,0,0,0,24,14ZM12,8a4,4,0,0,1,8,0v6H12ZM24,28H8V16H24Z"/></svg></span></span><span class="hint">선수 본인 계정과 연결돼 이름은 바꿀 수 없어요</span></div>
       <div class="tf"><label>소속 팀</label><span class="t-readout">서울 타이탄스</span><span class="hint">읽기 값 — 바꾸지 않는 값은 상자 없이 글자로</span></div>
     </div>
   </div>
@@ -855,8 +868,21 @@ aside a.on{background:var(--variant);color:var(--ink)}
     <div class="r"><span class="rl">마우스 올림</span><span class="rs">바탕 hover 톤 + 안쪽 1px 테두리를 한 단 진하게(<code>--outline</code>) — 빈 칸 바탕(N50)이 hover 톤과 같아 테두리로 반응을 보인다 (REQ-237)</span><span class="rv">N300</span></div>
     <div class="r"><span class="rl">포커스</span><span class="rs">바탕이 hover 톤 + 칸 <b>안쪽</b> 2px 검정 선(그림자 — 바깥 선이 아니라 자리가 밀리지 않는다)</span><span class="rv">N950</span></div>
     <div class="r"><span class="rl">오류</span><span class="rs">안쪽 2px 빨간 선 + 칸 아래 문장 13/600. 색만으로 말하지 않는다 (2026-10-12 PO "700은 너무 찐해")</span><span class="rv">red-600</span></div>
-    <div class="r"><span class="rl">잠김</span><span class="rs">값은 보이지만 바꿀 수 없는 칸 — 회색 바탕 · 안쪽 선 없음 · 글자는 입력한 값과 같은 색(REQ-234) · 금지 커서. 이유는 칸 아래 글로 (선수 수정 창의 본인 연결 이름, REQ-229)</span><span class="rv">N100 · N950</span></div>
+    <div class="r"><span class="rl">잠김</span><span class="rs">값은 보이지만 바꿀 수 없는 칸 — 회색 바탕 · 안쪽 선 없음 · 글자는 입력한 값과 같은 색(REQ-234) · 금지 커서 · 오른쪽 안 자물쇠 16(REQ-238). 이유는 칸 아래 글로 (선수 수정 창의 본인 연결 이름, REQ-229)</span><span class="rv">N100 · N950</span></div>
     <div class="r"><span class="rl">읽기 값</span><span class="rs">바꾸지 않는 값은 칸을 그리지 않는다 — 상자 없이, 글자는 입력 칸 값과 같은 16/500, 라벨 시작점(4)에 맞춤. 입력 칸으로 오해하지 않게 (선수 수정 창의 소속 팀, REQ-229)</span><span class="rv">16 · 500</span></div>
+  </div>
+  <h3>잠김 공통 표시 — 지금 바꿀 수 없는 곳 (2026-10-19 PO "B안", REQ-238)</h3>
+  <div class="demo paper dcol">
+    <div class="tgrid" style="width:100%">
+      <div class="tf"><label>종목</label><div class="t-seg"><span class="off">1대1</span><span class="off">3대3</span><span class="on">5대5<span class="lock-ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M24,14H22V8A6,6,0,0,0,10,8v6H8a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V16A2,2,0,0,0,24,14ZM12,8a4,4,0,0,1,8,0v6H12ZM24,28H8V16H24Z"/></svg></span></span></div><span class="hint">참가팀이 있어 종목을 바꿀 수 없어요</span></div>
+      <div class="tf"><label>스위치 — 잠긴 켜짐 · 잠긴 꺼짐</label><div style="display:flex;gap:24px;min-height:44px;align-items:center"><span class="t-sw on"><i><b><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M24,14H22V8A6,6,0,0,0,10,8v6H8a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V16A2,2,0,0,0,24,14ZM12,8a4,4,0,0,1,8,0v6H12ZM24,28H8V16H24Z"/></svg></b></i></span><span class="t-sw"><i><b><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M24,14H22V8A6,6,0,0,0,10,8v6H8a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V16A2,2,0,0,0,24,14ZM12,8a4,4,0,0,1,8,0v6H12ZM24,28H8V16H24Z"/></svg></b></i></span></div><span class="hint">전체 관리는 최소 1명 있어야 해요</span></div>
+    </div>
+  </div>
+  <div class="ramp">
+    <div class="r"><span class="rl">자물쇠</span><span class="rs">Carbon <code>locked</code> · N600 · 장식(aria-hidden). 이유는 늘 칸 아래 글·aria-describedby 로 — 자물쇠만 두지 않는다</span><span class="rv">locked</span></div>
+    <div class="r"><span class="rl">자리·크기</span><span class="rs">입력 칸 안 오른쪽 16 자리에 16(글자 자리 오른쪽 44) · 구분 버튼 고른 칸 글자 뒤 6 에 16 · 스위치 손잡이 안 12 — 자리를 늘리지 않는다</span><span class="rv">16 · 12</span></div>
+    <div class="r"><span class="rl">스위치 잠김</span><span class="rs">막대 색을 흰색과 40% 섞기(손잡이·자물쇠는 또렷하게) · 손잡이 1px 연한 테두리 · 켜짐/꺼짐 자리는 그대로</span><span class="rv">40%</span></div>
+    <div class="r"><span class="rl">커서</span><span class="rs">잠긴 곳은 모두 금지 커서</span><span class="rv">not-allowed</span></div>
   </div>
   <h3>검색 칸 — 폼 칸과 다른 부품</h3>
   <div class="demo paper"><span class="t-search">선수·팀·경기 검색</span></div>
