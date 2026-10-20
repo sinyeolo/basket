@@ -1185,6 +1185,8 @@ input::placeholder,textarea::placeholder{color:var(--on-surface-placeholder);opa
 /* 잠긴 칸 — 실제 앱과 같게: 입력 전 칸 바탕(N50) · 테두리 없음, 글자만 입력값과 같은 색, 마우스 올림에 안 바뀜 (REQ-229·234·239).
    값이 찬 칸 규칙 뒤에 두어야 이긴다 */
 :is(.field,.fieldrow,.bulk-row) :is(input,select):disabled,:is(.field,.fieldrow,.bulk-row) :is(input,select):disabled:hover{background-color:var(--surface-input);box-shadow:none;color:var(--on-surface);-webkit-text-fill-color:var(--on-surface);opacity:1;cursor:not-allowed}
+/* 잠긴 입력 칸 자물쇠 — 실제 앱과 같게 칸 안 오른쪽 16 자리에 Carbon locked 16 · N600, 글자는 오른쪽 44 에서 멈춤 (REQ-238). 마크업 없이 바탕 그림으로 */
+:is(.field,.fieldrow,.bulk-row) input:disabled{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='%236b6a72'%3E%3Cpath d='M24,14H22V8A6,6,0,0,0,10,8v6H8a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V16A2,2,0,0,0,24,14ZM12,8a4,4,0,0,1,8,0v6H12ZM24,28H8V16H24Z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;background-size:16px;padding-right:44px}
 .fieldrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .fieldrow > div{margin:0}
 /* 읽기 값 — 입력 칸과 같은 크기·같은 자리에 서지만 테두리가 없고 배경도 없다.
