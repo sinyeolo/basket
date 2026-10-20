@@ -61,7 +61,7 @@
      --head-bg와 같은 프리미티브를 가리키지만 토큰은 따로 둔다: 목록 헤더와 호버는 뜻이 다르고,
      한쪽만 바꿔야 할 날이 오면 값을 공유하고 있다는 이유로 둘이 묶여 버린다. */
   --surface-hover:#f8f7f9;
-  --on-surface:#1c1b1f; --on-surface-variant:#6b6a72;
+  --on-surface:#1c1b1f; --on-surface-variant:#6b6a72; --on-surface-placeholder:#aeadb3; --surface-input:#f8f7f9;
   --outline:#c9c6cf; --outline-variant:#e6e2ea;
   --mono-fill:#e6e2ea; --mono-on:#5b5a61;
   --blue:#3b82f6; --red:#ef4444; --green:#22c55e; --amber:#f59e0b; --violet:#8b5cf6; --teal:#14b8a6;
@@ -511,7 +511,7 @@ button[disabled]{box-shadow:none!important}
   min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .input{position:relative;flex:1;display:flex;align-items:center;gap:10px;height:48px;padding:0 18px;background:var(--surface-variant);border-radius:var(--r-btn);color:var(--on-surface-variant);font-size:13px;border:none;font-family:var(--font)}
 .input input{flex:1;min-width:0;border:none;background:transparent;outline:none;font:inherit;color:var(--on-surface)}
-.input input::placeholder{color:var(--on-surface-variant)}
+.input input::placeholder{color:var(--on-surface-placeholder)}
 /* 대시보드 상단 통합 검색 — page-head 안, 버튼 옆에 놓이므로 넓은 화면에선 300px 고정.
    폭이 좁아지면(태블릿 구간 포함) flex:none 때문에 옆의 h1이 밀려 글자가 세로로 줄바꿈되던 문제가 있어서,
    좁을 땐 줄어들 수 있게 최소값(180px)까지만 보장한다 */
@@ -1162,18 +1162,18 @@ table.dt tbody tr.me{background:var(--mono-fill)}
    입력칸이 M3 필드가 아니라 브라우저 기본 인풋으로 렌더링됐다. :is()는 특이도가 인자 중 가장 높은 값(0-1-0)이라
    기존 규칙과 우선순위가 동일하다 */
 :is(.field,.fieldrow,.bulk-row) input,:is(.field,.fieldrow,.bulk-row) select{width:100%;height:52px;padding:0 16px;border:none;
-  border-radius:14px;background:var(--surface-container);font-family:var(--font);font-size:16px;color:var(--on-surface);
+  border-radius:14px;background:var(--surface-input);font-family:var(--font);font-size:16px;color:var(--on-surface);
   box-shadow:inset 0 0 0 1px var(--outline-variant);transition:box-shadow .12s,background .12s}
 :is(.field,.fieldrow,.bulk-row) select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b6a72' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-size:18px;padding-right:42px}
 /* 호버는 바탕이 무엇이든 같은 값이다 — 비어 있는 칸(N100 바탕)이든 값이 찬 칸(흰 바탕)이든
    --surface-hover 하나를 쓴다. 예전엔 바탕에서 '한 단 아래'로 잡았는데, 그러면 칸마다
    호버 색이 달라져 같은 동작이 다른 일처럼 보였다(PO). 호버는 상태이지 층이 아니다. */
-:is(.field,.fieldrow,.bulk-row) input:hover,:is(.field,.fieldrow,.bulk-row) select:hover{background-color:var(--surface-hover)}
+:is(.field,.fieldrow,.bulk-row) input:hover,:is(.field,.fieldrow,.bulk-row) select:hover{background-color:var(--surface-hover);box-shadow:inset 0 0 0 1px var(--outline)}
 /* 포커스 배경은 호버와 같다(PO) — 둘이 다르면 마우스를 올렸다가 클릭하는 사이에 면이 두 번 바뀐다.
    포커스를 알리는 것은 배경이 아니라 2px 안쪽 링이다. 배경은 '이 칸을 건드리는 중'만 말한다. */
 :is(.field,.fieldrow,.bulk-row) input:focus,:is(.field,.fieldrow,.bulk-row) select:focus{outline:none;background-color:var(--surface-hover);box-shadow:inset 0 0 0 2px var(--on-surface)}
-:is(.field,.fieldrow,.bulk-row) input::placeholder{color:var(--on-surface-variant)}
-:is(.field,.fieldrow,.bulk-row) input:disabled,:is(.field,.fieldrow,.bulk-row) select:disabled{color:var(--on-surface-variant);cursor:not-allowed}
+/* 자리 표시 글자는 모든 입력 칸 공통 N400 (REQ-233) */
+input::placeholder,textarea::placeholder{color:var(--on-surface-placeholder);opacity:1}
 /* 입력 폼 공통 규칙 — 비어있을 땐 회색, 값이 채워지면(placeholder가 더 이상 안 보이거나, select면 빈 값이 아닌 옵션이 선택되면) 흰색으로
    (select의 화살표 아이콘은 background-image라 background 단축 속성으로 덮으면 사라졌다 슬라이드로 되돌아오는 버그가 생김 — 반드시 background-color만 사용) */
 :is(.field,.fieldrow,.bulk-row) input:not(:placeholder-shown),
@@ -1182,6 +1182,9 @@ table.dt tbody tr.me{background:var(--mono-fill)}
 :is(.field,.fieldrow,.bulk-row) select:has(option:checked:not([value=""])):hover{background-color:var(--surface-hover)}
 :is(.field,.fieldrow,.bulk-row) input:not(:placeholder-shown):focus,
 :is(.field,.fieldrow,.bulk-row) select:has(option:checked:not([value=""])):focus{background-color:var(--surface-hover);box-shadow:inset 0 0 0 2px var(--on-surface)}
+/* 잠긴 칸 — 실제 앱과 같게: 입력 전 칸 바탕(N50) · 테두리 없음, 글자만 입력값과 같은 색, 마우스 올림에 안 바뀜 (REQ-229·234·239).
+   값이 찬 칸 규칙 뒤에 두어야 이긴다 */
+:is(.field,.fieldrow,.bulk-row) :is(input,select):disabled,:is(.field,.fieldrow,.bulk-row) :is(input,select):disabled:hover{background-color:var(--surface-input);box-shadow:none;color:var(--on-surface);-webkit-text-fill-color:var(--on-surface);opacity:1;cursor:not-allowed}
 .fieldrow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .fieldrow > div{margin:0}
 /* 읽기 값 — 입력 칸과 같은 크기·같은 자리에 서지만 테두리가 없고 배경도 없다.
