@@ -16,9 +16,10 @@
   --outline:#c9c6cf; --main:#1c1b1f; --on-main:#fff;
 }
 *{box-sizing:border-box}
-body{margin:0;font-family:var(--font);background:var(--canvas);color:var(--ink);-webkit-font-smoothing:antialiased}
+body{margin:0;font-family:var(--font);background:var(--canvas);color:var(--ink);-webkit-font-smoothing:antialiased;
+  word-break:keep-all;overflow-wrap:break-word} /* 한글 글은 단어 중간에서 끊지 않는다(DESIGN.md) */
 code{font-family:var(--font-display);font-size:.93em;font-weight:600;background:var(--variant);
-  border-radius:5px;padding:1px 5px}
+  border-radius:5px;padding:1px 5px;white-space:nowrap} /* 토큰 이름이 하이픈에서 갈리지 않게 */
 
 /* ── 레이아웃: 좌측 목차 + 본문 ── */
 .app{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:24px 16px 80px;align-items:flex-start}
@@ -26,7 +27,7 @@ aside{position:sticky;top:24px;width:196px;flex:none}
 aside .grp{margin-bottom:16px}
 aside .gt{font-family:var(--font-display);font-size:10px;font-weight:800;letter-spacing:.1em;
   color:var(--muted);padding:0 10px 6px}
-aside a{display:block;padding:6px 10px;border-radius:8px;font-size:12.5px;font-weight:600;
+aside a{display:block;padding:6px 10px;border-radius:8px;font-size:13px;font-weight:600;
   color:var(--muted);text-decoration:none}
 aside a:hover{background:var(--variant);color:var(--ink)}
 main{flex:1;min-width:0}
@@ -87,7 +88,7 @@ h3:first-of-type{margin-top:16px}
 .ly{flex:1 1 200px;background:var(--variant);border-radius:12px;padding:13px 14px}
 .ly b{display:block;font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.04em}
 .ly span{display:block;font-size:12px;color:var(--muted);margin:4px 0 7px}
-.ly code{display:block;font-size:11px;background:var(--surface);padding:6px 8px;word-break:break-all}
+.ly code{display:block;font-size:11px;background:var(--surface);padding:6px 8px;overflow-wrap:anywhere;white-space:normal}
 .lyar{align-self:center;font-family:var(--font-display);font-weight:800;color:var(--muted)}
 
 .sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:10px}
@@ -95,9 +96,9 @@ h3:first-of-type{margin-top:16px}
 .s .chip{width:42px;height:42px;border-radius:10px;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.07)}
 .s .meta > span{display:block}
 .s .nm{font-size:13px;font-weight:700;line-height:1.35}
-.s .tok{font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--muted);margin-top:2px;word-break:break-all}
+.s .tok{font-family:var(--font-display);font-size:11px;font-weight:600;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
 .s .hex{font-family:var(--font-display);font-size:11px;font-weight:700;margin-top:1px}
-.s .use{font-size:11px;color:var(--muted);line-height:1.55;margin-top:4px}
+.s .use{font-size:11px;color:var(--muted);line-height:1.55;margin-top:4px;word-break:keep-all}
 .dark{background:#0a0b0f;color:#f4f4f6}
 .dark > h2{color:#f4f4f6}
 .dark > .note,.dark h3,.dark .warn p{color:#9a9ba3}
@@ -226,7 +227,8 @@ h3:first-of-type{margin-top:16px}
 .d-tbl tfoot td{font-weight:800;color:var(--ink);background:var(--head);border-bottom:none}
 .d-mark{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;color:#fff;font-weight:800;font-size:14px}
 .d-empty{text-align:center;padding:26px 16px;background:var(--variant);border-radius:12px;max-width:340px}
-.d-empty .d-empty p{margin:0;font-size:13px;color:var(--muted);line-height:1.6}
+.d-empty .cbi{width:20px;height:20px;color:var(--muted);margin:0 auto 8px}
+.d-empty p{margin:0;font-size:13px;color:var(--muted);line-height:1.6}
 .d-tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);width:100%}
 .d-tab{flex:1;text-align:center;padding:12px 0;font-size:13px;font-weight:600;color:var(--muted)}
 .d-tab.on{color:var(--ink);font-weight:700;box-shadow:inset 0 -2px 0 var(--ink)}
@@ -455,7 +457,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
     <div class="s"><span class="chip" style="background:#d95f00"></span><span class="meta"><span class="nm">Primary Strong Text</span><span class="tok">--primary-strong-text → brand-700</span><span class="hex">#D95F00</span><span class="use">흰 바탕 위 앰버 글자</span></span></div>
     <div class="s"><span class="chip" style="background:#ffffff"></span><span class="meta"><span class="nm">Paper</span><span class="tok">--surface</span><span class="hex">#FFFFFF</span><span class="use">카드·컨트롤 배경</span></span></div>
     <div class="s"><span class="chip" style="background:#f4eef2"></span><span class="meta"><span class="nm">Fog Canvas</span><span class="tok">--surface-container → N100</span><span class="hex">#F4EEF2</span><span class="use">모든 카드가 얹히는 페이지 바탕</span></span></div>
-    <div class="s"><span class="chip" style="background:#f4eef2"></span><span class="meta"><span class="nm">Surface Variant</span><span class="tok">--surface-variant → N100</span><span class="hex">#F4EEF2</span><span class="use">입력·토널 버튼·호버</span></span></div>
+    <div class="s"><span class="chip" style="background:#e6e2ea"></span><span class="meta"><span class="nm">Surface Variant</span><span class="tok">--surface-variant → N200</span><span class="hex">#E6E2EA</span><span class="use">작은 요소의 톤 채움·호버 (토널 면은 N100)</span></span></div>
     <div class="s"><span class="chip" style="background:#f8f7f9"></span><span class="meta"><span class="nm">Header Wash</span><span class="tok">--head-bg → N50</span><span class="hex">#F8F7F9</span><span class="use">표·목록 머리글 행 전용</span></span></div>
     <div class="s"><span class="chip" style="background:#e6e2ea"></span><span class="meta"><span class="nm">Outline Faint</span><span class="tok">--outline-variant → N200</span><span class="hex">#E6E2EA</span><span class="use">머리카락 굵기 구분선</span></span></div>
     <div class="s"><span class="chip" style="background:#c9c6cf"></span><span class="meta"><span class="nm">Outline</span><span class="tok">--outline → N300</span><span class="hex">#C9C6CF</span><span class="use">테두리</span></span></div>
@@ -1004,7 +1006,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
 <section id="feedback">
   <h2>피드백</h2>
   <div class="demo">
-    <div class="d-empty"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M27,28V6H19V28H15V14H7V28H4V2H2V28a2,2,0,0,0,2,2H30V28ZM13,28H9V16h4Zm12,0H21V8h4Z"/></svg><p>아직 뛴 경기가 없어요<br>첫 경기를 마치면 기록이 채워져요</p></div>
+    <div class="d-empty"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M27,28V6H19V28H15V14H7V28H4V2H2V28a2,2,0,0,0,2,2H30V28ZM13,28H9V16h4Zm12,0H21V8h4Z"/></svg><p>아직 기록된 경기가 없어요<br>첫 경기를 마치면 기록이 채워져요</p></div>
     <div style="flex:1;min-width:200px"><div class="d-bar"><i></i></div>
       <p style="font-size:11px;color:var(--muted);margin:8px 0 0">진행 표시 — 높이 9 · 반경 Pill</p></div>
   </div>
@@ -1056,7 +1058,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
     </div>
   </div>
   <div class="ramp">
-    <div class="r"><span class="rl">바탕</span><span class="rs">N100 · 반경은 대신하는 요소를 따른다(글자 6 · 원형 마크 50%)</span><span class="rv">--surface-variant</span></div>
+    <div class="r"><span class="rl">바탕</span><span class="rs">N100 · 반경은 대신하는 요소를 따른다(글자 6 · 원형 마크 50%)</span><span class="rv">--surface-container</span></div>
     <div class="r"><span class="rl">움직임</span><span class="rs">왼쪽에서 오른쪽으로 흐르는 옅은 빛 1.4초 · 무한 반복</span><span class="rv">transform만</span></div>
     <div class="r"><span class="rl">개수</span><span class="rs">실제로 올 개수를 모르면 <b>3줄</b>. 화면을 다 채우지 않는다</span><span class="rv">3</span></div>
     <div class="r"><span class="rl">전환</span><span class="rs">내용이 오면 그 자리에서 바뀐다 — 위치가 달라지면 튄다</span><span class="rv">같은 자리</span></div>
