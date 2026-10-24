@@ -20,6 +20,7 @@ body{margin:0;font-family:var(--font);background:var(--canvas);color:var(--ink);
   word-break:keep-all;overflow-wrap:break-word} /* 한글 글은 단어 중간에서 끊지 않는다(DESIGN.md) */
 code{font-family:var(--font-display);font-size:.93em;font-weight:600;background:var(--variant);
   border-radius:5px;padding:1px 5px;white-space:nowrap} /* 토큰 이름이 하이픈에서 갈리지 않게 */
+code.sel{white-space:normal;-webkit-box-decoration-break:clone;box-decoration-break:clone} code.sel span{white-space:nowrap} /* 긴 선택자는 빈칸에서만 줄바꿈 — 320 폭 넘침 막음 */
 
 /* ── 레이아웃: 좌측 목차 + 본문 ── */
 .app{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:24px 16px 80px;align-items:flex-start}
@@ -283,8 +284,8 @@ h3:first-of-type{margin-top:16px}
 .empty-demo .empty-ic{display:block;font-size:40px;line-height:1;margin:0 auto 14px;color:var(--line2)}
 .empty-demo b{display:block;color:var(--ink);font-size:16px;margin-bottom:6px}
 .empty-demo span{font-size:13px}
-.gchip{position:relative;isolation:isolate;display:inline-block;padding:3px 12px;margin-right:10px;
-  font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--gc)}
+.gchip{position:relative;isolation:isolate;display:inline-block;padding:3px 9px;
+  font-family:var(--font-display);font-size:11px;font-weight:800;letter-spacing:.04em;color:var(--gc)} /* 카드 앞면 뱃지(앱 .pcard-grade · 프로토타입 .pdGradeBadge)와 같은 3×9 · .04em */
 .gchip::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:5px;box-sizing:border-box;
   transform:skewX(-15deg);border:1px solid color-mix(in srgb,var(--gc) 5%,transparent);
   background:
@@ -292,7 +293,7 @@ h3:first-of-type{margin-top:16px}
       rgba(255,255,255,.48) 54.2%, transparent 62%),
     linear-gradient(135deg, var(--gm) 0%, var(--gb) 34%, var(--gh) 50%, var(--gb) 66%, var(--gm) 100%)}
 .gchip-starter::before{background:none;border:2px solid color-mix(in srgb,var(--gc) 42%,transparent)}
-.gbar{padding:20px 18px;border-radius:12px}
+.gbar{display:flex;flex-wrap:wrap;align-items:flex-start;gap:8px 10px;padding:20px 18px;border-radius:12px} /* 좁은 폭에서 두 줄이 되면 줄 사이 8 */
 .gbar.dk{background:#0a0b0f} .gbar.lt{background:var(--surface);border:1px solid var(--line)}
 .d-page{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 .d-pg{width:36px;height:36px;border:none;border-radius:8px;background:var(--variant);
@@ -768,7 +769,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
   ① <b>승 뱃지</b> <code>.wl.w</code> — 흰 글자 on <code>--win #22C55E</code>, <b>2.3:1</b>, 2026-08-24 PO.
   범위는 <b>승 표시 하나</b>이고, 다른 초록 면에 흰 글자를 얹는 근거가 아닙니다.
   기준을 3:1 로 내린 뒤에도 여전히 예외입니다.<br>
-  ② <b>상태 상자 제목</b> <code>.save-state[data-tone=&quot;done&quot;] .save-state-title</code> —
+  ② <b>상태 상자 제목</b> <code class="sel"><span>.save-state[data-tone=&quot;done&quot;]</span> <span>.save-state-title</span></code> —
   <code>--title-on-green #1CAE5A</code> on 패널 <code>#F8F7F9</code>, <b>2.71:1</b>, 2026-09-17 PO.
   범위는 <b>제목 한 줄</b>이고 같은 상자의 본문은 중립색입니다.
   아이콘이 green-600 인데 제목이 green-900 이면 같은 뜻인데 색이 너무 멀어집니다.
@@ -1162,7 +1163,8 @@ aside a.on{background:var(--variant);color:var(--ink)}
   <div class="gbar lt" style="margin-top:10px"><span class="gchip gchip-starter" style="--gc:#16171b"><i>STARTER</i></span><span class="gchip" style="--gb:#c9905a;--gc:#3d2412;--gm:#be8653;--gh:#deba99"><i>BRONZE</i></span><span class="gchip" style="--gb:#e7ebef;--gc:#3d4249;--gm:#bec3c9;--gh:#f0f3f5"><i>SILVER</i></span><span class="gchip" style="--gb:#f4d16a;--gc:#4a3608;--gm:#cca744;--gh:#f8e2a3"><i>GOLD</i></span></div>
   <div class="ramp">
     <div class="r"><span class="rl">형태</span><span class="rs">로고의 사선을 그대로 쓴다. 워드마크 위아래 룰의 path를 재면 Δx 7.73 / Δy 29 — 15°다</span><span class="rv">skewX −15°</span></div>
-    <div class="r"><span class="rl">반경</span><span class="rs">8까지 둥글리면 사선을 준 이유가 사라진다</span><span class="rv">4px</span></div>
+    <div class="r"><span class="rl">반경</span><span class="rs">8까지 둥글리면 사선을 준 이유가 사라진다</span><span class="rv">5px</span></div>
+    <div class="r"><span class="rl">크기</span><span class="rs">카드 앞면 여백 3×9 · 자간 .04em. 하단 시트는 같은 레시피를 4×11 · .05em 으로 키운다</span><span class="rv">3×9</span></div>
     <div class="r"><span class="rl">면 / 글자</span><span class="rs">밝은 금속에 어두운 글자. 반대로 하면 브론즈에서 1.95:1로 무너진다</span><span class="rv">--g-b / --g-c</span></div>
     <div class="r"><span class="rl">그라디언트 끝</span><span class="rs">--g-a까지 내리지 않고 "글자 대비 4.6:1을 넘는 지점"에서 멈춘다</span><span class="rv">--g-mid</span></div>
     <div class="r"><span class="rl">하이라이트</span><span class="rs">105° — 띠가 수직에서 15° 기울어 뱃지 모서리와 나란하다</span><span class="rv">폭 24%p</span></div>
