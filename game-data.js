@@ -94,21 +94,23 @@ var BASKET_RECORDS = {
       { no:'20', name:'구자운', min:22, pts:2, reb:2, ast:1, stl:2, blk:2, to:0, pf:3, fg:[1,9], tp:[0,2], ft:[0,1] }
     ]
   },
+  /* g9 — 엑셀(종이 기록지)로 올린 경기 시안: 중계 없음 · 출전은 쿼터 수(qp) */
   g9: {
+    source:'excel',
     quarters:[ {h:17,a:18},{h:15,a:21},{h:12,a:17},{h:14,a:10} ],
     home:[
-      { no:'3', name:'이정호', min:33, pts:23, reb:6, ast:1, stl:3, blk:2, to:0, pf:4, fg:[9,15], tp:[2,3], ft:[3,3] },
-      { no:'9', name:'최민석', min:30, pts:13, reb:2, ast:0, stl:2, blk:0, to:1, pf:4, fg:[5,12], tp:[0,4], ft:[3,3] },
-      { no:'12', name:'박준영', min:28, pts:9, reb:2, ast:1, stl:3, blk:0, to:2, pf:1, fg:[4,10], tp:[0,1], ft:[1,3] },
-      { no:'21', name:'김태호', min:25, pts:9, reb:8, ast:5, stl:1, blk:1, to:1, pf:2, fg:[3,11], tp:[3,4], ft:[0,2] },
-      { no:'15', name:'심규현', min:22, pts:4, reb:10, ast:6, stl:0, blk:2, to:1, pf:2, fg:[1,6], tp:[1,5], ft:[1,1] }
+      { no:'3', name:'이정호', qp:4, pts:23, reb:6, ast:1, stl:3, blk:2, to:0, pf:4, fg:[9,15], tp:[2,3], ft:[3,3] },
+      { no:'9', name:'최민석', qp:4, pts:13, reb:2, ast:0, stl:2, blk:0, to:1, pf:4, fg:[5,12], tp:[0,4], ft:[3,3] },
+      { no:'12', name:'박준영', qp:4, pts:9, reb:2, ast:1, stl:3, blk:0, to:2, pf:1, fg:[4,10], tp:[0,1], ft:[1,3] },
+      { no:'21', name:'김태호', qp:3, pts:9, reb:8, ast:5, stl:1, blk:1, to:1, pf:2, fg:[3,11], tp:[3,4], ft:[0,2] },
+      { no:'15', name:'심규현', qp:3, pts:4, reb:10, ast:6, stl:0, blk:2, to:1, pf:2, fg:[1,6], tp:[1,5], ft:[1,1] }
     ],
     away:[
-      { no:'5', name:'한승우', min:33, pts:24, reb:5, ast:2, stl:0, blk:0, to:0, pf:1, fg:[11,15], tp:[2,4], ft:[0,2] },
-      { no:'4', name:'오세훈', min:30, pts:18, reb:8, ast:4, stl:3, blk:2, to:4, pf:2, fg:[7,10], tp:[1,4], ft:[3,4] },
-      { no:'10', name:'강도현', min:28, pts:16, reb:6, ast:0, stl:1, blk:0, to:1, pf:2, fg:[6,9], tp:[3,5], ft:[1,1] },
-      { no:'14', name:'문지환', min:25, pts:6, reb:3, ast:2, stl:1, blk:2, to:2, pf:4, fg:[2,4], tp:[0,3], ft:[2,2] },
-      { no:'6', name:'배정훈', min:22, pts:2, reb:3, ast:7, stl:2, blk:1, to:0, pf:3, fg:[1,7], tp:[0,4], ft:[0,0] }
+      { no:'5', name:'한승우', qp:4, pts:24, reb:5, ast:2, stl:0, blk:0, to:0, pf:1, fg:[11,15], tp:[2,4], ft:[0,2] },
+      { no:'4', name:'오세훈', qp:4, pts:18, reb:8, ast:4, stl:3, blk:2, to:4, pf:2, fg:[7,10], tp:[1,4], ft:[3,4] },
+      { no:'10', name:'강도현', qp:4, pts:16, reb:6, ast:0, stl:1, blk:0, to:1, pf:2, fg:[6,9], tp:[3,5], ft:[1,1] },
+      { no:'14', name:'문지환', qp:3, pts:6, reb:3, ast:2, stl:1, blk:2, to:2, pf:4, fg:[2,4], tp:[0,3], ft:[2,2] },
+      { no:'6', name:'배정훈', qp:3, pts:2, reb:3, ast:7, stl:2, blk:1, to:0, pf:3, fg:[1,7], tp:[0,4], ft:[0,0] }
     ]
   },
   g10: {

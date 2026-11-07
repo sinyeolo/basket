@@ -7678,7 +7678,7 @@ function renderReviewBar(){
   } else {
     bar.className = 'review-bar';
     bar.innerHTML = '<span class="rb-text"><b>검수 대기</b> · '+summary+'</span>'+
-      '<button type="button" class="btn btn-primary" id="reviewConfirmBtn">이상 없음 · 결과 확정</button>';
+      '<button type="button" class="btn btn-primary" id="reviewConfirmBtn">결과 확정</button>';
     document.getElementById('reviewConfirmBtn').addEventListener('click', function(){
       openConfirm({
         icon: 'alert',

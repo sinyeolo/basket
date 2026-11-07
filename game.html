@@ -569,6 +569,11 @@ var PBP = REC && REC.pbp ? REC.pbp : [];
 
 var HAS_RECORD = !!REC;
 
+/* 엑셀(종이 기록지)로 올린 경기 — 이벤트 단위 중계가 없고 출전이 '분'이 아니라 '뛴 쿼터 수'다(기록지 칸).
+   그래서 기록 탭을 먼저 열고, 출전 칸을 쿼터 수로 보인다(REQ-284 범위안 8장 · 2026-10-26 시안).
+   공개 화면에 "엑셀" 표시는 두지 않는다(운영 용어) — 중계 탭 안내가 이유를 말한다. */
+var EXCEL = !!(REC && REC.source === 'excel');
+
 /* 등급 팔레트 — player-card.html과 같은 톤. OVR 구간으로 자동 배정 */
 /* 등급 토큰 — 선수 카드(player-card.html)의 [data-grade=...] 값과 같은 값이다.
    mid/hi는 등급 뱃지의 금속 그라디언트가 쓴다. 여기서 새 색을 지어내면
@@ -703,7 +708,7 @@ var TABS = [
   { key:'pbp',     label:'중계' },
   { key:'box',     label:'기록' }
 ];
-var tab = 'summary';
+var tab = EXCEL ? 'box' : 'summary';
 function renderTabs(){
   document.getElementById('tabs').innerHTML = TABS.map(function(t){
     return '<button type="button" class="tab'+(t.key===tab?' on':'')+'" data-tab="'+t.key+'"'+
@@ -767,7 +772,7 @@ function viewSummary(){
       '<div><b>'+p.pts+'</b><span>득점</span></div>'+
       '<div><b>'+p.reb+'</b><span>리바운드</span></div>'+
       '<div><b>'+p.ast+'</b><span>어시스트</span></div>'+
-      '<div><b>'+p.min+'</b><span>출전(분)</span></div>'+
+      (EXCEL ? '<div><b>'+p.qp+'Q</b><span>출전(쿼터)</span></div>' : '<div><b>'+p.min+'</b><span>출전(분)</span></div>')+
     '</div>'+
   '</div></div>';
 
@@ -929,7 +934,7 @@ var boxSide = 'all';
    "어시스트를 누가 제일 많이 했나"를 보려고 표 전체를 눈으로 훑게 두지 않는다. */
 var boxSort = 'pts', boxDesc = true;
 var SORT_KEYS = {
-  min:function(p){ return p.min; },   pts:function(p){ return p.pts; },
+  min:function(p){ return EXCEL ? p.qp : p.min; },   pts:function(p){ return p.pts; },
   reb:function(p){ return p.reb; },   ast:function(p){ return p.ast; },
   stl:function(p){ return p.stl; },   blk:function(p){ return p.blk; },
   to: function(p){ return p.to; },    pf: function(p){ return p.pf; },
@@ -955,7 +960,7 @@ function viewBox(){
   });
 
   var head = [
-    {k:'name', n:'선수'}, {k:'min', n:'분'},  {k:'pts', n:'득점'}, {k:'reb', n:'리바'},
+    {k:'name', n:'선수'}, {k:'min', n:EXCEL ? '출전' : '분'},  {k:'pts', n:'득점'}, {k:'reb', n:'리바'},
     {k:'ast',  n:'어시'}, {k:'stl', n:'스틸'}, {k:'blk', n:'블록'}, {k:'to',  n:'턴'},
     {k:'pf',   n:'파울'}, {k:'fg',  n:'야투'}, {k:'tp',  n:'3점'},  {k:'ft',  n:'자유투'}
   ];
@@ -966,7 +971,7 @@ function viewBox(){
     return '<tr'+(p.out?' class="out"':'')+'><td class="'+(boxSort==='name'?'sorted':'')+'">'+
       (showTeam ? '<i class="tmdot" style="background:'+G[p.side].color+'"></i>' : '')+
       '<span class="no">'+p.no+'</span>'+playerLink(p, p.side)+'</td>'+
-      td('min', p.min)+ td('pts', p.pts, 'key')+ td('reb', p.reb)+ td('ast', p.ast)+
+      td('min', EXCEL ? p.qp + 'Q' : p.min)+ td('pts', p.pts, 'key')+ td('reb', p.reb)+ td('ast', p.ast)+
       td('stl', p.stl)+ td('blk', p.blk)+ td('to', p.to)+ td('pf', p.pf)+
       td('fg', p.fg[0]+'/'+p.fg[1])+ td('tp', p.tp[0]+'/'+p.tp[1])+ td('ft', p.ft[0]+'/'+p.ft[1])+'</tr>';
   }).join('');
@@ -1019,6 +1024,7 @@ function viewBox(){
       '<li>열 이름을 누르면 정렬 기준이 바뀌어요</li>'+
       '<li>취소선은 5파울 퇴장</li>'+
       '<li>야투는 3점을 포함한 전체 필드골</li>'+
+      (EXCEL ? '<li>출전은 뛴 쿼터 수예요(기록지 칸 그대로)</li>' : '')+
     '</ul>';
 }
 
