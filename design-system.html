@@ -124,7 +124,7 @@ h3:first-of-type{margin-top:16px}
 .sh b{display:block;font-family:var(--font-display);font-size:11px;color:var(--ink);margin-bottom:5px}
 .icons{display:flex;flex-wrap:wrap;gap:8px}
 .icons span{width:44px;height:44px;border-radius:10px;background:var(--variant);display:flex;align-items:center;justify-content:center}
-.cbi{width:24px;height:24px;fill:currentColor;display:block}
+.cbi{width:24px;height:24px;fill:currentColor;display:block} /* Lucide 선 — 안쪽 g 가 fill:none 을 직접 가져 속이 칠해지지 않는다 */
 
 .demo{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:16px;border-radius:12px;background:var(--canvas);margin:14px 0 10px}
 .demo.dcol{display:block}
@@ -173,7 +173,7 @@ h3:first-of-type{margin-top:16px}
 .t-in.is-focus{background:var(--head);box-shadow:inset 0 0 0 2px var(--ink)}
 .t-in.is-err{box-shadow:inset 0 0 0 2px var(--on-error)}
 .t-in.is-lock{background:var(--surface-input);color:var(--ink);box-shadow:none;cursor:not-allowed;justify-content:space-between}
-/* 잠김 공통 표시 — Carbon locked · N600 · 장식 (REQ-238) */
+/* 잠김 공통 표시 — 자물쇠(locked, Lucide lock) · N600 · 장식 (REQ-238) */
 .lock-ic{display:inline-flex;flex:none;color:var(--muted)}
 .lock-ic svg{width:16px;height:16px;fill:currentColor}
 .t-seg{display:flex;height:48px;padding:4px;box-sizing:border-box;border-radius:14px;background:#e6e2ea;max-width:340px}
@@ -575,7 +575,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
 <section id="type">
   <h2>타이포그래피</h2>
   <p class="note">본문은 <b>Pretendard</b>, 숫자를 물건처럼 세우는 자리에만 <b>Tektur</b>를 켭니다.
-  아이콘은 IBM Carbon — 32 그리드에 직선·직각으로 그려져 로고의 각진 인상과 맞습니다.</p>
+  아이콘은 Lucide — 24 그리드 선 아이콘, 선 2 · 둥근 끝 (2026-11-17 PO, 그전 IBM Carbon).</p>
 
   <h3>브랜드 글자 — Tektur · 숫자·영문 전용</h3>
   <div class="ramp">
@@ -713,15 +713,15 @@ aside a.on{background:var(--variant);color:var(--ink)}
 
 <section id="icon">
   <h2>아이콘</h2>
-  <p class="note"><b>IBM Carbon</b>(Apache 2.0, 2026-09-09 전환). 폰트가 아니라 인라인 SVG입니다 — 폰트는 도착 전까지 아이콘 이름이 글자로 보입니다. 두께는 상자가 정합니다: 상자 × 2/32 (20px → 1.25px). 농구 특화 아이콘은 우리 것(24 그리드)을 그대로 씁니다.
-  획 굵기 2 · 24 그리드 · <code>butt</code> 끝 · <code>miter</code> 모서리 · 색은 언제나 <code>currentColor</code>.</p>
+  <p class="note"><b>Lucide</b>(ISC, 2026-11-17 PO 전환 — 그전 IBM Carbon). 폰트가 아니라 인라인 SVG입니다 — 폰트는 도착 전까지 아이콘 이름이 글자로 보입니다. 값은 lucide-react 1.73.0 에서 그대로 가져오고 손으로 그리지 않습니다. 농구공만 Lucide 에 없어 같은 규격으로 그렸습니다.
+  선 굵기 2 · 24 그리드 · <code>round</code> 끝 · <code>round</code> 모서리 · 색은 언제나 <code>currentColor</code>.</p>
   <div class="icons">
-    <span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M24 21H26V26H24z"/><path d="M20 16H22V26H20z"/><path d="M11,26a5.0059,5.0059,0,0,1-5-5H8a3,3,0,1,0,3-3V16a5,5,0,0,1,0,10Z"/><path d="M28,2H4A2.002,2.002,0,0,0,2,4V28a2.0023,2.0023,0,0,0,2,2H28a2.0027,2.0027,0,0,0,2-2V4A2.0023,2.0023,0,0,0,28,2Zm0,9H14V4H28ZM12,4v7H4V4ZM4,28V13H28.0007l.0013,15Z"/></svg></span><span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M26,7H24V6a2.0023,2.0023,0,0,0-2-2H10A2.0023,2.0023,0,0,0,8,6V7H6A2.0023,2.0023,0,0,0,4,9v3a4.0045,4.0045,0,0,0,4,4h.322A8.1689,8.1689,0,0,0,15,21.9341V26H10v2H22V26H17V21.9311A7.9661,7.9661,0,0,0,23.74,16H24a4.0045,4.0045,0,0,0,4-4V9A2.0023,2.0023,0,0,0,26,7ZM8,14a2.0023,2.0023,0,0,1-2-2V9H8Zm14,0a6,6,0,0,1-6.1855,5.9971A6.1991,6.1991,0,0,1,10,13.7065V6H22Zm4-2a2.0023,2.0023,0,0,1-2,2V9h2Z"/></svg></span>
-    <span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M30,30H28V25a5.0057,5.0057,0,0,0-5-5V18a7.0078,7.0078,0,0,1,7,7Z"/><path d="M22,30H20V25a5.0059,5.0059,0,0,0-5-5H9a5.0059,5.0059,0,0,0-5,5v5H2V25a7.0082,7.0082,0,0,1,7-7h6a7.0082,7.0082,0,0,1,7,7Z"/><path d="M20,2V4a5,5,0,0,1,0,10v2A7,7,0,0,0,20,2Z"/><path d="M12,4A5,5,0,1,1,7,9a5,5,0,0,1,5-5m0-2a7,7,0,1,0,7,7A7,7,0,0,0,12,2Z"/></svg></span><span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M26,4h-4V2h-2v2h-8V2h-2v2H6C4.9,4,4,4.9,4,6v20c0,1.1,0.9,2,2,2h20c1.1,0,2-0.9,2-2V6C28,4.9,27.1,4,26,4z M26,26H6V12h20 V26z M26,10H6V6h4v2h2V6h8v2h2V6h4V10z"/></svg></span>
-    <span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="4"/><path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14S23.7,2,16,2z M16,22c-3.3,0-6-2.7-6-6s2.7-6,6-6s6,2.7,6,6 S19.3,22,16,22z"/></svg></span><span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><circle cx="22" cy="24" r="2"/><path fill="none" d="M22,28a4,4,0,1,1,4-4A4.0039,4.0039,0,0,1,22,28Zm0-6a2,2,0,1,0,2,2A2.0027,2.0027,0,0,0,22,22Z"/><path d="M29.7769,23.4785A8.64,8.64,0,0,0,22,18a8.64,8.64,0,0,0-7.7769,5.4785L14,24l.2231.5215A8.64,8.64,0,0,0,22,30a8.64,8.64,0,0,0,7.7769-5.4785L30,24ZM22,28a4,4,0,1,1,4-4A4.0045,4.0045,0,0,1,22,28Z"/><path d="M12,28H7V7h3v3H22V7h3v9h2V7a2,2,0,0,0-2-2H22V4a2,2,0,0,0-2-2H12a2,2,0,0,0-2,2V5H7A2,2,0,0,0,5,7V28a2,2,0,0,0,2,2h5ZM12,4h8V8H12Z"/></svg></span>
-    <span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M27,28V6H19V28H15V14H7V28H4V2H2V28a2,2,0,0,0,2,2H30V28ZM13,28H9V16h4Zm12,0H21V8h4Z"/></svg></span><span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M26,6V8.17L5.64,11.87a2,2,0,0,0-1.64,2v4.34a2,2,0,0,0,1.64,2L8,20.56V24a2,2,0,0,0,2,2h8a2,2,0,0,0,2-2V22.74l6,1.09V26h2V6ZM18,24H10V20.93l8,1.45ZM6,18.17V13.83L26,10.2V21.8Z"/></svg></span>
-    <span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M27,16.76c0-.25,0-.5,0-.76s0-.51,0-.77l1.92-1.68A2,2,0,0,0,29.3,11L26.94,7a2,2,0,0,0-1.73-1,2,2,0,0,0-.64.1l-2.43.82a11.35,11.35,0,0,0-1.31-.75l-.51-2.52a2,2,0,0,0-2-1.61H13.64a2,2,0,0,0-2,1.61l-.51,2.52a11.48,11.48,0,0,0-1.32.75L7.43,6.06A2,2,0,0,0,6.79,6,2,2,0,0,0,5.06,7L2.7,11a2,2,0,0,0,.41,2.51L5,15.24c0,.25,0,.5,0,.76s0,.51,0,.77L3.11,18.45A2,2,0,0,0,2.7,21L5.06,25a2,2,0,0,0,1.73,1,2,2,0,0,0,.64-.1l2.43-.82a11.35,11.35,0,0,0,1.31.75l.51,2.52a2,2,0,0,0,2,1.61h4.72a2,2,0,0,0,2-1.61l.51-2.52a11.48,11.48,0,0,0,1.32-.75l2.42.82a2,2,0,0,0,.64.1,2,2,0,0,0,1.73-1L29.3,21a2,2,0,0,0-.41-2.51ZM25.21,24l-3.43-1.16a8.86,8.86,0,0,1-2.71,1.57L18.36,28H13.64l-.71-3.55a9.36,9.36,0,0,1-2.7-1.57L6.79,24,4.43,20l2.72-2.4a8.9,8.9,0,0,1,0-3.13L4.43,12,6.79,8l3.43,1.16a8.86,8.86,0,0,1,2.71-1.57L13.64,4h4.72l.71,3.55a9.36,9.36,0,0,1,2.7,1.57L25.21,8,27.57,12l-2.72,2.4a8.9,8.9,0,0,1,0,3.13L27.57,20Z"/><path d="M16,22a6,6,0,1,1,6-6A5.94,5.94,0,0,1,16,22Zm0-10a3.91,3.91,0,0,0-4,4,3.91,3.91,0,0,0,4,4,3.91,3.91,0,0,0,4-4A3.91,3.91,0,0,0,16,12Z"/></svg></span><span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M12,10H6.78A11,11,0,0,1,27,16h2A13,13,0,0,0,6,7.68V4H4v8h8Z"/><path d="M20,22h5.22A11,11,0,0,1,5,16H3a13,13,0,0,0,23,8.32V28h2V20H20Z"/></svg></span>
-    <span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M26,7H24V6a2.0023,2.0023,0,0,0-2-2H10A2.0023,2.0023,0,0,0,8,6V7H6A2.0023,2.0023,0,0,0,4,9v3a4.0045,4.0045,0,0,0,4,4h.322A8.1689,8.1689,0,0,0,15,21.9341V26H10v2H22V26H17V21.9311A7.9661,7.9661,0,0,0,23.74,16H24a4.0045,4.0045,0,0,0,4-4V9A2.0023,2.0023,0,0,0,26,7ZM8,14a2.0023,2.0023,0,0,1-2-2V9H8Zm18-2a2.0023,2.0023,0,0,1-2,2V9h2Z"/></svg></span><span><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M23,20a5,5,0,0,0-3.89,1.89L11.8,17.32a4.46,4.46,0,0,0,0-2.64l7.31-4.57A5,5,0,1,0,18,7a4.79,4.79,0,0,0,.2,1.32l-7.31,4.57a5,5,0,1,0,0,6.22l7.31,4.57A4.79,4.79,0,0,0,18,25a5,5,0,1,0,5-5ZM23,4a3,3,0,1,1-3,3A3,3,0,0,1,23,4ZM7,19a3,3,0,1,1,3-3A3,3,0,0,1,7,19Zm16,9a3,3,0,1,1,3-3A3,3,0,0,1,23,28Z"/></svg></span>
+    <span><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></g></svg></span><span><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2"/><path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2"/><path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/></g></svg></span>
+    <span><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/></g></svg></span><span><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v3"/><path d="M16 2v3"/><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></g></svg></span>
+    <span><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="12" r="10"/></g></svg></span><span><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></g></svg></span>
+    <span><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></g></svg></span><span><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/><path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14"/><path d="M8 6v8"/></g></svg></span>
+    <span><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></g></svg></span><span><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></g></svg></span>
+    <span><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2"/><path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2"/><path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/></g></svg></span><span><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></g></svg></span>
   </div>
   <div class="ramp">
     <div class="r"><span class="rl">SM · 16</span><span class="rs">칩 안 · 표 안 · 라벨 옆</span><span class="rv">16px</span></div>
@@ -729,8 +729,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
   </div>
   <div class="warn"><p>두 단만 씁니다. 아이콘은 합자 폰트라 크기가 글자 크기로 잡히므로,
   단을 늘리면 타입 램프가 흐트러집니다.</p></div>
-  <div class="warn"><p>농구 특화 그림(공·교체·타이머)은 예외입니다 — 손으로 그린 SVG를 쓰고
-  거기만 둥근 획 끝을 유지합니다. 공이 각지면 공으로 안 보입니다.</p></div>
+  <div class="warn"><p>채운 아이콘은 없습니다 — 완료·정보·경고도 선 원 아이콘입니다. 강조는 색으로 합니다.</p></div>
 </section>
 
 <section id="motion">
@@ -822,7 +821,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
     <button class="d-btn d-xs d-outline">작게 32</button>
     <button class="d-btn d-tonal">기본 40</button>
     <button class="d-btn d-lg d-primary">크게 48</button>
-    <button class="d-btn d-icon d-tonal"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M23,20a5,5,0,0,0-3.89,1.89L11.8,17.32a4.46,4.46,0,0,0,0-2.64l7.31-4.57A5,5,0,1,0,18,7a4.79,4.79,0,0,0,.2,1.32l-7.31,4.57a5,5,0,1,0,0,6.22l7.31,4.57A4.79,4.79,0,0,0,18,25a5,5,0,1,0,5-5ZM23,4a3,3,0,1,1-3,3A3,3,0,0,1,23,4ZM7,19a3,3,0,1,1,3-3A3,3,0,0,1,7,19Zm16,9a3,3,0,1,1,3-3A3,3,0,0,1,23,28Z"/></svg></button>
+    <button class="d-btn d-icon d-tonal"><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></g></svg></button>
   </div>
   <div class="ramp">
     <div class="r"><span class="rl">XS · 32</span><span class="rs">섹션 제목 줄 보조 동작 · 목록 줄 끝(경기 목록) — 주 동작에 쓰지 않는다</span><span class="rv">12px/700 · 좌우 12</span></div>
@@ -860,7 +859,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
       <div class="tf"><label>이름 <span class="req">*</span></label><span class="t-in">김민수</span><span class="hint">값이 참 — 흰 바탕</span></div>
       <div class="tf"><label>영문 이름 (선택)</label><span class="t-in is-focus">Kim Min Su</span><span class="hint">포커스 — 안내 글은 그대로 둔다</span></div>
       <div class="tf"><label>영문 이름 (선택)</label><span class="t-in is-err">Lee 현수</span><span class="hint er">영문 이름은 영문 알파벳으로 60자까지 적어 주세요</span></div>
-      <div class="tf"><label>이름 <span class="req">*</span></label><span class="t-in is-lock">이현수<span class="lock-ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M24,14H22V8A6,6,0,0,0,10,8v6H8a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V16A2,2,0,0,0,24,14ZM12,8a4,4,0,0,1,8,0v6H12ZM24,28H8V16H24Z"/></svg></span></span><span class="hint">선수 본인 계정과 연결돼 이름은 바꿀 수 없어요</span></div>
+      <div class="tf"><label>이름 <span class="req">*</span></label><span class="t-in is-lock">이현수<span class="lock-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg></span></span><span class="hint">선수 본인 계정과 연결돼 이름은 바꿀 수 없어요</span></div>
       <div class="tf"><label>소속 팀</label><span class="t-readout">서울 타이탄스</span><span class="hint">읽기 값 — 바꾸지 않는 값은 상자 없이 글자로</span></div>
     </div>
   </div>
@@ -877,12 +876,12 @@ aside a.on{background:var(--variant);color:var(--ink)}
   <h3>잠김 공통 표시 — 지금 바꿀 수 없는 곳 (2026-10-19 PO "B안", REQ-238)</h3>
   <div class="demo paper dcol">
     <div class="tgrid" style="width:100%">
-      <div class="tf"><label>종목</label><div class="t-seg"><span class="off">1대1</span><span class="off">3대3</span><span class="on">5대5<span class="lock-ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M24,14H22V8A6,6,0,0,0,10,8v6H8a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V16A2,2,0,0,0,24,14ZM12,8a4,4,0,0,1,8,0v6H12ZM24,28H8V16H24Z"/></svg></span></span></div><span class="hint">참가팀이 있어 종목을 바꿀 수 없어요</span></div>
-      <div class="tf"><label>스위치 — 잠긴 켜짐 · 잠긴 꺼짐</label><div style="display:flex;gap:24px;min-height:40px;align-items:center"><span class="t-sw on"><i><b><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M24,14H22V8A6,6,0,0,0,10,8v6H8a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V16A2,2,0,0,0,24,14ZM12,8a4,4,0,0,1,8,0v6H12ZM24,28H8V16H24Z"/></svg></b></i></span><span class="t-sw"><i><b><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M24,14H22V8A6,6,0,0,0,10,8v6H8a2,2,0,0,0-2,2V28a2,2,0,0,0,2,2H24a2,2,0,0,0,2-2V16A2,2,0,0,0,24,14ZM12,8a4,4,0,0,1,8,0v6H12ZM24,28H8V16H24Z"/></svg></b></i></span></div><span class="hint">전체 관리는 최소 1명 있어야 해요</span></div>
+      <div class="tf"><label>종목</label><div class="t-seg"><span class="off">1대1</span><span class="off">3대3</span><span class="on">5대5<span class="lock-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg></span></span></div><span class="hint">참가팀이 있어 종목을 바꿀 수 없어요</span></div>
+      <div class="tf"><label>스위치 — 잠긴 켜짐 · 잠긴 꺼짐</label><div style="display:flex;gap:24px;min-height:40px;align-items:center"><span class="t-sw on"><i><b><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg></b></i></span><span class="t-sw"><i><b><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg></b></i></span></div><span class="hint">전체 관리는 최소 1명 있어야 해요</span></div>
     </div>
   </div>
   <div class="ramp">
-    <div class="r"><span class="rl">자물쇠</span><span class="rs">Carbon <code>locked</code> · N600 · 장식(aria-hidden). 이유는 늘 칸 아래 글·aria-describedby 로 — 자물쇠만 두지 않는다</span><span class="rv">locked</span></div>
+    <div class="r"><span class="rl">자물쇠</span><span class="rs">자물쇠 <code>locked</code>(Lucide lock) · N600 · 장식(aria-hidden). 이유는 늘 칸 아래 글·aria-describedby 로 — 자물쇠만 두지 않는다</span><span class="rv">locked</span></div>
     <div class="r"><span class="rl">자리·크기</span><span class="rs">입력 칸 안 오른쪽 16 자리에 16(글자 자리 오른쪽 44) · 구분 버튼 고른 칸 글자 뒤 6 에 16 · 스위치 손잡이 안 12 — 자리를 늘리지 않는다</span><span class="rv">16 · 12</span></div>
     <div class="r"><span class="rl">스위치 잠김</span><span class="rs">막대 색을 흰색과 40% 섞기(손잡이·자물쇠는 또렷하게) · 손잡이 1px 연한 테두리 · 켜짐/꺼짐 자리는 그대로</span><span class="rv">40%</span></div>
     <div class="r"><span class="rl">커서</span><span class="rs">잠긴 곳은 모두 금지 커서</span><span class="rv">not-allowed</span></div>
@@ -910,18 +909,18 @@ aside a.on{background:var(--variant);color:var(--ink)}
     <div class="d-pick"><span class="d-dot"></span><span>FIBA 표준 · 10분 4쿼터</span></div>
     <div style="height:12px"></div>
     <div class="tf"><label>쿼터당 팀파울</label>
-      <div class="d-num"><span class="t-in ph">5</span><span class="d-numsteps"><i><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 22 6 12 7.4 10.6 16 19.2 24.6 10.6 26 12z"/></svg></i><i><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 22 6 12 7.4 10.6 16 19.2 24.6 10.6 26 12z"/></svg></i></span></div>
+      <div class="d-num"><span class="t-in ph">5</span><span class="d-numsteps"><i><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></g></svg></i><i><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></g></svg></i></span></div>
       <span class="hint">빈 칸이면 단추·↑↓는 흐린 기본값에서 하나씩 늘고 준다</span></div>
   </div>
   <div class="ramp">
     <div class="r"><span class="rl">체크박스</span><span class="rs">여럿을 켜고 끄는 자리. 20 · 반경 6 · 2px <code>--outline</code> 테두리 · 켜지면 Primary 면에 흰 체크 12</span><span class="rv">20px</span></div>
     <div class="r"><span class="rl">라디오</span><span class="rs">여럿 중 하나. 20 원형 · 켜지면 테두리만 Primary가 되고 안에 10 점이 찍힌다</span><span class="rv">20px</span></div>
     <div class="r"><span class="rl">줄 높이</span><span class="rs">둘 다 40px(2026-10-22 A안, 전 44) — 표식만 누르게 하지 않고 줄 전체가 눌린다 · 표식과 글자 사이 8 · 글자 13/500</span><span class="rv">40px</span></div>
-    <div class="r"><span class="rl">숫자 스텝</span><span class="rs">칸은 입력 칸과 같다(48 · 반경 14). 칸 안 오른쪽 여백 4에 폭 32 단추 묶음 · 반경 10(= 14 − 4) · 1px 연한 선 · Carbon 화살표 16. 숫자 글자는 오른쪽 44에서 멈춘다. 키보드는 칸에서 ↑↓. 처음 값은 빈 칸의 흐린 자리 표시로 두고, 빈 칸에서 단추나 키보드 ↑↓를 누르면 그 값에서 하나씩 늘고 준다 · 비운 채 저장하면 그 값을 쓴다 (PO 2026-10-19, REQ-232). 단, 자리 표시가 <b>예시</b>인 칸(선수 등록·수정 창의 등번호·신장·체중, REQ-236)은 비우면 빈 값으로 저장 — 단추는 같게 예시 숫자에서 ±1</span><span class="rv">32px</span></div>
+    <div class="r"><span class="rl">숫자 스텝</span><span class="rs">칸은 입력 칸과 같다(48 · 반경 14). 칸 안 오른쪽 여백 4에 폭 32 단추 묶음 · 반경 10(= 14 − 4) · 1px 연한 선 · 화살표 아이콘 16. 숫자 글자는 오른쪽 44에서 멈춘다. 키보드는 칸에서 ↑↓. 처음 값은 빈 칸의 흐린 자리 표시로 두고, 빈 칸에서 단추나 키보드 ↑↓를 누르면 그 값에서 하나씩 늘고 준다 · 비운 채 저장하면 그 값을 쓴다 (PO 2026-10-19, REQ-232). 단, 자리 표시가 <b>예시</b>인 칸(선수 등록·수정 창의 등번호·신장·체중, REQ-236)은 비우면 빈 값으로 저장 — 단추는 같게 예시 숫자에서 ±1</span><span class="rv">32px</span></div>
   </div>
   <h3>선택 칩 — 정해진 몇 개 중 고르기 (2026-10-13, REQ-184·188)</h3>
   <div class="demo dcol paper">
-    <div class="d-chipset"><span class="d-chipsel">PG</span><span class="d-chipsel on"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true" style="width:16px;height:16px"><path d="M13 24 4 15 5.414 13.586 13 21.171 26.586 7.586 28 9 13 24z"/></svg>SG</span><span class="d-chipsel">SF</span><span class="d-chipsel">PF</span><span class="d-chipsel">C</span></div>
+    <div class="d-chipset"><span class="d-chipsel">PG</span><span class="d-chipsel on"><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true" style="width:16px;height:16px"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></g></svg>SG</span><span class="d-chipsel">SF</span><span class="d-chipsel">PF</span><span class="d-chipsel">C</span></div>
     <div class="d-chipset"><span class="d-chipsel">PG</span><span class="d-chipsel off">SG</span><span class="d-chipsel">SF</span><span class="d-chipsel">PF</span><span class="d-chipsel">C</span></div>
   </div>
   <div class="ramp">
@@ -1007,7 +1006,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
 <section id="feedback">
   <h2>피드백</h2>
   <div class="demo">
-    <div class="d-empty"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M27,28V6H19V28H15V14H7V28H4V2H2V28a2,2,0,0,0,2,2H30V28ZM13,28H9V16h4Zm12,0H21V8h4Z"/></svg><p>아직 기록된 경기가 없어요<br>첫 경기를 마치면 기록이 채워져요</p></div>
+    <div class="d-empty"><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></g></svg><p>아직 기록된 경기가 없어요<br>첫 경기를 마치면 기록이 채워져요</p></div>
     <div style="flex:1;min-width:200px"><div class="d-bar"><i></i></div>
       <p style="font-size:11px;color:var(--muted);margin:8px 0 0">진행 표시 — 높이 9 · 반경 Pill</p></div>
   </div>
@@ -1032,7 +1031,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
   "망가진 게 아니라 아직 비어 있다"를 말합니다.</p>
   <div class="demo dcol">
     <div class="empty-demo">
-      <svg class="empty-ic cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M29,27.5859l-7.5521-7.5521a11.0177,11.0177,0,1,0-1.4141,1.4141L27.5859,29ZM4,13a9,9,0,1,1,9,9A9.01,9.01,0,0,1,4,13Z"/></svg>
+      <svg class="empty-ic cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-4.34-4.34"/><circle cx="11" cy="11" r="8"/></g></svg>
       <b>무엇을 찾을까요?</b>
       <span>팀 이름, 선수 이름, 경기를 찾을 수 있어요</span>
     </div>
@@ -1074,23 +1073,23 @@ aside a.on{background:var(--variant);color:var(--ink)}
 <section id="toast">
   <h2>토스트 — 끝났다는 신호</h2>
   <p class="note">동작이 끝난 것을 알리는 가장 가벼운 방법입니다. <b>2026-10-13 다듬음(PO, REQ-179·180)</b> —
-  상태 색 아이콘(Carbon 원 채움 하나로) · 아이콘 상하 가운데 · 제목 500 · 화면 아래 밖에서 올라옴 · 최대 폭 504 · 되돌리기는 오른쪽 끝 버튼 · 오류는 닫기.
+  상태 색 아이콘(Lucide 선 원 하나로) · 아이콘 상하 가운데 · 제목 500 · 화면 아래 밖에서 올라옴 · 최대 폭 504 · 되돌리기는 오른쪽 끝 버튼 · 오류는 닫기.
   카드 화면에서도 토스트는 흰 시트가 올라와 있을 때만 뜹니다 — 어두운 무대 위에 얹힐 일이 없습니다(PO 확인).</p>
   <div class="demo dcol">
-    <div class="d-toast is-done"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/><path fill="none" d="M14 21.591 9 16.591 10.591 15 14 18.409 21.41 11 23.005 12.585 14 21.591z" data-icon-path="inner-path"/></svg><span>기록이 확정됐어요</span></div>
-    <div class="d-toast is-done"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/><path fill="none" d="M14 21.591 9 16.591 10.591 15 14 18.409 21.41 11 23.005 12.585 14 21.591z" data-icon-path="inner-path"/></svg><span>기록을 지웠어요</span><b role="button" tabindex="0">되돌리기</b></div>
-    <div class="d-toast is-info"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path fill="none" d="M16,8a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,13.875H17.125v-8H13v2.25h1.875v5.75H12v2.25h8Z" data-icon-path="inner-path"/><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2Zm0,6a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,16,8Zm4,16.125H12v-2.25h2.875v-5.75H13v-2.25h4.125v8H20Z"/></svg><span>선수 수정 화면은 아직 준비 중이에요</span></div>
-    <div class="d-toast is-err"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2C8.3,2,2,8.3,2,16s6.3,14,14,14s14-6.3,14-14C30,8.3,23.7,2,16,2z M14.9,8h2.2v11h-2.2V8z M16,25 c-0.8,0-1.5-0.7-1.5-1.5S15.2,22,16,22c0.8,0,1.5,0.7,1.5,1.5S16.8,25,16,25z"/><path fill="none" d="M17.5,23.5c0,0.8-0.7,1.5-1.5,1.5c-0.8,0-1.5-0.7-1.5-1.5S15.2,22,16,22 C16.8,22,17.5,22.7,17.5,23.5z M17.1,8h-2.2v11h2.2V8z" data-icon-path="inner-path" opacity="0"/></svg><span>저장하지 못했어요<em>연결을 확인하고 다시 시도해 주세요</em></span><i aria-label="닫기"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M17.4141 16 24 9.4141 22.5859 8 16 14.5859 9.4143 8 8 9.4141 14.5859 16 8 22.5859 9.4143 24 16 17.4141 22.5859 24 24 22.5859 17.4141 16z"/></svg></i></div>
-    <div class="d-toast is-done"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/><path fill="none" d="M14 21.591 9 16.591 10.591 15 14 18.409 21.41 11 23.005 12.585 14 21.591z" data-icon-path="inner-path"/></svg><span>서울 타이탄스에 2명을 등록했어요<em>초대는 아직 보내지 않았어요</em></span></div>
+    <div class="d-toast is-done"><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16 9-5.5 5.5L8 12"/></g></svg><span>기록이 확정됐어요</span></div>
+    <div class="d-toast is-done"><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16 9-5.5 5.5L8 12"/></g></svg><span>기록을 지웠어요</span><b role="button" tabindex="0">되돌리기</b></div>
+    <div class="d-toast is-info"><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></g></svg><span>선수 수정 화면은 아직 준비 중이에요</span></div>
+    <div class="d-toast is-err"><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></g></svg><span>저장하지 못했어요<em>연결을 확인하고 다시 시도해 주세요</em></span><i aria-label="닫기"><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></g></svg></i></div>
+    <div class="d-toast is-done"><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16 9-5.5 5.5L8 12"/></g></svg><span>서울 타이탄스에 2명을 등록했어요<em>초대는 아직 보내지 않았어요</em></span></div>
   </div>
   <p class="note">들고 남 — 아래 칸을 누르면 화면 아래 밖에서 올라옵니다.</p>
   <div class="d-toast-stage" id="toastStage" role="button" tabindex="0" aria-label="토스트 올라오는 모습 보기">
-    <div class="d-toast is-done"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M16,2A14,14,0,1,0,30,16,14,14,0,0,0,16,2ZM14,21.5908l-5-5L10.5906,15,14,18.4092,21.41,11l1.5957,1.5859Z"/><path fill="none" d="M14 21.591 9 16.591 10.591 15 14 18.409 21.41 11 23.005 12.585 14 21.591z" data-icon-path="inner-path"/></svg><span>시합 종류를 저장했어요</span></div>
+    <div class="d-toast is-done"><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16 9-5.5 5.5L8 12"/></g></svg><span>시합 종류를 저장했어요</span></div>
   </div>
   <div class="ramp">
     <div class="r"><span class="rl">자리</span><span class="rs">화면 아래 가운데 · 아래에서 84 (모달 안 12) · 최소 288 · 최대 폭 504 (420 의 1.2배)</span><span class="rv">bottom</span></div>
     <div class="r"><span class="rl">모양</span><span class="rs">흰 면 78% + 배경 블러 18 · N200 테두리 1px · 반경 12 · e3 · 안쪽 12·16 · 간격 12</span><span class="rv">blur(18)</span></div>
-    <div class="r"><span class="rl">뜻 3가지</span><span class="rs">완료 ✓ 초록 #22c55e · 안내 ⓘ 연한 회색 #8d8c94(N500) · 오류 ! 빨강 #d81d1d — Carbon *--filled 원 채움 하나로</span><span class="rv">tone</span></div>
+    <div class="r"><span class="rl">뜻 3가지</span><span class="rs">완료 ✓ 초록 #22c55e · 안내 ⓘ 연한 회색 #8d8c94(N500) · 오류 ! 빨강 #d81d1d — Lucide 선 원 아이콘(circle-check · info · circle-alert)</span><span class="rv">tone</span></div>
     <div class="r"><span class="rl">아이콘 · 글자</span><span class="rs">아이콘 20 상하 가운데 · 제목 13/500 줄 20 · 아래 줄 12/400 회색</span><span class="rv">20 · 500</span></div>
     <div class="r"><span class="rl">되돌리기 · 닫기</span><span class="rs">오른쪽 끝 · 되돌리기 13/600 #d95f00 글자 버튼 · 오류에는 × · 누르는 칸 32</span><span class="rv">32</span></div>
     <div class="r"><span class="rl">머무는 시간</span><span class="rs">기본 3초 · 되돌리기가 붙으면 6초 · 오류는 사람이 닫을 때까지</span><span class="rv">3 / 6 / ∞</span></div>
@@ -1112,10 +1111,10 @@ aside a.on{background:var(--variant);color:var(--ink)}
   나누는 방법이 둘인데, <b>어느 쪽인지에 따라 사람이 하는 일이 달라집니다</b>.</p>
   <div class="demo dcol">
     <div class="d-page">
-      <button class="d-pg" disabled><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M10 16 20 6 21.4 7.4 12.8 16 21.4 24.6 20 26z"/></svg></button>
+      <button class="d-pg" disabled><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></g></svg></button>
       <button class="d-pg on">1</button><button class="d-pg">2</button><button class="d-pg">3</button>
       <span class="d-pg-gap">···</span><button class="d-pg">12</button>
-      <button class="d-pg"><svg class="cbi" viewBox="0 0 32 32" aria-hidden="true"><path d="M22 16 12 26 10.6 24.6 19.2 16 10.6 7.4 12 6z"/></svg></button>
+      <button class="d-pg"><svg class="cbi" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></g></svg></button>
     </div>
     <div style="margin-top:14px"><button class="d-btn d-tonal" style="width:100%;max-width:360px">경기 20개 더보기</button></div>
   </div>
