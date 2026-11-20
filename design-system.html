@@ -221,7 +221,9 @@ h3:first-of-type{margin-top:16px}
 .d-agree-row{display:flex;align-items:center;justify-content:space-between}
 .d-tick{width:20px;height:20px;flex:none;display:grid;place-items:center;color:var(--outline)}
 .d-tick svg{width:18px;height:18px}
+.d-tick svg *{stroke-width:1.5}
 .d-agree-row.on .d-tick{color:var(--primary)}
+.d-agree-row.on .d-tick svg *{stroke-width:3} /* 꺼짐 가는 선 · 켜짐 굵은 선 — 색만으로 나누지 않게(REQ-508) */
 .d-agree-row .d-pick{font-size:13px}
 .d-agree-row .req{color:var(--muted)}
 .d-agree-go{width:40px;height:40px;display:grid;place-items:center;color:var(--muted)}
