@@ -187,6 +187,11 @@ h3:first-of-type{margin-top:16px}
 .t-sw.on b{transform:translateX(24px)}
 .t-sw b svg{width:12px;height:12px;fill:var(--muted)}
 .t-readout{padding-left:4px;font-family:var(--font);font-size:16px;font-weight:500;line-height:24px;color:var(--ink)}
+/* 비밀번호 보기/숨기기 — 실제 앱 PasswordInput(.auth-pw) 과 같은 값 (REQ-507) */
+.t-pw{position:relative}
+.t-pw .t-in{padding-right:52px}
+.t-pw-btn{position:absolute;top:4px;right:4px;width:40px;height:40px;display:grid;place-items:center;border-radius:10px;color:var(--muted)}
+.t-pw-btn svg{width:20px;height:20px}
 /* 검색 칸 — 폼 칸과 다른 부품 (프로토타입 .input, 대시보드 통합 검색) */
 .t-search{display:flex;align-items:center;gap:10px;height:48px;padding:0 18px;border-radius:100px;background:var(--variant);color:var(--on-surface-placeholder);font-size:13px;max-width:300px}
 /* 고르는 칸 — 콘솔의 .check-row/.m3check/.m3radio와 같은 값 */
@@ -206,6 +211,21 @@ h3:first-of-type{margin-top:16px}
   background:no-repeat center/12px url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5 5L20 6.5'/%3E%3C/svg%3E")}
 .d-pick.on .d-dot{border-color:var(--primary)}
 .d-pick.on .d-dot::after{content:"";position:absolute;inset:0;margin:auto;width:10px;height:10px;border-radius:50%;background:var(--primary)}
+/* 동의 묶음 — 실제 앱 가입 화면 .auth-agree 와 같은 값 (REQ-507) */
+.d-agree{display:flex;flex-direction:column;width:100%;max-width:360px}
+.d-agree-all{display:flex;align-items:flex-start;gap:8px;padding:10px 0}
+.d-agree-all b{display:block;font-size:16px;font-weight:700;line-height:20px}
+.d-agree-all small{display:block;margin-top:4px;font-size:13px;font-weight:500;line-height:20px;color:var(--muted)}
+.d-pick.mix .d-box{background:var(--primary);border-color:var(--primary)}
+.d-pick.mix .d-box::after{content:"";position:absolute;inset:0;margin:auto;width:10px;height:2px;border-radius:1px;background:#fff}
+.d-agree-row{display:flex;align-items:center;justify-content:space-between}
+.d-tick{width:20px;height:20px;flex:none;display:grid;place-items:center;color:var(--outline)}
+.d-tick svg{width:18px;height:18px}
+.d-agree-row.on .d-tick{color:var(--primary)}
+.d-agree-row .d-pick{font-size:13px}
+.d-agree-row .req{color:var(--muted)}
+.d-agree-go{width:40px;height:40px;display:grid;place-items:center;color:var(--muted)}
+.d-agree-go svg{width:20px;height:20px}
 /* 숫자 칸 — 칸은 입력 절 .t-in 과 같고, 오른쪽 안에 위·아래 단추 */
 .d-num{position:relative;max-width:200px}
 .d-num .t-in{padding-right:44px}
@@ -861,6 +881,8 @@ aside a.on{background:var(--variant);color:var(--ink)}
       <div class="tf"><label>영문 이름 (선택)</label><span class="t-in is-err">Lee 현수</span><span class="hint er">영문 이름은 영문 알파벳으로 60자까지 적어 주세요</span></div>
       <div class="tf"><label>이름 <span class="req">*</span></label><span class="t-in is-lock">이현수<span class="lock-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></g></svg></span></span><span class="hint">선수 본인 계정과 연결돼 이름은 바꿀 수 없어요</span></div>
       <div class="tf"><label>소속 팀</label><span class="t-readout">서울 타이탄스</span><span class="hint">읽기 값 — 바꾸지 않는 값은 상자 없이 글자로</span></div>
+      <div class="tf"><label>비밀번호</label><div class="t-pw"><span class="t-in">••••••••</span><span class="t-pw-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></g></svg></span></div><span class="hint">숨김 — 눈 단추로 입력한 글자 보기</span></div>
+      <div class="tf"><label>비밀번호</label><div class="t-pw"><span class="t-in">abcd1234!</span><span class="t-pw-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></g></svg></span></div><span class="hint">보임 — 다시 누르면 숨김. 칸마다 따로</span></div>
     </div>
   </div>
   <div class="ramp">
@@ -871,6 +893,7 @@ aside a.on{background:var(--variant);color:var(--ink)}
     <div class="r"><span class="rl">포커스</span><span class="rs">바탕이 hover 톤 + 칸 <b>안쪽</b> 2px 검정 선(그림자 — 바깥 선이 아니라 자리가 밀리지 않는다)</span><span class="rv">N950</span></div>
     <div class="r"><span class="rl">오류</span><span class="rs">안쪽 2px 빨간 선 + 칸 아래 문장 13/600. 색만으로 말하지 않는다 (2026-10-12 PO "700은 너무 찐해")</span><span class="rv">red-600</span></div>
     <div class="r"><span class="rl">잠김</span><span class="rs">값은 보이지만 바꿀 수 없는 칸 — 입력 전 칸과 같은 바탕(N50) · 테두리 없음(REQ-239) · 글자만 입력한 값과 같은 진한 색(REQ-234) · 오른쪽 안 자물쇠 16(REQ-238) · 금지 커서 · 마우스 올림에 안 바뀜. 이유는 칸 아래 글로 (선수 수정 창의 본인 연결 이름, REQ-229)</span><span class="rv">N50 · N950</span></div>
+    <div class="r"><span class="rl">비밀번호 보기</span><span class="rs">모든 비밀번호 칸(가입·로그인·비밀번호 바꾸기) — 칸 안 오른쪽 4 자리에 40 단추 · 아이콘 20(Lucide eye / eye-off) · N600 · 반경 10 · 글자는 오른쪽 52에서 멈춤 · 칸마다 따로 켜고 끔 (PO 2026-11-18, REQ-507)</span><span class="rv">40 · 20</span></div>
     <div class="r"><span class="rl">읽기 값</span><span class="rs">바꾸지 않는 값은 칸을 그리지 않는다 — 상자 없이, 글자는 입력 칸 값과 같은 16/500, 라벨 시작점(4)에 맞춤. 입력 칸으로 오해하지 않게 (선수 수정 창의 소속 팀, REQ-229)</span><span class="rv">16 · 500</span></div>
   </div>
   <h3>잠김 공통 표시 — 지금 바꿀 수 없는 곳 (2026-10-19 PO "B안", REQ-238)</h3>
@@ -917,6 +940,19 @@ aside a.on{background:var(--variant);color:var(--ink)}
     <div class="r"><span class="rl">라디오</span><span class="rs">여럿 중 하나. 20 원형 · 켜지면 테두리만 Primary가 되고 안에 10 점이 찍힌다</span><span class="rv">20px</span></div>
     <div class="r"><span class="rl">줄 높이</span><span class="rs">둘 다 40px(2026-10-22 A안, 전 44) — 표식만 누르게 하지 않고 줄 전체가 눌린다 · 표식과 글자 사이 8 · 글자 13/500</span><span class="rv">40px</span></div>
     <div class="r"><span class="rl">숫자 스텝</span><span class="rs">칸은 입력 칸과 같다(48 · 반경 14). 칸 안 오른쪽 여백 4에 폭 32 단추 묶음 · 반경 10(= 14 − 4) · 1px 연한 선 · 화살표 아이콘 16. 숫자 글자는 오른쪽 44에서 멈춘다. 키보드는 칸에서 ↑↓. 처음 값은 빈 칸의 흐린 자리 표시로 두고, 빈 칸에서 단추나 키보드 ↑↓를 누르면 그 값에서 하나씩 늘고 준다 · 비운 채 저장하면 그 값을 쓴다 (PO 2026-10-19, REQ-232). 단, 자리 표시가 <b>예시</b>인 칸(선수 등록·수정 창의 등번호·신장·체중, REQ-236)은 비우면 빈 값으로 저장 — 단추는 같게 예시 숫자에서 ±1</span><span class="rv">32px</span></div>
+  </div>
+  <h3>동의 묶음 — 가입 화면 (PO 2026-11-18, REQ-507)</h3>
+  <div class="demo paper" style="gap:32px;flex-wrap:wrap;align-items:flex-start">
+    <div class="d-agree"><div class="d-pick d-agree-all"><span class="d-box"></span><span><b>전체 동의</b><small>필수 항목 3개에 모두 동의해요</small></span></div><div class="d-agree-row"><span class="d-pick"><span class="d-tick"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></g></svg></span><span><span class="req">(필수)</span> 만 14세 이상이에요</span></span></div><div class="d-agree-row"><span class="d-pick"><span class="d-tick"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></g></svg></span><span><span class="req">(필수)</span> 이용약관 동의</span></span><span class="d-agree-go"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></g></svg></span></div><div class="d-agree-row"><span class="d-pick"><span class="d-tick"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></g></svg></span><span><span class="req">(필수)</span> 개인정보 수집·이용 동의</span></span><span class="d-agree-go"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></g></svg></span></div></div>
+    <div class="d-agree"><div class="d-pick mix d-agree-all"><span class="d-box"></span><span><b>전체 동의</b><small>필수 항목 3개에 모두 동의해요</small></span></div><div class="d-agree-row on"><span class="d-pick"><span class="d-tick"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></g></svg></span><span><span class="req">(필수)</span> 만 14세 이상이에요</span></span></div><div class="d-agree-row"><span class="d-pick"><span class="d-tick"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></g></svg></span><span><span class="req">(필수)</span> 이용약관 동의</span></span><span class="d-agree-go"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></g></svg></span></div><div class="d-agree-row"><span class="d-pick"><span class="d-tick"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></g></svg></span><span><span class="req">(필수)</span> 개인정보 수집·이용 동의</span></span><span class="d-agree-go"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></g></svg></span></div></div>
+    <div class="d-agree"><div class="d-pick on d-agree-all"><span class="d-box"></span><span><b>전체 동의</b><small>필수 항목 3개에 모두 동의해요</small></span></div><div class="d-agree-row on"><span class="d-pick"><span class="d-tick"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></g></svg></span><span><span class="req">(필수)</span> 만 14세 이상이에요</span></span></div><div class="d-agree-row on"><span class="d-pick"><span class="d-tick"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></g></svg></span><span><span class="req">(필수)</span> 이용약관 동의</span></span><span class="d-agree-go"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></g></svg></span></div><div class="d-agree-row on"><span class="d-pick"><span class="d-tick"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></g></svg></span><span><span class="req">(필수)</span> 개인정보 수집·이용 동의</span></span><span class="d-agree-go"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></g></svg></span></div></div>
+  </div>
+  <div class="ramp">
+    <div class="r"><span class="rl">전체 동의</span><span class="rs">체크 줄 부가설명(<code>.tset-rule</code>) 그대로 — 체크 20과 제목 첫 줄을 맞추고, 설명은 제목 밑 13/500 · 위 4 · N600. 제목만 16/700</span><span class="rv">16 · 13</span></div>
+    <div class="r"><span class="rl">일부</span><span class="rs">하위가 일부만 켜지면 전체 동의 칸이 Primary 면에 흰 "—" · <code>aria-checked="mixed"</code> (Material 3 · Carbon 부모 체크 규칙)</span><span class="rv">mixed</span></div>
+    <div class="r"><span class="rl">하위 항목</span><span class="rs">들여쓰기 없이 전체 동의와 같은 선 · 상자 없이 체크 표시만 18(꺼짐 N300 · 켜짐 Primary) · 글자 13 · "(필수)" N600 · 줄 40</span><span class="rv">18 · 13</span></div>
+    <div class="r"><span class="rl">내용 보기</span><span class="rs">줄 오른쪽 40 단추 · chevron-right 20 · N600 · 화면 읽기 이름 "… 내용 보기"</span><span class="rv">40</span></div>
+    <div class="r"><span class="rl">자리</span><span class="rs">입력 칸 묶음 아래 24 · 상자·감싸는 선·구분선 없음</span><span class="rv">24</span></div>
   </div>
   <h3>선택 칩 — 정해진 몇 개 중 고르기 (2026-10-13, REQ-184·188)</h3>
   <div class="demo dcol paper">
